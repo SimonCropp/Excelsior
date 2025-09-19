@@ -43,19 +43,6 @@ public class ListToExcelConverter<T>(
         return ConfigureColumn(propertyName, configuration);
     }
 
-    public void ExportToStream(Stream stream)
-    {
-        using var workbook = CreateWorkbook();
-        workbook.SaveAs(stream);
-    }
-
-    public XLWorkbook CreateWorkbook()
-    {
-        var workbook = new XLWorkbook();
-        AddSheet(workbook);
-        return workbook;
-    }
-
     internal void AddSheet(XLWorkbook workbook)
     {
         var worksheet = workbook.Worksheets.Add(name);
@@ -191,19 +178,22 @@ public class ListToExcelConverter<T>(
 
     void ApplyDataCellStyling(IXLCell cell, PropertyInfo property, int rowIndex)
     {
-        var config = columnConfigurations.GetValueOrDefault(property.Name);
-
         // Apply alternating row colors
         if (useAlternatingRowColors && rowIndex % 2 == 1)
         {
             cell.Style.Fill.BackgroundColor = alternateRowColor;
         }
 
-        // Apply column-specific data styling
-        config?.DataCellStyle?.Invoke(cell.Style);
+        var config = columnConfigurations.GetValueOrDefault(property.Name);
 
-        // Apply conditional styling
-        if (config?.ConditionalStyling != null)
+        if (config == null)
+        {
+            return;
+        }
+
+        config.DataCellStyle?.Invoke(cell.Style);
+
+        if (config.ConditionalStyling != null)
         {
             var value = property.GetValue(data[rowIndex]);
             config.ConditionalStyling(cell.Style, value);

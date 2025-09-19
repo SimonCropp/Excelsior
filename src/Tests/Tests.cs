@@ -18,9 +18,9 @@ public class Tests
     {
         var employees = GetSampleEmployees();
         var builder = new BookBuilder();
-        var converter = builder.AddSheet(employees);
+        builder.AddSheet(employees);
 
-        var book = converter.CreateWorkbook();
+        var book = builder.CreateWorkbook();
 
         await Verify(book);
     }
@@ -30,7 +30,7 @@ public class Tests
     {
         var employees = GetSampleEmployees();
         var builder = new BookBuilder();
-        var converter = builder.AddSheet(employees)
+        builder.AddSheet(employees)
             .ConfigureColumn(
                 nameof(Employee.Name),
                 _ => _.HeaderText = "Employee Name")
@@ -38,7 +38,7 @@ public class Tests
                 nameof(Employee.Email),
                 _ => _.HeaderText = "Email Address");
 
-        var book = converter.CreateWorkbook();
+        var book = builder.CreateWorkbook();
 
         await Verify(book);
     }
@@ -48,12 +48,12 @@ public class Tests
     {
         var employees = GetSampleEmployees();
         var builder = new BookBuilder();
-        var converter = builder.AddSheet(employees)
+        builder.AddSheet(employees)
             .ConfigureColumn(nameof(Employee.Email), _ => _.Order = 1)
             .ConfigureColumn(nameof(Employee.Name), _ => _.Order = 2)
             .ConfigureColumn(nameof(Employee.Salary), _ => _.Order = 3);
 
-        var book = converter.CreateWorkbook();
+        var book = builder.CreateWorkbook();
 
         await Verify(book);
     }
@@ -71,7 +71,7 @@ public class Tests
                 style.Font.FontColor = XLColor.White;
                 style.Fill.BackgroundColor = XLColor.DarkBlue;
             });
-        var converter = builder.AddSheet(employees)
+        builder.AddSheet(employees)
             .ConfigureColumn(nameof(Employee.Salary), config =>
             {
                 config.NumberFormat = "#,##0.00";
@@ -81,7 +81,7 @@ public class Tests
                 };
             });
 
-        var book = converter.CreateWorkbook();
+        var book = builder.CreateWorkbook();
 
         await Verify(book);
     }
@@ -99,9 +99,9 @@ public class Tests
                 style.Font.FontColor = XLColor.White;
                 style.Fill.BackgroundColor = XLColor.DarkBlue;
             });
-        var converter = builder.AddSheet(employees);
+        builder.AddSheet(employees);
 
-        var book = converter.CreateWorkbook();
+        var book = builder.CreateWorkbook();
 
         await Verify(book);
     }
@@ -111,7 +111,7 @@ public class Tests
     {
         var employees = GetSampleEmployees();
         var builder = new BookBuilder();
-        var converter = builder.AddSheet(employees)
+        builder.AddSheet(employees)
             .ConfigureColumn(nameof(Employee.Salary), config =>
             {
                 config.ConditionalStyling = (style, value) =>
@@ -134,7 +134,7 @@ public class Tests
                 };
             });
 
-        var book = converter.CreateWorkbook();
+        var book = builder.CreateWorkbook();
 
         await Verify(book);
     }
@@ -144,12 +144,12 @@ public class Tests
     {
         var employees = GetSampleEmployees();
         var builder = new BookBuilder();
-        var converter = builder.AddSheet(employees)
+        builder.AddSheet(employees)
             .ConfigureColumn(nameof(Employee.Email), _ => _.CustomFormatter = value => $"📧 {value}")
             .ConfigureColumn(nameof(Employee.IsActive), _ => _.BooleanDisplayFormat = active => active ? "✓ Active" : "✗ Inactive")
             .ConfigureColumn(nameof(Employee.HireDate), _ => _.DateTimeFormat = "yyyy-MM-dd");
 
-        var book = converter.CreateWorkbook();
+        var book = builder.CreateWorkbook();
 
         await Verify(book);
     }
@@ -159,9 +159,9 @@ public class Tests
     {
         var employees = GetSampleEmployees();
         var builder = new BookBuilder();
-        var converter = builder.AddSheet(employees, "Employee Report");
+        builder.AddSheet(employees, "Employee Report");
 
-        var book = converter.CreateWorkbook();
+        var book = builder.CreateWorkbook();
 
         await Verify(book);
     }
@@ -171,12 +171,12 @@ public class Tests
     {
         var employees = GetSampleEmployees();
         var builder = new BookBuilder();
-        var converter = builder.AddSheet(employees)
+        builder.AddSheet(employees)
             .ConfigureColumn(nameof(Employee.Name), _ => _.ColumnWidth = 25)
             .ConfigureColumn(nameof(Employee.Email), _ => _.ColumnWidth = 30)
             .ConfigureColumn(nameof(Employee.HireDate), _ => _.ColumnWidth = 15);
 
-        var book = converter.CreateWorkbook();
+        var book = builder.CreateWorkbook();
 
         await Verify(book);
     }
@@ -210,11 +210,11 @@ public class Tests
         };
 
         var builder = new BookBuilder();
-        var converter = builder.AddSheet(employees)
+        builder.AddSheet(employees)
             .ConfigureColumn(nameof(EmployeeWithNulls.Name), _ => _.NullDisplayText = "[No Name]")
             .ConfigureColumn(nameof(EmployeeWithNulls.Email), _ => _.NullDisplayText = "[No Email]");
 
-        var book = converter.CreateWorkbook();
+        var book = builder.CreateWorkbook();
 
         await Verify(book);
     }
@@ -224,10 +224,10 @@ public class Tests
     {
         var employees = GetSampleEmployees();
         var builder = new BookBuilder();
-        var converter = builder.AddSheet(employees)
+        builder.AddSheet(employees)
             .ConfigureColumn(nameof(Employee.Status), _ => _.EnumDisplayFormat = enumValue => $"Status: {enumValue}");
 
-        var book = converter.CreateWorkbook();
+        var book = builder.CreateWorkbook();
 
         await Verify(book);
     }
@@ -237,7 +237,7 @@ public class Tests
     {
         var employees = GetSampleEmployees();
         var builder = new BookBuilder();
-        var converter = builder.AddSheet(employees)
+        builder.AddSheet(employees)
             .ConfigureColumn(_ => _.Name, _ =>
             {
                 _.HeaderText = "Full Name";
@@ -249,7 +249,7 @@ public class Tests
                 _.HeaderStyle = _ => _.Font.FontColor = XLColor.Green;
             });
 
-        var book = converter.CreateWorkbook();
+        var book = builder.CreateWorkbook();
 
         await Verify(book);
     }
@@ -259,9 +259,9 @@ public class Tests
     {
         var employees = new List<Employee>();
         var builder = new BookBuilder();
-        var converter = builder.AddSheet(employees);
+        builder.AddSheet(employees);
 
-        var book = converter.CreateWorkbook();
+        var book = builder.CreateWorkbook();
 
         await Verify(book);
     }
@@ -290,9 +290,9 @@ public class Tests
         };
 
         var builder = new BookBuilder();
-        var converter = builder.AddSheet(products);
+        builder.AddSheet(products);
 
-        var book = converter.CreateWorkbook();
+        var book = builder.CreateWorkbook();
 
         await Verify(book);
     }
@@ -302,10 +302,10 @@ public class Tests
     {
         var employees = GetSampleEmployees();
         var builder = new BookBuilder();
-        var converter = builder.AddSheet(employees);
+        builder.AddSheet(employees);
 
         using var stream = new MemoryStream();
-        Assert.DoesNotThrow(() => converter.ExportToStream(stream));
+        Assert.DoesNotThrow(() => builder.ExportToStream(stream));
         Assert.That(stream.Length, Is.GreaterThan(0));
     }
 
@@ -376,7 +376,7 @@ public class Tests
     public async Task RealWorldScenario()
     {
         var employees = GetRealWorldEmployeeData();
-        var bookBuilder = new BookBuilder(
+        var builder = new BookBuilder(
             useAlternatingRowColors: true,
             alternateRowColor: XLColor.AliceBlue,
             headerStyle: style =>
@@ -387,7 +387,7 @@ public class Tests
                 style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
                 style.Border.OutsideBorder = XLBorderStyleValues.Thick;
             });
-        var converter = bookBuilder.AddSheet(employees,"Employee Report 2024")
+        builder.AddSheet(employees,"Employee Report 2024")
             .ConfigureColumn(nameof(Employee.Salary), config =>
             {
                 config.NumberFormat = "$#,##0.00";
@@ -445,9 +445,9 @@ public class Tests
                 };
             });
 
-        var workbook = converter.CreateWorkbook();
+        var book = builder.CreateWorkbook();
 
-        await Verify(workbook);
+        await Verify(book);
     }
 
     static List<Employee> GetRealWorldEmployeeData() =>

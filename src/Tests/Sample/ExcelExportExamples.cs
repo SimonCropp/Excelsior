@@ -5,10 +5,10 @@
         var employees = GetSampleEmployees();
 
         var builder = new BookBuilder();
-        var converter = builder.AddSheet(employees);
+        builder.AddSheet(employees);
 
         using var stream = new FileStream("employees.xlsx", FileMode.Create);
-        converter.ExportToStream(stream);
+        builder.ExportToStream(stream);
     }
 
     public static void AdvancedExport()
@@ -25,7 +25,7 @@
                 style.Fill.BackgroundColor = XLColor.DarkBlue;
                 style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             });
-        var converter = builder.AddSheet(employees,"Employee Report")
+        builder.AddSheet(employees,"Employee Report")
             .ConfigureColumn(nameof(Employee.Salary), config =>
             {
                 config.NumberFormat = "#,##0.00";
@@ -81,7 +81,7 @@
             });
 
         using var stream = new FileStream("advanced_employees.xlsx", FileMode.Create);
-        converter.ExportToStream(stream);
+        builder.ExportToStream(stream);
     }
 
     public static void TypeSafeColumnConfiguration()
@@ -89,7 +89,7 @@
         var employees = GetSampleEmployees();
 
         var builder = new BookBuilder();
-        var converter = builder.AddSheet(employees)
+        builder.AddSheet(employees)
             .ConfigureColumn(e => e.Name, config =>
             {
                 config.HeaderText = "Employee Name";
@@ -106,17 +106,17 @@
             });
 
         using var stream = new FileStream("typesafe_employees.xlsx", FileMode.Create);
-        converter.ExportToStream(stream);
+        builder.ExportToStream(stream);
     }
 
     public static void ExportToMemory()
     {
         var employees = GetSampleEmployees();
         var builder = new BookBuilder();
-        var converter = builder.AddSheet(employees);
+        builder.AddSheet(employees);
 
         using var memoryStream = new MemoryStream();
-        converter.ExportToStream(memoryStream);
+        builder.ExportToStream(memoryStream);
         var excelData = memoryStream.ToArray();
 
         // Use the byte array as needed

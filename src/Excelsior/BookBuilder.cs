@@ -1,25 +1,12 @@
 namespace Excelsior;
 
-public class BookBuilder
+public class BookBuilder(
+    bool useAlternatingRowColors = false,
+    XLColor? alternateRowColor = null,
+    Action<IXLStyle>? headerStyle = null,
+    Action<IXLStyle>? globalStyle = null)
 {
-    bool useAlternatingRowColors;
-    XLColor? alternateRowColor;
-    Action<IXLStyle>? headerStyle;
-    Action<IXLStyle>? globalStyle;
-
     List<Action<XLWorkbook>> actions = new();
-
-    public BookBuilder(
-        bool useAlternatingRowColors = false,
-        XLColor? alternateRowColor = null,
-        Action<IXLStyle>? headerStyle = null,
-        Action<IXLStyle>? globalStyle = null)
-    {
-        this.useAlternatingRowColors = useAlternatingRowColors;
-        this.alternateRowColor = alternateRowColor;
-        this.headerStyle = headerStyle;
-        this.globalStyle = globalStyle;
-    }
 
     public ListToExcelConverter<T> AddSheet<T>(List<T> data, string? name = null)
         where T : class

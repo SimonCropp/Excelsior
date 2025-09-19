@@ -7,7 +7,8 @@ public class BookBuilder
     Action<IXLStyle>? headerStyle;
     Action<IXLStyle>? globalStyle;
 
-    List<Action<XLWorkbook>> actions = new List<Action<XLWorkbook>>();
+    List<Action<XLWorkbook>> actions = new();
+
     public BookBuilder(
         bool useAlternatingRowColors = false,
         XLColor? alternateRowColor = null,

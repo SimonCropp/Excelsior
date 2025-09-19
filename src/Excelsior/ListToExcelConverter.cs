@@ -107,7 +107,6 @@ public class ListToExcelConverter<T>(List<T> data)
             var headerText = GetHeaderText(property);
             cell.Value = headerText;
 
-            // Apply header styling
             ApplyHeaderStyling(cell, property);
         }
 

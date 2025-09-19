@@ -24,7 +24,11 @@ public class BookBuilder
     public ListToExcelConverter<T> AddSheet<T>(List<T> data)
         where T : class
     {
-        var converter = new ListToExcelConverter<T>(data,useAlternatingRowColors,alternateRowColor, headerStyle);
+        var converter = new ListToExcelConverter<T>(
+            data,
+            useAlternatingRowColors,
+            alternateRowColor,
+            headerStyle);
         actions.Add(_ => converter.AddSheet(_));
         return converter;
     }
@@ -42,6 +46,7 @@ public class BookBuilder
         {
             action(book);
         }
+
         return book;
     }
 }

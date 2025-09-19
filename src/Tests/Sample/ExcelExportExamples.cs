@@ -8,7 +8,7 @@
         builder.AddSheet(employees);
 
         using var stream = new FileStream("employees.xlsx", FileMode.Create);
-        builder.ExportToStream(stream);
+        builder.ToStream(stream);
     }
 
     public static void AdvancedExport()
@@ -81,7 +81,7 @@
             });
 
         using var stream = new FileStream("advanced_employees.xlsx", FileMode.Create);
-        builder.ExportToStream(stream);
+        builder.ToStream(stream);
     }
 
     public static void TypeSafeColumnConfiguration()
@@ -106,7 +106,7 @@
             });
 
         using var stream = new FileStream("typesafe_employees.xlsx", FileMode.Create);
-        builder.ExportToStream(stream);
+        builder.ToStream(stream);
     }
 
     public static void ExportToMemory()
@@ -116,7 +116,7 @@
         builder.AddSheet(employees);
 
         using var memoryStream = new MemoryStream();
-        builder.ExportToStream(memoryStream);
+        builder.ToStream(memoryStream);
         var excelData = memoryStream.ToArray();
 
         // Use the byte array as needed
@@ -132,7 +132,6 @@
             Email = "john@company.com",
             HireDate = new(2020, 1, 15),
             Salary = 75000m,
-            Department = "IT",
             IsActive = true,
             Status = EmployeeStatus.FullTime
         },
@@ -143,7 +142,6 @@
             Email = "jane@company.com",
             HireDate = new(2019, 3, 22),
             Salary = 120000m,
-            Department = "Management",
             IsActive = true,
             Status = EmployeeStatus.FullTime
         },
@@ -154,7 +152,6 @@
             Email = "bob@company.com",
             HireDate = new(2021, 7, 10),
             Salary = 45000m,
-            Department = "Marketing",
             IsActive = false,
             Status = EmployeeStatus.PartTime
         },
@@ -165,7 +162,6 @@
             Email = "alice@company.com",
             HireDate = new(2018, 11, 5),
             Salary = 95000m,
-            Department = "Sales",
             IsActive = true,
             Status = EmployeeStatus.Contract
         }

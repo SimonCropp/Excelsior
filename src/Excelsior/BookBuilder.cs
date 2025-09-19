@@ -24,13 +24,13 @@ public class BookBuilder(
         return converter;
     }
 
-    public void ExportToStream(Stream stream)
+    public void ToStream(Stream stream)
     {
-        using var book = CreateWorkbook();
+        using var book = Build();
         book.SaveAs(stream);
     }
 
-    public XLWorkbook CreateWorkbook()
+    public XLWorkbook Build()
     {
         var book = new XLWorkbook();
         foreach (var action in actions)

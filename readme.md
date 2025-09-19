@@ -8,7 +8,7 @@
 
 ## NuGet package
 
-https://nuget.org/packages/Replicant/
+https://nuget.org/packages/Excelsior/
 
 
 ## Usage

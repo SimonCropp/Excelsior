@@ -8,7 +8,7 @@ public class Tests
         var builder = new BookBuilder();
         builder.AddSheet(employees);
 
-        var book = builder.CreateWorkbook();
+        var book = builder.Build();
 
         await Verify(book);
     }
@@ -20,7 +20,7 @@ public class Tests
         var builder = new BookBuilder();
         builder.AddSheet(employees);
 
-        var book = builder.CreateWorkbook();
+        var book = builder.Build();
 
         await Verify(book);
     }
@@ -38,7 +38,7 @@ public class Tests
                 nameof(Employee.Email),
                 _ => _.HeaderText = "Email Address");
 
-        var book = builder.CreateWorkbook();
+        var book = builder.Build();
 
         await Verify(book);
     }
@@ -53,7 +53,7 @@ public class Tests
             .ConfigureColumn(nameof(Employee.Name), _ => _.Order = 2)
             .ConfigureColumn(nameof(Employee.Salary), _ => _.Order = 3);
 
-        var book = builder.CreateWorkbook();
+        var book = builder.Build();
 
         await Verify(book);
     }
@@ -81,7 +81,7 @@ public class Tests
                 };
             });
 
-        var book = builder.CreateWorkbook();
+        var book = builder.Build();
 
         await Verify(book);
     }
@@ -101,7 +101,7 @@ public class Tests
             });
         builder.AddSheet(employees);
 
-        var book = builder.CreateWorkbook();
+        var book = builder.Build();
 
         await Verify(book);
     }
@@ -134,7 +134,7 @@ public class Tests
                 };
             });
 
-        var book = builder.CreateWorkbook();
+        var book = builder.Build();
 
         await Verify(book);
     }
@@ -149,7 +149,7 @@ public class Tests
             .ConfigureColumn(nameof(Employee.IsActive), _ => _.BooleanDisplayFormat = active => active ? "✓ Active" : "✗ Inactive")
             .ConfigureColumn(nameof(Employee.HireDate), _ => _.DateTimeFormat = "yyyy-MM-dd");
 
-        var book = builder.CreateWorkbook();
+        var book = builder.Build();
 
         await Verify(book);
     }
@@ -161,7 +161,7 @@ public class Tests
         var builder = new BookBuilder();
         builder.AddSheet(employees, "Employee Report");
 
-        var book = builder.CreateWorkbook();
+        var book = builder.Build();
 
         await Verify(book);
     }
@@ -176,7 +176,7 @@ public class Tests
             .ConfigureColumn(nameof(Employee.Email), _ => _.ColumnWidth = 30)
             .ConfigureColumn(nameof(Employee.HireDate), _ => _.ColumnWidth = 15);
 
-        var book = builder.CreateWorkbook();
+        var book = builder.Build();
 
         await Verify(book);
     }
@@ -214,7 +214,7 @@ public class Tests
             .ConfigureColumn(nameof(EmployeeWithNulls.Name), _ => _.NullDisplayText = "[No Name]")
             .ConfigureColumn(nameof(EmployeeWithNulls.Email), _ => _.NullDisplayText = "[No Email]");
 
-        var book = builder.CreateWorkbook();
+        var book = builder.Build();
 
         await Verify(book);
     }
@@ -227,7 +227,7 @@ public class Tests
         builder.AddSheet(employees)
             .ConfigureColumn(nameof(Employee.Status), _ => _.EnumDisplayFormat = enumValue => $"Status: {enumValue}");
 
-        var book = builder.CreateWorkbook();
+        var book = builder.Build();
 
         await Verify(book);
     }
@@ -249,7 +249,7 @@ public class Tests
                 _.HeaderStyle = _ => _.Font.FontColor = XLColor.Green;
             });
 
-        var book = builder.CreateWorkbook();
+        var book = builder.Build();
 
         await Verify(book);
     }
@@ -261,7 +261,7 @@ public class Tests
         var builder = new BookBuilder();
         builder.AddSheet(employees);
 
-        var book = builder.CreateWorkbook();
+        var book = builder.Build();
 
         await Verify(book);
     }
@@ -292,7 +292,7 @@ public class Tests
         var builder = new BookBuilder();
         builder.AddSheet(products);
 
-        var book = builder.CreateWorkbook();
+        var book = builder.Build();
 
         await Verify(book);
     }
@@ -305,7 +305,7 @@ public class Tests
         builder.AddSheet(employees);
 
         var stream = new MemoryStream();
-        builder.ExportToStream(stream);
+        builder.ToStream(stream);
         return Verify(stream, extension: "xlsx");
     }
 
@@ -333,7 +333,6 @@ public class Tests
             Email = "john@company.com",
             HireDate = new(2020, 1, 15),
             Salary = 75000m,
-            Department = "IT",
             IsActive = true,
             Status = EmployeeStatus.FullTime
         },
@@ -344,7 +343,6 @@ public class Tests
             Email = "jane@company.com",
             HireDate = new(2019, 3, 22),
             Salary = 120000m,
-            Department = "Management",
             IsActive = true,
             Status = EmployeeStatus.FullTime
         },
@@ -355,7 +353,6 @@ public class Tests
             Email = "bob@company.com",
             HireDate = new(2021, 7, 10),
             Salary = 45000m,
-            Department = "Marketing",
             IsActive = false,
             Status = EmployeeStatus.PartTime
         },
@@ -366,7 +363,6 @@ public class Tests
             Email = "alice@company.com",
             HireDate = new(2018, 11, 5),
             Salary = 95000m,
-            Department = "Sales",
             IsActive = true,
             Status = EmployeeStatus.Contract
         }
@@ -445,7 +441,7 @@ public class Tests
                 };
             });
 
-        var book = builder.CreateWorkbook();
+        var book = builder.Build();
 
         await Verify(book);
     }
@@ -459,7 +455,6 @@ public class Tests
             Email = "s.connor@techcorp.com",
             HireDate = new(2018, 3, 15),
             Salary = 125000m,
-            Department = "Engineering",
             IsActive = true,
             Status = EmployeeStatus.FullTime
         },
@@ -470,7 +465,6 @@ public class Tests
             Email = "j.matrix@techcorp.com",
             HireDate = new(2020, 7, 22),
             Salary = 95000m,
-            Department = "Product",
             IsActive = true,
             Status = EmployeeStatus.FullTime
         },
@@ -481,7 +475,6 @@ public class Tests
             Email = "e.ripley@techcorp.com",
             HireDate = new(2019, 11, 8),
             Salary = 110000m,
-            Department = "Security",
             IsActive = true,
             Status = EmployeeStatus.FullTime
         },
@@ -492,7 +485,6 @@ public class Tests
             Email = "d.schaefer@techcorp.com",
             HireDate = new(2021, 2, 14),
             Salary = 75000m,
-            Department = "Operations",
             IsActive = true,
             Status = EmployeeStatus.Contract
         },
@@ -503,7 +495,6 @@ public class Tests
             Email = "k.reese@techcorp.com",
             HireDate = new(2022, 6, 30),
             Salary = 45000m,
-            Department = "Support",
             IsActive = false,
             Status = EmployeeStatus.PartTime
         },
@@ -514,7 +505,6 @@ public class Tests
             Email = "r.batty@techcorp.com",
             HireDate = new(2017, 12, 1),
             Salary = 140000m,
-            Department = "Research",
             IsActive = false,
             Status = EmployeeStatus.Terminated
         }

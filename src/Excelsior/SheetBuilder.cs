@@ -1,8 +1,5 @@
 ﻿namespace Excelsior;
 
-/// <summary>
-/// Generic converter to export lists to Excel with configurable column styling
-/// </summary>
 public class SheetBuilder<T>(
     string name,
     List<T> data,

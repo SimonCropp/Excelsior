@@ -193,7 +193,7 @@ public class Tests
                 _ => _.Render = active => active ? "✓ Active" : "✗ Inactive")
             .Column(
                 _ => _.HireDate,
-                _ => _.DateTimeFormat = "yyyy-MM-dd");
+                _ => _.Format = "yyyy-MM-dd");
 
         #endregion
 
@@ -309,7 +309,7 @@ public class Tests
                 _ => _.Salary,
                 _ =>
                 {
-                    _.NumberFormat = "$#,##0.00";
+                    _.Format = "$#,##0.00";
                     _.HeaderStyle = _ => _.Font.FontColor = XLColor.Green;
                 });
 
@@ -436,7 +436,7 @@ public class Tests
                 _ => _.Salary,
                 config =>
                 {
-                    config.NumberFormat = "$#,##0.00";
+                    config.Format = "$#,##0.00";
                     config.ConditionalStyling = (style, salary) =>
                     {
                         if (salary >= 100000)
@@ -453,7 +453,7 @@ public class Tests
                 _ => _.HireDate,
                 config =>
                 {
-                    config.DateTimeFormat = "MMM dd, yyyy";
+                    config.Format = "MMM dd, yyyy";
                     config.ColumnWidth = 15;
                 })
             .Column(

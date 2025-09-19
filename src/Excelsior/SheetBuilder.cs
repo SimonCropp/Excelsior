@@ -46,8 +46,7 @@ public class SheetBuilder<T>(
             HeaderStyle = config.HeaderStyle,
             DataCellStyle = config.DataCellStyle,
             ConditionalStyling = (style, o) => config.ConditionalStyling?.Invoke(style, (TProperty) o!),
-            DateTimeFormat = config.DateTimeFormat,
-            NumberFormat = config.NumberFormat,
+            Format = config.Format,
             NullDisplayText = config.NullDisplayText,
             Render = render,
         } ;
@@ -139,24 +138,24 @@ public class SheetBuilder<T>(
             {
                 case DateTime dateTime:
                     cell.Value = dateTime;
-                    if (!string.IsNullOrEmpty(config?.DateTimeFormat))
-                        cell.Style.DateFormat.Format = config.DateTimeFormat;
+                    if (!string.IsNullOrEmpty(config?.Format))
+                        cell.Style.DateFormat.Format = config.Format;
                     break;
 
                 case decimal decimalValue:
                     cell.Value = decimalValue;
-                    if (!string.IsNullOrEmpty(config?.NumberFormat))
-                        cell.Style.NumberFormat.Format = config.NumberFormat;
+                    if (!string.IsNullOrEmpty(config?.Format))
+                        cell.Style.NumberFormat.Format = config.Format;
                     break;
                 case double doubleValue:
                     cell.Value = doubleValue;
-                    if (!string.IsNullOrEmpty(config?.NumberFormat))
-                        cell.Style.NumberFormat.Format = config.NumberFormat;
+                    if (!string.IsNullOrEmpty(config?.Format))
+                        cell.Style.NumberFormat.Format = config.Format;
                     break;
                 case float floatValue:
                     cell.Value = floatValue;
-                    if (!string.IsNullOrEmpty(config?.NumberFormat))
-                        cell.Style.NumberFormat.Format = config.NumberFormat;
+                    if (!string.IsNullOrEmpty(config?.Format))
+                        cell.Style.NumberFormat.Format = config.Format;
                     break;
 
                 case bool boolean:

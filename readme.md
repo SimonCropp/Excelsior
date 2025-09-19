@@ -219,7 +219,7 @@ builder.AddSheet(data)
         _ => _.Render = active => active ? "✓ Active" : "✗ Inactive")
     .Column(
         _ => _.HireDate,
-        _ => _.DateTimeFormat = "yyyy-MM-dd");
+        _ => _.Format = "yyyy-MM-dd");
 ```
 <sup><a href='/src/Tests/Tests.cs#L184-L198' title='Snippet source file'>snippet source</a> | <a href='#snippet-CustomRender' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->

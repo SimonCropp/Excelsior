@@ -29,7 +29,7 @@
             .Column(_ => _.Salary,
                 config =>
                 {
-                    config.NumberFormat = "#,##0.00";
+                    config.Format = "#,##0.00";
                     config.HeaderStyle = style =>
                     {
                         style.Fill.BackgroundColor = XLColor.Green;
@@ -47,7 +47,7 @@
                 _ => _.HireDate,
                 config =>
                 {
-                    config.DateTimeFormat = "yyyy-MM-dd";
+                    config.Format = "yyyy-MM-dd";
                     config.ColumnWidth = 15;
                 })
             .Column(

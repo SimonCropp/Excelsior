@@ -3,7 +3,7 @@
 /// <summary>
 /// Generic converter to export lists to Excel with configurable column styling
 /// </summary>
-public class ListToExcelConverter<T>(
+public class SheetBuilder<T>(
     string name,
     List<T> data,
     bool useAlternatingRowColors,
@@ -12,7 +12,7 @@ public class ListToExcelConverter<T>(
     Action<IXLStyle>? globalStyle)
     where T : class
 {
-    static ListToExcelConverter() =>
+    static SheetBuilder() =>
         properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance)
             .Where(_ => _.CanRead)
             .ToList();
@@ -23,7 +23,7 @@ public class ListToExcelConverter<T>(
     /// <summary>
     /// Configure a specific column's appearance and behavior
     /// </summary>
-    public ListToExcelConverter<T> ConfigureColumn(string property, Action<ColumnSettings> configuration)
+    public SheetBuilder<T> ConfigureColumn(string property, Action<ColumnSettings> configuration)
     {
         var config = new ColumnSettings();
         configuration(config);
@@ -35,7 +35,7 @@ public class ListToExcelConverter<T>(
     /// Configure a column using property expression (type-safe)
     /// </summary>
     /// <returns>The converter instance for fluent chaining</returns>
-    public ListToExcelConverter<T> ConfigureColumn<TProperty>(
+    public SheetBuilder<T> ConfigureColumn<TProperty>(
         Expression<Func<T, TProperty>> property,
         Action<ColumnSettings> configuration)
     {

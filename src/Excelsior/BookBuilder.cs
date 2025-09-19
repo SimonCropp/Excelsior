@@ -8,12 +8,12 @@ public class BookBuilder(
 {
     List<Action<XLWorkbook>> actions = new();
 
-    public ListToExcelConverter<T> AddSheet<T>(List<T> data, string? name = null)
+    public SheetBuilder<T> AddSheet<T>(List<T> data, string? name = null)
         where T : class
     {
         name ??= $"Sheet{actions.Count + 1}";
 
-        var converter = new ListToExcelConverter<T>(
+        var converter = new SheetBuilder<T>(
             name,
             data,
             useAlternatingRowColors,

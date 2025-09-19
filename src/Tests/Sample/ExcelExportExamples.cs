@@ -42,12 +42,16 @@
                     }
                 };
             })
-            .ConfigureColumn(nameof(Employee.HireDate), config =>
+            .ConfigureColumn(
+                nameof(Employee.HireDate),
+                config =>
             {
                 config.DateTimeFormat = "yyyy-MM-dd";
                 config.ColumnWidth = 15;
             })
-            .ConfigureColumn(nameof(Employee.IsActive), config =>
+            .ConfigureColumn(
+                nameof(Employee.IsActive),
+                config =>
             {
                 config.BooleanDisplayFormat = active => active ? "✓ Yes" : "✗ No";
                 config.DataCellStyle = style =>
@@ -55,7 +59,9 @@
                     style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
                 };
             })
-            .ConfigureColumn(nameof(Employee.Status), config =>
+            .ConfigureColumn(
+                nameof(Employee.Status),
+                config =>
             {
                 config.ConditionalStyling = (style, value) =>
                 {
@@ -82,45 +88,6 @@
 
         using var stream = new FileStream("advanced_employees.xlsx", FileMode.Create);
         builder.ToStream(stream);
-    }
-
-    public static void TypeSafeColumnConfiguration()
-    {
-        var employees = GetSampleEmployees();
-
-        var builder = new BookBuilder();
-        builder.AddSheet(employees)
-            .ConfigureColumn(e => e.Name, config =>
-            {
-                config.HeaderText = "Employee Name";
-                config.ColumnWidth = 25;
-                config.HeaderStyle = style =>
-                {
-                    style.Font.FontColor = XLColor.Blue;
-                    style.Font.Italic = true;
-                };
-            })
-            .ConfigureColumn(e => e.Email, config =>
-            {
-                config.CustomFormatter = value => $"📧 {value}";
-            });
-
-        using var stream = new FileStream("typesafe_employees.xlsx", FileMode.Create);
-        builder.ToStream(stream);
-    }
-
-    public static void ExportToMemory()
-    {
-        var employees = GetSampleEmployees();
-        var builder = new BookBuilder();
-        builder.AddSheet(employees);
-
-        using var memoryStream = new MemoryStream();
-        builder.ToStream(memoryStream);
-        var excelData = memoryStream.ToArray();
-
-        // Use the byte array as needed
-        File.WriteAllBytes("output.xlsx", excelData);
     }
 
     static List<Employee> GetSampleEmployees() =>

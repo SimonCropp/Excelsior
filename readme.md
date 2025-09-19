@@ -107,7 +107,7 @@ builder.AddSheet(data)
 
 var book = builder.Build();
 ```
-<sup><a href='/src/Tests/Tests.cs#L47-L60' title='Snippet source file'>snippet source</a> | <a href='#snippet-CustomHeaders' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Tests/Tests.cs#L48-L61' title='Snippet source file'>snippet source</a> | <a href='#snippet-CustomHeaders' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -122,7 +122,7 @@ builder.AddSheet(data)
     .ConfigureColumn(nameof(Employee.Name), _ => _.Order = 2)
     .ConfigureColumn(nameof(Employee.Salary), _ => _.Order = 3);
 ```
-<sup><a href='/src/Tests/Tests.cs#L69-L76' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnOrdering' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Tests/Tests.cs#L71-L79' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnOrdering' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -137,7 +137,7 @@ builder.AddSheet(data)
     .ConfigureColumn(nameof(Employee.Name), _ => _.Order = 2)
     .ConfigureColumn(nameof(Employee.Salary), _ => _.Order = 3);
 ```
-<sup><a href='/src/Tests/Tests.cs#L69-L76' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnOrdering' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Tests/Tests.cs#L71-L79' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnOrdering' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -155,7 +155,7 @@ var builder = new BookBuilder(
     });
 builder.AddSheet(data);
 ```
-<sup><a href='/src/Tests/Tests.cs#L86-L95' title='Snippet source file'>snippet source</a> | <a href='#snippet-HeaderStyle' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Tests/Tests.cs#L91-L102' title='Snippet source file'>snippet source</a> | <a href='#snippet-HeaderStyle' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -173,7 +173,7 @@ var builder = new BookBuilder(
     });
 builder.AddSheet(data);
 ```
-<sup><a href='/src/Tests/Tests.cs#L105-L114' title='Snippet source file'>snippet source</a> | <a href='#snippet-GlobalStyle' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Tests/Tests.cs#L114-L125' title='Snippet source file'>snippet source</a> | <a href='#snippet-GlobalStyle' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -184,29 +184,33 @@ builder.AddSheet(data);
 ```cs
 var builder = new BookBuilder();
 builder.AddSheet(employees)
-    .ConfigureColumn(nameof(Employee.Salary), config =>
-    {
-        config.ConditionalStyling = (style, value) =>
+    .ConfigureColumn(
+        nameof(Employee.Salary),
+        config =>
         {
-            if (value is decimal and > 100000)
+            config.ConditionalStyling = (style, value) =>
             {
-                style.Font.FontColor = XLColor.DarkGreen;
-                style.Font.Bold = true;
-            }
-        };
-    })
-    .ConfigureColumn(nameof(Employee.IsActive), config =>
-    {
-        config.ConditionalStyling = (style, value) =>
+                if (value is decimal and > 100000)
+                {
+                    style.Font.FontColor = XLColor.DarkGreen;
+                    style.Font.Bold = true;
+                }
+            };
+        })
+    .ConfigureColumn(
+        nameof(Employee.IsActive),
+        config =>
         {
-            if (value is bool isActive)
+            config.ConditionalStyling = (style, value) =>
             {
-                style.Fill.BackgroundColor = isActive ? XLColor.LightGreen : XLColor.LightPink;
-            }
-        };
-    });
+                if (value is bool isActive)
+                {
+                    style.Fill.BackgroundColor = isActive ? XLColor.LightGreen : XLColor.LightPink;
+                }
+            };
+        });
 ```
-<sup><a href='/src/Tests/Tests.cs#L125-L149' title='Snippet source file'>snippet source</a> | <a href='#snippet-ConditionalStyling' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Tests/Tests.cs#L137-L167' title='Snippet source file'>snippet source</a> | <a href='#snippet-ConditionalStyling' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -227,7 +231,7 @@ builder.AddSheet(data)
         nameof(Employee.HireDate),
         _ => _.DateTimeFormat = "yyyy-MM-dd");
 ```
-<sup><a href='/src/Tests/Tests.cs#L160-L173' title='Snippet source file'>snippet source</a> | <a href='#snippet-CustomFormatters' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Tests/Tests.cs#L179-L193' title='Snippet source file'>snippet source</a> | <a href='#snippet-CustomFormatters' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -239,7 +243,7 @@ builder.AddSheet(data)
 var builder = new BookBuilder();
 builder.AddSheet(employees, "Employee Report");
 ```
-<sup><a href='/src/Tests/Tests.cs#L183-L187' title='Snippet source file'>snippet source</a> | <a href='#snippet-WorksheetName' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Tests/Tests.cs#L205-L210' title='Snippet source file'>snippet source</a> | <a href='#snippet-WorksheetName' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -254,5 +258,5 @@ builder.AddSheet(data)
     .ConfigureColumn(nameof(Employee.Email), _ => _.ColumnWidth = 30)
     .ConfigureColumn(nameof(Employee.HireDate), _ => _.ColumnWidth = 15);
 ```
-<sup><a href='/src/Tests/Tests.cs#L197-L204' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnWidths' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Tests/Tests.cs#L222-L230' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnWidths' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->

@@ -36,6 +36,7 @@ public class Tests
         var book = builder.Build();
 
         #endregion
+
         await Verify(book);
     }
 
@@ -66,7 +67,9 @@ public class Tests
     public async Task ColumnOrdering()
     {
         var data = GetSampleEmployees();
+
         #region ColumnOrdering
+
         var builder = new BookBuilder();
         builder.AddSheet(data)
             .ConfigureColumn(nameof(Employee.Email), _ => _.Order = 1)
@@ -74,6 +77,7 @@ public class Tests
             .ConfigureColumn(nameof(Employee.Salary), _ => _.Order = 3);
 
         #endregion
+
         var book = builder.Build();
 
         await Verify(book);
@@ -83,7 +87,9 @@ public class Tests
     public async Task HeaderStyle()
     {
         var data = GetSampleEmployees();
+
         #region HeaderStyle
+
         var builder = new BookBuilder(
             headerStyle: style =>
             {
@@ -92,7 +98,9 @@ public class Tests
                 style.Fill.BackgroundColor = XLColor.DarkBlue;
             });
         builder.AddSheet(data);
-#endregion
+
+        #endregion
+
         var book = builder.Build();
 
         await Verify(book);
@@ -102,7 +110,9 @@ public class Tests
     public async Task GlobalStyle()
     {
         var data = GetSampleEmployees();
+
         #region GlobalStyle
+
         var builder = new BookBuilder(
             globalStyle: style =>
             {
@@ -111,6 +121,7 @@ public class Tests
                 style.Fill.BackgroundColor = XLColor.DarkBlue;
             });
         builder.AddSheet(data);
+
         #endregion
 
         var book = builder.Build();
@@ -122,31 +133,39 @@ public class Tests
     public async Task ConditionalStyling()
     {
         var employees = GetSampleEmployees();
+
         #region ConditionalStyling
+
         var builder = new BookBuilder();
         builder.AddSheet(employees)
-            .ConfigureColumn(nameof(Employee.Salary), config =>
-            {
-                config.ConditionalStyling = (style, value) =>
+            .ConfigureColumn(
+                nameof(Employee.Salary),
+                config =>
                 {
-                    if (value is decimal and > 100000)
+                    config.ConditionalStyling = (style, value) =>
                     {
-                        style.Font.FontColor = XLColor.DarkGreen;
-                        style.Font.Bold = true;
-                    }
-                };
-            })
-            .ConfigureColumn(nameof(Employee.IsActive), config =>
-            {
-                config.ConditionalStyling = (style, value) =>
+                        if (value is decimal and > 100000)
+                        {
+                            style.Font.FontColor = XLColor.DarkGreen;
+                            style.Font.Bold = true;
+                        }
+                    };
+                })
+            .ConfigureColumn(
+                nameof(Employee.IsActive),
+                config =>
                 {
-                    if (value is bool isActive)
+                    config.ConditionalStyling = (style, value) =>
                     {
-                        style.Fill.BackgroundColor = isActive ? XLColor.LightGreen : XLColor.LightPink;
-                    }
-                };
-            });
-#endregion
+                        if (value is bool isActive)
+                        {
+                            style.Fill.BackgroundColor = isActive ? XLColor.LightGreen : XLColor.LightPink;
+                        }
+                    };
+                });
+
+        #endregion
+
         var book = builder.Build();
 
         await Verify(book);
@@ -158,6 +177,7 @@ public class Tests
         var data = GetSampleEmployees();
 
         #region CustomFormatters
+
         var builder = new BookBuilder();
         builder.AddSheet(data)
             .ConfigureColumn(
@@ -171,6 +191,7 @@ public class Tests
                 _ => _.DateTimeFormat = "yyyy-MM-dd");
 
         #endregion
+
         var book = builder.Build();
 
         await Verify(book);
@@ -180,11 +201,14 @@ public class Tests
     public async Task WorksheetName()
     {
         var employees = GetSampleEmployees();
+
         #region WorksheetName
+
         var builder = new BookBuilder();
         builder.AddSheet(employees, "Employee Report");
 
         #endregion
+
         var book = builder.Build();
 
         await Verify(book);
@@ -194,7 +218,9 @@ public class Tests
     public async Task ColumnWidths()
     {
         var data = GetSampleEmployees();
+
         #region ColumnWidths
+
         var builder = new BookBuilder();
         builder.AddSheet(data)
             .ConfigureColumn(nameof(Employee.Name), _ => _.ColumnWidth = 25)
@@ -202,6 +228,7 @@ public class Tests
             .ConfigureColumn(nameof(Employee.HireDate), _ => _.ColumnWidth = 15);
 
         #endregion
+
         var book = builder.Build();
 
         await Verify(book);
@@ -409,63 +436,71 @@ public class Tests
                 style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
                 style.Border.OutsideBorder = XLBorderStyleValues.Thick;
             });
-        builder.AddSheet(employees,"Employee Report 2024")
-            .ConfigureColumn(nameof(Employee.Salary), config =>
-            {
-                config.NumberFormat = "$#,##0.00";
-                config.ConditionalStyling = (style, value) =>
+        builder.AddSheet(employees, "Employee Report 2024")
+            .ConfigureColumn(
+                nameof(Employee.Salary),
+                config =>
                 {
-                    if (value is decimal salary)
+                    config.NumberFormat = "$#,##0.00";
+                    config.ConditionalStyling = (style, value) =>
                     {
-                        if (salary >= 100000)
+                        if (value is decimal salary)
                         {
-                            style.Fill.BackgroundColor = XLColor.LightGreen;
+                            if (salary >= 100000)
+                            {
+                                style.Fill.BackgroundColor = XLColor.LightGreen;
+                            }
+                            else if (salary < 50000)
+                            {
+                                style.Fill.BackgroundColor = XLColor.LightPink;
+                            }
                         }
-                        else if (salary < 50000)
-                        {
-                            style.Fill.BackgroundColor = XLColor.LightPink;
-                        }
-                    }
-                };
-            })
-            .ConfigureColumn(nameof(Employee.HireDate), config =>
-            {
-                config.DateTimeFormat = "MMM dd, yyyy";
-                config.ColumnWidth = 15;
-            })
-            .ConfigureColumn(nameof(Employee.IsActive), config =>
-            {
-                config.BooleanDisplayFormat = active => active ? "✓ Active" : "✗ Inactive";
-                config.DataCellStyle = style =>
+                    };
+                })
+            .ConfigureColumn(
+                nameof(Employee.HireDate),
+                config =>
                 {
-                    style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-                };
-            })
-            .ConfigureColumn(nameof(Employee.Status), config =>
-            {
-                config.ConditionalStyling = (style, value) =>
+                    config.DateTimeFormat = "MMM dd, yyyy";
+                    config.ColumnWidth = 15;
+                })
+            .ConfigureColumn(
+                nameof(Employee.IsActive),
+                config =>
                 {
-                    if (value is EmployeeStatus status)
+                    config.BooleanDisplayFormat = active => active ? "✓ Active" : "✗ Inactive";
+                    config.DataCellStyle = style =>
                     {
-                        switch (status)
+                        style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                    };
+                })
+            .ConfigureColumn(
+                nameof(Employee.Status),
+                config =>
+                {
+                    config.ConditionalStyling = (style, value) =>
+                    {
+                        if (value is EmployeeStatus status)
                         {
-                            case EmployeeStatus.FullTime:
-                                style.Fill.BackgroundColor = XLColor.PaleGreen;
-                                break;
-                            case EmployeeStatus.PartTime:
-                                style.Fill.BackgroundColor = XLColor.LightYellow;
-                                break;
-                            case EmployeeStatus.Contract:
-                                style.Fill.BackgroundColor = XLColor.LightCyan;
-                                break;
-                            case EmployeeStatus.Terminated:
-                                style.Fill.BackgroundColor = XLColor.MistyRose;
-                                style.Font.Strikethrough = true;
-                                break;
+                            switch (status)
+                            {
+                                case EmployeeStatus.FullTime:
+                                    style.Fill.BackgroundColor = XLColor.PaleGreen;
+                                    break;
+                                case EmployeeStatus.PartTime:
+                                    style.Fill.BackgroundColor = XLColor.LightYellow;
+                                    break;
+                                case EmployeeStatus.Contract:
+                                    style.Fill.BackgroundColor = XLColor.LightCyan;
+                                    break;
+                                case EmployeeStatus.Terminated:
+                                    style.Fill.BackgroundColor = XLColor.MistyRose;
+                                    style.Font.Strikethrough = true;
+                                    break;
+                            }
                         }
-                    }
-                };
-            });
+                    };
+                });
 
         var book = builder.Build();
 

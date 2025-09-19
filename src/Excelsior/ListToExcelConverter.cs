@@ -1,7 +1,6 @@
 ﻿/// <summary>
 /// Generic converter to export lists to Excel with configurable column styling
 /// </summary>
-/// <typeparam name="T">Type of objects to export</typeparam>
 public class ListToExcelConverter<T>(List<T> data)
     where T : class
 {
@@ -11,9 +10,6 @@ public class ListToExcelConverter<T>(List<T> data)
     /// <summary>
     /// Configure a specific column's appearance and behavior
     /// </summary>
-    /// <param name="propertyName">Name of the property</param>
-    /// <param name="configuration">Column configuration</param>
-    /// <returns>The converter instance for fluent chaining</returns>
     public ListToExcelConverter<T> ConfigureColumn(string propertyName, Action<ColumnConfiguration> configuration)
     {
         var config = new ColumnConfiguration();
@@ -25,8 +21,6 @@ public class ListToExcelConverter<T>(List<T> data)
     /// <summary>
     /// Configure a column using property expression (type-safe)
     /// </summary>
-    /// <param name="propertyExpression">Property expression</param>
-    /// <param name="configuration">Column configuration</param>
     /// <returns>The converter instance for fluent chaining</returns>
     public ListToExcelConverter<T> ConfigureColumn<TProperty>(
         Expression<Func<T, TProperty>> propertyExpression,
@@ -36,10 +30,6 @@ public class ListToExcelConverter<T>(List<T> data)
         return ConfigureColumn(propertyName, configuration);
     }
 
-    /// <summary>
-    /// Configure general Excel settings
-    /// </summary>
-    /// <param name="configuration">Excel configuration</param>
     /// <returns>The converter instance for fluent chaining</returns>
     public ListToExcelConverter<T> ConfigureExcel(Action<ExcelConfiguration> configuration)
     {
@@ -47,20 +37,12 @@ public class ListToExcelConverter<T>(List<T> data)
         return this;
     }
 
-    /// <summary>
-    /// Export to stream
-    /// </summary>
-    /// <param name="stream">Output stream</param>
     public void ExportToStream(Stream stream)
     {
         using var workbook = CreateWorkbook();
         workbook.SaveAs(stream);
     }
 
-    /// <summary>
-    /// Get the workbook for further customization
-    /// </summary>
-    /// <returns>XLWorkbook instance</returns>
     public XLWorkbook CreateWorkbook()
     {
         var workbook = new XLWorkbook();
@@ -81,8 +63,7 @@ public class ListToExcelConverter<T>(List<T> data)
     List<PropertyInfo> GetProperties()
     {
         var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance)
-            .Where(_ => _.CanRead)
-            .ToList();
+            .Where(_ => _.CanRead);
 
         // Order by display order if specified
         return properties.OrderBy(_ =>
@@ -227,11 +208,13 @@ public class ListToExcelConverter<T>(List<T> data)
 
     void ApplyGlobalStyling(IXLWorksheet worksheet, List<PropertyInfo> properties)
     {
-        if (excelConfiguration.GlobalStyle != null)
+        if (excelConfiguration.GlobalStyle == null)
         {
-            var range = worksheet.Range(1, 1, data.Count + 1, properties.Count);
-            excelConfiguration.GlobalStyle(range.Style);
+            return;
         }
+
+        var range = worksheet.Range(1, 1, data.Count + 1, properties.Count);
+        excelConfiguration.GlobalStyle(range.Style);
     }
 
     void AutoSizeColumns(IXLWorksheet worksheet, List<PropertyInfo> properties)

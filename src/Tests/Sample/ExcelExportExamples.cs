@@ -136,7 +136,6 @@
             IsActive = true,
             Status = EmployeeStatus.FullTime
         },
-
         new()
         {
             Id = 2,
@@ -148,7 +147,6 @@
             IsActive = true,
             Status = EmployeeStatus.FullTime
         },
-
         new()
         {
             Id = 3,
@@ -160,7 +158,6 @@
             IsActive = false,
             Status = EmployeeStatus.PartTime
         },
-
         new()
         {
             Id = 4,
@@ -172,6 +169,5 @@
             IsActive = true,
             Status = EmployeeStatus.Contract
         }
-
     ];
 }

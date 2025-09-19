@@ -8,7 +8,6 @@ A data driven generator for Excel spreadsheets. Leverages [ClosedXML](https://gi
 **See [Milestones](../../milestones?state=closed) for release notes.**
 
 
-
 ## NuGet package
 
 https://nuget.org/packages/Excelsior/

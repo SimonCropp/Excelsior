@@ -93,6 +93,21 @@ var book = builder.Build();
 <img src="/src/simple.png">
 
 
+### Saving to a stream
+
+<!-- snippet: ToStream -->
+<a id='snippet-ToStream'></a>
+```cs
+var builder = new BookBuilder();
+builder.AddSheet(data);
+
+var stream = new MemoryStream();
+builder.ToStream(stream);
+```
+<sup><a href='/src/Tests/Tests.cs#L368-L376' title='Snippet source file'>snippet source</a> | <a href='#snippet-ToStream' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+
 ### CustomHeaders
 
 <!-- snippet: CustomHeaders -->
@@ -106,10 +121,8 @@ builder.AddSheet(data)
     .Column(
         _ => _.Email,
         _ => _.HeaderText = "Email Address");
-
-var book = builder.Build();
 ```
-<sup><a href='/src/Tests/Tests.cs#L48-L61' title='Snippet source file'>snippet source</a> | <a href='#snippet-CustomHeaders' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Tests/Tests.cs#L48-L59' title='Snippet source file'>snippet source</a> | <a href='#snippet-CustomHeaders' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 

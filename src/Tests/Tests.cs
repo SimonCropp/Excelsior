@@ -56,9 +56,9 @@ public class Tests
                 _ => _.Email,
                 _ => _.HeaderText = "Email Address");
 
-        var book = builder.Build();
-
         #endregion
+
+        var book = builder.Build();
 
         await Verify(book);
     }
@@ -363,12 +363,18 @@ public class Tests
     [Test]
     public Task ToStream()
     {
-        var employees = GetSampleEmployees();
+        var data = GetSampleEmployees();
+
+        #region ToStream
+
         var builder = new BookBuilder();
-        builder.AddSheet(employees);
+        builder.AddSheet(data);
 
         var stream = new MemoryStream();
         builder.ToStream(stream);
+
+        #endregion
+
         return Verify(stream, extension: "xlsx");
     }
 

@@ -250,3 +250,95 @@ builder.AddSheet(data)
 ```
 <sup><a href='/src/Tests/Tests.cs#L227-L235' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnWidths' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
+
+
+
+### Complex Types
+
+For complex types, by default is to render via `.ToString()`.
+
+
+#### Models
+
+The following are records and will have a custom `.ToString()`.
+
+<!-- snippet: ComplexTypeModels -->
+<a id='snippet-ComplexTypeModels'></a>
+```cs
+public record Person(string Name, Address Address);
+
+public record Address(int Number, string Street, State State, string City, ushort PostCode);
+```
+<sup><a href='/src/Tests/ComplexTypeWithToString.cs#L9-L15' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeModels' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+
+#### Build
+
+<!-- snippet: ComplexTypeWithToString -->
+<a id='snippet-ComplexTypeWithToString'></a>
+```cs
+List<Person> data =
+[
+    new("John Doe",
+        new Address(
+            Number: 900,
+            Street: "Victoria Square",
+            State: State.SouthAustralia,
+            City: "Adelaide",
+            PostCode: 5000)),
+];
+
+var builder = new BookBuilder();
+builder.AddSheet(data);
+
+var book = builder.Build();
+```
+<sup><a href='/src/Tests/ComplexTypeWithToString.cs#L20-L38' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeWithToString' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+
+#### Result
+
+<!-- snippet: ComplexTypeWithToString.Test.verified.csv -->
+<a id='snippet-ComplexTypeWithToString.Test.verified.csv'></a>
+```csv
+Name,Address
+John Doe,"Address { Number = 900, Street = Victoria Square, State = SouthAustralia, City = Adelaide, PostCode = 5000 }"
+```
+<sup><a href='/src/Tests/ComplexTypeWithToString.Test.verified.csv#L1-L2' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeWithToString.Test.verified.csv' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+
+### Custom render for Complex Types
+
+<!-- snippet: ComplexTypeWithCustomRender -->
+<a id='snippet-ComplexTypeWithCustomRender'></a>
+```cs
+List<Person> data =
+[
+    new("John Doe",
+        new Address(
+            Number: 900,
+            Street: "Victoria Square",
+            State: State.SouthAustralia,
+            City: "Adelaide",
+            PostCode: 5000)),
+];
+
+BookBuilder.RenderFor<Address>(
+    _ => $"""
+          {_.Number}
+          {_.Street}
+          {_.State}
+          {_.City}
+          {_.PostCode}
+          """);
+
+var builder = new BookBuilder();
+builder.AddSheet(data);
+
+var book = builder.Build();
+```
+<sup><a href='/src/Tests/ComplexTypeWithCustomRender.cs#L16-L43' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeWithCustomRender' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->

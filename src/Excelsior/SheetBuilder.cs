@@ -133,6 +133,12 @@ public class SheetBuilder<T>(
                 return;
             }
 
+            if (BookBuilder.TryRender(property.PropertyType, value, out var result))
+            {
+                cell.Value = result;
+                return;
+            }
+
             // Handle specific types
             switch (value)
             {

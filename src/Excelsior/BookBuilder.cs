@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace Excelsior;
 
 public class BookBuilder(
@@ -39,5 +41,34 @@ public class BookBuilder(
         }
 
         return book;
+    }
+
+    static Dictionary<Type, Func<object, string>> renders = new();
+
+    public static void RenderFor<T>(Func<T, string> func) =>
+        renders[typeof(T)] = o => func((T) o);
+
+    internal static bool TryRender(Type memberType, object instance, [NotNullWhen(true)] out string? result)
+    {
+        foreach (var (key, value) in renders)
+        {
+            if (key.IsInstanceOfType(instance))
+            {
+                result = value(instance);
+                return true;
+            }
+        }
+
+        foreach (var (key, value) in renders)
+        {
+            if (key.IsAssignableTo(memberType))
+            {
+                result = value(instance);
+                return true;
+            }
+        }
+
+        result = null;
+        return false;
     }
 }

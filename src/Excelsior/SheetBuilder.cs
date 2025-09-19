@@ -36,8 +36,8 @@ public class SheetBuilder<T>(
         Expression<Func<T, TProperty>> property,
         Action<ColumnSettings> configuration)
     {
-        var propertyName = GetPropertyName(property);
-        return ConfigureColumn(propertyName, configuration);
+        var name = GetPropertyName(property);
+        return ConfigureColumn(name, configuration);
     }
 
     internal void AddSheet(XLWorkbook workbook)
@@ -72,9 +72,7 @@ public class SheetBuilder<T>(
             var property = properties[i];
             var cell = worksheet.Cell(1, i + 1);
 
-            // Set header text
-            var headerText = GetHeaderText(property);
-            cell.Value = headerText;
+            cell.Value = GetHeaderText(property);
 
             ApplyHeaderStyling(cell, property);
         }

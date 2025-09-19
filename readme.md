@@ -49,6 +49,8 @@ public class Employee
 <sup><a href='/src/Tests/Sample/Employee.cs#L1-L22' title='Snippet source file'>snippet source</a> | <a href='#snippet-Employee.cs' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
+`Display` is optional.
+
 
 ### Builder
 

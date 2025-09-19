@@ -2,11 +2,11 @@
 <Project>
   <PropertyGroup>
     <NoWarn>CS1591;NU1608;NU1109</NoWarn>
-    <Version>2.0.5</Version>
+    <Version>0.1.0</Version>
     <LangVersion>preview</LangVersion>
     <AssemblyVersion>1.0.0</AssemblyVersion>
-    <PackageTags>HttpClient, HttpCache, Cache</PackageTags>
-    <Description>A wrapper for HttpClient that caches to disk</Description>
+    <PackageTags>Excel</PackageTags>
+    <Description>A data driven generator for Excel spreadsheets</Description>
     <ResolveAssemblyReferencesSilent>true</ResolveAssemblyReferencesSilent>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>

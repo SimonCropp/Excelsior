@@ -3,7 +3,10 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/fo33wu7ud6es1t2o/branch/main?svg=true)](https://ci.appveyor.com/project/SimonCropp/Excelsior)
 [![NuGet Status](https://img.shields.io/nuget/v/Excelsior.svg)](https://www.nuget.org/packages/Excelsior/)
 
+A data driven generator for Excel spreadsheets. Leverages [ClosedXML](https://github.com/ClosedXML/ClosedXML).
+
 **See [Milestones](../../milestones?state=closed) for release notes.**
+
 
 
 ## NuGet package
@@ -342,7 +345,6 @@ var book = builder.Build();
 ```
 <sup><a href='/src/Tests/ComplexTypeWithCustomRender.cs#L16-L43' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeWithCustomRender' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
-
 
 
 ## Icon

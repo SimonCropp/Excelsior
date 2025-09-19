@@ -4,17 +4,23 @@
 public class ListToExcelConverter<T>(List<T> data)
     where T : class
 {
+    static ListToExcelConverter() =>
+        properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance)
+            .Where(_ => _.CanRead)
+            .ToList();
+
     Dictionary<string, ColumnConfiguration> columnConfigurations = new();
     ExcelConfiguration excelConfiguration = new();
+    static IReadOnlyList<PropertyInfo> properties;
 
     /// <summary>
     /// Configure a specific column's appearance and behavior
     /// </summary>
-    public ListToExcelConverter<T> ConfigureColumn(string propertyName, Action<ColumnConfiguration> configuration)
+    public ListToExcelConverter<T> ConfigureColumn(string property, Action<ColumnConfiguration> configuration)
     {
         var config = new ColumnConfiguration();
         configuration(config);
-        columnConfigurations[propertyName] = config;
+        columnConfigurations[property] = config;
         return this;
     }
 
@@ -23,10 +29,10 @@ public class ListToExcelConverter<T>(List<T> data)
     /// </summary>
     /// <returns>The converter instance for fluent chaining</returns>
     public ListToExcelConverter<T> ConfigureColumn<TProperty>(
-        Expression<Func<T, TProperty>> propertyExpression,
+        Expression<Func<T, TProperty>> property,
         Action<ColumnConfiguration> configuration)
     {
-        var propertyName = GetPropertyName(propertyExpression);
+        var propertyName = GetPropertyName(property);
         return ConfigureColumn(propertyName, configuration);
     }
 
@@ -60,19 +66,15 @@ public class ListToExcelConverter<T>(List<T> data)
         return workbook;
     }
 
-    List<PropertyInfo> GetProperties()
-    {
-        var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance)
-            .Where(_ => _.CanRead);
-
+    List<PropertyInfo> GetProperties() =>
         // Order by display order if specified
-        return properties.OrderBy(_ =>
+        properties
+            .OrderBy(_ =>
             {
                 var config = columnConfigurations.GetValueOrDefault(_.Name);
                 return config?.Order ?? GetDisplayOrder(_) ?? int.MaxValue;
             })
             .ToList();
-    }
 
     void CreateHeaders(IXLWorksheet worksheet, List<PropertyInfo> properties)
     {
@@ -219,10 +221,7 @@ public class ListToExcelConverter<T>(List<T> data)
 
     void AutoSizeColumns(IXLWorksheet worksheet, List<PropertyInfo> properties)
     {
-        if (excelConfiguration.AutoSizeColumns)
-        {
-            worksheet.Columns().AdjustToContents();
-        }
+        worksheet.Columns().AdjustToContents();
 
         // Apply specific column widths
         for (var i = 0; i < properties.Count; i++)

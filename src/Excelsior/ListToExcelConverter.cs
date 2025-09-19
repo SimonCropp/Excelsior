@@ -3,7 +3,9 @@
 /// <summary>
 /// Generic converter to export lists to Excel with configurable column styling
 /// </summary>
-public class ListToExcelConverter<T>(List<T> data)
+public class ListToExcelConverter<T>(
+    List<T> data,
+    Action<IXLStyle>? headerStyle = null)
     where T : class
 {
     static ListToExcelConverter() =>
@@ -185,10 +187,7 @@ public class ListToExcelConverter<T>(List<T> data)
         var config = columnConfigurations.GetValueOrDefault(property.Name);
 
         // Apply global header styling
-        if (excelConfiguration.HeaderStyle != null)
-        {
-            excelConfiguration.HeaderStyle(cell.Style);
-        }
+        headerStyle?.Invoke(cell.Style);
 
         // Apply column-specific header styling
         config?.HeaderStyle?.Invoke(cell.Style);

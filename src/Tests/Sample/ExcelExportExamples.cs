@@ -14,19 +14,20 @@
     {
         var employees = GetSampleEmployees();
 
-        var converter = new ListToExcelConverter<Employee>(employees)
+        var builder = new BookBuilder(
+            headerStyle:style =>
+            {
+                style.Font.Bold = true;
+                style.Font.FontColor = XLColor.White;
+                style.Fill.BackgroundColor = XLColor.DarkBlue;
+                style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            });
+        var converter = builder.AddSheet(employees)
             .ConfigureExcel(config =>
             {
                 config.WorksheetName = "Employee Report";
                 config.UseAlternatingRowColors = true;
                 config.AlternateRowColor = XLColor.AliceBlue;
-                config.HeaderStyle = style =>
-                {
-                    style.Font.Bold = true;
-                    style.Font.FontColor = XLColor.White;
-                    style.Fill.BackgroundColor = XLColor.DarkBlue;
-                    style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-                };
             })
             .ConfigureColumn(nameof(Employee.Salary), config =>
             {

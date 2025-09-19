@@ -59,15 +59,15 @@ public class Tests
     public async Task Styling()
     {
         var employees = GetSampleEmployees();
-        var converter = new ListToExcelConverter<Employee>(employees)
+        var builder = new BookBuilder(headerStyle: style =>
+        {
+            style.Font.Bold = true;
+            style.Font.FontColor = XLColor.White;
+            style.Fill.BackgroundColor = XLColor.DarkBlue;
+        });
+        var converter = builder.AddSheet(employees)
             .ConfigureExcel(config =>
             {
-                config.HeaderStyle = style =>
-                {
-                    style.Font.Bold = true;
-                    style.Font.FontColor = XLColor.White;
-                    style.Fill.BackgroundColor = XLColor.DarkBlue;
-                };
                 config.UseAlternatingRowColors = true;
                 config.AlternateRowColor = XLColor.LightGray;
             })
@@ -345,20 +345,21 @@ public class Tests
     public async Task RealWorldScenario()
     {
         var employees = GetRealWorldEmployeeData();
-        var converter = new ListToExcelConverter<Employee>(employees)
+        var bookBuilder = new BookBuilder(
+            headerStyle: style =>
+        {
+            style.Font.Bold = true;
+            style.Font.FontColor = XLColor.White;
+            style.Fill.BackgroundColor = XLColor.DarkBlue;
+            style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            style.Border.OutsideBorder = XLBorderStyleValues.Thick;
+        });
+        var converter = bookBuilder.AddSheet(employees)
             .ConfigureExcel(config =>
             {
                 config.WorksheetName = "Employee Report 2024";
                 config.UseAlternatingRowColors = true;
                 config.AlternateRowColor = XLColor.AliceBlue;
-                config.HeaderStyle = style =>
-                {
-                    style.Font.Bold = true;
-                    style.Font.FontColor = XLColor.White;
-                    style.Fill.BackgroundColor = XLColor.DarkBlue;
-                    style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-                    style.Border.OutsideBorder = XLBorderStyleValues.Thick;
-                };
             })
             .ConfigureColumn(nameof(Employee.Salary), config =>
             {

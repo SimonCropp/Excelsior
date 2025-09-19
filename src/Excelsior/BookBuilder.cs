@@ -24,7 +24,7 @@ public class BookBuilder
     public ListToExcelConverter<T> AddSheet<T>(List<T> data)
         where T : class
     {
-        var converter = new ListToExcelConverter<T>(data);
+        var converter = new ListToExcelConverter<T>(data, headerStyle);
         actions.Add(_ => converter.AddSheet(_));
         return converter;
     }

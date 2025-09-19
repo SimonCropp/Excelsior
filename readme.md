@@ -126,21 +126,6 @@ builder.AddSheet(data)
 <!-- endSnippet -->
 
 
-### ColumnOrdering
-
-<!-- snippet: ColumnOrdering -->
-<a id='snippet-ColumnOrdering'></a>
-```cs
-var builder = new BookBuilder();
-builder.AddSheet(data)
-    .Column(_ => _.Email, _ => _.Order = 1)
-    .Column(_ => _.Name, _ => _.Order = 2)
-    .Column(_ => _.Salary, _ => _.Order = 3);
-```
-<sup><a href='/src/Tests/Tests.cs#L71-L79' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnOrdering' title='Start of snippet'>anchor</a></sup>
-<!-- endSnippet -->
-
-
 ### HeaderStyle
 
 <!-- snippet: HeaderStyle -->

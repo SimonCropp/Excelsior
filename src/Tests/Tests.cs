@@ -59,18 +59,16 @@ public class Tests
     public async Task Styling()
     {
         var employees = GetSampleEmployees();
-        var builder = new BookBuilder(headerStyle: style =>
+        var builder = new BookBuilder(
+            useAlternatingRowColors: true,
+            alternateRowColor: XLColor.LightGray,
+            headerStyle: style =>
         {
             style.Font.Bold = true;
             style.Font.FontColor = XLColor.White;
             style.Fill.BackgroundColor = XLColor.DarkBlue;
         });
         var converter = builder.AddSheet(employees)
-            .ConfigureExcel(config =>
-            {
-                config.UseAlternatingRowColors = true;
-                config.AlternateRowColor = XLColor.LightGray;
-            })
             .ConfigureColumn(nameof(Employee.Salary), config =>
             {
                 config.NumberFormat = "#,##0.00";
@@ -346,6 +344,8 @@ public class Tests
     {
         var employees = GetRealWorldEmployeeData();
         var bookBuilder = new BookBuilder(
+            useAlternatingRowColors: true,
+            alternateRowColor: XLColor.AliceBlue,
             headerStyle: style =>
         {
             style.Font.Bold = true;
@@ -358,8 +358,6 @@ public class Tests
             .ConfigureExcel(config =>
             {
                 config.WorksheetName = "Employee Report 2024";
-                config.UseAlternatingRowColors = true;
-                config.AlternateRowColor = XLColor.AliceBlue;
             })
             .ConfigureColumn(nameof(Employee.Salary), config =>
             {

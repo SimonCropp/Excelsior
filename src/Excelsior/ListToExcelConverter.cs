@@ -5,6 +5,8 @@
 /// </summary>
 public class ListToExcelConverter<T>(
     List<T> data,
+    bool useAlternatingRowColors = false,
+    XLColor? alternateRowColor = null,
     Action<IXLStyle>? headerStyle = null)
     where T : class
 {
@@ -198,9 +200,9 @@ public class ListToExcelConverter<T>(
         var config = columnConfigurations.GetValueOrDefault(property.Name);
 
         // Apply alternating row colors
-        if (excelConfiguration.UseAlternatingRowColors && rowIndex % 2 == 1)
+        if (useAlternatingRowColors && rowIndex % 2 == 1)
         {
-            cell.Style.Fill.BackgroundColor = excelConfiguration.AlternateRowColor;
+            cell.Style.Fill.BackgroundColor = alternateRowColor;
         }
 
         // Apply column-specific data styling

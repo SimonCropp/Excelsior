@@ -15,6 +15,8 @@
         var employees = GetSampleEmployees();
 
         var builder = new BookBuilder(
+            useAlternatingRowColors: true,
+            alternateRowColor: XLColor.AliceBlue,
             headerStyle:style =>
             {
                 style.Font.Bold = true;
@@ -26,8 +28,6 @@
             .ConfigureExcel(config =>
             {
                 config.WorksheetName = "Employee Report";
-                config.UseAlternatingRowColors = true;
-                config.AlternateRowColor = XLColor.AliceBlue;
             })
             .ConfigureColumn(nameof(Employee.Salary), config =>
             {

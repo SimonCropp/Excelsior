@@ -21,7 +21,7 @@ public class SheetBuilder<T>(
     /// Configure a column using property expression (type-safe)
     /// </summary>
     /// <returns>The converter instance for fluent chaining</returns>
-    public SheetBuilder<T> ConfigureColumn<TProperty>(
+    public SheetBuilder<T> Column<TProperty>(
         Expression<Func<T, TProperty>> property,
         Action<ColumnSettings<TProperty>> configuration)
     {

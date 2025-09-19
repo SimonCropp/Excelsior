@@ -49,10 +49,10 @@ public class Tests
 
         var builder = new BookBuilder();
         builder.AddSheet(data)
-            .ConfigureColumn(
+            .Column(
                 _ => _.Name,
                 _ => _.HeaderText = "Employee Name")
-            .ConfigureColumn(
+            .Column(
                 _ => _.Email,
                 _ => _.HeaderText = "Email Address");
 
@@ -72,9 +72,9 @@ public class Tests
 
         var builder = new BookBuilder();
         builder.AddSheet(data)
-            .ConfigureColumn(_ => _.Email, _ => _.Order = 1)
-            .ConfigureColumn(_ => _.Name, _ => _.Order = 2)
-            .ConfigureColumn(_ => _.Salary, _ => _.Order = 3);
+            .Column(_ => _.Email, _ => _.Order = 1)
+            .Column(_ => _.Name, _ => _.Order = 2)
+            .Column(_ => _.Salary, _ => _.Order = 3);
 
         #endregion
 
@@ -138,7 +138,7 @@ public class Tests
 
         var builder = new BookBuilder();
         builder.AddSheet(employees)
-            .ConfigureColumn(
+            .Column(
                 _ => _.Salary,
                 config =>
                 {
@@ -151,7 +151,7 @@ public class Tests
                         }
                     };
                 })
-            .ConfigureColumn(
+            .Column(
                 _ => _.IsActive,
                 config =>
                 {
@@ -185,13 +185,13 @@ public class Tests
 
         var builder = new BookBuilder();
         builder.AddSheet(data)
-            .ConfigureColumn(
+            .Column(
                 _ => _.Email,
                 _ => _.CustomFormatter = value => $"📧 {value}")
-            .ConfigureColumn(
+            .Column(
                 _ => _.IsActive,
                 _ => _.CustomFormatter = active => active ? "✓ Active" : "✗ Inactive")
-            .ConfigureColumn(
+            .Column(
                 _ => _.HireDate,
                 _ => _.DateTimeFormat = "yyyy-MM-dd");
 
@@ -228,9 +228,9 @@ public class Tests
 
         var builder = new BookBuilder();
         builder.AddSheet(data)
-            .ConfigureColumn(_ => _.Name, _ => _.ColumnWidth = 25)
-            .ConfigureColumn(_ => _.Email, _ => _.ColumnWidth = 30)
-            .ConfigureColumn(_ => _.HireDate, _ => _.ColumnWidth = 15);
+            .Column(_ => _.Name, _ => _.ColumnWidth = 25)
+            .Column(_ => _.Email, _ => _.ColumnWidth = 30)
+            .Column(_ => _.HireDate, _ => _.ColumnWidth = 15);
 
         #endregion
 
@@ -269,8 +269,8 @@ public class Tests
 
         var builder = new BookBuilder();
         builder.AddSheet(employees)
-            .ConfigureColumn(_ => _.Name, _ => _.NullDisplayText = "[No Name]")
-            .ConfigureColumn(_ => _.Email, _ => _.NullDisplayText = "[No Email]");
+            .Column(_ => _.Name, _ => _.NullDisplayText = "[No Name]")
+            .Column(_ => _.Email, _ => _.NullDisplayText = "[No Email]");
 
         var book = builder.Build();
 
@@ -283,7 +283,7 @@ public class Tests
         var employees = GetSampleEmployees();
         var builder = new BookBuilder();
         builder.AddSheet(employees)
-            .ConfigureColumn(
+            .Column(
                 _ => _.Status,
                 _ => _.CustomFormatter = enumValue => $"Status: {enumValue}");
 
@@ -298,14 +298,14 @@ public class Tests
         var employees = GetSampleEmployees();
         var builder = new BookBuilder();
         builder.AddSheet(employees)
-            .ConfigureColumn(
+            .Column(
                 _ => _.Name,
                 _ =>
                 {
                     _.HeaderText = "Full Name";
                     _.ColumnWidth = 20;
                 })
-            .ConfigureColumn(
+            .Column(
                 _ => _.Salary,
                 _ =>
                 {
@@ -432,7 +432,7 @@ public class Tests
                 style.Border.OutsideBorder = XLBorderStyleValues.Thick;
             });
         builder.AddSheet(employees, "Employee Report 2024")
-            .ConfigureColumn(
+            .Column(
                 _ => _.Salary,
                 config =>
                 {
@@ -449,14 +449,14 @@ public class Tests
                         }
                     };
                 })
-            .ConfigureColumn(
+            .Column(
                 _ => _.HireDate,
                 config =>
                 {
                     config.DateTimeFormat = "MMM dd, yyyy";
                     config.ColumnWidth = 15;
                 })
-            .ConfigureColumn(
+            .Column(
                 _ => _.IsActive,
                 config =>
                 {
@@ -466,7 +466,7 @@ public class Tests
                         style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
                     };
                 })
-            .ConfigureColumn(
+            .Column(
                 _ => _.Status,
                 config =>
                 {

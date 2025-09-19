@@ -26,7 +26,7 @@
                 style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             });
         builder.AddSheet(employees, "Employee Report")
-            .ConfigureColumn(_ => _.Salary,
+            .Column(_ => _.Salary,
                 config =>
                 {
                     config.NumberFormat = "#,##0.00";
@@ -43,14 +43,14 @@
                         }
                     };
                 })
-            .ConfigureColumn(
+            .Column(
                 _ => _.HireDate,
                 config =>
                 {
                     config.DateTimeFormat = "yyyy-MM-dd";
                     config.ColumnWidth = 15;
                 })
-            .ConfigureColumn(
+            .Column(
                 _ => _.IsActive,
                 config =>
                 {
@@ -60,7 +60,7 @@
                         style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
                     };
                 })
-            .ConfigureColumn(
+            .Column(
                 _ => _.Status,
                 config =>
                 {

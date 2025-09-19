@@ -98,10 +98,10 @@ var book = builder.Build();
 ```cs
 var builder = new BookBuilder();
 builder.AddSheet(data)
-    .ConfigureColumn(
+    .Column(
         _ => _.Name,
         _ => _.HeaderText = "Employee Name")
-    .ConfigureColumn(
+    .Column(
         _ => _.Email,
         _ => _.HeaderText = "Email Address");
 
@@ -118,9 +118,9 @@ var book = builder.Build();
 ```cs
 var builder = new BookBuilder();
 builder.AddSheet(data)
-    .ConfigureColumn(_ => _.Email, _ => _.Order = 1)
-    .ConfigureColumn(_ => _.Name, _ => _.Order = 2)
-    .ConfigureColumn(_ => _.Salary, _ => _.Order = 3);
+    .Column(_ => _.Email, _ => _.Order = 1)
+    .Column(_ => _.Name, _ => _.Order = 2)
+    .Column(_ => _.Salary, _ => _.Order = 3);
 ```
 <sup><a href='/src/Tests/Tests.cs#L71-L79' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnOrdering' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
@@ -133,9 +133,9 @@ builder.AddSheet(data)
 ```cs
 var builder = new BookBuilder();
 builder.AddSheet(data)
-    .ConfigureColumn(_ => _.Email, _ => _.Order = 1)
-    .ConfigureColumn(_ => _.Name, _ => _.Order = 2)
-    .ConfigureColumn(_ => _.Salary, _ => _.Order = 3);
+    .Column(_ => _.Email, _ => _.Order = 1)
+    .Column(_ => _.Name, _ => _.Order = 2)
+    .Column(_ => _.Salary, _ => _.Order = 3);
 ```
 <sup><a href='/src/Tests/Tests.cs#L71-L79' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnOrdering' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
@@ -184,7 +184,7 @@ builder.AddSheet(data);
 ```cs
 var builder = new BookBuilder();
 builder.AddSheet(employees)
-    .ConfigureColumn(
+    .Column(
         _ => _.Salary,
         config =>
         {
@@ -197,7 +197,7 @@ builder.AddSheet(employees)
                 }
             };
         })
-    .ConfigureColumn(
+    .Column(
         _ => _.IsActive,
         config =>
         {
@@ -226,13 +226,13 @@ builder.AddSheet(employees)
 ```cs
 var builder = new BookBuilder();
 builder.AddSheet(data)
-    .ConfigureColumn(
+    .Column(
         _ => _.Email,
         _ => _.CustomFormatter = value => $"📧 {value}")
-    .ConfigureColumn(
+    .Column(
         _ => _.IsActive,
         _ => _.CustomFormatter = active => active ? "✓ Active" : "✗ Inactive")
-    .ConfigureColumn(
+    .Column(
         _ => _.HireDate,
         _ => _.DateTimeFormat = "yyyy-MM-dd");
 ```
@@ -259,9 +259,9 @@ builder.AddSheet(employees, "Employee Report");
 ```cs
 var builder = new BookBuilder();
 builder.AddSheet(data)
-    .ConfigureColumn(_ => _.Name, _ => _.ColumnWidth = 25)
-    .ConfigureColumn(_ => _.Email, _ => _.ColumnWidth = 30)
-    .ConfigureColumn(_ => _.HireDate, _ => _.ColumnWidth = 15);
+    .Column(_ => _.Name, _ => _.ColumnWidth = 25)
+    .Column(_ => _.Email, _ => _.ColumnWidth = 30)
+    .Column(_ => _.HireDate, _ => _.ColumnWidth = 15);
 ```
 <sup><a href='/src/Tests/Tests.cs#L227-L235' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnWidths' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->

@@ -17,7 +17,8 @@ public class Tests
     public async Task Simple()
     {
         var employees = GetSampleEmployees();
-        var converter = new ListToExcelConverter<Employee>(employees);
+        var builder = new BookBuilder();
+        var converter = builder.AddSheet(employees);
 
         var book = converter.CreateWorkbook();
 
@@ -28,7 +29,8 @@ public class Tests
     public async Task CustomHeaders()
     {
         var employees = GetSampleEmployees();
-        var converter = new ListToExcelConverter<Employee>(employees)
+        var builder = new BookBuilder();
+        var converter = builder.AddSheet(employees)
             .ConfigureColumn(
                 nameof(Employee.Name),
                 _ => _.HeaderText = "Employee Name")
@@ -45,7 +47,8 @@ public class Tests
     public async Task ColumnOrdering()
     {
         var employees = GetSampleEmployees();
-        var converter = new ListToExcelConverter<Employee>(employees)
+        var builder = new BookBuilder();
+        var converter = builder.AddSheet(employees)
             .ConfigureColumn(nameof(Employee.Email), _ => _.Order = 1)
             .ConfigureColumn(nameof(Employee.Name), _ => _.Order = 2)
             .ConfigureColumn(nameof(Employee.Salary), _ => _.Order = 3);
@@ -107,7 +110,8 @@ public class Tests
     public async Task ConditionalStyling()
     {
         var employees = GetSampleEmployees();
-        var converter = new ListToExcelConverter<Employee>(employees)
+        var builder = new BookBuilder();
+        var converter = builder.AddSheet(employees)
             .ConfigureColumn(nameof(Employee.Salary), config =>
             {
                 config.ConditionalStyling = (style, value) =>
@@ -139,7 +143,8 @@ public class Tests
     public async Task CustomFormatters()
     {
         var employees = GetSampleEmployees();
-        var converter = new ListToExcelConverter<Employee>(employees)
+        var builder = new BookBuilder();
+        var converter = builder.AddSheet(employees)
             .ConfigureColumn(nameof(Employee.Email), _ => _.CustomFormatter = value => $"📧 {value}")
             .ConfigureColumn(nameof(Employee.IsActive), _ => _.BooleanDisplayFormat = active => active ? "✓ Active" : "✗ Inactive")
             .ConfigureColumn(nameof(Employee.HireDate), _ => _.DateTimeFormat = "yyyy-MM-dd");
@@ -153,7 +158,8 @@ public class Tests
     public async Task WorksheetName()
     {
         var employees = GetSampleEmployees();
-        var converter = new ListToExcelConverter<Employee>(employees)
+        var builder = new BookBuilder();
+        var converter = builder.AddSheet(employees)
             .ConfigureExcel(_ => _.WorksheetName = "Employee Report");
 
         var book = converter.CreateWorkbook();
@@ -165,7 +171,8 @@ public class Tests
     public async Task ColumnWidths()
     {
         var employees = GetSampleEmployees();
-        var converter = new ListToExcelConverter<Employee>(employees)
+        var builder = new BookBuilder();
+        var converter = builder.AddSheet(employees)
             .ConfigureColumn(nameof(Employee.Name), _ => _.ColumnWidth = 25)
             .ConfigureColumn(nameof(Employee.Email), _ => _.ColumnWidth = 30)
             .ConfigureColumn(nameof(Employee.HireDate), _ => _.ColumnWidth = 15);
@@ -203,7 +210,8 @@ public class Tests
             }
         };
 
-        var converter = new ListToExcelConverter<EmployeeWithNulls>(employees)
+        var builder = new BookBuilder();
+        var converter = builder.AddSheet(employees)
             .ConfigureColumn(nameof(EmployeeWithNulls.Name), _ => _.NullDisplayText = "[No Name]")
             .ConfigureColumn(nameof(EmployeeWithNulls.Email), _ => _.NullDisplayText = "[No Email]");
 
@@ -216,7 +224,8 @@ public class Tests
     public async Task Enums()
     {
         var employees = GetSampleEmployees();
-        var converter = new ListToExcelConverter<Employee>(employees)
+        var builder = new BookBuilder();
+        var converter = builder.AddSheet(employees)
             .ConfigureColumn(nameof(Employee.Status), _ => _.EnumDisplayFormat = enumValue => $"Status: {enumValue}");
 
         var book = converter.CreateWorkbook();
@@ -228,7 +237,8 @@ public class Tests
     public async Task TypeSafeConfiguration()
     {
         var employees = GetSampleEmployees();
-        var converter = new ListToExcelConverter<Employee>(employees)
+        var builder = new BookBuilder();
+        var converter = builder.AddSheet(employees)
             .ConfigureColumn(_ => _.Name, _ =>
             {
                 _.HeaderText = "Full Name";
@@ -248,8 +258,9 @@ public class Tests
     [Test]
     public async Task EmptyList()
     {
-        var emptyEmployees = new List<Employee>();
-        var converter = new ListToExcelConverter<Employee>(emptyEmployees);
+        var employees = new List<Employee>();
+        var builder = new BookBuilder();
+        var converter = builder.AddSheet(employees);
 
         var book = converter.CreateWorkbook();
 
@@ -279,7 +290,8 @@ public class Tests
             }
         };
 
-        var converter = new ListToExcelConverter<Product>(products);
+        var builder = new BookBuilder();
+        var converter = builder.AddSheet(products);
 
         var book = converter.CreateWorkbook();
 
@@ -290,7 +302,8 @@ public class Tests
     public void ToStream()
     {
         var employees = GetSampleEmployees();
-        var converter = new ListToExcelConverter<Employee>(employees);
+        var builder = new BookBuilder();
+        var converter = builder.AddSheet(employees);
 
         using var stream = new MemoryStream();
         Assert.DoesNotThrow(() => converter.ExportToStream(stream));
@@ -301,7 +314,8 @@ public class Tests
     public void InvalidPropertyName()
     {
         var employees = GetSampleEmployees();
-        var converter = new ListToExcelConverter<Employee>(employees);
+        var builder = new BookBuilder();
+        var converter = builder.AddSheet(employees);
 
         Assert.DoesNotThrow(() =>
             converter.ConfigureColumn("NonExistentProperty", _ =>

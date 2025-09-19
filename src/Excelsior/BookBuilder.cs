@@ -21,9 +21,13 @@ public class BookBuilder
         this.globalStyle = globalStyle;
     }
 
-    public ListToExcelConverter<T> AddSheet<T>(List<T> data)
+    public ListToExcelConverter<T> AddSheet<T>(List<T> data, string? name = null)
         where T : class
     {
+        // if (name == null)
+        // {
+        //     name = "Sheet" + actions.Count;
+        // }
         var converter = new ListToExcelConverter<T>(
             data,
             useAlternatingRowColors,

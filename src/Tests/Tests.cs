@@ -120,18 +120,6 @@ public class Tests
     }
 
     [Test]
-    public async Task WithoutHeaders()
-    {
-        var employees = GetSampleEmployees();
-        var converter = new ListToExcelConverter<Employee>(employees)
-            .ConfigureExcel(_ => _.IncludeHeaders = false);
-
-        var workbook = converter.CreateWorkbook();
-
-        await Verify(workbook);
-    }
-
-    [Test]
     public async Task WorksheetName()
     {
         var employees = GetSampleEmployees();

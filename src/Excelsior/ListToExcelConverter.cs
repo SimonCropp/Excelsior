@@ -68,16 +68,13 @@ public class ListToExcelConverter<T>(List<T> data)
 
         var properties = GetProperties();
 
-        if (excelConfiguration.IncludeHeaders)
-        {
-            CreateHeaders(worksheet, properties);
-        }
+        CreateHeaders(worksheet, properties);
 
         PopulateData(worksheet, properties);
 
         ApplyGlobalStyling(worksheet, properties);
+        worksheet.RangeUsed()!.SetAutoFilter();
         AutoSizeColumns(worksheet, properties);
-
         return workbook;
     }
 
@@ -110,15 +107,13 @@ public class ListToExcelConverter<T>(List<T> data)
             ApplyHeaderStyling(cell, property);
         }
 
-        if (excelConfiguration.FreezeHeaders)
-        {
-            worksheet.SheetView.FreezeRows(1);
-        }
+        worksheet.SheetView.FreezeRows(1);
     }
 
     void PopulateData(IXLWorksheet worksheet, List<PropertyInfo> properties)
     {
-        var startRow = excelConfiguration.IncludeHeaders ? 2 : 1;
+        //Skip header
+        var startRow = 2;
 
         for (var rowIndex = 0; rowIndex < data.Count; rowIndex++)
         {
@@ -234,7 +229,7 @@ public class ListToExcelConverter<T>(List<T> data)
     {
         if (excelConfiguration.GlobalStyle != null)
         {
-            var range = worksheet.Range(1, 1, data.Count + (excelConfiguration.IncludeHeaders ? 1 : 0), properties.Count);
+            var range = worksheet.Range(1, 1, data.Count + 1, properties.Count);
             excelConfiguration.GlobalStyle(range.Style);
         }
     }

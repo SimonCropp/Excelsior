@@ -4,8 +4,6 @@
 public class ExcelConfiguration
 {
     public string WorksheetName { get; set; } = "Sheet1";
-    public bool IncludeHeaders { get; set; } = true;
-    public bool FreezeHeaders { get; set; } = true;
     public bool AutoSizeColumns { get; set; } = true;
     public bool UseAlternatingRowColors { get; set; }
     public XLColor AlternateRowColor { get; set; } = XLColor.LightGray;

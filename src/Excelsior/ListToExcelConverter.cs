@@ -1,4 +1,5 @@
 ﻿namespace Excelsior;
+
 /// <summary>
 /// Generic converter to export lists to Excel with configurable column styling
 /// </summary>
@@ -53,6 +54,12 @@ public class ListToExcelConverter<T>(List<T> data)
     public XLWorkbook CreateWorkbook()
     {
         var workbook = new XLWorkbook();
+        AddSheet(workbook);
+        return workbook;
+    }
+
+    internal void AddSheet(XLWorkbook workbook)
+    {
         var worksheet = workbook.Worksheets.Add(excelConfiguration.WorksheetName);
 
         var properties = GetProperties();
@@ -64,7 +71,6 @@ public class ListToExcelConverter<T>(List<T> data)
         ApplyGlobalStyling(worksheet, properties);
         worksheet.RangeUsed()!.SetAutoFilter();
         AutoSizeColumns(worksheet, properties);
-        return workbook;
     }
 
     List<PropertyInfo> GetProperties() =>

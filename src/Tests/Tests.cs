@@ -2,6 +2,18 @@
 public class Tests
 {
     [Test]
+    public async Task BookBuilder()
+    {
+        var employees = GetSampleEmployees();
+        var builder = new BookBuilder();
+        builder.AddSheet(employees);
+
+        var workbook = builder.CreateWorkbook();
+
+        await Verify(workbook);
+    }
+
+    [Test]
     public async Task Simple()
     {
         var employees = GetSampleEmployees();

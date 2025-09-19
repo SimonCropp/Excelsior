@@ -6,7 +6,7 @@ public class Tests
     {
         #region Usage
 
-        List<Employee> employees =
+        List<Employee> data =
         [
             new()
             {
@@ -31,7 +31,7 @@ public class Tests
         ];
 
         var builder = new BookBuilder();
-        builder.AddSheet(employees);
+        builder.AddSheet(data);
 
         var book = builder.Build();
 
@@ -42,9 +42,12 @@ public class Tests
     [Test]
     public async Task CustomHeaders()
     {
-        var employees = GetSampleEmployees();
+        var data = GetSampleEmployees();
+
+        #region CustomHeaders
+
         var builder = new BookBuilder();
-        builder.AddSheet(employees)
+        builder.AddSheet(data)
             .ConfigureColumn(
                 nameof(Employee.Name),
                 _ => _.HeaderText = "Employee Name")
@@ -54,66 +57,61 @@ public class Tests
 
         var book = builder.Build();
 
+        #endregion
+
         await Verify(book);
     }
 
     [Test]
     public async Task ColumnOrdering()
     {
-        var employees = GetSampleEmployees();
+        var data = GetSampleEmployees();
+        #region ColumnOrdering
         var builder = new BookBuilder();
-        builder.AddSheet(employees)
+        builder.AddSheet(data)
             .ConfigureColumn(nameof(Employee.Email), _ => _.Order = 1)
             .ConfigureColumn(nameof(Employee.Name), _ => _.Order = 2)
             .ConfigureColumn(nameof(Employee.Salary), _ => _.Order = 3);
 
+        #endregion
         var book = builder.Build();
 
         await Verify(book);
     }
 
     [Test]
-    public async Task Styling()
+    public async Task HeaderStyle()
     {
-        var employees = GetSampleEmployees();
+        var data = GetSampleEmployees();
+        #region HeaderStyle
         var builder = new BookBuilder(
-            useAlternatingRowColors: true,
-            alternateRowColor: XLColor.LightGray,
             headerStyle: style =>
             {
                 style.Font.Bold = true;
                 style.Font.FontColor = XLColor.White;
                 style.Fill.BackgroundColor = XLColor.DarkBlue;
             });
-        builder.AddSheet(employees)
-            .ConfigureColumn(nameof(Employee.Salary), config =>
-            {
-                config.NumberFormat = "#,##0.00";
-                config.HeaderStyle = style =>
-                {
-                    style.Fill.BackgroundColor = XLColor.Green;
-                };
-            });
-
+        builder.AddSheet(data);
+#endregion
         var book = builder.Build();
 
         await Verify(book);
     }
 
     [Test]
-    public async Task GlobalStyling()
+    public async Task GlobalStyle()
     {
-        var employees = GetSampleEmployees();
+        var data = GetSampleEmployees();
+        #region GlobalStyle
         var builder = new BookBuilder(
-            useAlternatingRowColors: true,
-            alternateRowColor: XLColor.LightGray,
             globalStyle: style =>
             {
                 style.Font.Bold = true;
                 style.Font.FontColor = XLColor.White;
                 style.Fill.BackgroundColor = XLColor.DarkBlue;
             });
-        builder.AddSheet(employees);
+        builder.AddSheet(data);
+        #endregion
 
         var book = builder.Build();
 
@@ -124,6 +122,7 @@ public class Tests
     public async Task ConditionalStyling()
     {
         var employees = GetSampleEmployees();
+        #region ConditionalStyling
         var builder = new BookBuilder();
         builder.AddSheet(employees)
             .ConfigureColumn(nameof(Employee.Salary), config =>
@@ -147,7 +146,7 @@ public class Tests
                     }
                 };
             });
-
+#endregion
         var book = builder.Build();
 
         await Verify(book);
@@ -156,13 +155,22 @@ public class Tests
     [Test]
     public async Task CustomFormatters()
     {
-        var employees = GetSampleEmployees();
-        var builder = new BookBuilder();
-        builder.AddSheet(employees)
-            .ConfigureColumn(nameof(Employee.Email), _ => _.CustomFormatter = value => $"📧 {value}")
-            .ConfigureColumn(nameof(Employee.IsActive), _ => _.BooleanDisplayFormat = active => active ? "✓ Active" : "✗ Inactive")
-            .ConfigureColumn(nameof(Employee.HireDate), _ => _.DateTimeFormat = "yyyy-MM-dd");
+        var data = GetSampleEmployees();
 
+        #region CustomFormatters
+        var builder = new BookBuilder();
+        builder.AddSheet(data)
+            .ConfigureColumn(
+                nameof(Employee.Email),
+                _ => _.CustomFormatter = value => $"📧 {value}")
+            .ConfigureColumn(
+                nameof(Employee.IsActive),
+                _ => _.BooleanDisplayFormat = active => active ? "✓ Active" : "✗ Inactive")
+            .ConfigureColumn(
+                nameof(Employee.HireDate),
+                _ => _.DateTimeFormat = "yyyy-MM-dd");
+
+        #endregion
         var book = builder.Build();
 
         await Verify(book);
@@ -172,9 +180,11 @@ public class Tests
     public async Task WorksheetName()
     {
         var employees = GetSampleEmployees();
+        #region WorksheetName
         var builder = new BookBuilder();
         builder.AddSheet(employees, "Employee Report");
 
+        #endregion
         var book = builder.Build();
 
         await Verify(book);
@@ -183,13 +193,15 @@ public class Tests
     [Test]
     public async Task ColumnWidths()
     {
-        var employees = GetSampleEmployees();
+        var data = GetSampleEmployees();
+        #region ColumnWidths
         var builder = new BookBuilder();
-        builder.AddSheet(employees)
+        builder.AddSheet(data)
             .ConfigureColumn(nameof(Employee.Name), _ => _.ColumnWidth = 25)
             .ConfigureColumn(nameof(Employee.Email), _ => _.ColumnWidth = 30)
             .ConfigureColumn(nameof(Employee.HireDate), _ => _.ColumnWidth = 15);
 
+        #endregion
         var book = builder.Build();
 
         await Verify(book);

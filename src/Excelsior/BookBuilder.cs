@@ -28,7 +28,8 @@ public class BookBuilder
             data,
             useAlternatingRowColors,
             alternateRowColor,
-            headerStyle);
+            headerStyle,
+            globalStyle);
         actions.Add(_ => converter.AddSheet(_));
         return converter;
     }

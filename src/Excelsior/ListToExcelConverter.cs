@@ -7,7 +7,8 @@ public class ListToExcelConverter<T>(
     List<T> data,
     bool useAlternatingRowColors = false,
     XLColor? alternateRowColor = null,
-    Action<IXLStyle>? headerStyle = null)
+    Action<IXLStyle>? headerStyle = null,
+    Action<IXLStyle>? globalStyle = null)
     where T : class
 {
     static ListToExcelConverter() =>
@@ -218,13 +219,13 @@ public class ListToExcelConverter<T>(
 
     void ApplyGlobalStyling(IXLWorksheet worksheet, List<PropertyInfo> properties)
     {
-        if (excelConfiguration.GlobalStyle == null)
+        if (globalStyle == null)
         {
             return;
         }
 
         var range = worksheet.Range(1, 1, data.Count + 1, properties.Count);
-        excelConfiguration.GlobalStyle(range.Style);
+        globalStyle(range.Style);
     }
 
     void AutoSizeColumns(IXLWorksheet worksheet, List<PropertyInfo> properties)

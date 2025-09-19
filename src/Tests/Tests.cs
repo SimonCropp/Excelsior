@@ -63,11 +63,11 @@ public class Tests
             useAlternatingRowColors: true,
             alternateRowColor: XLColor.LightGray,
             headerStyle: style =>
-        {
-            style.Font.Bold = true;
-            style.Font.FontColor = XLColor.White;
-            style.Fill.BackgroundColor = XLColor.DarkBlue;
-        });
+            {
+                style.Font.Bold = true;
+                style.Font.FontColor = XLColor.White;
+                style.Fill.BackgroundColor = XLColor.DarkBlue;
+            });
         var converter = builder.AddSheet(employees)
             .ConfigureColumn(nameof(Employee.Salary), config =>
             {
@@ -77,6 +77,26 @@ public class Tests
                     style.Fill.BackgroundColor = XLColor.Green;
                 };
             });
+
+        var book = converter.CreateWorkbook();
+
+        await Verify(book);
+    }
+
+    [Test]
+    public async Task GlobalStyling()
+    {
+        var employees = GetSampleEmployees();
+        var builder = new BookBuilder(
+            useAlternatingRowColors: true,
+            alternateRowColor: XLColor.LightGray,
+            globalStyle: style =>
+            {
+                style.Font.Bold = true;
+                style.Font.FontColor = XLColor.White;
+                style.Fill.BackgroundColor = XLColor.DarkBlue;
+            });
+        var converter = builder.AddSheet(employees);
 
         var book = converter.CreateWorkbook();
 
@@ -347,13 +367,13 @@ public class Tests
             useAlternatingRowColors: true,
             alternateRowColor: XLColor.AliceBlue,
             headerStyle: style =>
-        {
-            style.Font.Bold = true;
-            style.Font.FontColor = XLColor.White;
-            style.Fill.BackgroundColor = XLColor.DarkBlue;
-            style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-            style.Border.OutsideBorder = XLBorderStyleValues.Thick;
-        });
+            {
+                style.Font.Bold = true;
+                style.Font.FontColor = XLColor.White;
+                style.Fill.BackgroundColor = XLColor.DarkBlue;
+                style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                style.Border.OutsideBorder = XLBorderStyleValues.Thick;
+            });
         var converter = bookBuilder.AddSheet(employees)
             .ConfigureExcel(config =>
             {

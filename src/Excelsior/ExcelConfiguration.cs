@@ -6,5 +6,4 @@ namespace Excelsior;
 public class ExcelConfiguration
 {
     public string WorksheetName { get; set; } = "Sheet1";
-    public Action<IXLStyle>? GlobalStyle { get; set; }
 }

@@ -1,4 +1,5 @@
-﻿/// <summary>
+﻿namespace Excelsior;
+/// <summary>
 /// Generic converter to export lists to Excel with configurable column styling
 /// </summary>
 public class ListToExcelConverter<T>(List<T> data)
@@ -9,16 +10,16 @@ public class ListToExcelConverter<T>(List<T> data)
             .Where(_ => _.CanRead)
             .ToList();
 
-    Dictionary<string, ColumnConfiguration> columnConfigurations = new();
+    Dictionary<string, ColumnSettings> columnConfigurations = new();
     ExcelConfiguration excelConfiguration = new();
     static IReadOnlyList<PropertyInfo> properties;
 
     /// <summary>
     /// Configure a specific column's appearance and behavior
     /// </summary>
-    public ListToExcelConverter<T> ConfigureColumn(string property, Action<ColumnConfiguration> configuration)
+    public ListToExcelConverter<T> ConfigureColumn(string property, Action<ColumnSettings> configuration)
     {
-        var config = new ColumnConfiguration();
+        var config = new ColumnSettings();
         configuration(config);
         columnConfigurations[property] = config;
         return this;
@@ -30,7 +31,7 @@ public class ListToExcelConverter<T>(List<T> data)
     /// <returns>The converter instance for fluent chaining</returns>
     public ListToExcelConverter<T> ConfigureColumn<TProperty>(
         Expression<Func<T, TProperty>> property,
-        Action<ColumnConfiguration> configuration)
+        Action<ColumnSettings> configuration)
     {
         var propertyName = GetPropertyName(property);
         return ConfigureColumn(propertyName, configuration);

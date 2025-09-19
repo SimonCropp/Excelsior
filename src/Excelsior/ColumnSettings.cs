@@ -1,7 +1,6 @@
-/// <summary>
-/// Configuration for individual columns
-/// </summary>
-public class ColumnConfiguration
+namespace Excelsior;
+
+public class ColumnSettings
 {
     public string? HeaderText { get; set; }
     public int? Order { get; set; }

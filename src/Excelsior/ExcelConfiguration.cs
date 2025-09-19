@@ -1,3 +1,5 @@
+namespace Excelsior;
+
 /// <summary>
 /// Global Excel configuration
 /// </summary>

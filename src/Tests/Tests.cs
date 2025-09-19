@@ -321,9 +321,8 @@ public class Tests
     [Test]
     public async Task EmptyList()
     {
-        var employees = new List<Employee>();
         var builder = new BookBuilder();
-        builder.AddSheet(employees);
+        builder.AddSheet(new List<Employee>());
 
         var book = builder.Build();
 

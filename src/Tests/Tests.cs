@@ -6,7 +6,30 @@ public class Tests
     {
         #region Usage
 
-        var employees = GetSampleEmployees();
+        List<Employee> employees =
+        [
+            new()
+            {
+                Id = 1,
+                Name = "John Doe",
+                Email = "john@company.com",
+                HireDate = new(2020, 1, 15),
+                Salary = 75000m,
+                IsActive = true,
+                Status = EmployeeStatus.FullTime
+            },
+            new()
+            {
+                Id = 2,
+                Name = "Jane Smith",
+                Email = "jane@company.com",
+                HireDate = new(2019, 3, 22),
+                Salary = 120000m,
+                IsActive = true,
+                Status = EmployeeStatus.FullTime
+            },
+        ];
+
         var builder = new BookBuilder();
         builder.AddSheet(employees);
 

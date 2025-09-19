@@ -13,6 +13,9 @@ https://nuget.org/packages/Excelsior/
 
 ## Usage
 
+
+### Model
+
 Given an input class:
 
 <!-- snippet: Employee.cs -->
@@ -44,18 +47,45 @@ public class Employee
 <sup><a href='/src/Tests/Sample/Employee.cs#L1-L22' title='Snippet source file'>snippet source</a> | <a href='#snippet-Employee.cs' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
+
+### Builder
+
 <!-- snippet: Usage -->
 <a id='snippet-Usage'></a>
 ```cs
-var employees = GetSampleEmployees();
+List<Employee> employees =
+[
+    new()
+    {
+        Id = 1,
+        Name = "John Doe",
+        Email = "john@company.com",
+        HireDate = new(2020, 1, 15),
+        Salary = 75000m,
+        IsActive = true,
+        Status = EmployeeStatus.FullTime
+    },
+    new()
+    {
+        Id = 2,
+        Name = "Jane Smith",
+        Email = "jane@company.com",
+        HireDate = new(2019, 3, 22),
+        Salary = 120000m,
+        IsActive = true,
+        Status = EmployeeStatus.FullTime
+    },
+];
+
 var builder = new BookBuilder();
 builder.AddSheet(employees);
 
 var book = builder.Build();
 ```
-<sup><a href='/src/Tests/Tests.cs#L7-L15' title='Snippet source file'>snippet source</a> | <a href='#snippet-Usage' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Tests/Tests.cs#L7-L38' title='Snippet source file'>snippet source</a> | <a href='#snippet-Usage' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
-Results in:
+
+### Result:
 
 <img src="/src/simple.png">

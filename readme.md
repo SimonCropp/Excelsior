@@ -262,8 +262,6 @@ For complex types, by default is to render via `.ToString()`.
 
 #### Models
 
-The following are records and will have a custom `.ToString()`.
-
 <!-- snippet: ComplexTypeModels -->
 <a id='snippet-ComplexTypeModels'></a>
 ```cs
@@ -329,20 +327,14 @@ List<Person> data =
 ];
 
 BookBuilder.RenderFor<Address>(
-    _ => $"""
-          {_.Number}
-          {_.Street}
-          {_.State}
-          {_.City}
-          {_.PostCode}
-          """);
+    _ => $"{_.Number}, {_.Street}, {_.State}, {_.City}, {_.PostCode}");
 
 var builder = new BookBuilder();
 builder.AddSheet(data);
 
 var book = builder.Build();
 ```
-<sup><a href='/src/Tests/ComplexTypeWithCustomRender.cs#L16-L43' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeWithCustomRender' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Tests/ComplexTypeWithCustomRender.cs#L16-L37' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeWithCustomRender' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 

@@ -231,7 +231,7 @@ builder.AddSheet(data)
         _ => _.CustomFormatter = value => $"📧 {value}")
     .ConfigureColumn(
         _ => _.IsActive,
-        _ => _.BooleanDisplayFormat = active => active ? "✓ Active" : "✗ Inactive")
+        _ => _.CustomFormatter = active => active ? "✓ Active" : "✗ Inactive")
     .ConfigureColumn(
         _ => _.HireDate,
         _ => _.DateTimeFormat = "yyyy-MM-dd");

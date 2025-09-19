@@ -8,14 +8,14 @@ public class BookBuilder(
 {
     List<Action<XLWorkbook>> actions = new();
 
-    public SheetBuilder<T> AddSheet<T>(List<T> data, string? name = null)
+    public SheetBuilder<T> AddSheet<T>(IEnumerable<T> data, string? name = null)
         where T : class
     {
         name ??= $"Sheet{actions.Count + 1}";
 
         var converter = new SheetBuilder<T>(
             name,
-            data,
+            data.ToList(),
             useAlternatingRowColors,
             alternateRowColor,
             headerStyle,

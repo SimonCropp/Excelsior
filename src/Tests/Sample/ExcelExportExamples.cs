@@ -54,7 +54,7 @@
                 _ => _.IsActive,
                 config =>
                 {
-                    config.BooleanDisplayFormat = active => active ? "✓ Yes" : "✗ No";
+                    config.CustomFormatter = active => active ? "✓ Yes" : "✗ No";
                     config.DataCellStyle = style =>
                     {
                         style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;

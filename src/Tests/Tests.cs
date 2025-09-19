@@ -190,7 +190,7 @@ public class Tests
                 _ => _.CustomFormatter = value => $"📧 {value}")
             .ConfigureColumn(
                 _ => _.IsActive,
-                _ => _.BooleanDisplayFormat = active => active ? "✓ Active" : "✗ Inactive")
+                _ => _.CustomFormatter = active => active ? "✓ Active" : "✗ Inactive")
             .ConfigureColumn(
                 _ => _.HireDate,
                 _ => _.DateTimeFormat = "yyyy-MM-dd");
@@ -285,7 +285,7 @@ public class Tests
         builder.AddSheet(employees)
             .ConfigureColumn(
                 _ => _.Status,
-                _ => _.EnumDisplayFormat = enumValue => $"Status: {enumValue}");
+                _ => _.CustomFormatter = enumValue => $"Status: {enumValue}");
 
         var book = builder.Build();
 
@@ -461,7 +461,7 @@ public class Tests
                 _ => _.IsActive,
                 config =>
                 {
-                    config.BooleanDisplayFormat = active => active ? "✓ Active" : "✗ Inactive";
+                    config.CustomFormatter = active => active ? "✓ Active" : "✗ Inactive";
                     config.DataCellStyle = style =>
                     {
                         style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;

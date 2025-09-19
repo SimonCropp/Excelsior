@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace Excelsior;
+﻿namespace Excelsior;
 
 public class SheetBuilder<T>(
     string name,
@@ -30,7 +28,17 @@ public class SheetBuilder<T>(
         var name = GetPropertyName(property);
         var config = new ColumnSettings<TProperty>();
         configuration(config);
-        columnConfigurations[name] = new ColumnSettings
+        Func<object, string>? customFormatter;
+        if (config.CustomFormatter == null)
+        {
+            customFormatter = null;
+        }
+        else
+        {
+            customFormatter = o => config.CustomFormatter.Invoke((TProperty) o);
+        }
+
+        columnConfigurations[name] = new()
         {
             HeaderText = config.HeaderText,
             Order = config.Order,
@@ -41,9 +49,7 @@ public class SheetBuilder<T>(
             DateTimeFormat = config.DateTimeFormat,
             NumberFormat = config.NumberFormat,
             NullDisplayText = config.NullDisplayText,
-            CustomFormatter = config.CustomFormatter,
-            BooleanDisplayFormat = config.BooleanDisplayFormat,
-            EnumDisplayFormat = config.EnumDisplayFormat,
+            CustomFormatter = customFormatter,
         } ;
         return this;
     }
@@ -105,7 +111,7 @@ public class SheetBuilder<T>(
 
                 var value = property.GetValue(item);
                 SetCellValue(cell, value, property);
-                ApplyDataCellStyling(cell, property, rowIndex);
+                ApplyDataCellStyling(cell, property, rowIndex, value);
             }
         }
     }
@@ -154,11 +160,11 @@ public class SheetBuilder<T>(
                     break;
 
                 case bool boolean:
-                    cell.Value = config?.BooleanDisplayFormat?.Invoke(boolean) ?? boolean.ToString();
+                    cell.Value = config?.CustomFormatter?.Invoke(boolean) ?? boolean.ToString();
                     break;
 
                 case Enum enumValue:
-                    cell.Value = config?.EnumDisplayFormat?.Invoke(enumValue) ?? GetEnumDisplayText(enumValue);
+                    cell.Value = config?.CustomFormatter?.Invoke(enumValue) ?? GetEnumDisplayText(enumValue);
                     break;
 
                 default:
@@ -179,12 +185,14 @@ public class SheetBuilder<T>(
         config?.HeaderStyle?.Invoke(cell.Style);
     }
 
-    void ApplyDataCellStyling(IXLCell cell, PropertyInfo property, int rowIndex)
+    void ApplyDataCellStyling(IXLCell cell, PropertyInfo property, int rowIndex, object? value)
     {
+        var style = cell.Style;
+
         // Apply alternating row colors
         if (useAlternatingRowColors && rowIndex % 2 == 1)
         {
-            cell.Style.Fill.BackgroundColor = alternateRowColor;
+            style.Fill.BackgroundColor = alternateRowColor;
         }
 
         var config = columnConfigurations.GetValueOrDefault(property.Name);
@@ -194,13 +202,8 @@ public class SheetBuilder<T>(
             return;
         }
 
-        config.DataCellStyle?.Invoke(cell.Style);
-
-        if (config.ConditionalStyling != null)
-        {
-            var value = property.GetValue(data[rowIndex]);
-            config.ConditionalStyling(cell.Style, value);
-        }
+        config.DataCellStyle?.Invoke(style);
+        config.ConditionalStyling?.Invoke(style, value);
     }
 
     void ApplyGlobalStyling(IXLWorksheet worksheet, List<PropertyInfo> properties)

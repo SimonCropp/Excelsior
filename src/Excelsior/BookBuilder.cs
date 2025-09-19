@@ -30,17 +30,17 @@ public class BookBuilder
 
     public void ExportToStream(Stream stream)
     {
-        using var workbook = CreateWorkbook();
-        workbook.SaveAs(stream);
+        using var book = CreateWorkbook();
+        book.SaveAs(stream);
     }
 
     public XLWorkbook CreateWorkbook()
     {
-        var workbook = new XLWorkbook();
+        var book = new XLWorkbook();
         foreach (var action in actions)
         {
-            action(workbook);
+            action(book);
         }
-        return workbook;
+        return book;
     }
 }

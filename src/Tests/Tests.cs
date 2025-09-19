@@ -8,9 +8,9 @@ public class Tests
         var builder = new BookBuilder();
         builder.AddSheet(employees);
 
-        var workbook = builder.CreateWorkbook();
+        var book = builder.CreateWorkbook();
 
-        await Verify(workbook);
+        await Verify(book);
     }
 
     [Test]
@@ -19,9 +19,9 @@ public class Tests
         var employees = GetSampleEmployees();
         var converter = new ListToExcelConverter<Employee>(employees);
 
-        var workbook = converter.CreateWorkbook();
+        var book = converter.CreateWorkbook();
 
-        await Verify(workbook);
+        await Verify(book);
     }
 
     [Test]
@@ -36,9 +36,9 @@ public class Tests
                 nameof(Employee.Email),
                 _ => _.HeaderText = "Email Address");
 
-        var workbook = converter.CreateWorkbook();
+        var book = converter.CreateWorkbook();
 
-        await Verify(workbook);
+        await Verify(book);
     }
 
     [Test]
@@ -50,9 +50,9 @@ public class Tests
             .ConfigureColumn(nameof(Employee.Name), _ => _.Order = 2)
             .ConfigureColumn(nameof(Employee.Salary), _ => _.Order = 3);
 
-        var workbook = converter.CreateWorkbook();
+        var book = converter.CreateWorkbook();
 
-        await Verify(workbook);
+        await Verify(book);
     }
 
     [Test]
@@ -80,9 +80,9 @@ public class Tests
                 };
             });
 
-        var workbook = converter.CreateWorkbook();
+        var book = converter.CreateWorkbook();
 
-        await Verify(workbook);
+        await Verify(book);
     }
 
     [Test]
@@ -112,9 +112,9 @@ public class Tests
                 };
             });
 
-        var workbook = converter.CreateWorkbook();
+        var book = converter.CreateWorkbook();
 
-        await Verify(workbook);
+        await Verify(book);
     }
 
     [Test]
@@ -126,9 +126,9 @@ public class Tests
             .ConfigureColumn(nameof(Employee.IsActive), _ => _.BooleanDisplayFormat = active => active ? "✓ Active" : "✗ Inactive")
             .ConfigureColumn(nameof(Employee.HireDate), _ => _.DateTimeFormat = "yyyy-MM-dd");
 
-        var workbook = converter.CreateWorkbook();
+        var book = converter.CreateWorkbook();
 
-        await Verify(workbook);
+        await Verify(book);
     }
 
     [Test]
@@ -138,9 +138,9 @@ public class Tests
         var converter = new ListToExcelConverter<Employee>(employees)
             .ConfigureExcel(_ => _.WorksheetName = "Employee Report");
 
-        var workbook = converter.CreateWorkbook();
+        var book = converter.CreateWorkbook();
 
-        await Verify(workbook);
+        await Verify(book);
     }
 
     [Test]
@@ -152,9 +152,9 @@ public class Tests
             .ConfigureColumn(nameof(Employee.Email), _ => _.ColumnWidth = 30)
             .ConfigureColumn(nameof(Employee.HireDate), _ => _.ColumnWidth = 15);
 
-        var workbook = converter.CreateWorkbook();
+        var book = converter.CreateWorkbook();
 
-        await Verify(workbook);
+        await Verify(book);
     }
 
     [Test]
@@ -189,11 +189,9 @@ public class Tests
             .ConfigureColumn(nameof(EmployeeWithNulls.Name), _ => _.NullDisplayText = "[No Name]")
             .ConfigureColumn(nameof(EmployeeWithNulls.Email), _ => _.NullDisplayText = "[No Email]");
 
-        // Act
-        var workbook = converter.CreateWorkbook();
+        var book = converter.CreateWorkbook();
 
-        // Assert
-        await Verify(workbook);
+        await Verify(book);
     }
 
     [Test]
@@ -203,15 +201,14 @@ public class Tests
         var converter = new ListToExcelConverter<Employee>(employees)
             .ConfigureColumn(nameof(Employee.Status), _ => _.EnumDisplayFormat = enumValue => $"Status: {enumValue}");
 
-        var workbook = converter.CreateWorkbook();
+        var book = converter.CreateWorkbook();
 
-        await Verify(workbook);
+        await Verify(book);
     }
 
     [Test]
     public async Task TypeSafeConfiguration()
     {
-        // Arrange
         var employees = GetSampleEmployees();
         var converter = new ListToExcelConverter<Employee>(employees)
             .ConfigureColumn(_ => _.Name, _ =>
@@ -225,9 +222,9 @@ public class Tests
                 _.HeaderStyle = _ => _.Font.FontColor = XLColor.Green;
             });
 
-        var workbook = converter.CreateWorkbook();
+        var book = converter.CreateWorkbook();
 
-        await Verify(workbook);
+        await Verify(book);
     }
 
     [Test]
@@ -236,9 +233,9 @@ public class Tests
         var emptyEmployees = new List<Employee>();
         var converter = new ListToExcelConverter<Employee>(emptyEmployees);
 
-        var workbook = converter.CreateWorkbook();
+        var book = converter.CreateWorkbook();
 
-        await Verify(workbook);
+        await Verify(book);
     }
 
     [Test]
@@ -266,9 +263,9 @@ public class Tests
 
         var converter = new ListToExcelConverter<Product>(products);
 
-        var workbook = converter.CreateWorkbook();
+        var book = converter.CreateWorkbook();
 
-        await Verify(workbook);
+        await Verify(book);
     }
 
     [Test]
@@ -277,9 +274,9 @@ public class Tests
         var employees = GetSampleEmployees();
         var converter = new ListToExcelConverter<Employee>(employees);
 
-        using var memoryStream = new MemoryStream();
-        Assert.DoesNotThrow(() => converter.ExportToStream(memoryStream));
-        Assert.That(memoryStream.Length, Is.GreaterThan(0));
+        using var stream = new MemoryStream();
+        Assert.DoesNotThrow(() => converter.ExportToStream(stream));
+        Assert.That(stream.Length, Is.GreaterThan(0));
     }
 
     [Test]

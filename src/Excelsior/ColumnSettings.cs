@@ -11,7 +11,7 @@ class ColumnSettings
     public required string? DateTimeFormat { get; init; }
     public required string? NumberFormat { get; init; }
     public required string? NullDisplayText { get; init; }
-    public required Func<object, string>? CustomFormatter { get; init; }
+    public required Func<object, string>? Render { get; init; }
 }
 
 public class ColumnSettings<T>
@@ -25,5 +25,5 @@ public class ColumnSettings<T>
     public string? DateTimeFormat { get; set; }
     public string? NumberFormat { get; set; }
     public string? NullDisplayText { get; set; }
-    public Func<T, string>? CustomFormatter { get; set; }
+    public Func<T, string>? Render { get; set; }
 }

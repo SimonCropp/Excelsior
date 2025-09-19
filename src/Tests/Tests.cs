@@ -177,20 +177,20 @@ public class Tests
     }
 
     [Test]
-    public async Task CustomFormatters()
+    public async Task Render()
     {
         var data = GetSampleEmployees();
 
-        #region CustomFormatters
+        #region CustomRender
 
         var builder = new BookBuilder();
         builder.AddSheet(data)
             .Column(
                 _ => _.Email,
-                _ => _.CustomFormatter = value => $"📧 {value}")
+                _ => _.Render = value => $"📧 {value}")
             .Column(
                 _ => _.IsActive,
-                _ => _.CustomFormatter = active => active ? "✓ Active" : "✗ Inactive")
+                _ => _.Render = active => active ? "✓ Active" : "✗ Inactive")
             .Column(
                 _ => _.HireDate,
                 _ => _.DateTimeFormat = "yyyy-MM-dd");
@@ -285,7 +285,7 @@ public class Tests
         builder.AddSheet(employees)
             .Column(
                 _ => _.Status,
-                _ => _.CustomFormatter = enumValue => $"Status: {enumValue}");
+                _ => _.Render = enumValue => $"Status: {enumValue}");
 
         var book = builder.Build();
 
@@ -460,7 +460,7 @@ public class Tests
                 _ => _.IsActive,
                 config =>
                 {
-                    config.CustomFormatter = active => active ? "✓ Active" : "✗ Inactive";
+                    config.Render = active => active ? "✓ Active" : "✗ Inactive";
                     config.DataCellStyle = style =>
                     {
                         style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;

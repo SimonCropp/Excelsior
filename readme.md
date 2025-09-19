@@ -204,24 +204,24 @@ builder.AddSheet(employees)
 <!-- endSnippet -->
 
 
-### CustomFormatters
+### Render
 
-<!-- snippet: CustomFormatters -->
-<a id='snippet-CustomFormatters'></a>
+<!-- snippet: CustomRender -->
+<a id='snippet-CustomRender'></a>
 ```cs
 var builder = new BookBuilder();
 builder.AddSheet(data)
     .Column(
         _ => _.Email,
-        _ => _.CustomFormatter = value => $"📧 {value}")
+        _ => _.Render = value => $"📧 {value}")
     .Column(
         _ => _.IsActive,
-        _ => _.CustomFormatter = active => active ? "✓ Active" : "✗ Inactive")
+        _ => _.Render = active => active ? "✓ Active" : "✗ Inactive")
     .Column(
         _ => _.HireDate,
         _ => _.DateTimeFormat = "yyyy-MM-dd");
 ```
-<sup><a href='/src/Tests/Tests.cs#L184-L198' title='Snippet source file'>snippet source</a> | <a href='#snippet-CustomFormatters' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Tests/Tests.cs#L184-L198' title='Snippet source file'>snippet source</a> | <a href='#snippet-CustomRender' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 

@@ -28,14 +28,14 @@ public class SheetBuilder<T>(
         var name = GetPropertyName(property);
         var config = new ColumnSettings<TProperty>();
         configuration(config);
-        Func<object, string>? customFormatter;
-        if (config.CustomFormatter == null)
+        Func<object, string>? render;
+        if (config.Render == null)
         {
-            customFormatter = null;
+            render = null;
         }
         else
         {
-            customFormatter = o => config.CustomFormatter.Invoke((TProperty) o);
+            render = o => config.Render.Invoke((TProperty) o);
         }
 
         columnConfigurations[name] = new()
@@ -49,7 +49,7 @@ public class SheetBuilder<T>(
             DateTimeFormat = config.DateTimeFormat,
             NumberFormat = config.NumberFormat,
             NullDisplayText = config.NullDisplayText,
-            CustomFormatter = customFormatter,
+            Render = render,
         } ;
         return this;
     }
@@ -128,9 +128,9 @@ public class SheetBuilder<T>(
             var config = columnConfigurations.GetValueOrDefault(property.Name);
 
             // Apply custom formatter if provided
-            if (config?.CustomFormatter != null)
+            if (config?.Render != null)
             {
-                cell.Value = config.CustomFormatter(value);
+                cell.Value = config.Render(value);
                 return;
             }
 
@@ -160,11 +160,11 @@ public class SheetBuilder<T>(
                     break;
 
                 case bool boolean:
-                    cell.Value = config?.CustomFormatter?.Invoke(boolean) ?? boolean.ToString();
+                    cell.Value = config?.Render?.Invoke(boolean) ?? boolean.ToString();
                     break;
 
                 case Enum enumValue:
-                    cell.Value = config?.CustomFormatter?.Invoke(enumValue) ?? GetEnumDisplayText(enumValue);
+                    cell.Value = config?.Render?.Invoke(enumValue) ?? GetEnumDisplayText(enumValue);
                     break;
 
                 default:

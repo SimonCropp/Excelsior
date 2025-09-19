@@ -1,0 +1,7 @@
+﻿Employee ID,Full Name,Email Address,Hire Date,Annual Salary,Department,Is Active,Status
+1001,Sarah Connor,s.connor@techcorp.com,2018-03-15,125000,Engineering,✓ Active,Full Time
+1002,John Matrix,j.matrix@techcorp.com,2020-07-22,95000,Product,✓ Active,Full Time
+1003,Ellen Ripley,e.ripley@techcorp.com,2019-11-08,110000,Security,✓ Active,Full Time
+1004,Dutch Schaefer,d.schaefer@techcorp.com,2021-02-14,75000,Operations,✓ Active,Contract
+1005,Kyle Reese,k.reese@techcorp.com,2022-06-30,45000,Support,✗ Inactive,Part Time
+1006,Roy Batty,r.batty@techcorp.com,2017-12-01,140000,Research,✗ Inactive,Terminated

@@ -96,7 +96,7 @@ public class ListToExcelConverter<T>(List<T> data)
             .ToList();
     }
 
-    private void CreateHeaders(IXLWorksheet worksheet, List<PropertyInfo> properties)
+    void CreateHeaders(IXLWorksheet worksheet, List<PropertyInfo> properties)
     {
         for (var i = 0; i < properties.Count; i++)
         {

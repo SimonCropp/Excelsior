@@ -298,15 +298,15 @@ public class Tests
     }
 
     [Test]
-    public void ToStream()
+    public Task ToStream()
     {
         var employees = GetSampleEmployees();
         var builder = new BookBuilder();
         builder.AddSheet(employees);
 
-        using var stream = new MemoryStream();
-        Assert.DoesNotThrow(() => builder.ExportToStream(stream));
-        Assert.That(stream.Length, Is.GreaterThan(0));
+        var stream = new MemoryStream();
+        builder.ExportToStream(stream);
+        return Verify(stream, extension: "xlsx");
     }
 
     [Test]

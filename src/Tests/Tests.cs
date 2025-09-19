@@ -159,8 +159,7 @@ public class Tests
     {
         var employees = GetSampleEmployees();
         var builder = new BookBuilder();
-        var converter = builder.AddSheet(employees)
-            .ConfigureExcel(_ => _.WorksheetName = "Employee Report");
+        var converter = builder.AddSheet(employees, "Employee Report");
 
         var book = converter.CreateWorkbook();
 
@@ -388,11 +387,7 @@ public class Tests
                 style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
                 style.Border.OutsideBorder = XLBorderStyleValues.Thick;
             });
-        var converter = bookBuilder.AddSheet(employees)
-            .ConfigureExcel(config =>
-            {
-                config.WorksheetName = "Employee Report 2024";
-            })
+        var converter = bookBuilder.AddSheet(employees,"Employee Report 2024")
             .ConfigureColumn(nameof(Employee.Salary), config =>
             {
                 config.NumberFormat = "$#,##0.00";

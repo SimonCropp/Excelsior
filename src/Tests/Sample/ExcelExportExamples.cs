@@ -25,11 +25,7 @@
                 style.Fill.BackgroundColor = XLColor.DarkBlue;
                 style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             });
-        var converter = builder.AddSheet(employees)
-            .ConfigureExcel(config =>
-            {
-                config.WorksheetName = "Employee Report";
-            })
+        var converter = builder.AddSheet(employees,"Employee Report")
             .ConfigureColumn(nameof(Employee.Salary), config =>
             {
                 config.NumberFormat = "#,##0.00";

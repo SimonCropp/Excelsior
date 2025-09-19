@@ -4,11 +4,12 @@
 /// Generic converter to export lists to Excel with configurable column styling
 /// </summary>
 public class ListToExcelConverter<T>(
+    string name,
     List<T> data,
-    bool useAlternatingRowColors = false,
-    XLColor? alternateRowColor = null,
-    Action<IXLStyle>? headerStyle = null,
-    Action<IXLStyle>? globalStyle = null)
+    bool useAlternatingRowColors,
+    XLColor? alternateRowColor,
+    Action<IXLStyle>? headerStyle,
+    Action<IXLStyle>? globalStyle)
     where T : class
 {
     static ListToExcelConverter() =>
@@ -17,7 +18,6 @@ public class ListToExcelConverter<T>(
             .ToList();
 
     Dictionary<string, ColumnSettings> columnConfigurations = new();
-    ExcelConfiguration excelConfiguration = new();
     static IReadOnlyList<PropertyInfo> properties;
 
     /// <summary>
@@ -43,13 +43,6 @@ public class ListToExcelConverter<T>(
         return ConfigureColumn(propertyName, configuration);
     }
 
-    /// <returns>The converter instance for fluent chaining</returns>
-    public ListToExcelConverter<T> ConfigureExcel(Action<ExcelConfiguration> configuration)
-    {
-        configuration(excelConfiguration);
-        return this;
-    }
-
     public void ExportToStream(Stream stream)
     {
         using var workbook = CreateWorkbook();
@@ -65,7 +58,7 @@ public class ListToExcelConverter<T>(
 
     internal void AddSheet(XLWorkbook workbook)
     {
-        var worksheet = workbook.Worksheets.Add(excelConfiguration.WorksheetName);
+        var worksheet = workbook.Worksheets.Add(name);
 
         var properties = GetProperties();
 

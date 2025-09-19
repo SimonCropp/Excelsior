@@ -24,11 +24,10 @@ public class BookBuilder
     public ListToExcelConverter<T> AddSheet<T>(List<T> data, string? name = null)
         where T : class
     {
-        // if (name == null)
-        // {
-        //     name = "Sheet" + actions.Count;
-        // }
+        name ??= $"Sheet{actions.Count + 1}";
+
         var converter = new ListToExcelConverter<T>(
+            name,
             data,
             useAlternatingRowColors,
             alternateRowColor,

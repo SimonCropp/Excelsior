@@ -34,13 +34,7 @@ public class ComplexTypeWithInheritedCustomRender
         ];
 
         BookBuilder.RenderFor<IAddress>(
-            _ => $"""
-                  {_.Number}
-                  {_.Street}
-                  {_.State}
-                  {_.City}
-                  {_.PostCode}
-                  """);
+            _ => $"{_.Number}, {_.Street}, {_.State}, {_.City}, {_.PostCode}");
 
         var builder = new BookBuilder();
         builder.AddSheet(data);

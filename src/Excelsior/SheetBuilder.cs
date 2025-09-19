@@ -14,7 +14,7 @@ public class SheetBuilder<T>(
             .Where(_ => _.CanRead)
             .ToList();
 
-    Dictionary<string, ColumnSettings> columnConfigurations = new();
+    Dictionary<string, ColumnSettings> settings = [];
     static IReadOnlyList<PropertyInfo> properties;
 
     /// <summary>
@@ -38,7 +38,7 @@ public class SheetBuilder<T>(
             render = o => config.Render.Invoke((TProperty) o);
         }
 
-        columnConfigurations[name] = new()
+        settings[name] = new()
         {
             HeaderText = config.HeaderText,
             Order = config.Order,
@@ -73,7 +73,7 @@ public class SheetBuilder<T>(
         properties
             .OrderBy(_ =>
             {
-                var config = columnConfigurations.GetValueOrDefault(_.Name);
+                var config = settings.GetValueOrDefault(_.Name);
                 return config?.Order ?? GetDisplayOrder(_) ?? int.MaxValue;
             })
             .ToList();
@@ -120,12 +120,12 @@ public class SheetBuilder<T>(
     {
         if (value == null)
         {
-            var config = columnConfigurations.GetValueOrDefault(property.Name);
+            var config = settings.GetValueOrDefault(property.Name);
             cell.Value = config?.NullDisplayText ?? "";
         }
         else
         {
-            var config = columnConfigurations.GetValueOrDefault(property.Name);
+            var config = settings.GetValueOrDefault(property.Name);
 
             // Apply custom formatter if provided
             if (config?.Render != null)
@@ -182,7 +182,7 @@ public class SheetBuilder<T>(
 
     void ApplyHeaderStyling(IXLCell cell, PropertyInfo property)
     {
-        var config = columnConfigurations.GetValueOrDefault(property.Name);
+        var config = settings.GetValueOrDefault(property.Name);
 
         // Apply global header styling
         headerStyle?.Invoke(cell.Style);
@@ -201,7 +201,7 @@ public class SheetBuilder<T>(
             style.Fill.BackgroundColor = alternateRowColor;
         }
 
-        var config = columnConfigurations.GetValueOrDefault(property.Name);
+        var config = settings.GetValueOrDefault(property.Name);
 
         if (config == null)
         {
@@ -231,7 +231,7 @@ public class SheetBuilder<T>(
         for (var i = 0; i < properties.Count; i++)
         {
             var property = properties[i];
-            var config = columnConfigurations.GetValueOrDefault(property.Name);
+            var config = settings.GetValueOrDefault(property.Name);
 
             if (config?.ColumnWidth.HasValue == true)
             {
@@ -242,7 +242,7 @@ public class SheetBuilder<T>(
 
     string GetHeaderText(PropertyInfo property)
     {
-        var config = columnConfigurations.GetValueOrDefault(property.Name);
+        var config = settings.GetValueOrDefault(property.Name);
         if (!string.IsNullOrEmpty(config?.HeaderText))
             return config.HeaderText;
 

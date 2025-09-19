@@ -2,26 +2,17 @@
 public class Tests
 {
     [Test]
-    public async Task BookBuilder()
-    {
-        var employees = GetSampleEmployees();
-        var builder = new BookBuilder();
-        builder.AddSheet(employees);
-
-        var book = builder.Build();
-
-        await Verify(book);
-    }
-
-    [Test]
     public async Task Simple()
     {
+        #region Usage
+
         var employees = GetSampleEmployees();
         var builder = new BookBuilder();
         builder.AddSheet(employees);
 
         var book = builder.Build();
 
+        #endregion
         await Verify(book);
     }
 

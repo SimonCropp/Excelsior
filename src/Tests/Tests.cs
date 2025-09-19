@@ -50,10 +50,10 @@ public class Tests
         var builder = new BookBuilder();
         builder.AddSheet(data)
             .ConfigureColumn(
-                nameof(Employee.Name),
+                _ => _.Name,
                 _ => _.HeaderText = "Employee Name")
             .ConfigureColumn(
-                nameof(Employee.Email),
+                _ => _.Email,
                 _ => _.HeaderText = "Email Address");
 
         var book = builder.Build();
@@ -72,9 +72,9 @@ public class Tests
 
         var builder = new BookBuilder();
         builder.AddSheet(data)
-            .ConfigureColumn(nameof(Employee.Email), _ => _.Order = 1)
-            .ConfigureColumn(nameof(Employee.Name), _ => _.Order = 2)
-            .ConfigureColumn(nameof(Employee.Salary), _ => _.Order = 3);
+            .ConfigureColumn(_ => _.Email, _ => _.Order = 1)
+            .ConfigureColumn(_ => _.Name, _ => _.Order = 2)
+            .ConfigureColumn(_ => _.Salary, _ => _.Order = 3);
 
         #endregion
 
@@ -139,7 +139,7 @@ public class Tests
         var builder = new BookBuilder();
         builder.AddSheet(employees)
             .ConfigureColumn(
-                nameof(Employee.Salary),
+                _ => _.Salary,
                 config =>
                 {
                     config.ConditionalStyling = (style, value) =>
@@ -152,7 +152,7 @@ public class Tests
                     };
                 })
             .ConfigureColumn(
-                nameof(Employee.IsActive),
+                _ => _.IsActive,
                 config =>
                 {
                     config.ConditionalStyling = (style, value) =>
@@ -181,13 +181,13 @@ public class Tests
         var builder = new BookBuilder();
         builder.AddSheet(data)
             .ConfigureColumn(
-                nameof(Employee.Email),
+                _ => _.Email,
                 _ => _.CustomFormatter = value => $"📧 {value}")
             .ConfigureColumn(
-                nameof(Employee.IsActive),
+                _ => _.IsActive,
                 _ => _.BooleanDisplayFormat = active => active ? "✓ Active" : "✗ Inactive")
             .ConfigureColumn(
-                nameof(Employee.HireDate),
+                _ => _.HireDate,
                 _ => _.DateTimeFormat = "yyyy-MM-dd");
 
         #endregion
@@ -223,9 +223,9 @@ public class Tests
 
         var builder = new BookBuilder();
         builder.AddSheet(data)
-            .ConfigureColumn(nameof(Employee.Name), _ => _.ColumnWidth = 25)
-            .ConfigureColumn(nameof(Employee.Email), _ => _.ColumnWidth = 30)
-            .ConfigureColumn(nameof(Employee.HireDate), _ => _.ColumnWidth = 15);
+            .ConfigureColumn(_ => _.Name, _ => _.ColumnWidth = 25)
+            .ConfigureColumn(_ => _.Email, _ => _.ColumnWidth = 30)
+            .ConfigureColumn(_ => _.HireDate, _ => _.ColumnWidth = 15);
 
         #endregion
 
@@ -264,8 +264,8 @@ public class Tests
 
         var builder = new BookBuilder();
         builder.AddSheet(employees)
-            .ConfigureColumn(nameof(EmployeeWithNulls.Name), _ => _.NullDisplayText = "[No Name]")
-            .ConfigureColumn(nameof(EmployeeWithNulls.Email), _ => _.NullDisplayText = "[No Email]");
+            .ConfigureColumn(_ => _.Name, _ => _.NullDisplayText = "[No Name]")
+            .ConfigureColumn(_ => _.Email, _ => _.NullDisplayText = "[No Email]");
 
         var book = builder.Build();
 
@@ -278,7 +278,9 @@ public class Tests
         var employees = GetSampleEmployees();
         var builder = new BookBuilder();
         builder.AddSheet(employees)
-            .ConfigureColumn(nameof(Employee.Status), _ => _.EnumDisplayFormat = enumValue => $"Status: {enumValue}");
+            .ConfigureColumn(
+                _ => _.Status,
+                _ => _.EnumDisplayFormat = enumValue => $"Status: {enumValue}");
 
         var book = builder.Build();
 
@@ -366,21 +368,6 @@ public class Tests
         return Verify(stream, extension: "xlsx");
     }
 
-    [Test]
-    public void InvalidPropertyName()
-    {
-        var employees = GetSampleEmployees();
-        var builder = new BookBuilder();
-        var converter = builder.AddSheet(employees);
-
-        Assert.DoesNotThrow(() =>
-            converter.ConfigureColumn("NonExistentProperty", _ =>
-            {
-                _.HeaderText = "Test";
-            })
-        );
-    }
-
     static List<Employee> GetSampleEmployees() =>
     [
         new()
@@ -442,7 +429,7 @@ public class Tests
             });
         builder.AddSheet(employees, "Employee Report 2024")
             .ConfigureColumn(
-                nameof(Employee.Salary),
+                _ => _.Salary,
                 config =>
                 {
                     config.NumberFormat = "$#,##0.00";
@@ -462,14 +449,14 @@ public class Tests
                     };
                 })
             .ConfigureColumn(
-                nameof(Employee.HireDate),
+                _ => _.HireDate,
                 config =>
                 {
                     config.DateTimeFormat = "MMM dd, yyyy";
                     config.ColumnWidth = 15;
                 })
             .ConfigureColumn(
-                nameof(Employee.IsActive),
+                _ => _.IsActive,
                 config =>
                 {
                     config.BooleanDisplayFormat = active => active ? "✓ Active" : "✗ Inactive";
@@ -479,7 +466,7 @@ public class Tests
                     };
                 })
             .ConfigureColumn(
-                nameof(Employee.Status),
+                _ => _.Status,
                 config =>
                 {
                     config.ConditionalStyling = (style, value) =>

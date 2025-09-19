@@ -99,10 +99,10 @@ var book = builder.Build();
 var builder = new BookBuilder();
 builder.AddSheet(data)
     .ConfigureColumn(
-        nameof(Employee.Name),
+        _ => _.Name,
         _ => _.HeaderText = "Employee Name")
     .ConfigureColumn(
-        nameof(Employee.Email),
+        _ => _.Email,
         _ => _.HeaderText = "Email Address");
 
 var book = builder.Build();
@@ -118,9 +118,9 @@ var book = builder.Build();
 ```cs
 var builder = new BookBuilder();
 builder.AddSheet(data)
-    .ConfigureColumn(nameof(Employee.Email), _ => _.Order = 1)
-    .ConfigureColumn(nameof(Employee.Name), _ => _.Order = 2)
-    .ConfigureColumn(nameof(Employee.Salary), _ => _.Order = 3);
+    .ConfigureColumn(_ => _.Email, _ => _.Order = 1)
+    .ConfigureColumn(_ => _.Name, _ => _.Order = 2)
+    .ConfigureColumn(_ => _.Salary, _ => _.Order = 3);
 ```
 <sup><a href='/src/Tests/Tests.cs#L71-L79' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnOrdering' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
@@ -133,9 +133,9 @@ builder.AddSheet(data)
 ```cs
 var builder = new BookBuilder();
 builder.AddSheet(data)
-    .ConfigureColumn(nameof(Employee.Email), _ => _.Order = 1)
-    .ConfigureColumn(nameof(Employee.Name), _ => _.Order = 2)
-    .ConfigureColumn(nameof(Employee.Salary), _ => _.Order = 3);
+    .ConfigureColumn(_ => _.Email, _ => _.Order = 1)
+    .ConfigureColumn(_ => _.Name, _ => _.Order = 2)
+    .ConfigureColumn(_ => _.Salary, _ => _.Order = 3);
 ```
 <sup><a href='/src/Tests/Tests.cs#L71-L79' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnOrdering' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
@@ -185,7 +185,7 @@ builder.AddSheet(data);
 var builder = new BookBuilder();
 builder.AddSheet(employees)
     .ConfigureColumn(
-        nameof(Employee.Salary),
+        _ => _.Salary,
         config =>
         {
             config.ConditionalStyling = (style, value) =>
@@ -198,7 +198,7 @@ builder.AddSheet(employees)
             };
         })
     .ConfigureColumn(
-        nameof(Employee.IsActive),
+        _ => _.IsActive,
         config =>
         {
             config.ConditionalStyling = (style, value) =>
@@ -222,13 +222,13 @@ builder.AddSheet(employees)
 var builder = new BookBuilder();
 builder.AddSheet(data)
     .ConfigureColumn(
-        nameof(Employee.Email),
+        _ => _.Email,
         _ => _.CustomFormatter = value => $"📧 {value}")
     .ConfigureColumn(
-        nameof(Employee.IsActive),
+        _ => _.IsActive,
         _ => _.BooleanDisplayFormat = active => active ? "✓ Active" : "✗ Inactive")
     .ConfigureColumn(
-        nameof(Employee.HireDate),
+        _ => _.HireDate,
         _ => _.DateTimeFormat = "yyyy-MM-dd");
 ```
 <sup><a href='/src/Tests/Tests.cs#L179-L193' title='Snippet source file'>snippet source</a> | <a href='#snippet-CustomFormatters' title='Start of snippet'>anchor</a></sup>
@@ -254,9 +254,9 @@ builder.AddSheet(employees, "Employee Report");
 ```cs
 var builder = new BookBuilder();
 builder.AddSheet(data)
-    .ConfigureColumn(nameof(Employee.Name), _ => _.ColumnWidth = 25)
-    .ConfigureColumn(nameof(Employee.Email), _ => _.ColumnWidth = 30)
-    .ConfigureColumn(nameof(Employee.HireDate), _ => _.ColumnWidth = 15);
+    .ConfigureColumn(_ => _.Name, _ => _.ColumnWidth = 25)
+    .ConfigureColumn(_ => _.Email, _ => _.ColumnWidth = 30)
+    .ConfigureColumn(_ => _.HireDate, _ => _.ColumnWidth = 15);
 ```
 <sup><a href='/src/Tests/Tests.cs#L222-L230' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnWidths' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->

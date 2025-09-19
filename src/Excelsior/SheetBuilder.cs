@@ -18,17 +18,6 @@ public class SheetBuilder<T>(
     static IReadOnlyList<PropertyInfo> properties;
 
     /// <summary>
-    /// Configure a specific column's appearance and behavior
-    /// </summary>
-    public SheetBuilder<T> ConfigureColumn(string property, Action<ColumnSettings> configuration)
-    {
-        var config = new ColumnSettings();
-        configuration(config);
-        columnConfigurations[property] = config;
-        return this;
-    }
-
-    /// <summary>
     /// Configure a column using property expression (type-safe)
     /// </summary>
     /// <returns>The converter instance for fluent chaining</returns>
@@ -37,7 +26,10 @@ public class SheetBuilder<T>(
         Action<ColumnSettings> configuration)
     {
         var name = GetPropertyName(property);
-        return ConfigureColumn(name, configuration);
+        var config = new ColumnSettings();
+        configuration(config);
+        columnConfigurations[name] = config;
+        return this;
     }
 
     internal void AddSheet(XLWorkbook workbook)

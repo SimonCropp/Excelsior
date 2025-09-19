@@ -291,16 +291,20 @@ public class Tests
         var employees = GetSampleEmployees();
         var builder = new BookBuilder();
         builder.AddSheet(employees)
-            .ConfigureColumn(_ => _.Name, _ =>
-            {
-                _.HeaderText = "Full Name";
-                _.ColumnWidth = 20;
-            })
-            .ConfigureColumn(_ => _.Salary, _ =>
-            {
-                _.NumberFormat = "$#,##0.00";
-                _.HeaderStyle = _ => _.Font.FontColor = XLColor.Green;
-            });
+            .ConfigureColumn(
+                _ => _.Name,
+                _ =>
+                {
+                    _.HeaderText = "Full Name";
+                    _.ColumnWidth = 20;
+                })
+            .ConfigureColumn(
+                _ => _.Salary,
+                _ =>
+                {
+                    _.NumberFormat = "$#,##0.00";
+                    _.HeaderStyle = _ => _.Font.FontColor = XLColor.Green;
+                });
 
         var book = builder.Build();
 

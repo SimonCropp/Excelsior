@@ -108,6 +108,7 @@ public class SheetBuilder<T>(
                 var property = properties[colIndex];
                 var cell = worksheet.Cell(xlRow, colIndex + 1);
 
+                cell.Style.Alignment.Vertical = XLAlignmentVerticalValues.Top;
                 var value = property.GetValue(item);
                 SetCellValue(cell, value, property);
                 ApplyDataCellStyling(cell, property, rowIndex, value);

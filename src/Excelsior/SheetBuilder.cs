@@ -1,4 +1,6 @@
-﻿namespace Excelsior;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace Excelsior;
 
 public class SheetBuilder<T>(
     string name,
@@ -23,12 +25,26 @@ public class SheetBuilder<T>(
     /// <returns>The converter instance for fluent chaining</returns>
     public SheetBuilder<T> ConfigureColumn<TProperty>(
         Expression<Func<T, TProperty>> property,
-        Action<ColumnSettings> configuration)
+        Action<ColumnSettings<TProperty>> configuration)
     {
         var name = GetPropertyName(property);
-        var config = new ColumnSettings();
+        var config = new ColumnSettings<TProperty>();
         configuration(config);
-        columnConfigurations[name] = config;
+        columnConfigurations[name] = new ColumnSettings
+        {
+            HeaderText = config.HeaderText,
+            Order = config.Order,
+            ColumnWidth = config.ColumnWidth,
+            HeaderStyle = config.HeaderStyle,
+            DataCellStyle = config.DataCellStyle,
+            ConditionalStyling = (style, o) => config.ConditionalStyling?.Invoke(style, (TProperty) o!),
+            DateTimeFormat = config.DateTimeFormat,
+            NumberFormat = config.NumberFormat,
+            NullDisplayText = config.NullDisplayText,
+            CustomFormatter = config.CustomFormatter,
+            BooleanDisplayFormat = config.BooleanDisplayFormat,
+            EnumDisplayFormat = config.EnumDisplayFormat,
+        } ;
         return this;
     }
 

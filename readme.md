@@ -190,7 +190,7 @@ builder.AddSheet(employees)
         {
             config.ConditionalStyling = (style, value) =>
             {
-                if (value is decimal and > 100000)
+                if (value > 100000)
                 {
                     style.Font.FontColor = XLColor.DarkGreen;
                     style.Font.Bold = true;
@@ -201,16 +201,21 @@ builder.AddSheet(employees)
         _ => _.IsActive,
         config =>
         {
-            config.ConditionalStyling = (style, value) =>
+            config.ConditionalStyling = (style, isActive) =>
             {
-                if (value is bool isActive)
+                var fill = style.Fill;
+                if (isActive)
                 {
-                    style.Fill.BackgroundColor = isActive ? XLColor.LightGreen : XLColor.LightPink;
+                    fill.BackgroundColor = XLColor.LightGreen;
+                }
+                else
+                {
+                    fill.BackgroundColor = XLColor.LightPink;
                 }
             };
         });
 ```
-<sup><a href='/src/Tests/Tests.cs#L137-L167' title='Snippet source file'>snippet source</a> | <a href='#snippet-ConditionalStyling' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Tests/Tests.cs#L137-L172' title='Snippet source file'>snippet source</a> | <a href='#snippet-ConditionalStyling' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -231,7 +236,7 @@ builder.AddSheet(data)
         _ => _.HireDate,
         _ => _.DateTimeFormat = "yyyy-MM-dd");
 ```
-<sup><a href='/src/Tests/Tests.cs#L179-L193' title='Snippet source file'>snippet source</a> | <a href='#snippet-CustomFormatters' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Tests/Tests.cs#L184-L198' title='Snippet source file'>snippet source</a> | <a href='#snippet-CustomFormatters' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -243,7 +248,7 @@ builder.AddSheet(data)
 var builder = new BookBuilder();
 builder.AddSheet(employees, "Employee Report");
 ```
-<sup><a href='/src/Tests/Tests.cs#L205-L210' title='Snippet source file'>snippet source</a> | <a href='#snippet-WorksheetName' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Tests/Tests.cs#L210-L215' title='Snippet source file'>snippet source</a> | <a href='#snippet-WorksheetName' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -258,5 +263,5 @@ builder.AddSheet(data)
     .ConfigureColumn(_ => _.Email, _ => _.ColumnWidth = 30)
     .ConfigureColumn(_ => _.HireDate, _ => _.ColumnWidth = 15);
 ```
-<sup><a href='/src/Tests/Tests.cs#L222-L230' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnWidths' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Tests/Tests.cs#L227-L235' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnWidths' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->

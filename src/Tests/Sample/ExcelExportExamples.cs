@@ -36,7 +36,7 @@
                     };
                     config.ConditionalStyling = (style, value) =>
                     {
-                        if (value is decimal and > 100000)
+                        if (value > 100000)
                         {
                             style.Font.FontColor = XLColor.DarkGreen;
                             style.Font.Bold = true;
@@ -44,14 +44,14 @@
                     };
                 })
             .ConfigureColumn(
-                _=>_.HireDate,
+                _ => _.HireDate,
                 config =>
                 {
                     config.DateTimeFormat = "yyyy-MM-dd";
                     config.ColumnWidth = 15;
                 })
             .ConfigureColumn(
-                _=>_.IsActive,
+                _ => _.IsActive,
                 config =>
                 {
                     config.BooleanDisplayFormat = active => active ? "✓ Yes" : "✗ No";
@@ -61,28 +61,25 @@
                     };
                 })
             .ConfigureColumn(
-                _=>_.Status,
+                _ => _.Status,
                 config =>
                 {
-                    config.ConditionalStyling = (style, value) =>
+                    config.ConditionalStyling = (style, status) =>
                     {
-                        if (value is EmployeeStatus status)
+                        switch (status)
                         {
-                            switch (status)
-                            {
-                                case EmployeeStatus.FullTime:
-                                    style.Fill.BackgroundColor = XLColor.LightGreen;
-                                    break;
-                                case EmployeeStatus.PartTime:
-                                    style.Fill.BackgroundColor = XLColor.LightYellow;
-                                    break;
-                                case EmployeeStatus.Contract:
-                                    style.Fill.BackgroundColor = XLColor.LightBlue;
-                                    break;
-                                case EmployeeStatus.Terminated:
-                                    style.Fill.BackgroundColor = XLColor.LightPink;
-                                    break;
-                            }
+                            case EmployeeStatus.FullTime:
+                                style.Fill.BackgroundColor = XLColor.LightGreen;
+                                break;
+                            case EmployeeStatus.PartTime:
+                                style.Fill.BackgroundColor = XLColor.LightYellow;
+                                break;
+                            case EmployeeStatus.Contract:
+                                style.Fill.BackgroundColor = XLColor.LightBlue;
+                                break;
+                            case EmployeeStatus.Terminated:
+                                style.Fill.BackgroundColor = XLColor.LightPink;
+                                break;
                         }
                     };
                 });

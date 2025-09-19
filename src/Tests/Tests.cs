@@ -144,7 +144,7 @@ public class Tests
                 {
                     config.ConditionalStyling = (style, value) =>
                     {
-                        if (value is decimal and > 100000)
+                        if (value > 100000)
                         {
                             style.Font.FontColor = XLColor.DarkGreen;
                             style.Font.Bold = true;
@@ -155,11 +155,16 @@ public class Tests
                 _ => _.IsActive,
                 config =>
                 {
-                    config.ConditionalStyling = (style, value) =>
+                    config.ConditionalStyling = (style, isActive) =>
                     {
-                        if (value is bool isActive)
+                        var fill = style.Fill;
+                        if (isActive)
                         {
-                            style.Fill.BackgroundColor = isActive ? XLColor.LightGreen : XLColor.LightPink;
+                            fill.BackgroundColor = XLColor.LightGreen;
+                        }
+                        else
+                        {
+                            fill.BackgroundColor = XLColor.LightPink;
                         }
                     };
                 });
@@ -433,18 +438,15 @@ public class Tests
                 config =>
                 {
                     config.NumberFormat = "$#,##0.00";
-                    config.ConditionalStyling = (style, value) =>
+                    config.ConditionalStyling = (style, salary) =>
                     {
-                        if (value is decimal salary)
+                        if (salary >= 100000)
                         {
-                            if (salary >= 100000)
-                            {
-                                style.Fill.BackgroundColor = XLColor.LightGreen;
-                            }
-                            else if (salary < 50000)
-                            {
-                                style.Fill.BackgroundColor = XLColor.LightPink;
-                            }
+                            style.Fill.BackgroundColor = XLColor.LightGreen;
+                        }
+                        else if (salary < 50000)
+                        {
+                            style.Fill.BackgroundColor = XLColor.LightPink;
                         }
                     };
                 })
@@ -469,26 +471,23 @@ public class Tests
                 _ => _.Status,
                 config =>
                 {
-                    config.ConditionalStyling = (style, value) =>
+                    config.ConditionalStyling = (style, status) =>
                     {
-                        if (value is EmployeeStatus status)
+                        switch (status)
                         {
-                            switch (status)
-                            {
-                                case EmployeeStatus.FullTime:
-                                    style.Fill.BackgroundColor = XLColor.PaleGreen;
-                                    break;
-                                case EmployeeStatus.PartTime:
-                                    style.Fill.BackgroundColor = XLColor.LightYellow;
-                                    break;
-                                case EmployeeStatus.Contract:
-                                    style.Fill.BackgroundColor = XLColor.LightCyan;
-                                    break;
-                                case EmployeeStatus.Terminated:
-                                    style.Fill.BackgroundColor = XLColor.MistyRose;
-                                    style.Font.Strikethrough = true;
-                                    break;
-                            }
+                            case EmployeeStatus.FullTime:
+                                style.Fill.BackgroundColor = XLColor.PaleGreen;
+                                break;
+                            case EmployeeStatus.PartTime:
+                                style.Fill.BackgroundColor = XLColor.LightYellow;
+                                break;
+                            case EmployeeStatus.Contract:
+                                style.Fill.BackgroundColor = XLColor.LightCyan;
+                                break;
+                            case EmployeeStatus.Terminated:
+                                style.Fill.BackgroundColor = XLColor.MistyRose;
+                                style.Font.Strikethrough = true;
+                                break;
                         }
                     };
                 });

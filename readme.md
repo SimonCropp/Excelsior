@@ -342,3 +342,9 @@ var book = builder.Build();
 ```
 <sup><a href='/src/Tests/ComplexTypeWithCustomRender.cs#L16-L43' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeWithCustomRender' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
+
+
+
+## Icon
+
+[Excel](https://thenounproject.com/icon/excel-4558727/) designed by [Start Up Graphic Design](https://thenounproject.com/creator/ppanggm/) from [The Noun Project](https://thenounproject.com/).

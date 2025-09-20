@@ -269,7 +269,7 @@ builder.AddSheet(data)
 
 #### Result:
 
-<img src="/src/Tests/Tests.CustomRender.DotNet_Sheet1.png">
+<img src="/src/Tests/Tests.Render.DotNet_Sheet1.png">
 
 
 ### WorksheetName

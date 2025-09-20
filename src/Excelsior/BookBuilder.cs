@@ -6,36 +6,41 @@ public class BookBuilder(
     Action<IXLStyle>? headerStyle = null,
     Action<IXLStyle>? globalStyle = null)
 {
-    List<Action<XLWorkbook>> actions = new();
+    List<Func<XLWorkbook, Cancel, Task>> actions = [];
 
     public SheetBuilder<T> AddSheet<T>(IEnumerable<T> data, string? name = null)
+        where T : class =>
+        AddSheet(data.ToAsyncEnumerable(), name);
+
+    public SheetBuilder<T> AddSheet<T>(IAsyncEnumerable<T> data, string? name = null)
         where T : class
     {
         name ??= $"Sheet{actions.Count + 1}";
 
         var converter = new SheetBuilder<T>(
             name,
-            data.ToList(),
+            data,
             useAlternatingRowColors,
             alternateRowColor,
             headerStyle,
             globalStyle);
-        actions.Add(_ => converter.AddSheet(_));
+        actions.Add((book,cancel) => converter.AddSheet(book,cancel));
         return converter;
     }
 
-    public void ToStream(Stream stream)
+    public async Task ToStream(Stream stream, Cancel cancel = default)
     {
-        using var book = Build();
+        using var book = await Build(cancel);
         book.SaveAs(stream);
     }
 
-    public XLWorkbook Build()
+    public async Task<XLWorkbook> Build(Cancel cancel = default)
     {
         var book = new XLWorkbook();
         foreach (var action in actions)
         {
-            action(book);
+            cancel.ThrowIfCancellationRequested();
+            await action(book, cancel);
         }
 
         return book;

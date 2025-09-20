@@ -33,7 +33,7 @@ public class Tests
         var builder = new BookBuilder();
         builder.AddSheet(data);
 
-        var book = builder.Build();
+        var book = await builder.Build();
 
         #endregion
 
@@ -58,7 +58,7 @@ public class Tests
 
         #endregion
 
-        var book = builder.Build();
+        var book = await builder.Build();
 
         await Verify(book);
     }
@@ -78,7 +78,7 @@ public class Tests
 
         #endregion
 
-        var book = builder.Build();
+        var book = await builder.Build();
 
         await Verify(book);
     }
@@ -101,7 +101,7 @@ public class Tests
 
         #endregion
 
-        var book = builder.Build();
+        var book = await builder.Build();
 
         await Verify(book);
     }
@@ -124,7 +124,7 @@ public class Tests
 
         #endregion
 
-        var book = builder.Build();
+        var book = await builder.Build();
 
         await Verify(book);
     }
@@ -171,7 +171,7 @@ public class Tests
 
         #endregion
 
-        var book = builder.Build();
+        var book = await builder.Build();
 
         await Verify(book);
     }
@@ -197,7 +197,7 @@ public class Tests
 
         #endregion
 
-        var book = builder.Build();
+        var book = await builder.Build();
 
         await Verify(book);
     }
@@ -214,7 +214,7 @@ public class Tests
 
         #endregion
 
-        var book = builder.Build();
+        var book = await builder.Build();
 
         await Verify(book);
     }
@@ -234,7 +234,7 @@ public class Tests
 
         #endregion
 
-        var book = builder.Build();
+        var book = await builder.Build();
 
         await Verify(book);
     }
@@ -272,7 +272,7 @@ public class Tests
             .Column(_ => _.Name, _ => _.NullDisplayText = "[No Name]")
             .Column(_ => _.Email, _ => _.NullDisplayText = "[No Email]");
 
-        var book = builder.Build();
+        var book = await builder.Build();
 
         await Verify(book);
     }
@@ -287,7 +287,7 @@ public class Tests
                 _ => _.Status,
                 _ => _.Render = enumValue => $"Status: {enumValue}");
 
-        var book = builder.Build();
+        var book = await builder.Build();
 
         await Verify(book);
     }
@@ -313,7 +313,7 @@ public class Tests
                     _.HeaderStyle = _ => _.Font.FontColor = XLColor.Green;
                 });
 
-        var book = builder.Build();
+        var book = await builder.Build();
 
         await Verify(book);
     }
@@ -324,7 +324,7 @@ public class Tests
         var builder = new BookBuilder();
         builder.AddSheet(new List<Employee>());
 
-        var book = builder.Build();
+        var book = await builder.Build();
 
         await Verify(book);
     }
@@ -355,13 +355,13 @@ public class Tests
         var builder = new BookBuilder();
         builder.AddSheet(products);
 
-        var book = builder.Build();
+        var book = await builder.Build();
 
         await Verify(book);
     }
 
     [Test]
-    public Task ToStream()
+    public async Task ToStream()
     {
         var data = GetSampleEmployees();
 
@@ -371,11 +371,11 @@ public class Tests
         builder.AddSheet(data);
 
         var stream = new MemoryStream();
-        builder.ToStream(stream);
+        await builder.ToStream(stream);
 
         #endregion
 
-        return Verify(stream, extension: "xlsx");
+        await Verify(stream, extension: "xlsx");
     }
 
     static List<Employee> GetSampleEmployees() =>
@@ -497,7 +497,7 @@ public class Tests
                     };
                 });
 
-        var book = builder.Build();
+        var book = await builder.Build();
 
         await Verify(book);
     }

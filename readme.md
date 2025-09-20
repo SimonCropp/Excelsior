@@ -84,7 +84,7 @@ List<Employee> data =
 var builder = new BookBuilder();
 builder.AddSheet(data);
 
-var book = builder.Build();
+var book = await builder.Build();
 ```
 <sup><a href='/src/Tests/Tests.cs#L7-L38' title='Snippet source file'>snippet source</a> | <a href='#snippet-Usage' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
@@ -104,7 +104,7 @@ var builder = new BookBuilder();
 builder.AddSheet(data);
 
 var stream = new MemoryStream();
-builder.ToStream(stream);
+await builder.ToStream(stream);
 ```
 <sup><a href='/src/Tests/Tests.cs#L368-L376' title='Snippet source file'>snippet source</a> | <a href='#snippet-ToStream' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
@@ -306,22 +306,20 @@ List<Person> data =
 
 var builder = new BookBuilder();
 builder.AddSheet(data);
-
-var book = builder.Build();
 ```
-<sup><a href='/src/Tests/ComplexTypeWithToString.cs#L20-L38' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeWithToString' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Tests/ComplexTypeWithToString.cs#L20-L36' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeWithToString' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
 #### Result
 
-<!-- snippet: ComplexTypeWithToString.Test.verified.csv -->
-<a id='snippet-ComplexTypeWithToString.Test.verified.csv'></a>
+<!-- snippet: ComplexTypeWithToString.Test.DotNet.verified.csv -->
+<a id='snippet-ComplexTypeWithToString.Test.DotNet.verified.csv'></a>
 ```csv
 Name,Address
 John Doe,"Address { Number = 900, Street = Victoria Square, State = SouthAustralia, City = Adelaide, PostCode = 5000 }"
 ```
-<sup><a href='/src/Tests/ComplexTypeWithToString.Test.verified.csv#L1-L2' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeWithToString.Test.verified.csv' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Tests/ComplexTypeWithToString.Test.DotNet.verified.csv#L1-L2' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeWithToString.Test.DotNet.verified.csv' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -346,10 +344,8 @@ BookBuilder.RenderFor<Address>(
 
 var builder = new BookBuilder();
 builder.AddSheet(data);
-
-var book = builder.Build();
 ```
-<sup><a href='/src/Tests/ComplexTypeWithCustomRender.cs#L16-L37' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeWithCustomRender' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Tests/ComplexTypeWithCustomRender.cs#L16-L35' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeWithCustomRender' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 

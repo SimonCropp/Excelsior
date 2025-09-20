@@ -6,7 +6,7 @@
     <LangVersion>preview</LangVersion>
     <AssemblyVersion>1.0.0</AssemblyVersion>
     <PackageTags>Excel</PackageTags>
-    <Description>A data driven generator for Excel spreadsheets</Description>
+    <Description>Excelsior is an Excel spreadsheet generation library with a distinctive data-driven approach that leverages ClosedXML (https://github.com/ClosedXML/ClosedXML) to create Excel-compatible files.</Description>
     <ResolveAssemblyReferencesSilent>true</ResolveAssemblyReferencesSilent>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>

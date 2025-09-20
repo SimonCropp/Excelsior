@@ -3,7 +3,7 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/fo33wu7ud6es1t2o/branch/main?svg=true)](https://ci.appveyor.com/project/SimonCropp/Excelsior)
 [![NuGet Status](https://img.shields.io/nuget/v/Excelsior.svg)](https://www.nuget.org/packages/Excelsior/)
 
-A data driven generator for Excel spreadsheets. Leverages [ClosedXML](https://github.com/ClosedXML/ClosedXML).
+Excelsior is an Excel spreadsheet generation library with a distinctive data-driven approach that leverages [ClosedXML](https://github.com/ClosedXML/ClosedXML) to create Excel-compatible files.
 
 **See [Milestones](../../milestones?state=closed) for release notes.**
 

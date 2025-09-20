@@ -2,7 +2,7 @@
 
 public class SheetBuilder<T>(
     string name,
-    IEnumerable<T> data,
+    IAsyncEnumerable<T> data,
     bool useAlternatingRowColors,
     XLColor? alternateRowColor,
     Action<IXLStyle>? headerStyle,
@@ -54,7 +54,7 @@ public class SheetBuilder<T>(
         return this;
     }
 
-    internal void AddSheet(XLWorkbook workbook)
+    internal async Task AddSheet(XLWorkbook workbook, Cancel cancel)
     {
         var worksheet = workbook.Worksheets.Add(name);
 
@@ -62,7 +62,7 @@ public class SheetBuilder<T>(
 
         CreateHeaders(worksheet, properties);
 
-        PopulateData(worksheet, properties);
+        await PopulateData(worksheet, properties, cancel);
 
         ApplyGlobalStyling(worksheet, properties);
         worksheet.RangeUsed()!.SetAutoFilter();
@@ -94,12 +94,12 @@ public class SheetBuilder<T>(
         worksheet.SheetView.FreezeRows(1);
     }
 
-    void PopulateData(IXLWorksheet worksheet, List<PropertyInfo> properties)
+    async Task PopulateData(IXLWorksheet worksheet, List<PropertyInfo> properties, Cancel cancel)
     {
         //Skip header
         var startRow = 2;
 
-        foreach (var item in data)
+        await foreach (var item in data.WithCancellation(cancel))
         {
             var xlRow = startRow + rowIndex;
 
@@ -142,29 +142,35 @@ public class SheetBuilder<T>(
                 return;
             }
 
-            // Handle specific types
+            void AssignNumberFormat()
+            {
+                if (config?.Format != null)
+                {
+                    cell.Style.NumberFormat.Format = config.Format;
+                }
+            }
+
             switch (value)
             {
                 case DateTime dateTime:
                     cell.Value = dateTime;
-                    if (!string.IsNullOrEmpty(config?.Format))
+                    if (config?.Format != null)
+                    {
                         cell.Style.DateFormat.Format = config.Format;
+                    }
                     break;
 
                 case decimal decimalValue:
                     cell.Value = decimalValue;
-                    if (!string.IsNullOrEmpty(config?.Format))
-                        cell.Style.NumberFormat.Format = config.Format;
+                    AssignNumberFormat();
                     break;
                 case double doubleValue:
                     cell.Value = doubleValue;
-                    if (!string.IsNullOrEmpty(config?.Format))
-                        cell.Style.NumberFormat.Format = config.Format;
+                    AssignNumberFormat();
                     break;
                 case float floatValue:
                     cell.Value = floatValue;
-                    if (!string.IsNullOrEmpty(config?.Format))
-                        cell.Style.NumberFormat.Format = config.Format;
+                    AssignNumberFormat();
                     break;
 
                 case bool boolean:
@@ -245,23 +251,23 @@ public class SheetBuilder<T>(
     string GetHeaderText(PropertyInfo property)
     {
         var config = settings.GetValueOrDefault(property.Name);
-        if (!string.IsNullOrEmpty(config?.HeaderText))
+        if (config?.HeaderText != null)
         {
             return config.HeaderText;
         }
 
         // Check for DisplayAttribute
-        var displayAttr = property.GetCustomAttribute<DisplayAttribute>();
-        if (!string.IsNullOrEmpty(displayAttr?.Name))
+        var display = property.GetCustomAttribute<DisplayAttribute>();
+        if (display?.Name != null)
         {
-            return displayAttr.Name;
+            return display.Name;
         }
 
         // Check for DisplayNameAttribute
-        var displayNameAttr = property.GetCustomAttribute<DisplayNameAttribute>();
-        if (!string.IsNullOrEmpty(displayNameAttr?.DisplayName))
+        var displayName = property.GetCustomAttribute<DisplayNameAttribute>();
+        if (displayName != null)
         {
-            return displayNameAttr.DisplayName;
+            return displayName.DisplayName;
         }
 
         // Use property name with spaces

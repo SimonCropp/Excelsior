@@ -39,7 +39,7 @@ public class ComplexTypeWithInheritedCustomRender
         var builder = new BookBuilder();
         builder.AddSheet(data);
 
-        var book = builder.Build();
+        var book = await builder.Build();
 
         await Verify(book);
     }

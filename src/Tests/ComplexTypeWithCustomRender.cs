@@ -32,9 +32,9 @@ public class ComplexTypeWithCustomRender
         var builder = new BookBuilder();
         builder.AddSheet(data);
 
-        var book = builder.Build();
-
         #endregion
+
+        var book = await builder.Build();
 
         await Verify(book);
     }

@@ -1,6 +1,6 @@
 ﻿public static class ExcelExportExamples
 {
-    public static void BasicExport()
+    public static async Task BasicExport()
     {
         var employees = GetSampleEmployees();
 
@@ -8,10 +8,10 @@
         builder.AddSheet(employees);
 
         using var stream = new FileStream("employees.xlsx", FileMode.Create);
-        builder.ToStream(stream);
+        await builder.ToStream(stream);
     }
 
-    public static void AdvancedExport()
+    public static async Task AdvancedExport()
     {
         var employees = GetSampleEmployees();
 
@@ -85,7 +85,7 @@
                 });
 
         using var stream = new FileStream("advanced_employees.xlsx", FileMode.Create);
-        builder.ToStream(stream);
+        await builder.ToStream(stream);
     }
 
     static List<Employee> GetSampleEmployees() =>

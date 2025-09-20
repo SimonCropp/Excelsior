@@ -128,6 +128,11 @@ builder.AddSheet(data)
 <!-- endSnippet -->
 
 
+#### Result:
+
+<img src="/src/Tests/Tests.CustomHeaders.DotNet_Sheet1.png">
+
+
 ### ColumnOrdering
 
 <!-- snippet: ColumnOrdering -->
@@ -141,6 +146,11 @@ builder.AddSheet(data)
 ```
 <sup><a href='/src/Tests/Tests.cs#L71-L79' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnOrdering' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
+
+
+#### Result:
+
+<img src="/src/Tests/Tests.ColumnOrdering.DotNet_Sheet1.png">
 
 
 ### HeaderStyle
@@ -161,6 +171,11 @@ builder.AddSheet(data);
 <!-- endSnippet -->
 
 
+#### Result:
+
+<img src="/src/Tests/Tests.HeaderStyle.DotNet_Sheet1.png">
+
+
 ### GlobalStyle
 
 <!-- snippet: GlobalStyle -->
@@ -177,6 +192,11 @@ builder.AddSheet(data);
 ```
 <sup><a href='/src/Tests/Tests.cs#L114-L125' title='Snippet source file'>snippet source</a> | <a href='#snippet-GlobalStyle' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
+
+
+#### Result:
+
+<img src="/src/Tests/Tests.GlobalStyle.DotNet_Sheet1.png">
 
 
 ### ConditionalStyling
@@ -221,6 +241,11 @@ builder.AddSheet(employees)
 <!-- endSnippet -->
 
 
+#### Result:
+
+<img src="/src/Tests/Tests.ConditionalStyling.DotNet_Sheet1.png">
+
+
 ### Render
 
 <!-- snippet: CustomRender -->
@@ -240,6 +265,11 @@ builder.AddSheet(data)
 ```
 <sup><a href='/src/Tests/Tests.cs#L184-L198' title='Snippet source file'>snippet source</a> | <a href='#snippet-CustomRender' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
+
+
+#### Result:
+
+<img src="/src/Tests/Tests.CustomRender.DotNet_Sheet1.png">
 
 
 ### WorksheetName
@@ -269,6 +299,10 @@ builder.AddSheet(data)
 <!-- endSnippet -->
 
 
+#### Result:
+
+<img src="/src/Tests/Tests.ColumnWidths.DotNet_Sheet1.png">
+
 
 ### Complex Types
 
@@ -286,6 +320,11 @@ public record Address(int Number, string Street, State State, string City, ushor
 ```
 <sup><a href='/src/Tests/ComplexTypeWithToString.cs#L9-L15' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeModels' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
+
+
+#### Result:
+
+<img src="/src/Tests/Tests.ComplexTypeModels.DotNet_Sheet1.png">
 
 
 #### Build
@@ -322,6 +361,8 @@ John Doe,"Address { Number = 900, Street = Victoria Square, State = SouthAustral
 <sup><a href='/src/Tests/ComplexTypeWithToString.Test.DotNet.verified.csv#L1-L2' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeWithToString.Test.DotNet.verified.csv' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
+<img src="/src/Tests/Tests.ComplexTypeWithToString.DotNet_Sheet1.png">
+
 
 ### Custom render for Complex Types
 
@@ -347,6 +388,11 @@ builder.AddSheet(data);
 ```
 <sup><a href='/src/Tests/ComplexTypeWithCustomRender.cs#L16-L35' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeWithCustomRender' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
+
+
+#### Result:
+
+<img src="/src/Tests/Tests.ComplexTypeWithCustomRender.DotNet_Sheet1.png">
 
 
 ## Icon

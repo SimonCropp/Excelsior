@@ -350,7 +350,7 @@ builder.AddSheet(data);
 <!-- endSnippet -->
 
 
-#### Result
+#### Result:
 
 <img src="/src/Tests/ComplexTypeWithToString.Test.DotNet_Sheet1.png">
 

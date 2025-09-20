@@ -51,10 +51,7 @@ public class Tests
         builder.AddSheet(data)
             .Column(
                 _ => _.Name,
-                _ => _.HeaderText = "Employee Name")
-            .Column(
-                _ => _.Email,
-                _ => _.HeaderText = "Email Address");
+                _ => _.HeaderText = "Employee Name");
 
         #endregion
 

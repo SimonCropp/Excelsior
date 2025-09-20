@@ -361,7 +361,7 @@ John Doe,"Address { Number = 900, Street = Victoria Square, State = SouthAustral
 <sup><a href='/src/Tests/ComplexTypeWithToString.Test.DotNet.verified.csv#L1-L2' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeWithToString.Test.DotNet.verified.csv' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
-<img src="/src/Tests/Tests.ComplexTypeWithToString.DotNet_Sheet1.png">
+<img src="/src/Tests/ComplexTypeWithToString.Test.DotNet_Sheet1.png">
 
 
 ### Custom render for Complex Types

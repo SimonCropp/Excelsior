@@ -2,7 +2,7 @@
 
 public class SheetBuilder<T>(
     string name,
-    List<T> data,
+    IEnumerable<T> data,
     bool useAlternatingRowColors,
     XLColor? alternateRowColor,
     Action<IXLStyle>? headerStyle,

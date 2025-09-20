@@ -15,7 +15,7 @@ public class BookBuilder(
 
         var converter = new SheetBuilder<T>(
             name,
-            data.ToList(),
+            data,
             useAlternatingRowColors,
             alternateRowColor,
             headerStyle,

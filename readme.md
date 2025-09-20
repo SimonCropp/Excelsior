@@ -324,7 +324,7 @@ public record Address(int Number, string Street, State State, string City, ushor
 
 #### Result:
 
-<img src="/src/Tests/ComplexTypeWithToString.DotNet_Sheet1.png">
+<img src="/src/Tests/ComplexTypeWithToString.Test.DotNet_Sheet1.png">
 
 
 #### Build

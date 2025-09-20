@@ -14,6 +14,7 @@ public class SheetBuilder<T>(
             .Where(_ => _.CanRead)
             .ToList();
 
+    int rowIndex;
     Dictionary<string, ColumnSettings> settings = [];
     static IReadOnlyList<PropertyInfo> properties;
 
@@ -98,9 +99,8 @@ public class SheetBuilder<T>(
         //Skip header
         var startRow = 2;
 
-        for (var rowIndex = 0; rowIndex < data.Count; rowIndex++)
+        foreach (var item in data)
         {
-            var item = data[rowIndex];
             var xlRow = startRow + rowIndex;
 
             for (var colIndex = 0; colIndex < properties.Count; colIndex++)
@@ -113,6 +113,8 @@ public class SheetBuilder<T>(
                 SetCellValue(cell, value, property);
                 ApplyDataCellStyling(cell, property, rowIndex, value);
             }
+
+            rowIndex++;
         }
     }
 
@@ -219,7 +221,7 @@ public class SheetBuilder<T>(
             return;
         }
 
-        var range = worksheet.Range(1, 1, data.Count + 1, properties.Count);
+        var range = worksheet.Range(1, 1, rowIndex + 1, properties.Count);
         globalStyle(range.Style);
     }
 
@@ -244,7 +246,9 @@ public class SheetBuilder<T>(
     {
         var config = settings.GetValueOrDefault(property.Name);
         if (!string.IsNullOrEmpty(config?.HeaderText))
+        {
             return config.HeaderText;
+        }
 
         // Check for DisplayAttribute
         var displayAttr = property.GetCustomAttribute<DisplayAttribute>();

@@ -392,7 +392,7 @@ builder.AddSheet(data);
 
 #### Result:
 
-<img src="/src/Tests/Tests.ComplexTypeWithCustomRender.DotNet_Sheet1.png">
+<img src="/src/Tests/ComplexTypeWithCustomRender.Test.DotNet_Sheet1.png">
 
 
 ## Icon

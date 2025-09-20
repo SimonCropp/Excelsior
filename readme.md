@@ -92,7 +92,7 @@ var book = await builder.Build();
 
 ### Result:
 
-<img src="/src/Tests.Simple.DotNet_Sheet1.png">
+<img src="/src/Tests/Tests.Simple.DotNet_Sheet1.png">
 
 
 ### Saving to a stream

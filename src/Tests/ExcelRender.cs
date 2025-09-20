@@ -25,12 +25,13 @@ public class ConvertExcelSnapshots
         var excelFiles = Directory.EnumerateFiles(directory, "*.verified.xlsx").ToList();
         foreach (var file in excelFiles)
         {
-            if (Path.GetFileName(file).StartsWith('~'))
+            var name = Path.GetFileName(file);
+            if (name.StartsWith('~'))
             {
                 continue;
             }
 
-            if (!Path.GetFileName(file).Contains("Net9"))
+            if (!name.Contains("DotNet"))
             {
                 continue;
             }

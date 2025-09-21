@@ -41,6 +41,120 @@ public class Tests
     }
 
     [Test]
+    public async Task Nulls()
+    {
+        List<NullableTargets> data =
+        [
+            new()
+            {
+                Number = null,
+                String = null,
+                DateTime = null,
+                Enum = null
+            },
+            new()
+            {
+                Number = 1,
+                String = "value",
+                DateTime = new DateTime(2020, 1, 1),
+                Enum = AnEnum.Value
+            },
+        ];
+
+        var builder = new BookBuilder();
+        builder.AddSheet(data);
+
+        var book = await builder.Build();
+
+        await Verify(book);
+    }
+
+    [Test]
+    public async Task NullsWithOverride()
+    {
+        List<NullableTargets> data =
+        [
+            new()
+            {
+                Number = null,
+                String = null,
+                DateTime = null,
+                Enum = null
+            },
+            new()
+            {
+                Number = 1,
+                String = "value",
+                DateTime = new DateTime(2020, 1, 1),
+                Enum = AnEnum.Value
+            },
+        ];
+
+        var builder = new BookBuilder();
+        var sheet = builder.AddSheet(data);
+        sheet.Column(
+            _ => _.Number,
+            _ =>
+            {
+                _.ConditionalStyling = (style, value) =>
+                {
+                    Debug.WriteLine(style);
+                    Debug.WriteLine(value);
+                };
+                _.Render = _ => _.ToString();
+            });
+        sheet.Column(
+            _ => _.DateTime,
+            _ =>
+            {
+                _.ConditionalStyling = (style, value) =>
+                {
+                    Debug.WriteLine(style);
+                    Debug.WriteLine(value);
+                };
+                _.Render = _ => _.ToString();
+            });
+        sheet.Column(
+            _ => _.Enum,
+            _ =>
+            {
+                _.ConditionalStyling = (style, value) =>
+                {
+                    Debug.WriteLine(style);
+                    Debug.WriteLine(value);
+                };
+                _.Render = _ => _.ToString();
+            });
+        sheet.Column(
+            _ => _.String,
+            _ =>
+            {
+                _.ConditionalStyling = (style, value) =>
+                {
+                    Debug.WriteLine(style);
+                    Debug.WriteLine(value);
+                };
+                _.Render = _ => _?.ToString();
+            });
+        var book = await builder.Build();
+
+        await Verify(book);
+    }
+
+    public enum AnEnum
+    {
+        Value
+    }
+
+    public class NullableTargets
+    {
+        public required int? Number { get; set; }
+        public required string? String { get; set; }
+        public required DateTime? DateTime { get; set; }
+        public required AnEnum? Enum { get; set; }
+    }
+
+    [Test]
     public async Task CustomHeaders()
     {
         var data = GetSampleEmployees();

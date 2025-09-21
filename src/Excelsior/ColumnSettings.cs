@@ -10,7 +10,7 @@ class ColumnSettings
     public required Action<IXLStyle, object?>? ConditionalStyling { get; init; }
     public required string? Format { get; init; }
     public required string? NullDisplayText { get; init; }
-    public required Func<object, string>? Render { get; init; }
+    public required Func<object, string?>? Render { get; init; }
 }
 
 public class ColumnSettings<T>
@@ -23,5 +23,5 @@ public class ColumnSettings<T>
     public Action<IXLStyle, T>? ConditionalStyling { get; set; }
     public string? Format { get; set; }
     public string? NullDisplayText { get; set; }
-    public Func<T, string>? Render { get; set; }
+    public Func<T, string?>? Render { get; set; }
 }

@@ -29,7 +29,7 @@ public class SheetBuilder<T>(
         var name = GetPropertyName(property);
         var config = new ColumnSettings<TProperty>();
         configuration(config);
-        Func<object, string>? render;
+        Func<object, string?>? render;
         if (config.Render == null)
         {
             render = null;

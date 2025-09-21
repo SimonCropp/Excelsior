@@ -15,7 +15,6 @@ public class Employee
     [Display(Name = "Annual Salary", Order = 5)]
     public required decimal Salary { get; set; }
 
-    [Display(Name = "Is Active", Order = 7)]
     public required bool IsActive { get; set; }
 
     public required EmployeeStatus Status { get; set; }

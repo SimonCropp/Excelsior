@@ -40,16 +40,18 @@ public class Employee
     [Display(Name = "Annual Salary", Order = 5)]
     public required decimal Salary { get; set; }
 
-    [Display(Name = "Is Active", Order = 7)]
     public required bool IsActive { get; set; }
 
     public required EmployeeStatus Status { get; set; }
 }
 ```
-<sup><a href='/src/Tests/Sample/Employee.cs#L1-L22' title='Snippet source file'>snippet source</a> | <a href='#snippet-Employee.cs' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Tests/Sample/Employee.cs#L1-L21' title='Snippet source file'>snippet source</a> | <a href='#snippet-Employee.cs' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
-`Display` is optional.
+`[DisplayAttribute]` is optional. If it is omitted:
+
+ * Order is based on the order of the properties defined in the class
+ * Header text is based on the property names that is camel case split.
 
 
 ### Builder
@@ -110,7 +112,7 @@ await builder.ToStream(stream);
 <!-- endSnippet -->
 
 
-### CustomHeaders
+### Custom Headers
 
 <!-- snippet: CustomHeaders -->
 <a id='snippet-CustomHeaders'></a>
@@ -130,7 +132,7 @@ builder.AddSheet(data)
 <img src="/src/Tests/Tests.CustomHeaders.DotNet_Sheet1.png">
 
 
-### ColumnOrdering
+### Column Ordering
 
 <!-- snippet: ColumnOrdering -->
 <a id='snippet-ColumnOrdering'></a>
@@ -150,7 +152,7 @@ builder.AddSheet(data)
 <img src="/src/Tests/Tests.ColumnOrdering.DotNet_Sheet1.png">
 
 
-### HeaderStyle
+### Header Style
 
 <!-- snippet: HeaderStyle -->
 <a id='snippet-HeaderStyle'></a>
@@ -173,7 +175,7 @@ builder.AddSheet(data);
 <img src="/src/Tests/Tests.HeaderStyle.DotNet_Sheet1.png">
 
 
-### GlobalStyle
+### Global Style
 
 <!-- snippet: GlobalStyle -->
 <a id='snippet-GlobalStyle'></a>
@@ -196,7 +198,7 @@ builder.AddSheet(data);
 <img src="/src/Tests/Tests.GlobalStyle.DotNet_Sheet1.png">
 
 
-### ConditionalStyling
+### Conditional Styling
 
 <!-- snippet: ConditionalStyling -->
 <a id='snippet-ConditionalStyling'></a>
@@ -269,7 +271,7 @@ builder.AddSheet(data)
 <img src="/src/Tests/Tests.Render.DotNet_Sheet1.png">
 
 
-### WorksheetName
+### Worksheet Name
 
 <!-- snippet: WorksheetName -->
 <a id='snippet-WorksheetName'></a>
@@ -281,7 +283,7 @@ builder.AddSheet(employees, "Employee Report");
 <!-- endSnippet -->
 
 
-### ColumnWidths
+### Column Widths
 
 <!-- snippet: ColumnWidths -->
 <a id='snippet-ColumnWidths'></a>

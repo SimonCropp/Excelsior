@@ -1,4 +1,6 @@
-﻿[TestFixture]
+﻿using System.Globalization;
+
+[TestFixture]
 public class Tests
 {
     [Test]
@@ -112,7 +114,15 @@ public class Tests
                     Debug.WriteLine(style);
                     Debug.WriteLine(value);
                 };
-                _.Render = _ => _.ToString();
+                _.Render = _ =>
+                {
+                    if (_.HasValue)
+                    {
+                        return _.Value.ToString(CultureInfo.InvariantCulture);
+                    }
+
+                    return null;
+                };
             });
         sheet.Column(
             _ => _.Enum,

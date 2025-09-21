@@ -8,7 +8,7 @@ public class ComplexTypeWithCustomRender
 
     public record Person(string Name, Address Address);
 
-    public record Address(int Number, string Street, State State, string City, ushort PostCode);
+    public record Address(int Number, string Street, string City, State State, ushort PostCode);
 
     [Test]
     public async Task Test()
@@ -21,13 +21,13 @@ public class ComplexTypeWithCustomRender
                 new Address(
                     Number: 900,
                     Street: "Victoria Square",
-                    State: State.SA,
                     City: "Adelaide",
+                    State: State.SA,
                     PostCode: 5000)),
         ];
 
         BookBuilder.RenderFor<Address>(
-            _ => $"{_.Number}, {_.Street}, {_.State}, {_.City}, {_.PostCode}");
+            _ => $"{_.Number}, {_.Street}, {_.City}, {_.State}, {_.PostCode}");
 
         var builder = new BookBuilder();
         builder.AddSheet(data);

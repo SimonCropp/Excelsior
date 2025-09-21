@@ -12,12 +12,13 @@ public class ComplexTypeWithInheritedCustomRender
     {
         int Number { get; }
         string Street { get; }
-        State State { get; }
         string City { get; }
+        State State { get; }
         ushort PostCode { get; }
     }
 
-    public record Address(int Number, string Street, State State, string City, ushort PostCode) : IAddress;
+    public record Address(int Number, string Street, string City, State State, ushort PostCode) :
+        IAddress;
 
     [Test]
     public async Task Test()
@@ -28,13 +29,13 @@ public class ComplexTypeWithInheritedCustomRender
                 new Address(
                     Number: 900,
                     Street: "Victoria Square",
-                    State: State.SA,
                     City: "Adelaide",
+                    State: State.SA,
                     PostCode: 5000)),
         ];
 
         BookBuilder.RenderFor<IAddress>(
-            _ => $"{_.Number}, {_.Street}, {_.State}, {_.City}, {_.PostCode}");
+            _ => $"{_.Number}, {_.Street}, {_.City}, {_.State}, {_.PostCode}");
 
         var builder = new BookBuilder();
         builder.AddSheet(data);

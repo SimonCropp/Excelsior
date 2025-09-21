@@ -313,7 +313,7 @@ For complex types, by default is to render via `.ToString()`.
 ```cs
 public record Person(string Name, Address Address);
 
-public record Address(int Number, string Street, State State, string City, ushort PostCode);
+public record Address(int Number, string Street, string City, State State, ushort PostCode);
 ```
 <sup><a href='/src/Tests/ComplexTypeWithToString.cs#L9-L15' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeModels' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
@@ -330,8 +330,8 @@ List<Person> data =
         new Address(
             Number: 900,
             Street: "Victoria Square",
-            State: State.SA,
             City: "Adelaide",
+            State: State.SA,
             PostCode: 5000)),
 ];
 
@@ -358,13 +358,13 @@ List<Person> data =
         new Address(
             Number: 900,
             Street: "Victoria Square",
-            State: State.SA,
             City: "Adelaide",
+            State: State.SA,
             PostCode: 5000)),
 ];
 
 BookBuilder.RenderFor<Address>(
-    _ => $"{_.Number}, {_.Street}, {_.State}, {_.City}, {_.PostCode}");
+    _ => $"{_.Number}, {_.Street}, {_.City}, {_.State}, {_.PostCode}");
 
 var builder = new BookBuilder();
 builder.AddSheet(data);

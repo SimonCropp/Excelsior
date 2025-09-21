@@ -10,7 +10,7 @@ public class ComplexTypeWithToString
 
     public record Person(string Name, Address Address);
 
-    public record Address(int Number, string Street, State State, string City, ushort PostCode);
+    public record Address(int Number, string Street, string City, State State, ushort PostCode);
 
     #endregion
 
@@ -25,8 +25,8 @@ public class ComplexTypeWithToString
                 new Address(
                     Number: 900,
                     Street: "Victoria Square",
-                    State: State.SA,
                     City: "Adelaide",
+                    State: State.SA,
                     PostCode: 5000)),
         ];
 

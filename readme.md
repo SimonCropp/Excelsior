@@ -50,8 +50,8 @@ public class Employee
 
 `[DisplayAttribute]` is optional. If it is omitted:
 
- * Order is based on the order of the properties defined in the class
- * Header text is based on the property names that is camel case split.
+ * Order is based on the order of the properties defined in the class. Order can be [programmatically controlled](#column-ordering)
+ * Header text is based on the property names that is camel case split. Headers can be [programmatically controlled](#custom-headers)
 
 
 ### Builder

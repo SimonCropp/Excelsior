@@ -330,7 +330,7 @@ List<Person> data =
         new Address(
             Number: 900,
             Street: "Victoria Square",
-            State: State.SouthAustralia,
+            State: State.SA,
             City: "Adelaide",
             PostCode: 5000)),
 ];
@@ -358,7 +358,7 @@ List<Person> data =
         new Address(
             Number: 900,
             Street: "Victoria Square",
-            State: State.SouthAustralia,
+            State: State.SA,
             City: "Adelaide",
             PostCode: 5000)),
 ];

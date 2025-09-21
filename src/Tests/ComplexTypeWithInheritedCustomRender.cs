@@ -3,7 +3,7 @@ public class ComplexTypeWithInheritedCustomRender
 {
     public enum State
     {
-        SouthAustralia
+        SA
     }
 
     public record Person(string Name, IAddress Address);
@@ -28,7 +28,7 @@ public class ComplexTypeWithInheritedCustomRender
                 new Address(
                     Number: 900,
                     Street: "Victoria Square",
-                    State: State.SouthAustralia,
+                    State: State.SA,
                     City: "Adelaide",
                     PostCode: 5000)),
         ];

@@ -3,7 +3,7 @@ public class ComplexTypeWithToString
 {
     public enum State
     {
-        SouthAustralia
+        SA
     }
 
     #region ComplexTypeModels
@@ -25,7 +25,7 @@ public class ComplexTypeWithToString
                 new Address(
                     Number: 900,
                     Street: "Victoria Square",
-                    State: State.SouthAustralia,
+                    State: State.SA,
                     City: "Adelaide",
                     PostCode: 5000)),
         ];

@@ -12,11 +12,12 @@ public class SheetBuilder<T>(
     static SheetBuilder() =>
         properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance)
             .Where(_ => _.CanRead)
+            .Select(_ => new Property<T>(_))
             .ToList();
 
     int rowIndex;
     Dictionary<string, ColumnSettings> settings = [];
-    static IReadOnlyList<PropertyInfo> properties;
+    static IReadOnlyList<Property<T>> properties;
 
     /// <summary>
     /// Configure a column using property expression (type-safe)
@@ -26,7 +27,7 @@ public class SheetBuilder<T>(
         Expression<Func<T, TProperty>> property,
         Action<ColumnSettings<TProperty>> configuration)
     {
-        var name = GetPropertyName(property);
+        var name = property.PropertyName();
         var config = new ColumnSettings<TProperty>();
         configuration(config);
         Func<object, string?>? render;
@@ -50,51 +51,51 @@ public class SheetBuilder<T>(
             Format = config.Format,
             NullDisplayText = config.NullDisplayText,
             Render = render,
-        } ;
+        };
         return this;
     }
 
-    internal async Task AddSheet(XLWorkbook workbook, Cancel cancel)
+    internal async Task AddSheet(Book book, Cancel cancel)
     {
-        var worksheet = workbook.Worksheets.Add(name);
+        var sheet = book.Worksheets.Add(name);
 
         var properties = GetProperties();
 
-        CreateHeaders(worksheet, properties);
+        CreateHeaders(sheet, properties);
 
-        await PopulateData(worksheet, properties, cancel);
+        await PopulateData(sheet, properties, cancel);
 
-        ApplyGlobalStyling(worksheet, properties);
-        worksheet.RangeUsed()!.SetAutoFilter();
-        AutoSizeColumns(worksheet, properties);
+        ApplyGlobalStyling(sheet, properties);
+        sheet.RangeUsed()!.SetAutoFilter();
+        AutoSizeColumns(sheet, properties);
     }
 
-    List<PropertyInfo> GetProperties() =>
+    List<Property<T>> GetProperties() =>
         // Order by display order if specified
         properties
             .OrderBy(_ =>
             {
                 var config = settings.GetValueOrDefault(_.Name);
-                return config?.Order ?? GetDisplayOrder(_) ?? int.MaxValue;
+                return config?.Order ?? _.Order ?? int.MaxValue;
             })
             .ToList();
 
-    void CreateHeaders(IXLWorksheet worksheet, List<PropertyInfo> properties)
+    void CreateHeaders(Sheet sheet, List<Property<T>> properties)
     {
         for (var i = 0; i < properties.Count; i++)
         {
             var property = properties[i];
-            var cell = worksheet.Cell(1, i + 1);
+            var cell = sheet.Cell(1, i + 1);
 
             cell.Value = GetHeaderText(property);
 
             ApplyHeaderStyling(cell, property);
         }
 
-        worksheet.SheetView.FreezeRows(1);
+        sheet.SheetView.FreezeRows(1);
     }
 
-    async Task PopulateData(IXLWorksheet worksheet, List<PropertyInfo> properties, Cancel cancel)
+    async Task PopulateData(Sheet sheet, List<Property<T>> properties, Cancel cancel)
     {
         //Skip header
         var startRow = 2;
@@ -106,10 +107,10 @@ public class SheetBuilder<T>(
             for (var colIndex = 0; colIndex < properties.Count; colIndex++)
             {
                 var property = properties[colIndex];
-                var cell = worksheet.Cell(xlRow, colIndex + 1);
+                var cell = sheet.Cell(xlRow, colIndex + 1);
 
                 cell.Style.Alignment.Vertical = XLAlignmentVerticalValues.Top;
-                var value = property.GetValue(item);
+                var value = property.Get(item);
                 SetCellValue(cell, value, property);
                 ApplyDataCellStyling(cell, property, rowIndex, value);
             }
@@ -118,7 +119,7 @@ public class SheetBuilder<T>(
         }
     }
 
-    void SetCellValue(IXLCell cell, object? value, PropertyInfo property)
+    void SetCellValue(IXLCell cell, object? value, Property<T> property)
     {
         if (value == null)
         {
@@ -136,7 +137,7 @@ public class SheetBuilder<T>(
                 return;
             }
 
-            if (BookBuilder.TryRender(property.PropertyType, value, out var result))
+            if (BookBuilder.TryRender(property.Type, value, out var result))
             {
                 cell.Value = result;
                 return;
@@ -158,6 +159,7 @@ public class SheetBuilder<T>(
                     {
                         cell.Style.DateFormat.Format = config.Format;
                     }
+
                     break;
 
                 case decimal decimalValue:
@@ -188,7 +190,7 @@ public class SheetBuilder<T>(
         }
     }
 
-    void ApplyHeaderStyling(IXLCell cell, PropertyInfo property)
+    void ApplyHeaderStyling(IXLCell cell, Property<T> property)
     {
         var config = settings.GetValueOrDefault(property.Name);
 
@@ -199,7 +201,7 @@ public class SheetBuilder<T>(
         config?.HeaderStyle?.Invoke(cell.Style);
     }
 
-    void ApplyDataCellStyling(IXLCell cell, PropertyInfo property, int rowIndex, object? value)
+    void ApplyDataCellStyling(IXLCell cell, Property<T> property, int rowIndex, object? value)
     {
         var style = cell.Style;
 
@@ -220,20 +222,20 @@ public class SheetBuilder<T>(
         config.ConditionalStyling?.Invoke(style, value);
     }
 
-    void ApplyGlobalStyling(IXLWorksheet worksheet, List<PropertyInfo> properties)
+    void ApplyGlobalStyling(Sheet sheet, List<Property<T>> properties)
     {
         if (globalStyle == null)
         {
             return;
         }
 
-        var range = worksheet.Range(1, 1, rowIndex + 1, properties.Count);
+        var range = sheet.Range(1, 1, rowIndex + 1, properties.Count);
         globalStyle(range.Style);
     }
 
-    void AutoSizeColumns(IXLWorksheet worksheet, List<PropertyInfo> properties)
+    void AutoSizeColumns(Sheet sheet, List<Property<T>> properties)
     {
-        worksheet.Columns().AdjustToContents();
+        sheet.Columns().AdjustToContents();
 
         // Apply specific column widths
         for (var i = 0; i < properties.Count; i++)
@@ -243,12 +245,12 @@ public class SheetBuilder<T>(
 
             if (config?.ColumnWidth.HasValue == true)
             {
-                worksheet.Column(i + 1).Width = config.ColumnWidth.Value;
+                sheet.Column(i + 1).Width = config.ColumnWidth.Value;
             }
         }
     }
 
-    string GetHeaderText(PropertyInfo property)
+    string GetHeaderText(Property<T> property)
     {
         var config = settings.GetValueOrDefault(property.Name);
         if (config?.HeaderText != null)
@@ -256,28 +258,7 @@ public class SheetBuilder<T>(
             return config.HeaderText;
         }
 
-        // Check for DisplayAttribute
-        var display = property.GetCustomAttribute<DisplayAttribute>();
-        if (display?.Name != null)
-        {
-            return display.Name;
-        }
-
-        // Check for DisplayNameAttribute
-        var displayName = property.GetCustomAttribute<DisplayNameAttribute>();
-        if (displayName != null)
-        {
-            return displayName.DisplayName;
-        }
-
-        // Use property name with spaces
-        return AddSpacesToCamelCase(property.Name);
-    }
-
-    static int? GetDisplayOrder(PropertyInfo property)
-    {
-        var attribute = property.GetCustomAttribute<DisplayAttribute>();
-        return attribute?.Order;
+        return property.DisplayName;
     }
 
     static string GetEnumDisplayText(Enum enumValue)
@@ -285,36 +266,5 @@ public class SheetBuilder<T>(
         var field = enumValue.GetType().GetField(enumValue.ToString());
         var attribute = field?.GetCustomAttribute<DisplayAttribute>();
         return attribute?.Name ?? enumValue.ToString();
-    }
-
-    static string GetPropertyName<TProperty>(Expression<Func<T, TProperty>> propertyExpression)
-    {
-        if (propertyExpression.Body is MemberExpression member)
-        {
-            return member.Member.Name;
-        }
-
-        throw new ArgumentException("Expression must be a property access", nameof(propertyExpression));
-    }
-
-    static string AddSpacesToCamelCase(string text)
-    {
-        if (string.IsNullOrEmpty(text))
-        {
-            return text;
-        }
-
-        var result = new StringBuilder();
-        for (var i = 0; i < text.Length; i++)
-        {
-            if (i > 0 && char.IsUpper(text[i]))
-            {
-                result.Append(' ');
-            }
-
-            result.Append(text[i]);
-        }
-
-        return result.ToString();
     }
 }

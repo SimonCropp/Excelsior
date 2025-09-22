@@ -6,7 +6,7 @@ public class BookBuilder(
     Action<IXLStyle>? headerStyle = null,
     Action<IXLStyle>? globalStyle = null)
 {
-    List<Func<XLWorkbook, Cancel, Task>> actions = [];
+    List<Func<Book, Cancel, Task>> actions = [];
 
     public SheetBuilder<T> AddSheet<T>(IEnumerable<T> data, string? name = null)
         where T : class =>
@@ -24,7 +24,7 @@ public class BookBuilder(
             alternateRowColor,
             headerStyle,
             globalStyle);
-        actions.Add((book,cancel) => converter.AddSheet(book,cancel));
+        actions.Add((book, cancel) => converter.AddSheet(book, cancel));
         return converter;
     }
 
@@ -34,7 +34,7 @@ public class BookBuilder(
         book.SaveAs(stream);
     }
 
-    public async Task<XLWorkbook> Build(Cancel cancel = default)
+    public async Task<Book> Build(Cancel cancel = default)
     {
         var book = new XLWorkbook();
         foreach (var action in actions)
@@ -49,19 +49,10 @@ public class BookBuilder(
     static Dictionary<Type, Func<object, string>> renders = [];
 
     public static void RenderFor<T>(Func<T, string> func) =>
-        renders[typeof(T)] = o => func((T) o);
+        renders[typeof(T)] = _ => func((T) _);
 
     internal static bool TryRender(Type memberType, object instance, [NotNullWhen(true)] out string? result)
     {
-        foreach (var (key, value) in renders)
-        {
-            if (key.IsInstanceOfType(instance))
-            {
-                result = value(instance);
-                return true;
-            }
-        }
-
         foreach (var (key, value) in renders)
         {
             if (key.IsAssignableTo(memberType))

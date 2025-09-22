@@ -158,10 +158,10 @@ public class Tests
 
     public class NullableTargets
     {
-        public required int? Number { get; set; }
-        public required string? String { get; set; }
-        public required DateTime? DateTime { get; set; }
-        public required AnEnum? Enum { get; set; }
+        public required int? Number { get; init; }
+        public required string? String { get; init; }
+        public required DateTime? DateTime { get; init; }
+        public required AnEnum? Enum { get; init; }
     }
 
     [Test]

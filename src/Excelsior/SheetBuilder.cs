@@ -12,11 +12,12 @@ public class SheetBuilder<T>(
     static SheetBuilder() =>
         properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance)
             .Where(_ => _.CanRead)
+            .Select(_=>new Property(_))
             .ToList();
 
     int rowIndex;
     Dictionary<string, ColumnSettings> settings = [];
-    static IReadOnlyList<PropertyInfo> properties;
+    static IReadOnlyList<Property> properties;
 
     /// <summary>
     /// Configure a column using property expression (type-safe)
@@ -74,9 +75,10 @@ public class SheetBuilder<T>(
         properties
             .OrderBy(_ =>
             {
-                var config = settings.GetValueOrDefault(_.Name);
-                return config?.Order ?? GetDisplayOrder(_) ?? int.MaxValue;
+                var config = settings.GetValueOrDefault(_.Info.Name);
+                return config?.Order ?? GetDisplayOrder(_.Info) ?? int.MaxValue;
             })
+            .Select(_=>_.Info)
             .ToList();
 
     void CreateHeaders(IXLWorksheet worksheet, List<PropertyInfo> properties)

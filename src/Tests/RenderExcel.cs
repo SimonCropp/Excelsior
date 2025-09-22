@@ -104,9 +104,23 @@ public static class ExcelRender
             Clipboard.Clear();
             Thread.Sleep(100);
             range.Copy();
-            range.CopyPicture(XlPictureAppearance.xlScreen, XlCopyPictureFormat.xlBitmap);
+            for (var i = 0; i < 5; i++)
+            {
+                try
+                {
+                    range.CopyPicture(XlPictureAppearance.xlScreen, XlCopyPictureFormat.xlBitmap);
 
-            Thread.Sleep(100);
+                    break;
+                }
+                catch
+                {
+                }
+                finally
+                {
+                    Thread.Sleep(100);
+                }
+            }
+
             using var image = Clipboard.GetImage()!;
             var imageFile = excelPath
                 .Replace(".DotNet.verified", "")

@@ -74,6 +74,62 @@ public class Tests
 
         await Verify(book);
     }
+    [Test]
+    public async Task Whitespace()
+    {
+        #region Whitespace
+
+        List<Employee> data =
+        [
+            new()
+            {
+                Id = 1,
+                Name = "    John Doe   ",
+                Email = "    john@company.com    ",
+                HireDate = new(2020, 1, 15),
+                Salary = 75000m,
+                IsActive = true,
+                Status = EmployeeStatus.FullTime
+            }
+        ];
+
+        var builder = new BookBuilder();
+        builder.AddSheet(data);
+
+        var book = await builder.Build();
+
+        #endregion
+
+        await Verify(book);
+    }
+    [Test]
+    public async Task DisableWhitespaceTrim()
+    {
+        #region DisableWhitespaceTrim
+
+        List<Employee> data =
+        [
+            new()
+            {
+                Id = 1,
+                Name = "    John Doe   ",
+                Email = "    john@company.com    ",
+                HireDate = new(2020, 1, 15),
+                Salary = 75000m,
+                IsActive = true,
+                Status = EmployeeStatus.FullTime
+            }
+        ];
+
+        var builder = new BookBuilder(trimWhitespace: false);
+        builder.AddSheet(data);
+
+        var book = await builder.Build();
+
+        #endregion
+
+        await Verify(book);
+    }
 
     [Test]
     public async Task Nulls()

@@ -108,7 +108,7 @@ builder.AddSheet(data);
 var stream = new MemoryStream();
 await builder.ToStream(stream);
 ```
-<sup><a href='/src/Tests/Tests.cs#L538-L546' title='Snippet source file'>snippet source</a> | <a href='#snippet-ToStream' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Tests/Tests.cs#L594-L602' title='Snippet source file'>snippet source</a> | <a href='#snippet-ToStream' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -123,7 +123,7 @@ builder.AddSheet(data)
         _ => _.Name,
         _ => _.HeaderText = "Employee Name");
 ```
-<sup><a href='/src/Tests/Tests.cs#L221-L229' title='Snippet source file'>snippet source</a> | <a href='#snippet-CustomHeaders' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Tests/Tests.cs#L277-L285' title='Snippet source file'>snippet source</a> | <a href='#snippet-CustomHeaders' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -143,7 +143,7 @@ builder.AddSheet(data)
     .Column(_ => _.Name, _ => _.Order = 2)
     .Column(_ => _.Salary, _ => _.Order = 3);
 ```
-<sup><a href='/src/Tests/Tests.cs#L241-L249' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnOrdering' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Tests/Tests.cs#L297-L305' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnOrdering' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -166,7 +166,7 @@ var builder = new BookBuilder(
     });
 builder.AddSheet(data);
 ```
-<sup><a href='/src/Tests/Tests.cs#L261-L272' title='Snippet source file'>snippet source</a> | <a href='#snippet-HeaderStyle' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Tests/Tests.cs#L317-L328' title='Snippet source file'>snippet source</a> | <a href='#snippet-HeaderStyle' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -189,7 +189,7 @@ var builder = new BookBuilder(
     });
 builder.AddSheet(data);
 ```
-<sup><a href='/src/Tests/Tests.cs#L284-L295' title='Snippet source file'>snippet source</a> | <a href='#snippet-GlobalStyle' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Tests/Tests.cs#L340-L351' title='Snippet source file'>snippet source</a> | <a href='#snippet-GlobalStyle' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -236,7 +236,7 @@ builder.AddSheet(employees)
             };
         });
 ```
-<sup><a href='/src/Tests/Tests.cs#L307-L342' title='Snippet source file'>snippet source</a> | <a href='#snippet-ConditionalStyling' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Tests/Tests.cs#L363-L398' title='Snippet source file'>snippet source</a> | <a href='#snippet-ConditionalStyling' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -262,7 +262,7 @@ builder.AddSheet(data)
         _ => _.HireDate,
         _ => _.Format = "yyyy-MM-dd");
 ```
-<sup><a href='/src/Tests/Tests.cs#L354-L368' title='Snippet source file'>snippet source</a> | <a href='#snippet-CustomRender' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Tests/Tests.cs#L410-L424' title='Snippet source file'>snippet source</a> | <a href='#snippet-CustomRender' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -279,7 +279,7 @@ builder.AddSheet(data)
 var builder = new BookBuilder();
 builder.AddSheet(employees, "Employee Report");
 ```
-<sup><a href='/src/Tests/Tests.cs#L380-L385' title='Snippet source file'>snippet source</a> | <a href='#snippet-WorksheetName' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Tests/Tests.cs#L436-L441' title='Snippet source file'>snippet source</a> | <a href='#snippet-WorksheetName' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -294,7 +294,7 @@ builder.AddSheet(data)
     .Column(_ => _.Email, _ => _.ColumnWidth = 30)
     .Column(_ => _.HireDate, _ => _.ColumnWidth = 15);
 ```
-<sup><a href='/src/Tests/Tests.cs#L397-L405' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnWidths' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Tests/Tests.cs#L453-L461' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnWidths' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -489,6 +489,74 @@ builder.AddSheet(data);
 #### Result:
 
 <img src="/src/Tests/ComplexTypeWithCustomRender.Test_Sheet1.png">
+
+
+### Whitespace
+
+By default whitespace is trimmed
+
+<!-- snippet: Whitespace -->
+<a id='snippet-Whitespace'></a>
+```cs
+List<Employee> data =
+[
+    new()
+    {
+        Id = 1,
+        Name = "    John Doe   ",
+        Email = "    john@company.com    ",
+        HireDate = new(2020, 1, 15),
+        Salary = 75000m,
+        IsActive = true,
+        Status = EmployeeStatus.FullTime
+    }
+];
+
+var builder = new BookBuilder();
+builder.AddSheet(data);
+
+var book = await builder.Build();
+```
+<sup><a href='/src/Tests/Tests.cs#L80-L101' title='Snippet source file'>snippet source</a> | <a href='#snippet-Whitespace' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+
+#### Result
+
+<img src="/src/Tests/Tests.Whitespace_Sheet1.png">
+
+
+#### Disable whitespace trimming
+
+<!-- snippet: DisableWhitespaceTrim -->
+<a id='snippet-DisableWhitespaceTrim'></a>
+```cs
+List<Employee> data =
+[
+    new()
+    {
+        Id = 1,
+        Name = "    John Doe   ",
+        Email = "    john@company.com    ",
+        HireDate = new(2020, 1, 15),
+        Salary = 75000m,
+        IsActive = true,
+        Status = EmployeeStatus.FullTime
+    }
+];
+
+var builder = new BookBuilder(trimWhitespace: false);
+builder.AddSheet(data);
+
+var book = await builder.Build();
+```
+<sup><a href='/src/Tests/Tests.cs#L108-L129' title='Snippet source file'>snippet source</a> | <a href='#snippet-DisableWhitespaceTrim' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+
+#### Result
+
+<img src="/src/Tests/Tests.DisableWhitespaceTrim_Sheet1.png">
 
 
 ## Icon

@@ -270,8 +270,7 @@ public class SheetBuilder<T>(
             return displayName.DisplayName;
         }
 
-        // Use property name with spaces
-        return AddSpacesToCamelCase(property.Name);
+        return CamelCase.Split(property.Name);
     }
 
     static int? GetDisplayOrder(PropertyInfo property)
@@ -295,26 +294,5 @@ public class SheetBuilder<T>(
         }
 
         throw new ArgumentException("Expression must be a property access", nameof(propertyExpression));
-    }
-
-    static string AddSpacesToCamelCase(string text)
-    {
-        if (string.IsNullOrEmpty(text))
-        {
-            return text;
-        }
-
-        var result = new StringBuilder();
-        for (var i = 0; i < text.Length; i++)
-        {
-            if (i > 0 && char.IsUpper(text[i]))
-            {
-                result.Append(' ');
-            }
-
-            result.Append(text[i]);
-        }
-
-        return result.ToString();
     }
 }

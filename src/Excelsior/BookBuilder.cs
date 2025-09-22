@@ -49,7 +49,7 @@ public class BookBuilder(
     static Dictionary<Type, Func<object, string>> renders = [];
 
     public static void RenderFor<T>(Func<T, string> func) =>
-        renders[typeof(T)] = o => func((T) o);
+        renders[typeof(T)] = _ => func((T) _);
 
     internal static bool TryRender(Type memberType, object instance, [NotNullWhen(true)] out string? result)
     {

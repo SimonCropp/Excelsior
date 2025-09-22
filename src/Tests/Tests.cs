@@ -52,14 +52,16 @@ public class Tests
                 Number = null,
                 String = null,
                 DateTime = null,
-                Enum = null
+                Enum = null,
+                Bool = null
             },
             new()
             {
                 Number = 1,
                 String = "value",
                 DateTime = new DateTime(2020, 1, 1),
-                Enum = AnEnum.Value
+                Enum = AnEnum.Value,
+                Bool = true
             },
         ];
 
@@ -81,14 +83,16 @@ public class Tests
                 Number = null,
                 String = null,
                 DateTime = null,
-                Enum = null
+                Enum = null,
+                Bool = null
             },
             new()
             {
                 Number = 1,
                 String = "value",
                 DateTime = new DateTime(2020, 1, 1),
-                Enum = AnEnum.Value
+                Enum = AnEnum.Value,
+                Bool = true
             },
         ];
 
@@ -146,6 +150,17 @@ public class Tests
                 };
                 _.Render = _ => _?.ToString();
             });
+        sheet.Column(
+            _ => _.Bool,
+            _ =>
+            {
+                _.ConditionalStyling = (style, value) =>
+                {
+                    Debug.WriteLine(style);
+                    Debug.WriteLine(value);
+                };
+                _.Render = _ => _?.ToString().ToUpper();
+            });
         var book = await builder.Build();
 
         await Verify(book);
@@ -162,6 +177,7 @@ public class Tests
         public required string? String { get; init; }
         public required DateTime? DateTime { get; init; }
         public required AnEnum? Enum { get; init; }
+        public required bool? Bool { get; init; }
     }
 
     [Test]

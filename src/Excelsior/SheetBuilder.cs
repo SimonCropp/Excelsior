@@ -122,57 +122,97 @@ public class SheetBuilder<T>(
 
     void SetCellValue(Cell cell, object? value, Property<T> property)
     {
-        var config = settings.GetValueOrDefault(property.Name);
-        if (value == null)
+        if (settings.TryGetValue(property.Name, out var config))
         {
-            cell.Value = config?.NullDisplayText ?? "";
-            return;
-        }
-
-        if (config?.Render != null)
-        {
-            cell.Value = config.Render(value);
-            return;
-        }
-
-        if (BookBuilder.TryRender(property.Type, value, out var result))
-        {
-            cell.Value = result;
-            return;
-        }
-
-        if (value is DateTime dateTime)
-        {
-            cell.Value = dateTime;
-            if (config?.Format != null)
+            if (value == null)
             {
-                cell.Style.DateFormat.Format = config.Format;
+                cell.Value = config.NullDisplayText;
+                return;
             }
 
-            return;
-        }
-
-        if (value is bool boolean)
-        {
-            cell.Value = boolean.ToString();
-            return;
-        }
-
-        if (value is Enum enumValue)
-        {
-            cell.Value = GetEnumDisplayText(enumValue);
-            return;
-        }
-
-        if (property.IsNumber)
-        {
-            cell.Value = Convert.ToDouble(value);
-            if (config?.Format != null)
+            if (config.Render != null)
             {
-                cell.Style.NumberFormat.Format = config.Format;
+                cell.Value = config.Render(value);
+                return;
             }
 
-            return;
+            if (BookBuilder.TryRender(property.Type, value, out var result))
+            {
+                cell.Value = result;
+                return;
+            }
+
+            if (value is DateTime dateTime)
+            {
+                cell.Value = dateTime;
+                if (config.Format != null)
+                {
+                    cell.Style.DateFormat.Format = config.Format;
+                }
+
+                return;
+            }
+
+            if (value is bool boolean)
+            {
+                cell.Value = boolean.ToString();
+                return;
+            }
+
+            if (value is Enum enumValue)
+            {
+                cell.Value = GetEnumDisplayText(enumValue);
+                return;
+            }
+
+            if (property.IsNumber)
+            {
+                cell.Value = Convert.ToDouble(value);
+                if (config.Format != null)
+                {
+                    cell.Style.NumberFormat.Format = config.Format;
+                }
+
+                return;
+            }
+        }
+        else
+        {
+            if (value == null)
+            {
+                cell.Value = "";
+                return;
+            }
+
+            if (BookBuilder.TryRender(property.Type, value, out var result))
+            {
+                cell.Value = result;
+                return;
+            }
+
+            if (value is DateTime dateTime)
+            {
+                cell.Value = dateTime;
+                return;
+            }
+
+            if (value is bool boolean)
+            {
+                cell.Value = boolean.ToString();
+                return;
+            }
+
+            if (value is Enum enumValue)
+            {
+                cell.Value = GetEnumDisplayText(enumValue);
+                return;
+            }
+
+            if (property.IsNumber)
+            {
+                cell.Value = Convert.ToDouble(value);
+                return;
+            }
         }
 
         cell.Value = value.ToString();

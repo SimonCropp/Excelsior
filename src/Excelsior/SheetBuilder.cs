@@ -129,7 +129,6 @@ public class SheetBuilder<T>(
             return;
         }
 
-        // Apply custom formatter if provided
         if (config?.Render != null)
         {
             cell.Value = config.Render(value);
@@ -177,11 +176,11 @@ public class SheetBuilder<T>(
                 break;
 
             case bool boolean:
-                cell.Value = config?.Render?.Invoke(boolean) ?? boolean.ToString();
+                cell.Value = boolean.ToString();
                 break;
 
             case Enum enumValue:
-                cell.Value = config?.Render?.Invoke(enumValue) ?? GetEnumDisplayText(enumValue);
+                cell.Value = GetEnumDisplayText(enumValue);
                 break;
 
             default:

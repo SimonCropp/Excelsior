@@ -119,7 +119,7 @@ public class SheetBuilder<T>(
         }
     }
 
-    void SetCellValue(IXLCell cell, object? value, Property<T> property)
+    void SetCellValue(Cell cell, object? value, Property<T> property)
     {
         if (value == null)
         {
@@ -190,7 +190,7 @@ public class SheetBuilder<T>(
         }
     }
 
-    void ApplyHeaderStyling(IXLCell cell, Property<T> property)
+    void ApplyHeaderStyling(Cell cell, Property<T> property)
     {
         var config = settings.GetValueOrDefault(property.Name);
 
@@ -201,12 +201,12 @@ public class SheetBuilder<T>(
         config?.HeaderStyle?.Invoke(cell.Style);
     }
 
-    void ApplyDataCellStyling(IXLCell cell, Property<T> property, int rowIndex, object? value)
+    void ApplyDataCellStyling(Cell cell, Property<T> property, int index, object? value)
     {
         var style = cell.Style;
 
         // Apply alternating row colors
-        if (useAlternatingRowColors && rowIndex % 2 == 1)
+        if (useAlternatingRowColors && index % 2 == 1)
         {
             style.Fill.BackgroundColor = alternateRowColor;
         }

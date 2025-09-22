@@ -6,7 +6,8 @@ public class SheetBuilder<T>(
     bool useAlternatingRowColors,
     XLColor? alternateRowColor,
     Action<IXLStyle>? headerStyle,
-    Action<IXLStyle>? globalStyle)
+    Action<IXLStyle>? globalStyle,
+    bool trimWhitespace)
     where T : class
 {
     static SheetBuilder() =>
@@ -215,7 +216,59 @@ public class SheetBuilder<T>(
             }
         }
 
-        cell.Value = value.ToString();
+        if (value is IEnumerable<string> enumerable)
+        {
+            WriteEnumerable(cell, enumerable);
+            return;
+        }
+
+        var valueAsString = value.ToString();
+        if (valueAsString!= null && trimWhitespace)
+        {
+            valueAsString = valueAsString.Trim();
+        }
+        cell.Value = valueAsString;
+    }
+
+    void WriteEnumerable(Cell cell, IEnumerable<string> enumerable)
+    {
+        cell.Style.Alignment.WrapText = true;
+        var rich = cell.CreateRichText();
+        var list = enumerable.ToList();
+        for (var index = 0; index < list.Count; index++)
+        {
+            var item = list[index];
+            rich.AddText("• ").SetBold();
+            var builder = new StringBuilder();
+            foreach (var line in item.AsSpan().EnumerateLines())
+            {
+                if (trimWhitespace)
+                {
+                    if (line.Length == 0)
+                    {
+                        continue;
+                    }
+                    builder.Append(line.Trim());
+                }
+                else
+                {
+                    builder.Append(line);
+                }
+
+                builder.Append("\n   ");
+            }
+
+            if (index < list.Count - 1)
+            {
+                builder.Length -= 3;
+            }
+            else
+            {
+                builder.Length -= 4;
+            }
+
+            rich.AddText(builder.ToString());
+        }
     }
 
     void ApplyHeaderStyling(Cell cell, Property<T> property)

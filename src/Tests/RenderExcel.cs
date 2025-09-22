@@ -9,7 +9,7 @@ using Application = Microsoft.Office.Interop.Excel.Application;
 
 [TestFixture]
 [Apartment(ApartmentState.STA)]
-public class ConvertExcelSnapshots
+public class RenderExcel
 {
     [Test]
     [Explicit]

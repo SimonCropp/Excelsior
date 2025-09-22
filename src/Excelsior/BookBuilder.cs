@@ -4,7 +4,8 @@ public class BookBuilder(
     bool useAlternatingRowColors = false,
     XLColor? alternateRowColor = null,
     Action<IXLStyle>? headerStyle = null,
-    Action<IXLStyle>? globalStyle = null)
+    Action<IXLStyle>? globalStyle = null,
+    bool trimWhitespace = true)
 {
     List<Func<Book, Cancel, Task>> actions = [];
 
@@ -23,7 +24,8 @@ public class BookBuilder(
             useAlternatingRowColors,
             alternateRowColor,
             headerStyle,
-            globalStyle);
+            globalStyle,
+            trimWhitespace);
         actions.Add((book, cancel) => converter.AddSheet(book, cancel));
         return converter;
     }

@@ -5,6 +5,7 @@ class Property
     public Property(PropertyInfo info)
     {
         Info = info;
+        Type = info.PropertyType;
         Name = info.Name;
 
         var attribute = info.GetCustomAttribute<DisplayAttribute>();
@@ -19,6 +20,7 @@ class Property
     public int? Order { get; }
 
     public PropertyInfo Info { get; }
+    public Type Type { get; }
 
     static string GetDisplayName(PropertyInfo info)
     {

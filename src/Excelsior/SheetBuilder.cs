@@ -75,7 +75,7 @@ public class SheetBuilder<T>(
         properties
             .OrderBy(_ =>
             {
-                var config = settings.GetValueOrDefault(_.Info.Name);
+                var config = settings.GetValueOrDefault(_.Name);
                 return config?.Order ?? _.Order ?? int.MaxValue;
             })
             .ToList();
@@ -137,7 +137,7 @@ public class SheetBuilder<T>(
                 return;
             }
 
-            if (BookBuilder.TryRender(property.Info.PropertyType, value, out var result))
+            if (BookBuilder.TryRender(property.Type, value, out var result))
             {
                 cell.Value = result;
                 return;

@@ -126,68 +126,67 @@ public class SheetBuilder<T>(
         if (value == null)
         {
             cell.Value = config?.NullDisplayText ?? "";
+            return;
         }
-        else
+
+        // Apply custom formatter if provided
+        if (config?.Render != null)
         {
-            // Apply custom formatter if provided
-            if (config?.Render != null)
-            {
-                cell.Value = config.Render(value);
-                return;
-            }
+            cell.Value = config.Render(value);
+            return;
+        }
 
-            if (BookBuilder.TryRender(property.Type, value, out var result))
-            {
-                cell.Value = result;
-                return;
-            }
+        if (BookBuilder.TryRender(property.Type, value, out var result))
+        {
+            cell.Value = result;
+            return;
+        }
 
-            void AssignNumberFormat()
+        void AssignNumberFormat()
+        {
+            if (config?.Format != null)
             {
+                cell.Style.NumberFormat.Format = config.Format;
+            }
+        }
+
+        switch (value)
+        {
+            case DateTime dateTime:
+                cell.Value = dateTime;
                 if (config?.Format != null)
                 {
-                    cell.Style.NumberFormat.Format = config.Format;
+                    cell.Style.DateFormat.Format = config.Format;
                 }
-            }
 
-            switch (value)
-            {
-                case DateTime dateTime:
-                    cell.Value = dateTime;
-                    if (config?.Format != null)
-                    {
-                        cell.Style.DateFormat.Format = config.Format;
-                    }
+                break;
 
-                    break;
+            case decimal decimalValue:
+                cell.Value = decimalValue;
+                AssignNumberFormat();
+                break;
 
-                case decimal decimalValue:
-                    cell.Value = decimalValue;
-                    AssignNumberFormat();
-                    break;
+            case double doubleValue:
+                cell.Value = doubleValue;
+                AssignNumberFormat();
+                break;
 
-                case double doubleValue:
-                    cell.Value = doubleValue;
-                    AssignNumberFormat();
-                    break;
+            case float floatValue:
+                cell.Value = floatValue;
+                AssignNumberFormat();
+                break;
 
-                case float floatValue:
-                    cell.Value = floatValue;
-                    AssignNumberFormat();
-                    break;
+            case bool boolean:
+                cell.Value = config?.Render?.Invoke(boolean) ?? boolean.ToString();
+                break;
 
-                case bool boolean:
-                    cell.Value = config?.Render?.Invoke(boolean) ?? boolean.ToString();
-                    break;
+            case Enum enumValue:
+                cell.Value = config?.Render?.Invoke(enumValue) ?? GetEnumDisplayText(enumValue);
+                break;
 
-                case Enum enumValue:
-                    cell.Value = config?.Render?.Invoke(enumValue) ?? GetEnumDisplayText(enumValue);
-                    break;
-
-                default:
-                    cell.Value = value.ToString();
-                    break;
-            }
+            default:
+                cell.Value = value.ToString();
+                break;
         }
     }
 

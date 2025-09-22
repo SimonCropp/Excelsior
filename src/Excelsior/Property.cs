@@ -11,6 +11,7 @@
     public string Name { get; } = info.Name;
     public int? Order { get; } = GetOrder(info);
     public Type Type { get; } = info.PropertyType;
+    public bool IsNumber { get; } = info.PropertyType.IsNumericType();
 
     static string GetDisplayName(PropertyInfo info)
     {

@@ -17,6 +17,7 @@ public class ComplexTypeWithToString
     [Test]
     public async Task Test()
     {
+        // ReSharper disable once ArrangeObjectCreationWhenTypeNotEvident
         #region ComplexTypeWithToString
 
         List<Person> data =

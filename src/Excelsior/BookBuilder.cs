@@ -46,7 +46,7 @@ public class BookBuilder(
         return book;
     }
 
-    static Dictionary<Type, Func<object, string>> renders = new();
+    static Dictionary<Type, Func<object, string>> renders = [];
 
     public static void RenderFor<T>(Func<T, string> func) =>
         renders[typeof(T)] = o => func((T) o);

@@ -13,6 +13,7 @@ public class ComplexTypeWithCustomRender
     [Test]
     public async Task Test()
     {
+        // ReSharper disable once ArrangeObjectCreationWhenTypeNotEvident
         #region ComplexTypeWithCustomRender
 
         List<Person> data =

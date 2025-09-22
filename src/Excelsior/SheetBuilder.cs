@@ -12,7 +12,7 @@ public class SheetBuilder<T>(
     static SheetBuilder() =>
         properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance)
             .Where(_ => _.CanRead)
-            .Select(_=>new Property(_))
+            .Select(_ => new Property(_))
             .ToList();
 
     int rowIndex;
@@ -51,7 +51,7 @@ public class SheetBuilder<T>(
             Format = config.Format,
             NullDisplayText = config.NullDisplayText,
             Render = render,
-        } ;
+        };
         return this;
     }
 
@@ -76,9 +76,9 @@ public class SheetBuilder<T>(
             .OrderBy(_ =>
             {
                 var config = settings.GetValueOrDefault(_.Info.Name);
-                return config?.Order ?? GetDisplayOrder(_.Info) ?? int.MaxValue;
+                return config?.Order ?? _.Order ?? int.MaxValue;
             })
-            .Select(_=>_.Info)
+            .Select(_ => _.Info)
             .ToList();
 
     void CreateHeaders(IXLWorksheet worksheet, List<PropertyInfo> properties)
@@ -160,6 +160,7 @@ public class SheetBuilder<T>(
                     {
                         cell.Style.DateFormat.Format = config.Format;
                     }
+
                     break;
 
                 case decimal decimalValue:
@@ -258,6 +259,11 @@ public class SheetBuilder<T>(
             return config.HeaderText;
         }
 
+        return GetDisplayName(property);
+    }
+
+    private static string GetDisplayName(PropertyInfo property)
+    {
         // Check for DisplayAttribute
         var display = property.GetCustomAttribute<DisplayAttribute>();
         if (display?.Name != null)
@@ -273,12 +279,6 @@ public class SheetBuilder<T>(
         }
 
         return CamelCase.Split(property.Name);
-    }
-
-    static int? GetDisplayOrder(PropertyInfo property)
-    {
-        var attribute = property.GetCustomAttribute<DisplayAttribute>();
-        return attribute?.Order;
     }
 
     static string GetEnumDisplayText(Enum enumValue)

@@ -141,14 +141,6 @@ public class SheetBuilder<T>(
             return;
         }
 
-        void AssignNumberFormat()
-        {
-            if (config?.Format != null)
-            {
-                cell.Style.NumberFormat.Format = config.Format;
-            }
-        }
-
         if (value is DateTime dateTime)
         {
             cell.Value = dateTime;
@@ -157,27 +149,6 @@ public class SheetBuilder<T>(
                 cell.Style.DateFormat.Format = config.Format;
             }
 
-            return;
-        }
-
-        if (value is decimal decimalValue)
-        {
-            cell.Value = decimalValue;
-            AssignNumberFormat();
-            return;
-        }
-
-        if (value is double doubleValue)
-        {
-            cell.Value = doubleValue;
-            AssignNumberFormat();
-            return;
-        }
-
-        if (value is float floatValue)
-        {
-            cell.Value = floatValue;
-            AssignNumberFormat();
             return;
         }
 
@@ -190,6 +161,17 @@ public class SheetBuilder<T>(
         if (value is Enum enumValue)
         {
             cell.Value = GetEnumDisplayText(enumValue);
+            return;
+        }
+
+        if (property.IsNumber)
+        {
+            cell.Value = Convert.ToDouble(value);
+            if (config?.Format != null)
+            {
+                cell.Style.NumberFormat.Format = config.Format;
+            }
+
             return;
         }
 

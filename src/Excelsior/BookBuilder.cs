@@ -55,15 +55,6 @@ public class BookBuilder(
     {
         foreach (var (key, value) in renders)
         {
-            if (key.IsInstanceOfType(instance))
-            {
-                result = value(instance);
-                return true;
-            }
-        }
-
-        foreach (var (key, value) in renders)
-        {
             if (key.IsAssignableTo(memberType))
             {
                 result = value(instance);

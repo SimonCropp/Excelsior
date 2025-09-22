@@ -192,13 +192,13 @@ public class SheetBuilder<T>(
 
     void ApplyHeaderStyling(Cell cell, Property<T> property)
     {
-        var config = settings.GetValueOrDefault(property.Name);
-
         // Apply global header styling
         headerStyle?.Invoke(cell.Style);
 
-        // Apply column-specific header styling
-        config?.HeaderStyle?.Invoke(cell.Style);
+        if (settings.TryGetValue(property.Name, out var config))
+        {
+            config.HeaderStyle?.Invoke(cell.Style);
+        }
     }
 
     void ApplyDataCellStyling(Cell cell, Property<T> property, int index, object? value)

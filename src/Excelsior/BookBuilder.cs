@@ -24,7 +24,7 @@ public class BookBuilder(
             alternateRowColor,
             headerStyle,
             globalStyle);
-        actions.Add((book,cancel) => converter.AddSheet(book,cancel));
+        actions.Add((book, cancel) => converter.AddSheet(book, cancel));
         return converter;
     }
 

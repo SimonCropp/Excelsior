@@ -109,7 +109,7 @@ public static class ExcelRender
             Thread.Sleep(100);
             using var image = Clipboard.GetImage()!;
             var imageFile = excelPath
-                .Replace(".verified", "")
+                .Replace(".DotNet.verified", "")
                 .Replace(".xlsx", $"_{sheet.Name}.png");
             image.Save(imageFile, ImageFormat.Png);
         }

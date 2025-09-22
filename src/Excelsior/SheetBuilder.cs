@@ -223,7 +223,8 @@ public class SheetBuilder<T>(
         }
 
         var valueAsString = value.ToString();
-        if (valueAsString!= null && trimWhitespace)
+        // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
+        if (valueAsString != null && trimWhitespace)
         {
             valueAsString = valueAsString.Trim();
         }

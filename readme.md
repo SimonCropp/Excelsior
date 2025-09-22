@@ -94,7 +94,7 @@ var book = await builder.Build();
 
 ### Result:
 
-<img src="/src/Tests/Tests.Simple.DotNet_Sheet1.png">
+<img src="/src/Tests/Tests.Simple_Sheet1.png">
 
 
 ### Saving to a stream
@@ -129,7 +129,7 @@ builder.AddSheet(data)
 
 #### Result:
 
-<img src="/src/Tests/Tests.CustomHeaders.DotNet_Sheet1.png">
+<img src="/src/Tests/Tests.CustomHeaders_Sheet1.png">
 
 
 ### Column Ordering
@@ -149,7 +149,7 @@ builder.AddSheet(data)
 
 #### Result:
 
-<img src="/src/Tests/Tests.ColumnOrdering.DotNet_Sheet1.png">
+<img src="/src/Tests/Tests.ColumnOrdering_Sheet1.png">
 
 
 ### Header Style
@@ -172,7 +172,7 @@ builder.AddSheet(data);
 
 #### Result:
 
-<img src="/src/Tests/Tests.HeaderStyle.DotNet_Sheet1.png">
+<img src="/src/Tests/Tests.HeaderStyle_Sheet1.png">
 
 
 ### Global Style
@@ -195,7 +195,7 @@ builder.AddSheet(data);
 
 #### Result:
 
-<img src="/src/Tests/Tests.GlobalStyle.DotNet_Sheet1.png">
+<img src="/src/Tests/Tests.GlobalStyle_Sheet1.png">
 
 
 ### Conditional Styling
@@ -242,7 +242,7 @@ builder.AddSheet(employees)
 
 #### Result:
 
-<img src="/src/Tests/Tests.ConditionalStyling.DotNet_Sheet1.png">
+<img src="/src/Tests/Tests.ConditionalStyling_Sheet1.png">
 
 
 ### Render
@@ -268,7 +268,7 @@ builder.AddSheet(data)
 
 #### Result:
 
-<img src="/src/Tests/Tests.Render.DotNet_Sheet1.png">
+<img src="/src/Tests/Tests.Render_Sheet1.png">
 
 
 ### Worksheet Name
@@ -300,7 +300,7 @@ builder.AddSheet(data)
 
 #### Result:
 
-<img src="/src/Tests/Tests.ColumnWidths.DotNet_Sheet1.png">
+<img src="/src/Tests/Tests.ColumnWidths_Sheet1.png">
 
 
 ### Complex Types
@@ -457,7 +457,7 @@ builder.AddSheet(data);
 
 #### Result:
 
-<img src="/src/Tests/ComplexTypeWithToString.Test.DotNet_Sheet1.png">
+<img src="/src/Tests/ComplexTypeWithToString.Test_Sheet1.png">
 
 
 ### Custom render for Complex Types
@@ -488,7 +488,7 @@ builder.AddSheet(data);
 
 #### Result:
 
-<img src="/src/Tests/ComplexTypeWithCustomRender.Test.DotNet_Sheet1.png">
+<img src="/src/Tests/ComplexTypeWithCustomRender.Test_Sheet1.png">
 
 
 ## Icon

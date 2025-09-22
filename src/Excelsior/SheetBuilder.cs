@@ -149,44 +149,51 @@ public class SheetBuilder<T>(
             }
         }
 
-        switch (value)
+        if (value is DateTime dateTime)
         {
-            case DateTime dateTime:
-                cell.Value = dateTime;
-                if (config?.Format != null)
-                {
-                    cell.Style.DateFormat.Format = config.Format;
-                }
+            cell.Value = dateTime;
+            if (config?.Format != null)
+            {
+                cell.Style.DateFormat.Format = config.Format;
+            }
 
-                break;
-
-            case decimal decimalValue:
-                cell.Value = decimalValue;
-                AssignNumberFormat();
-                break;
-
-            case double doubleValue:
-                cell.Value = doubleValue;
-                AssignNumberFormat();
-                break;
-
-            case float floatValue:
-                cell.Value = floatValue;
-                AssignNumberFormat();
-                break;
-
-            case bool boolean:
-                cell.Value = boolean.ToString();
-                break;
-
-            case Enum enumValue:
-                cell.Value = GetEnumDisplayText(enumValue);
-                break;
-
-            default:
-                cell.Value = value.ToString();
-                break;
+            return;
         }
+
+        if (value is decimal decimalValue)
+        {
+            cell.Value = decimalValue;
+            AssignNumberFormat();
+            return;
+        }
+
+        if (value is double doubleValue)
+        {
+            cell.Value = doubleValue;
+            AssignNumberFormat();
+            return;
+        }
+
+        if (value is float floatValue)
+        {
+            cell.Value = floatValue;
+            AssignNumberFormat();
+            return;
+        }
+
+        if (value is bool boolean)
+        {
+            cell.Value = boolean.ToString();
+            return;
+        }
+
+        if (value is Enum enumValue)
+        {
+            cell.Value = GetEnumDisplayText(enumValue);
+            return;
+        }
+
+        cell.Value = value.ToString();
     }
 
     void ApplyHeaderStyling(Cell cell, Property<T> property)

@@ -12,12 +12,12 @@ public class SheetBuilder<T>(
     static SheetBuilder() =>
         properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance)
             .Where(_ => _.CanRead)
-            .Select(_ => new Property(_))
+            .Select(_ => new Property<T>(_))
             .ToList();
 
     int rowIndex;
     Dictionary<string, ColumnSettings> settings = [];
-    static IReadOnlyList<Property> properties;
+    static IReadOnlyList<Property<T>> properties;
 
     /// <summary>
     /// Configure a column using property expression (type-safe)
@@ -55,22 +55,22 @@ public class SheetBuilder<T>(
         return this;
     }
 
-    internal async Task AddSheet(XLWorkbook workbook, Cancel cancel)
+    internal async Task AddSheet(Book book, Cancel cancel)
     {
-        var worksheet = workbook.Worksheets.Add(name);
+        var sheet = book.Worksheets.Add(name);
 
         var properties = GetProperties();
 
-        CreateHeaders(worksheet, properties);
+        CreateHeaders(sheet, properties);
 
-        await PopulateData(worksheet, properties, cancel);
+        await PopulateData(sheet, properties, cancel);
 
-        ApplyGlobalStyling(worksheet, properties);
-        worksheet.RangeUsed()!.SetAutoFilter();
-        AutoSizeColumns(worksheet, properties);
+        ApplyGlobalStyling(sheet, properties);
+        sheet.RangeUsed()!.SetAutoFilter();
+        AutoSizeColumns(sheet, properties);
     }
 
-    List<Property> GetProperties() =>
+    List<Property<T>> GetProperties() =>
         // Order by display order if specified
         properties
             .OrderBy(_ =>
@@ -80,22 +80,22 @@ public class SheetBuilder<T>(
             })
             .ToList();
 
-    void CreateHeaders(IXLWorksheet worksheet, List<Property> properties)
+    void CreateHeaders(Sheet sheet, List<Property<T>> properties)
     {
         for (var i = 0; i < properties.Count; i++)
         {
             var property = properties[i];
-            var cell = worksheet.Cell(1, i + 1);
+            var cell = sheet.Cell(1, i + 1);
 
             cell.Value = GetHeaderText(property);
 
             ApplyHeaderStyling(cell, property);
         }
 
-        worksheet.SheetView.FreezeRows(1);
+        sheet.SheetView.FreezeRows(1);
     }
 
-    async Task PopulateData(IXLWorksheet worksheet, List<Property> properties, Cancel cancel)
+    async Task PopulateData(Sheet sheet, List<Property<T>> properties, Cancel cancel)
     {
         //Skip header
         var startRow = 2;
@@ -107,10 +107,10 @@ public class SheetBuilder<T>(
             for (var colIndex = 0; colIndex < properties.Count; colIndex++)
             {
                 var property = properties[colIndex];
-                var cell = worksheet.Cell(xlRow, colIndex + 1);
+                var cell = sheet.Cell(xlRow, colIndex + 1);
 
                 cell.Style.Alignment.Vertical = XLAlignmentVerticalValues.Top;
-                var value = property.Info.GetValue(item);
+                var value = property.Get(item);
                 SetCellValue(cell, value, property);
                 ApplyDataCellStyling(cell, property, rowIndex, value);
             }
@@ -119,7 +119,7 @@ public class SheetBuilder<T>(
         }
     }
 
-    void SetCellValue(IXLCell cell, object? value, Property property)
+    void SetCellValue(IXLCell cell, object? value, Property<T> property)
     {
         if (value == null)
         {
@@ -190,7 +190,7 @@ public class SheetBuilder<T>(
         }
     }
 
-    void ApplyHeaderStyling(IXLCell cell, Property property)
+    void ApplyHeaderStyling(IXLCell cell, Property<T> property)
     {
         var config = settings.GetValueOrDefault(property.Name);
 
@@ -201,7 +201,7 @@ public class SheetBuilder<T>(
         config?.HeaderStyle?.Invoke(cell.Style);
     }
 
-    void ApplyDataCellStyling(IXLCell cell, Property property, int rowIndex, object? value)
+    void ApplyDataCellStyling(IXLCell cell, Property<T> property, int rowIndex, object? value)
     {
         var style = cell.Style;
 
@@ -222,20 +222,20 @@ public class SheetBuilder<T>(
         config.ConditionalStyling?.Invoke(style, value);
     }
 
-    void ApplyGlobalStyling(IXLWorksheet worksheet, List<Property> properties)
+    void ApplyGlobalStyling(Sheet sheet, List<Property<T>> properties)
     {
         if (globalStyle == null)
         {
             return;
         }
 
-        var range = worksheet.Range(1, 1, rowIndex + 1, properties.Count);
+        var range = sheet.Range(1, 1, rowIndex + 1, properties.Count);
         globalStyle(range.Style);
     }
 
-    void AutoSizeColumns(IXLWorksheet worksheet, List<Property> properties)
+    void AutoSizeColumns(Sheet sheet, List<Property<T>> properties)
     {
-        worksheet.Columns().AdjustToContents();
+        sheet.Columns().AdjustToContents();
 
         // Apply specific column widths
         for (var i = 0; i < properties.Count; i++)
@@ -245,12 +245,12 @@ public class SheetBuilder<T>(
 
             if (config?.ColumnWidth.HasValue == true)
             {
-                worksheet.Column(i + 1).Width = config.ColumnWidth.Value;
+                sheet.Column(i + 1).Width = config.ColumnWidth.Value;
             }
         }
     }
 
-    string GetHeaderText(Property property)
+    string GetHeaderText(Property<T> property)
     {
         var config = settings.GetValueOrDefault(property.Name);
         if (config?.HeaderText != null)

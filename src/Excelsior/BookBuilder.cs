@@ -6,7 +6,7 @@ public class BookBuilder(
     Action<IXLStyle>? headerStyle = null,
     Action<IXLStyle>? globalStyle = null)
 {
-    List<Func<XLWorkbook, Cancel, Task>> actions = [];
+    List<Func<Book, Cancel, Task>> actions = [];
 
     public SheetBuilder<T> AddSheet<T>(IEnumerable<T> data, string? name = null)
         where T : class =>
@@ -34,7 +34,7 @@ public class BookBuilder(
         book.SaveAs(stream);
     }
 
-    public async Task<XLWorkbook> Build(Cancel cancel = default)
+    public async Task<Book> Build(Cancel cancel = default)
     {
         var book = new XLWorkbook();
         foreach (var action in actions)

@@ -1,26 +1,16 @@
-﻿namespace Excelsior;
-
-class Property
+﻿class Property<T>(PropertyInfo info)
 {
-    public Property(PropertyInfo info)
+    static int? GetOrder(PropertyInfo info)
     {
-        Info = info;
-        Type = info.PropertyType;
-        Name = info.Name;
-
         var attribute = info.GetCustomAttribute<DisplayAttribute>();
-        Order = attribute?.Order;
-        DisplayName = GetDisplayName(info);
+        return attribute?.Order;
     }
 
-    public string DisplayName { get; }
-
-    public string Name { get; }
-
-    public int? Order { get; }
-
-    public PropertyInfo Info { get; }
-    public Type Type { get; }
+    public Func<T, object?> Get { get; } = CreateGet(info);
+    public string DisplayName { get; } = GetDisplayName(info);
+    public string Name { get; } = info.Name;
+    public int? Order { get; } = GetOrder(info);
+    public Type Type { get; } = info.PropertyType;
 
     static string GetDisplayName(PropertyInfo info)
     {
@@ -37,5 +27,14 @@ class Property
         }
 
         return CamelCase.Split(info.Name);
+    }
+
+    static ParameterExpression targetParam = Expression.Parameter(typeof(T));
+
+    static Func<T, object?> CreateGet(PropertyInfo info)
+    {
+        var property = Expression.Property(targetParam, info);
+        var box = Expression.Convert(property, typeof(object));
+        return Expression.Lambda<Func<T, object?>>(box, targetParam).Compile();
     }
 }

@@ -70,7 +70,7 @@ public class SheetBuilder<T>(
         AutoSizeColumns(worksheet, properties);
     }
 
-    List<PropertyInfo> GetProperties() =>
+    List<Property> GetProperties() =>
         // Order by display order if specified
         properties
             .OrderBy(_ =>
@@ -78,10 +78,9 @@ public class SheetBuilder<T>(
                 var config = settings.GetValueOrDefault(_.Info.Name);
                 return config?.Order ?? _.Order ?? int.MaxValue;
             })
-            .Select(_ => _.Info)
             .ToList();
 
-    void CreateHeaders(IXLWorksheet worksheet, List<PropertyInfo> properties)
+    void CreateHeaders(IXLWorksheet worksheet, List<Property> properties)
     {
         for (var i = 0; i < properties.Count; i++)
         {
@@ -96,7 +95,7 @@ public class SheetBuilder<T>(
         worksheet.SheetView.FreezeRows(1);
     }
 
-    async Task PopulateData(IXLWorksheet worksheet, List<PropertyInfo> properties, Cancel cancel)
+    async Task PopulateData(IXLWorksheet worksheet, List<Property> properties, Cancel cancel)
     {
         //Skip header
         var startRow = 2;
@@ -111,7 +110,7 @@ public class SheetBuilder<T>(
                 var cell = worksheet.Cell(xlRow, colIndex + 1);
 
                 cell.Style.Alignment.Vertical = XLAlignmentVerticalValues.Top;
-                var value = property.GetValue(item);
+                var value = property.Info.GetValue(item);
                 SetCellValue(cell, value, property);
                 ApplyDataCellStyling(cell, property, rowIndex, value);
             }
@@ -120,7 +119,7 @@ public class SheetBuilder<T>(
         }
     }
 
-    void SetCellValue(IXLCell cell, object? value, PropertyInfo property)
+    void SetCellValue(IXLCell cell, object? value, Property property)
     {
         if (value == null)
         {
@@ -138,7 +137,7 @@ public class SheetBuilder<T>(
                 return;
             }
 
-            if (BookBuilder.TryRender(property.PropertyType, value, out var result))
+            if (BookBuilder.TryRender(property.Info.PropertyType, value, out var result))
             {
                 cell.Value = result;
                 return;
@@ -191,7 +190,7 @@ public class SheetBuilder<T>(
         }
     }
 
-    void ApplyHeaderStyling(IXLCell cell, PropertyInfo property)
+    void ApplyHeaderStyling(IXLCell cell, Property property)
     {
         var config = settings.GetValueOrDefault(property.Name);
 
@@ -202,7 +201,7 @@ public class SheetBuilder<T>(
         config?.HeaderStyle?.Invoke(cell.Style);
     }
 
-    void ApplyDataCellStyling(IXLCell cell, PropertyInfo property, int rowIndex, object? value)
+    void ApplyDataCellStyling(IXLCell cell, Property property, int rowIndex, object? value)
     {
         var style = cell.Style;
 
@@ -223,7 +222,7 @@ public class SheetBuilder<T>(
         config.ConditionalStyling?.Invoke(style, value);
     }
 
-    void ApplyGlobalStyling(IXLWorksheet worksheet, List<PropertyInfo> properties)
+    void ApplyGlobalStyling(IXLWorksheet worksheet, List<Property> properties)
     {
         if (globalStyle == null)
         {
@@ -234,7 +233,7 @@ public class SheetBuilder<T>(
         globalStyle(range.Style);
     }
 
-    void AutoSizeColumns(IXLWorksheet worksheet, List<PropertyInfo> properties)
+    void AutoSizeColumns(IXLWorksheet worksheet, List<Property> properties)
     {
         worksheet.Columns().AdjustToContents();
 
@@ -251,7 +250,7 @@ public class SheetBuilder<T>(
         }
     }
 
-    string GetHeaderText(PropertyInfo property)
+    string GetHeaderText(Property property)
     {
         var config = settings.GetValueOrDefault(property.Name);
         if (config?.HeaderText != null)
@@ -259,26 +258,7 @@ public class SheetBuilder<T>(
             return config.HeaderText;
         }
 
-        return GetDisplayName(property);
-    }
-
-    private static string GetDisplayName(PropertyInfo property)
-    {
-        // Check for DisplayAttribute
-        var display = property.GetCustomAttribute<DisplayAttribute>();
-        if (display?.Name != null)
-        {
-            return display.Name;
-        }
-
-        // Check for DisplayNameAttribute
-        var displayName = property.GetCustomAttribute<DisplayNameAttribute>();
-        if (displayName != null)
-        {
-            return displayName.DisplayName;
-        }
-
-        return CamelCase.Split(property.Name);
+        return property.DisplayName;
     }
 
     static string GetEnumDisplayText(Enum enumValue)

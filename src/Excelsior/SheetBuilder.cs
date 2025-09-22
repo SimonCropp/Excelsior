@@ -27,7 +27,7 @@ public class SheetBuilder<T>(
         Expression<Func<T, TProperty>> property,
         Action<ColumnSettings<TProperty>> configuration)
     {
-        var name = GetPropertyName(property);
+        var name = property.PropertyName();
         var config = new ColumnSettings<TProperty>();
         configuration(config);
         Func<object, string?>? render;
@@ -266,15 +266,5 @@ public class SheetBuilder<T>(
         var field = enumValue.GetType().GetField(enumValue.ToString());
         var attribute = field?.GetCustomAttribute<DisplayAttribute>();
         return attribute?.Name ?? enumValue.ToString();
-    }
-
-    static string GetPropertyName<TProperty>(Expression<Func<T, TProperty>> propertyExpression)
-    {
-        if (propertyExpression.Body is MemberExpression member)
-        {
-            return member.Member.Name;
-        }
-
-        throw new ArgumentException("Expression must be a property access", nameof(propertyExpression));
     }
 }

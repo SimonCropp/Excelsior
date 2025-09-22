@@ -1,21 +1,21 @@
 public class Employee
 {
     [Display(Name = "Employee ID", Order = 1)]
-    public required int Id { get; set; }
+    public required int Id { get; init; }
 
     [Display(Name = "Full Name", Order = 2)]
-    public required string Name { get; set; }
+    public required string Name { get; init; }
 
     [Display(Name = "Email Address", Order = 3)]
-    public required string Email { get; set; }
+    public required string Email { get; init; }
 
     [Display(Name = "Hire Date", Order = 4)]
-    public required DateTime HireDate { get; set; }
+    public DateTime HireDate { get; init; }
 
     [Display(Name = "Annual Salary", Order = 5)]
-    public required decimal Salary { get; set; }
+    public decimal Salary { get; init; }
 
-    public required bool IsActive { get; set; }
+    public bool IsActive { get; init; }
 
-    public required EmployeeStatus Status { get; set; }
+    public  EmployeeStatus Status { get; init; }
 }

@@ -26,23 +26,23 @@ Given an input class:
 public class Employee
 {
     [Display(Name = "Employee ID", Order = 1)]
-    public required int Id { get; set; }
+    public required int Id { get; init; }
 
     [Display(Name = "Full Name", Order = 2)]
-    public required string Name { get; set; }
+    public required string Name { get; init; }
 
     [Display(Name = "Email Address", Order = 3)]
-    public required string Email { get; set; }
+    public required string Email { get; init; }
 
     [Display(Name = "Hire Date", Order = 4)]
-    public required DateTime HireDate { get; set; }
+    public DateTime HireDate { get; init; }
 
     [Display(Name = "Annual Salary", Order = 5)]
-    public required decimal Salary { get; set; }
+    public decimal Salary { get; init; }
 
-    public required bool IsActive { get; set; }
+    public bool IsActive { get; init; }
 
-    public required EmployeeStatus Status { get; set; }
+    public  EmployeeStatus Status { get; init; }
 }
 ```
 <sup><a href='/src/Tests/Sample/Employee.cs#L1-L21' title='Snippet source file'>snippet source</a> | <a href='#snippet-Employee.cs' title='Start of snippet'>anchor</a></sup>
@@ -108,7 +108,7 @@ builder.AddSheet(data);
 var stream = new MemoryStream();
 await builder.ToStream(stream);
 ```
-<sup><a href='/src/Tests/Tests.cs#L594-L602' title='Snippet source file'>snippet source</a> | <a href='#snippet-ToStream' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Tests/Tests.cs#L586-L594' title='Snippet source file'>snippet source</a> | <a href='#snippet-ToStream' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -123,7 +123,7 @@ builder.AddSheet(data)
         _ => _.Name,
         _ => _.HeaderText = "Employee Name");
 ```
-<sup><a href='/src/Tests/Tests.cs#L277-L285' title='Snippet source file'>snippet source</a> | <a href='#snippet-CustomHeaders' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Tests/Tests.cs#L269-L277' title='Snippet source file'>snippet source</a> | <a href='#snippet-CustomHeaders' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -143,7 +143,7 @@ builder.AddSheet(data)
     .Column(_ => _.Name, _ => _.Order = 2)
     .Column(_ => _.Salary, _ => _.Order = 3);
 ```
-<sup><a href='/src/Tests/Tests.cs#L297-L305' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnOrdering' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Tests/Tests.cs#L289-L297' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnOrdering' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -166,7 +166,7 @@ var builder = new BookBuilder(
     });
 builder.AddSheet(data);
 ```
-<sup><a href='/src/Tests/Tests.cs#L317-L328' title='Snippet source file'>snippet source</a> | <a href='#snippet-HeaderStyle' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Tests/Tests.cs#L309-L320' title='Snippet source file'>snippet source</a> | <a href='#snippet-HeaderStyle' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -189,7 +189,7 @@ var builder = new BookBuilder(
     });
 builder.AddSheet(data);
 ```
-<sup><a href='/src/Tests/Tests.cs#L340-L351' title='Snippet source file'>snippet source</a> | <a href='#snippet-GlobalStyle' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Tests/Tests.cs#L332-L343' title='Snippet source file'>snippet source</a> | <a href='#snippet-GlobalStyle' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -236,7 +236,7 @@ builder.AddSheet(employees)
             };
         });
 ```
-<sup><a href='/src/Tests/Tests.cs#L363-L398' title='Snippet source file'>snippet source</a> | <a href='#snippet-ConditionalStyling' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Tests/Tests.cs#L355-L390' title='Snippet source file'>snippet source</a> | <a href='#snippet-ConditionalStyling' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -262,7 +262,7 @@ builder.AddSheet(data)
         _ => _.HireDate,
         _ => _.Format = "yyyy-MM-dd");
 ```
-<sup><a href='/src/Tests/Tests.cs#L410-L424' title='Snippet source file'>snippet source</a> | <a href='#snippet-CustomRender' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Tests/Tests.cs#L402-L416' title='Snippet source file'>snippet source</a> | <a href='#snippet-CustomRender' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -279,7 +279,7 @@ builder.AddSheet(data)
 var builder = new BookBuilder();
 builder.AddSheet(employees, "Employee Report");
 ```
-<sup><a href='/src/Tests/Tests.cs#L436-L441' title='Snippet source file'>snippet source</a> | <a href='#snippet-WorksheetName' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Tests/Tests.cs#L428-L433' title='Snippet source file'>snippet source</a> | <a href='#snippet-WorksheetName' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -294,7 +294,7 @@ builder.AddSheet(data)
     .Column(_ => _.Email, _ => _.ColumnWidth = 30)
     .Column(_ => _.HireDate, _ => _.ColumnWidth = 15);
 ```
-<sup><a href='/src/Tests/Tests.cs#L453-L461' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnWidths' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Tests/Tests.cs#L445-L453' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnWidths' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -503,12 +503,8 @@ List<Employee> data =
     new()
     {
         Id = 1,
-        Name = "    John Doe   ",
+        Name = "    John\nDoe   ",
         Email = "    john@company.com    ",
-        HireDate = new(2020, 1, 15),
-        Salary = 75000m,
-        IsActive = true,
-        Status = EmployeeStatus.FullTime
     }
 ];
 
@@ -517,7 +513,7 @@ builder.AddSheet(data);
 
 var book = await builder.Build();
 ```
-<sup><a href='/src/Tests/Tests.cs#L80-L101' title='Snippet source file'>snippet source</a> | <a href='#snippet-Whitespace' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Tests/Tests.cs#L80-L97' title='Snippet source file'>snippet source</a> | <a href='#snippet-Whitespace' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -536,12 +532,8 @@ List<Employee> data =
     new()
     {
         Id = 1,
-        Name = "    John Doe   ",
+        Name = "    John\nDoe   ",
         Email = "    john@company.com    ",
-        HireDate = new(2020, 1, 15),
-        Salary = 75000m,
-        IsActive = true,
-        Status = EmployeeStatus.FullTime
     }
 ];
 
@@ -550,7 +542,7 @@ builder.AddSheet(data);
 
 var book = await builder.Build();
 ```
-<sup><a href='/src/Tests/Tests.cs#L108-L129' title='Snippet source file'>snippet source</a> | <a href='#snippet-DisableWhitespaceTrim' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Tests/Tests.cs#L104-L121' title='Snippet source file'>snippet source</a> | <a href='#snippet-DisableWhitespaceTrim' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 

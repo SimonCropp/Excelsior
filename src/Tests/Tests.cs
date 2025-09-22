@@ -84,12 +84,8 @@ public class Tests
             new()
             {
                 Id = 1,
-                Name = "    John Doe   ",
+                Name = "    John\nDoe   ",
                 Email = "    john@company.com    ",
-                HireDate = new(2020, 1, 15),
-                Salary = 75000m,
-                IsActive = true,
-                Status = EmployeeStatus.FullTime
             }
         ];
 
@@ -112,12 +108,8 @@ public class Tests
             new()
             {
                 Id = 1,
-                Name = "    John Doe   ",
+                Name = "    John\nDoe   ",
                 Email = "    john@company.com    ",
-                HireDate = new(2020, 1, 15),
-                Salary = 75000m,
-                IsActive = true,
-                Status = EmployeeStatus.FullTime
             }
         ];
 

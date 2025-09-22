@@ -10,7 +10,8 @@ public class SheetBuilder<T>(
     where T : class
 {
     static SheetBuilder() =>
-        properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance)
+        properties = typeof(T)
+            .GetProperties(BindingFlags.Public | BindingFlags.Instance)
             .Where(_ => _.CanRead)
             .Select(_ => new Property<T>(_))
             .ToList();
@@ -121,15 +122,13 @@ public class SheetBuilder<T>(
 
     void SetCellValue(Cell cell, object? value, Property<T> property)
     {
+        var config = settings.GetValueOrDefault(property.Name);
         if (value == null)
         {
-            var config = settings.GetValueOrDefault(property.Name);
             cell.Value = config?.NullDisplayText ?? "";
         }
         else
         {
-            var config = settings.GetValueOrDefault(property.Name);
-
             // Apply custom formatter if provided
             if (config?.Render != null)
             {
@@ -166,10 +165,12 @@ public class SheetBuilder<T>(
                     cell.Value = decimalValue;
                     AssignNumberFormat();
                     break;
+
                 case double doubleValue:
                     cell.Value = doubleValue;
                     AssignNumberFormat();
                     break;
+
                 case float floatValue:
                     cell.Value = floatValue;
                     AssignNumberFormat();
@@ -206,14 +207,13 @@ public class SheetBuilder<T>(
         var style = cell.Style;
 
         // Apply alternating row colors
-        if (useAlternatingRowColors && index % 2 == 1)
+        if (useAlternatingRowColors &&
+            index % 2 == 1)
         {
             style.Fill.BackgroundColor = alternateRowColor;
         }
 
-        var config = settings.GetValueOrDefault(property.Name);
-
-        if (config == null)
+        if (!settings.TryGetValue(property.Name, out var config))
         {
             return;
         }
@@ -241,9 +241,8 @@ public class SheetBuilder<T>(
         for (var i = 0; i < properties.Count; i++)
         {
             var property = properties[i];
-            var config = settings.GetValueOrDefault(property.Name);
-
-            if (config?.ColumnWidth.HasValue == true)
+            if (settings.TryGetValue(property.Name, out var config) &&
+                config.ColumnWidth.HasValue)
             {
                 sheet.Column(i + 1).Width = config.ColumnWidth.Value;
             }
@@ -252,8 +251,8 @@ public class SheetBuilder<T>(
 
     string GetHeaderText(Property<T> property)
     {
-        var config = settings.GetValueOrDefault(property.Name);
-        if (config?.HeaderText != null)
+        if (settings.TryGetValue(property.Name, out var config) &&
+            config.HeaderText != null)
         {
             return config.HeaderText;
         }

@@ -233,6 +233,7 @@ public class SheetBuilder<T>(
 
     void WriteEnumerable(Cell cell, IEnumerable<string> enumerable)
     {
+        cell.Style.Alignment.WrapText = true;
         var rich = cell.CreateRichText();
         var list = enumerable.ToList();
         for (var index = 0; index < list.Count; index++)
@@ -286,7 +287,6 @@ public class SheetBuilder<T>(
     {
         var style = cell.Style;
 
-        style.Alignment.WrapText = true;
         // Apply alternating row colors
         if (useAlternatingRowColors &&
             index % 2 == 1)

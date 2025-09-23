@@ -7,7 +7,7 @@ public class BookBuilder(
     Action<IXLStyle>? globalStyle = null,
     bool trimWhitespace = true)
 {
-    List<Func<Book, Cancel, Task>> actions = [];
+    List<SheetBuilder> sheets = [];
 
     public SheetBuilder<T> AddSheet<T>(IEnumerable<T> data, string? name = null)
         where T : class =>
@@ -16,7 +16,7 @@ public class BookBuilder(
     public SheetBuilder<T> AddSheet<T>(IAsyncEnumerable<T> data, string? name = null)
         where T : class
     {
-        name ??= $"Sheet{actions.Count + 1}";
+        name ??= $"Sheet{sheets.Count + 1}";
 
         var converter = new SheetBuilder<T>(
             name,
@@ -26,7 +26,7 @@ public class BookBuilder(
             headerStyle,
             globalStyle,
             trimWhitespace);
-        actions.Add((book, cancel) => converter.AddSheet(book, cancel));
+        sheets.Add(converter);
         return converter;
     }
 
@@ -39,10 +39,10 @@ public class BookBuilder(
     public async Task<Book> Build(Cancel cancel = default)
     {
         var book = new XLWorkbook();
-        foreach (var action in actions)
+        foreach (var sheet in sheets)
         {
             cancel.ThrowIfCancellationRequested();
-            await action(book, cancel);
+            await sheet.AddSheet(book, cancel);
         }
 
         return book;

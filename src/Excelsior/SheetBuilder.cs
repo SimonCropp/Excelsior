@@ -1,5 +1,10 @@
 ﻿namespace Excelsior;
 
+public abstract class SheetBuilder
+{
+    internal abstract Task AddSheet(Book book, Cancel cancel);
+}
+
 public class SheetBuilder<T>(
     string name,
     IAsyncEnumerable<T> data,
@@ -7,7 +12,7 @@ public class SheetBuilder<T>(
     XLColor? alternateRowColor,
     Action<IXLStyle>? headerStyle,
     Action<IXLStyle>? globalStyle,
-    bool trimWhitespace)
+    bool trimWhitespace) : SheetBuilder
     where T : class
 {
     static SheetBuilder() =>
@@ -57,7 +62,7 @@ public class SheetBuilder<T>(
         return this;
     }
 
-    internal async Task AddSheet(Book book, Cancel cancel)
+    internal async override Task AddSheet(Book book, Cancel cancel)
     {
         var sheet = book.Worksheets.Add(name);
 

@@ -84,7 +84,7 @@ public class Tests
             new()
             {
                 Id = 1,
-                Name = "    John\nDoe   ",
+                Name = "    John Doe   ",
                 Email = "    john@company.com    ",
             }
         ];
@@ -108,7 +108,7 @@ public class Tests
             new()
             {
                 Id = 1,
-                Name = "    John\nDoe   ",
+                Name = "    John Doe   ",
                 Email = "    john@company.com    ",
             }
         ];

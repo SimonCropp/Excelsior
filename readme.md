@@ -503,7 +503,7 @@ List<Employee> data =
     new()
     {
         Id = 1,
-        Name = "    John\nDoe   ",
+        Name = "    John Doe   ",
         Email = "    john@company.com    ",
     }
 ];
@@ -532,7 +532,7 @@ List<Employee> data =
     new()
     {
         Id = 1,
-        Name = "    John\nDoe   ",
+        Name = "    John Doe   ",
         Email = "    john@company.com    ",
     }
 ];

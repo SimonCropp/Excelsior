@@ -6,8 +6,6 @@ public class EnumerableStringTests
     [Test]
     public async Task Test()
     {
-        #region ComplexTypeWithToString
-
         List<Person> data =
         [
             new("John Doe",
@@ -22,8 +20,6 @@ public class EnumerableStringTests
         var builder = new BookBuilder();
         builder.AddSheet(data);
 
-        #endregion
-
         var book = await builder.Build();
 
         await Verify(book);
@@ -35,8 +31,6 @@ public class EnumerableStringTests
     [Test]
     public async Task WithNewlines()
     {
-        #region ComplexTypeWithToString
-
         List<Target> data =
         [
             new("Value1",
@@ -58,8 +52,6 @@ public class EnumerableStringTests
 
         var builder = new BookBuilder();
         builder.AddSheet(data);
-
-        #endregion
 
         var book = await builder.Build();
 
@@ -69,8 +61,6 @@ public class EnumerableStringTests
     [Test]
     public async Task WithWhitespace()
     {
-        #region ComplexTypeWithToString
-
         List<Target> data =
         [
             new("Value1",
@@ -90,8 +80,6 @@ public class EnumerableStringTests
         var builder = new BookBuilder();
         builder.AddSheet(data);
 
-        #endregion
-
         var book = await builder.Build();
 
         await Verify(book);
@@ -100,8 +88,6 @@ public class EnumerableStringTests
     [Test]
     public async Task WithWhitespaceNoTrim()
     {
-        #region ComplexTypeWithToString
-
         List<Target> data =
         [
             new("Value1",
@@ -121,8 +107,6 @@ public class EnumerableStringTests
         var builder = new BookBuilder(trimWhitespace: false);
         builder.AddSheet(data);
 
-        #endregion
-
         var book = await builder.Build();
 
         await Verify(book);
@@ -131,8 +115,6 @@ public class EnumerableStringTests
     [Test]
     public async Task WithNewlinesNoTrim()
     {
-        #region ComplexTypeWithToString
-
         List<Target> data =
         [
             new("Value1",
@@ -154,8 +136,6 @@ public class EnumerableStringTests
 
         var builder = new BookBuilder(trimWhitespace: false);
         builder.AddSheet(data);
-
-        #endregion
 
         var book = await builder.Build();
 

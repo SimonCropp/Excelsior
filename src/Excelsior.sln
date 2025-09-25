@@ -14,9 +14,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\readme.md = ..\readme.md
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Excelsior.Tests", "Excelsior.Tests\Excelsior.Tests.csproj", "{87DB4CC0-4AC3-4AC1-97FD-7C55D3B921D9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExcelsiorClosedXml.Tests", "ExcelsiorClosedXml.Tests\ExcelsiorClosedXml.Tests.csproj", "{87DB4CC0-4AC3-4AC1-97FD-7C55D3B921D9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Excelsior", "Excelsior\Excelsior.csproj", "{7D85D8F0-40A5-4DD9-B8DE-5EBF5A153E92}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExcelsiorClosedXml", "ExcelsiorClosedXml\ExcelsiorClosedXml.csproj", "{7D85D8F0-40A5-4DD9-B8DE-5EBF5A153E92}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

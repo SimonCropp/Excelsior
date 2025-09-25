@@ -13,7 +13,7 @@
     <PackageReference Include="Verify.NUnit" />
     <PackageReference Include="NUnit" />
     <PackageReference Include="NUnit3TestAdapter" />
-    <ProjectReference Include="..\Excelsior\Excelsior.csproj" />
+    <ProjectReference Include="..\ExcelsiorClosedXml\ExcelsiorClosedXml.csproj" />
     <Using Include="NUnit.Framework.Legacy.ClassicAssert" Static="True" />
     <PackageReference Include="ProjectDefaults" PrivateAssets="all" />
     <Reference Include="System.Windows.Forms" Condition="'$(TargetFramework)' == 'net48'" />

@@ -45,7 +45,7 @@ public class Employee
     public  EmployeeStatus Status { get; init; }
 }
 ```
-<sup><a href='/src/Excelsior.Tests/Model/Employee.cs#L1-L21' title='Snippet source file'>snippet source</a> | <a href='#snippet-Employee.cs' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/Sample/Employee.cs#L1-L21' title='Snippet source file'>snippet source</a> | <a href='#snippet-Employee.cs' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 `[DisplayAttribute]` is optional. If it is omitted:

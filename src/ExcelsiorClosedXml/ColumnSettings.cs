@@ -1,5 +1,3 @@
-namespace Excelsior;
-
 class ColumnSettings
 {
     public required string? HeaderText { get; init; }

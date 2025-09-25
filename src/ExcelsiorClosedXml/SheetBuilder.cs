@@ -1,4 +1,4 @@
-﻿namespace Excelsior;
+﻿namespace ExcelsiorClosedXml;
 
 public class SheetBuilder<T>(
     string name,

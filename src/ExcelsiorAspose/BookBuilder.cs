@@ -1,6 +1,4 @@
-using System.Drawing;
-
-namespace Excelsior;
+namespace ExcelsiorAspose;
 
 public class BookBuilder(
     bool useAlternatingRowColors = false,

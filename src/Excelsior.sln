@@ -18,6 +18,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Excelsior.Tests", "Excelsio
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Excelsior", "Excelsior\Excelsior.csproj", "{7D85D8F0-40A5-4DD9-B8DE-5EBF5A153E92}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Excelsior.ClosedXml.Tests", "Excelsior.ClosedXml.Tests\Excelsior.ClosedXml.Tests.csproj", "{42BE4E2C-B751-4813-9B9B-90C958A51581}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,6 +34,10 @@ Global
 		{7D85D8F0-40A5-4DD9-B8DE-5EBF5A153E92}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7D85D8F0-40A5-4DD9-B8DE-5EBF5A153E92}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7D85D8F0-40A5-4DD9-B8DE-5EBF5A153E92}.Release|Any CPU.Build.0 = Release|Any CPU
+		{42BE4E2C-B751-4813-9B9B-90C958A51581}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{42BE4E2C-B751-4813-9B9B-90C958A51581}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{42BE4E2C-B751-4813-9B9B-90C958A51581}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{42BE4E2C-B751-4813-9B9B-90C958A51581}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

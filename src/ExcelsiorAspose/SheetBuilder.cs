@@ -265,7 +265,8 @@ public class SheetBuilder<T>(
 
                 builder.AppendLine("</li>");
             }
-            builder.AppendLine("</li>");
+
+            builder.AppendLine("</ul>");
 
             cell.HtmlString = builder.ToString();
         }
@@ -339,7 +340,7 @@ public class SheetBuilder<T>(
             if (settings.TryGetValue(property.Name, out var config) &&
                 config.ColumnWidth.HasValue)
             {
-                sheet.Cells.Columns[i + 1].Width = config.ColumnWidth.Value;
+                sheet.Cells.Columns[i].Width = config.ColumnWidth.Value;
             }
         }
     }

@@ -6,7 +6,6 @@
     {
       Name: Employee Report,
       Columns: [
-        {},
         {
           Name: Employee ID,
           FirstValue: 1.0

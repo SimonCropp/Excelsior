@@ -6,7 +6,6 @@
     {
       Name: Sheet1,
       Columns: [
-        {},
         {
           Name: Product ID,
           FirstValue: 1.0

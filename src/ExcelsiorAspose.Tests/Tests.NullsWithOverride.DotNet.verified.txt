@@ -6,7 +6,6 @@
     {
       Name: Sheet1,
       Columns: [
-        {},
         {
           Name: Number
         },

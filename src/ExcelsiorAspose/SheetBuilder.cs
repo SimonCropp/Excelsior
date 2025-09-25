@@ -91,7 +91,7 @@ public class SheetBuilder<T>(
         for (var i = 0; i < properties.Count; i++)
         {
             var property = properties[i];
-            var cell = sheet.Cells[0, i + 1];
+            var cell = sheet.Cells[0, i];
 
             cell.Value = GetHeaderText(property);
 
@@ -113,7 +113,7 @@ public class SheetBuilder<T>(
             for (var colIndex = 0; colIndex < properties.Count; colIndex++)
             {
                 var property = properties[colIndex];
-                var cell = sheet.Cells[xlRow, colIndex + 1];
+                var cell = sheet.Cells[xlRow, colIndex];
 
                 var style = cell.GetStyle();
                 style.VerticalAlignment = TextAlignmentType.Top;

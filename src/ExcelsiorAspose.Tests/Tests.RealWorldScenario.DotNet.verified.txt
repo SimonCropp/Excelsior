@@ -6,7 +6,6 @@
     {
       Name: Employee Report 2024,
       Columns: [
-        {},
         {
           Name: Employee ID,
           FirstValue: 1001.0

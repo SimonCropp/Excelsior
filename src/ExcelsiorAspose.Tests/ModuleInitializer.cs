@@ -9,7 +9,7 @@ public static class ModuleInitializer
         VerifierSettings.DontScrubDateTimes();
         VerifierSettings.DontScrubGuids();
         VerifierSettings.UniqueForTargetFramework();
-        VerifyImageMagick.RegisterComparers(threshold: 0.7);
+        VerifyImageMagick.RegisterComparers(threshold: 0.5);
         VerifierSettings.InitializePlugins();
         VerifierSettings.IgnoreMember("Width");
     }

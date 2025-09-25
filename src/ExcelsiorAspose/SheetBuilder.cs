@@ -326,6 +326,12 @@ public class SheetBuilder<T>(
     {
         sheet.AutoFitColumns();
 
+        //Round widths since aspose AutoFitColumns is not deterministic
+        foreach (var column in sheet.Cells.Columns)
+        {
+            column.Width = Math.Round(column.Width);
+        }
+
         // Apply specific column widths
         for (var i = 0; i < properties.Count; i++)
         {

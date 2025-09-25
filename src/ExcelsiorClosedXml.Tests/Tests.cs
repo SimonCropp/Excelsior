@@ -653,7 +653,6 @@ public class Tests
                 style.Font.FontColor = XLColor.White;
                 style.Fill.BackgroundColor = XLColor.DarkBlue;
                 style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-                style.Border.OutsideBorder = XLBorderStyleValues.Thick;
             });
         builder.AddSheet(employees, "Employee Report 2024")
             .Column(

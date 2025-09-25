@@ -45,7 +45,32 @@ public class Employee
     public  EmployeeStatus Status { get; init; }
 }
 ```
-<sup><a href='/src/ExcelsiorClosedXml.Tests/Sample/Employee.cs#L1-L21' title='Snippet source file'>snippet source</a> | <a href='#snippet-Employee.cs' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/ExcelsiorAspose.Tests/Sample/Employee.cs#L1-L21' title='Snippet source file'>snippet source</a> | <a href='#snippet-Employee.cs' title='Start of snippet'>anchor</a></sup>
+<a id='snippet-Employee.cs-1'></a>
+```cs
+public class Employee
+{
+    [Display(Name = "Employee ID", Order = 1)]
+    public required int Id { get; init; }
+
+    [Display(Name = "Full Name", Order = 2)]
+    public required string Name { get; init; }
+
+    [Display(Name = "Email Address", Order = 3)]
+    public required string Email { get; init; }
+
+    [Display(Name = "Hire Date", Order = 4)]
+    public DateTime HireDate { get; init; }
+
+    [Display(Name = "Annual Salary", Order = 5)]
+    public decimal Salary { get; init; }
+
+    public bool IsActive { get; init; }
+
+    public  EmployeeStatus Status { get; init; }
+}
+```
+<sup><a href='/src/ExcelsiorClosedXml.Tests/Sample/Employee.cs#L1-L21' title='Snippet source file'>snippet source</a> | <a href='#snippet-Employee.cs-1' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 `[DisplayAttribute]` is optional. If it is omitted:
@@ -317,7 +342,14 @@ public record Person(string Name, Address Address);
 
 public record Address(int Number, string Street, string City, State State, ushort PostCode);
 ```
-<sup><a href='/src/ExcelsiorClosedXml.Tests/ComplexTypeWithToString.cs#L9-L15' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeModels' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/ExcelsiorAspose.Tests/ComplexTypeWithToString.cs#L9-L15' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeModels' title='Start of snippet'>anchor</a></sup>
+<a id='snippet-ComplexTypeModels-1'></a>
+```cs
+public record Person(string Name, Address Address);
+
+public record Address(int Number, string Street, string City, State State, ushort PostCode);
+```
+<sup><a href='/src/ExcelsiorClosedXml.Tests/ComplexTypeWithToString.cs#L9-L15' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeModels-1' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -340,7 +372,24 @@ List<Person> data =
 var builder = new BookBuilder();
 builder.AddSheet(data);
 ```
-<sup><a href='/src/ExcelsiorClosedXml.Tests/ComplexTypeWithToString.cs#L21-L37' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeWithToString' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/ExcelsiorAspose.Tests/ComplexTypeWithToString.cs#L21-L37' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeWithToString' title='Start of snippet'>anchor</a></sup>
+<a id='snippet-ComplexTypeWithToString-1'></a>
+```cs
+List<Person> data =
+[
+    new("John Doe",
+        new Address(
+            Number: 900,
+            Street: "Victoria Square",
+            City: "Adelaide",
+            State: State.SA,
+            PostCode: 5000)),
+];
+
+var builder = new BookBuilder();
+builder.AddSheet(data);
+```
+<sup><a href='/src/ExcelsiorClosedXml.Tests/ComplexTypeWithToString.cs#L21-L37' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeWithToString-1' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -371,7 +420,27 @@ BookBuilder.RenderFor<Address>(
 var builder = new BookBuilder();
 builder.AddSheet(data);
 ```
-<sup><a href='/src/ExcelsiorClosedXml.Tests/ComplexTypeWithCustomRender.cs#L17-L36' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeWithCustomRender' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/ExcelsiorAspose.Tests/ComplexTypeWithCustomRender.cs#L17-L36' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeWithCustomRender' title='Start of snippet'>anchor</a></sup>
+<a id='snippet-ComplexTypeWithCustomRender-1'></a>
+```cs
+List<Person> data =
+[
+    new("John Doe",
+        new Address(
+            Number: 900,
+            Street: "Victoria Square",
+            City: "Adelaide",
+            State: State.SA,
+            PostCode: 5000)),
+];
+
+BookBuilder.RenderFor<Address>(
+    _ => $"{_.Number}, {_.Street}, {_.City}, {_.State}, {_.PostCode}");
+
+var builder = new BookBuilder();
+builder.AddSheet(data);
+```
+<sup><a href='/src/ExcelsiorClosedXml.Tests/ComplexTypeWithCustomRender.cs#L17-L36' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeWithCustomRender-1' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 

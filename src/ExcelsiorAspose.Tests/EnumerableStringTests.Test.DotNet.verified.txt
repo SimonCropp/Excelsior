@@ -1,0 +1,21 @@
+﻿{
+  HasMacro: False,
+  HasRevisions: False,
+  IsDigitallySigned: False,
+  Sheets: [
+    {
+      Name: Sheet1,
+      Columns: [
+        {},
+        {
+          Name: Name,
+          FirstValue: John Doe
+        },
+        {
+          Name: Phone Numbers,
+          FirstValue:     ● +1 8634446859  
+        }
+      ]
+    }
+  ]
+}

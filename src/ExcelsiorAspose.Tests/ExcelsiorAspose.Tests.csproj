@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <RootNamespace>Tests</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Aspose.Cells" />
+    <PackageReference Include="Verify.Aspose" />
+    <PackageReference Include="Verify.DiffPlex" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="MarkdownSnippets.MsBuild" PrivateAssets="all" />
+    <PackageReference Include="Verify.ImageMagick" />
+    <PackageReference Include="Verify.NUnit" />
+    <PackageReference Include="NUnit" />
+    <PackageReference Include="NUnit3TestAdapter" />
+    <ProjectReference Include="..\ExcelsiorAspose\ExcelsiorAspose.csproj" />
+    <Using Include="NUnit.Framework.Legacy.ClassicAssert" Static="True" />
+    <PackageReference Include="ProjectDefaults" PrivateAssets="all" />
+  </ItemGroup>
+</Project>

@@ -18,7 +18,7 @@ public class SheetBuilder<T>(
             .ToList();
 
     int rowIndex;
-    Dictionary<string, ColumnSettings> settings = [];
+    Dictionary<string, ColumnSettings<Style>> settings = [];
     static IReadOnlyList<Property<T>> properties;
 
     /// <summary>
@@ -27,10 +27,10 @@ public class SheetBuilder<T>(
     /// <returns>The converter instance for fluent chaining</returns>
     public SheetBuilder<T> Column<TProperty>(
         Expression<Func<T, TProperty>> property,
-        Action<ColumnSettings<TProperty>> configuration)
+        Action<ColumnSettings<Style, TProperty>> configuration)
     {
         var name = property.PropertyName();
-        var config = new ColumnSettings<TProperty>();
+        var config = new ColumnSettings<Style, TProperty>();
         configuration(config);
         Func<object, string?>? render;
         if (config.Render == null)
@@ -68,12 +68,9 @@ public class SheetBuilder<T>(
         await PopulateData(sheet, properties, cancel);
 
         ApplyGlobalStyling(sheet);
-        var cells = sheet.Cells;
-        var row = CellsHelper.RowIndexToName(cells.MaxRow);
-        var column = CellsHelper.ColumnIndexToName(cells.MaxColumn);
-        sheet.AutoFilter.Range = $"A1:{column}{row}";
+        sheet.AutoFilterAll();
         AutoSizeColumns(sheet, properties);
-        sheet.AutoFitRows();
+        sheet.AutoSizeRows();
     }
 
     List<Property<T>> GetProperties() =>
@@ -316,13 +313,7 @@ public class SheetBuilder<T>(
 
     void AutoSizeColumns(Sheet sheet, List<Property<T>> properties)
     {
-        sheet.AutoFitColumns();
-
-        //Round widths since aspose AutoFitColumns is not deterministic
-        foreach (var column in sheet.Cells.Columns)
-        {
-            column.Width = Math.Round(column.Width);
-        }
+        sheet.AutoSizeColumns();
 
         // Apply specific column widths
         for (var i = 0; i < properties.Count; i++)

@@ -18,7 +18,7 @@ public class SheetBuilder<T>(
             .ToList();
 
     int rowIndex;
-    Dictionary<string, ColumnSettings> settings = [];
+    Dictionary<string, ColumnSettings<IXLStyle>> settings = [];
     static IReadOnlyList<Property<T>> properties;
 
     /// <summary>
@@ -27,10 +27,10 @@ public class SheetBuilder<T>(
     /// <returns>The converter instance for fluent chaining</returns>
     public SheetBuilder<T> Column<TProperty>(
         Expression<Func<T, TProperty>> property,
-        Action<ColumnSettings<TProperty>> configuration)
+        Action<ColumnSettings<IXLStyle, TProperty>> configuration)
     {
         var name = property.PropertyName();
-        var config = new ColumnSettings<TProperty>();
+        var config = new ColumnSettings<IXLStyle, TProperty>();
         configuration(config);
         Func<object, string?>? render;
         if (config.Render == null)

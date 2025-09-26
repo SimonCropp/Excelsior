@@ -28,7 +28,7 @@
         },
         {
           Name: Is Active,
-          FirstValue: ✓ Active
+          FirstValue: Active
         },
         {
           Name: Status,

@@ -13,7 +13,7 @@ public class Employee
     public DateTime HireDate { get; init; }
 
     [Display(Name = "Annual Salary", Order = 5)]
-    public decimal Salary { get; init; }
+    public int Salary { get; init; }
 
     public bool IsActive { get; init; }
 

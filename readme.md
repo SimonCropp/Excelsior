@@ -38,7 +38,7 @@ public class Employee
     public DateTime HireDate { get; init; }
 
     [Display(Name = "Annual Salary", Order = 5)]
-    public decimal Salary { get; init; }
+    public int Salary { get; init; }
 
     public bool IsActive { get; init; }
 
@@ -63,7 +63,7 @@ public class Employee
     public DateTime HireDate { get; init; }
 
     [Display(Name = "Annual Salary", Order = 5)]
-    public decimal Salary { get; init; }
+    public int Salary { get; init; }
 
     public bool IsActive { get; init; }
 
@@ -92,7 +92,7 @@ List<Employee> data =
         Name = "John Doe",
         Email = "john@company.com",
         HireDate = new(2020, 1, 15),
-        Salary = 75000m,
+        Salary = 75000,
         IsActive = true,
         Status = EmployeeStatus.FullTime
     },
@@ -102,7 +102,7 @@ List<Employee> data =
         Name = "Jane Smith",
         Email = "jane@company.com",
         HireDate = new(2019, 3, 22),
-        Salary = 120000m,
+        Salary = 120000,
         IsActive = true,
         Status = EmployeeStatus.FullTime
     },

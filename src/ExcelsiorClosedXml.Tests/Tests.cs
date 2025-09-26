@@ -47,7 +47,7 @@ public class Tests
                 Name = "John Doe",
                 Email = "john@company.com",
                 HireDate = new(2020, 1, 15),
-                Salary = 75000m,
+                Salary = 75000,
                 IsActive = true,
                 Status = EmployeeStatus.FullTime
             },
@@ -57,7 +57,7 @@ public class Tests
                 Name = "Jane Smith",
                 Email = "jane@company.com",
                 HireDate = new(2019, 3, 22),
-                Salary = 120000m,
+                Salary = 120000,
                 IsActive = true,
                 Status = EmployeeStatus.FullTime
             },
@@ -602,7 +602,7 @@ public class Tests
             Name = "John Doe",
             Email = "john@company.com",
             HireDate = new(2020, 1, 15),
-            Salary = 75000m,
+            Salary = 75000,
             IsActive = true,
             Status = EmployeeStatus.FullTime
         },
@@ -612,7 +612,7 @@ public class Tests
             Name = "Jane Smith",
             Email = "jane@company.com",
             HireDate = new(2019, 3, 22),
-            Salary = 120000m,
+            Salary = 120000,
             IsActive = true,
             Status = EmployeeStatus.FullTime
         },
@@ -622,7 +622,7 @@ public class Tests
             Name = "Bob Johnson",
             Email = "bob@company.com",
             HireDate = new(2021, 7, 10),
-            Salary = 45000m,
+            Salary = 45000,
             IsActive = false,
             Status = EmployeeStatus.PartTime
         },
@@ -632,7 +632,7 @@ public class Tests
             Name = "Alice Brown",
             Email = "alice@company.com",
             HireDate = new(2018, 11, 5),
-            Salary = 95000m,
+            Salary = 95000,
             IsActive = true,
             Status = EmployeeStatus.Contract
         }
@@ -725,7 +725,7 @@ public class Tests
             Name = "Sarah Connor",
             Email = "s.connor@techcorp.com",
             HireDate = new(2018, 3, 15),
-            Salary = 125000m,
+            Salary = 125000,
             IsActive = true,
             Status = EmployeeStatus.FullTime
         },
@@ -735,7 +735,7 @@ public class Tests
             Name = "John Matrix",
             Email = "j.matrix@techcorp.com",
             HireDate = new(2020, 7, 22),
-            Salary = 95000m,
+            Salary = 95000,
             IsActive = true,
             Status = EmployeeStatus.FullTime
         },
@@ -745,7 +745,7 @@ public class Tests
             Name = "Ellen Ripley",
             Email = "e.ripley@techcorp.com",
             HireDate = new(2019, 11, 8),
-            Salary = 110000m,
+            Salary = 110000,
             IsActive = true,
             Status = EmployeeStatus.FullTime
         },
@@ -755,7 +755,7 @@ public class Tests
             Name = "Dutch Schaefer",
             Email = "d.schaefer@techcorp.com",
             HireDate = new(2021, 2, 14),
-            Salary = 75000m,
+            Salary = 75000,
             IsActive = true,
             Status = EmployeeStatus.Contract
         },
@@ -765,7 +765,7 @@ public class Tests
             Name = "Kyle Reese",
             Email = "k.reese@techcorp.com",
             HireDate = new(2022, 6, 30),
-            Salary = 45000m,
+            Salary = 45000,
             IsActive = false,
             Status = EmployeeStatus.PartTime
         },
@@ -775,7 +775,7 @@ public class Tests
             Name = "Roy Batty",
             Email = "r.batty@techcorp.com",
             HireDate = new(2017, 12, 1),
-            Salary = 140000m,
+            Salary = 140000,
             IsActive = false,
             Status = EmployeeStatus.Terminated
         }

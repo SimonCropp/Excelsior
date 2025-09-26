@@ -8,6 +8,12 @@
         return config?.Order;
     }
 
+    public List<Property<T>> ResolveProperties<T>() =>
+        Properties<T>
+            .Items
+            .OrderBy(_ => GetOrder(_.Name) ?? _.Order ?? int.MaxValue)
+            .ToList();
+
     public void Add<T, TProperty>(
         Expression<Func<T, TProperty>> property,
         Action<Column<TStyle, TProperty>> configuration)
@@ -51,5 +57,31 @@
         }
 
         return property.DisplayName;
+    }
+
+    public bool TryGetColumnWidth<T>(Property<T> property, out double width)
+    {
+        if (TryGetValue(property.Name, out var config) &&
+            config.ColumnWidth.HasValue)
+        {
+            width = config.ColumnWidth.Value;
+            return true;
+        }
+
+        width = 0;
+        return false;
+    }
+
+    public bool TryGetHeaderStyle<T>(Property<T> property, [NotNullWhen(true)]out Action<TStyle>? headerStyle)
+    {
+        if (TryGetValue(property.Name, out var config) &&
+            config.HeaderStyle != null)
+        {
+            headerStyle = config.HeaderStyle;
+            return true;
+        }
+
+        headerStyle = null;
+        return false;
     }
 }

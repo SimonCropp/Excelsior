@@ -29,7 +29,7 @@ public class SheetBuilder<T>(
     {
         var sheet = book.Worksheets.Add(name);
 
-        var properties = GetProperties();
+        var properties = columns.ResolveProperties<T>();
 
         CreateHeaders(sheet, properties);
 
@@ -39,13 +39,6 @@ public class SheetBuilder<T>(
         sheet.RangeUsed()!.SetAutoFilter();
         AutoSizeColumns(sheet, properties);
     }
-
-    List<Property<T>> GetProperties() =>
-        // Order by display order if specified
-        Properties<T>
-            .Items
-            .OrderBy(_ => columns.GetOrder(_.Name) ?? _.Order ?? int.MaxValue)
-            .ToList();
 
     void CreateHeaders(Sheet sheet, List<Property<T>> properties)
     {
@@ -242,9 +235,9 @@ public class SheetBuilder<T>(
         // Apply global header styling
         headerStyle?.Invoke(cell.Style);
 
-        if (columns.TryGetValue(property.Name, out var config))
+        if (columns.TryGetHeaderStyle(property, out var columnHeaderStyle))
         {
-            config.HeaderStyle?.Invoke(cell.Style);
+            columnHeaderStyle.Invoke(cell.Style);
         }
     }
 
@@ -286,11 +279,9 @@ public class SheetBuilder<T>(
         // Apply specific column widths
         for (var i = 0; i < properties.Count; i++)
         {
-            var property = properties[i];
-            if (columns.TryGetValue(property.Name, out var config) &&
-                config.ColumnWidth.HasValue)
+            if (columns.TryGetColumnWidth(properties[i], out var width))
             {
-                sheet.Column(i + 1).Width = config.ColumnWidth.Value;
+                sheet.Column(i + 1).Width = width;
             }
         }
     }

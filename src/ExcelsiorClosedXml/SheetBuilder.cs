@@ -137,7 +137,7 @@ public class SheetBuilder<T>(
                 return;
             }
 
-            if (BookBuilder.TryRender(property.Type, value, out var result))
+            if (ValueRenderer.TryRender(property.Type, value, out var result))
             {
                 cell.Value = result;
                 return;
@@ -185,7 +185,7 @@ public class SheetBuilder<T>(
                 return;
             }
 
-            if (BookBuilder.TryRender(property.Type, value, out var result))
+            if (ValueRenderer.TryRender(property.Type, value, out var result))
             {
                 cell.Value = result;
                 return;

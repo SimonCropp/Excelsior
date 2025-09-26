@@ -34,7 +34,7 @@ public class ComplexTypeWithInheritedCustomRender
                     PostCode: 5000)),
         ];
 
-        BookBuilder.RenderFor<IAddress>(
+        ValueRenderer.For<IAddress>(
             _ => $"{_.Number}, {_.Street}, {_.City}, {_.State}, {_.PostCode}");
 
         var builder = new BookBuilder();

@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Office.Interop.Excel" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="NUnit" />
+    <PackageReference Include="NUnit3TestAdapter" />
+    <PackageReference Include="Verify" />
+    <PackageReference Include="Verify.NUnit" />
+    <Using Include="NUnit.Framework.Legacy.ClassicAssert" Static="True" />
+    <PackageReference Include="ProjectDefaults" PrivateAssets="all" />
+    <Reference Include="System.Windows.Forms" Condition="'$(TargetFramework)' == 'net48'" />
+  </ItemGroup>
+</Project>

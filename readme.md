@@ -1,16 +1,22 @@
 # <img src="/src/icon.png" height="30px"> Excelsior
 
 [![Build status](https://ci.appveyor.com/api/projects/status/fo33wu7ud6es1t2o/branch/main?svg=true)](https://ci.appveyor.com/project/SimonCropp/Excelsior)
-[![NuGet Status](https://img.shields.io/nuget/v/Excelsior.svg)](https://www.nuget.org/packages/Excelsior/)
+[![NuGet Status](https://img.shields.io/nuget/v/ExcelsiorClosedXml.svg?label=ExcelsiorClosedXml)](https://www.nuget.org/packages/ExcelsiorClosedXml/)
+[![NuGet Status](https://img.shields.io/nuget/v/ExcelsiorClosedXml.svg?label=ExcelsiorAspose)](https://www.nuget.org/packages/ExcelsiorAspose/)
 
-Excelsior is an Excel spreadsheet generation library with a distinctive data-driven approach that leverages [ClosedXML](https://github.com/ClosedXML/ClosedXML) to create Excel-compatible files.
+Excelsior is an Excel spreadsheet generation library with a distinctive data-driven approach.
 
 **See [Milestones](../../milestones?state=closed) for release notes.**
 
 
-## NuGet package
+## Supported libraries
 
-https://nuget.org/packages/Excelsior/
+The architecture is designed to support multiple spreadsheet creation libraries.
+
+Currently supported libraries include:
+
+ * [ClosedXML](https://github.com/ClosedXML/ClosedXML) via the [ExcelsiorClosedXml](https://nuget.org/packages/ExcelsiorClosedXml/) nuget
+ * [Aspose.Cells](https://docs.aspose.com/cells/net/) via the [ExcelsiorAspose](https://nuget.org/packages/ExcelsiorAspose/) nuget
 
 
 ## Usage
@@ -35,20 +41,20 @@ public class Employee
     public required string Email { get; init; }
 
     [Display(Name = "Hire Date", Order = 4)]
-    public DateTime HireDate { get; init; }
+    public DateTime? HireDate { get; init; }
 
     [Display(Name = "Annual Salary", Order = 5)]
-    public decimal Salary { get; init; }
+    public int Salary { get; init; }
 
     public bool IsActive { get; init; }
 
-    public  EmployeeStatus Status { get; init; }
+    public EmployeeStatus Status { get; init; }
 }
 ```
-<sup><a href='/src/Excelsior.Tests/Sample/Employee.cs#L1-L21' title='Snippet source file'>snippet source</a> | <a href='#snippet-Employee.cs' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Model/Employee.cs#L1-L21' title='Snippet source file'>snippet source</a> | <a href='#snippet-Employee.cs' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
-`[DisplayAttribute]` is optional. If it is omitted:
+`[DisplayAttribute]` is optional. If omitted:
 
  * Order is based on the order of the properties defined in the class. Order can be [programmatically controlled](#column-ordering)
  * Header text is based on the property names that is camel case split. Headers can be [programmatically controlled](#custom-headers)
@@ -59,6 +65,8 @@ public class Employee
 <!-- snippet: Usage -->
 <a id='snippet-Usage'></a>
 ```cs
+var builder = new BookBuilder();
+
 List<Employee> data =
 [
     new()
@@ -67,7 +75,7 @@ List<Employee> data =
         Name = "John Doe",
         Email = "john@company.com",
         HireDate = new(2020, 1, 15),
-        Salary = 75000m,
+        Salary = 75000,
         IsActive = true,
         Status = EmployeeStatus.FullTime
     },
@@ -77,24 +85,22 @@ List<Employee> data =
         Name = "Jane Smith",
         Email = "jane@company.com",
         HireDate = new(2019, 3, 22),
-        Salary = 120000m,
+        Salary = 120000,
         IsActive = true,
         Status = EmployeeStatus.FullTime
     },
 ];
-
-var builder = new BookBuilder();
 builder.AddSheet(data);
 
 var book = await builder.Build();
 ```
-<sup><a href='/src/Excelsior.Tests/Tests.cs#L42-L73' title='Snippet source file'>snippet source</a> | <a href='#snippet-Usage' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/ExcelsiorClosedXml.Tests/Tests.cs#L40-L71' title='Snippet source file'>snippet source</a> | <a href='#snippet-Usage' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
 ### Result:
 
-<img src="/src/Excelsior.Tests/Tests.Simple_Sheet1.png">
+<img src="/src/ExcelsiorClosedXml.Tests/Tests.Simple_Sheet1.png">
 
 
 ### Saving to a stream
@@ -108,7 +114,7 @@ builder.AddSheet(data);
 var stream = new MemoryStream();
 await builder.ToStream(stream);
 ```
-<sup><a href='/src/Excelsior.Tests/Tests.cs#L586-L594' title='Snippet source file'>snippet source</a> | <a href='#snippet-ToStream' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/ExcelsiorClosedXml.Tests/Tests.cs#L580-L588' title='Snippet source file'>snippet source</a> | <a href='#snippet-ToStream' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -118,18 +124,18 @@ await builder.ToStream(stream);
 <a id='snippet-CustomHeaders'></a>
 ```cs
 var builder = new BookBuilder();
-builder.AddSheet(data)
+builder.AddSheet(employees)
     .Column(
         _ => _.Name,
         _ => _.HeaderText = "Employee Name");
 ```
-<sup><a href='/src/Excelsior.Tests/Tests.cs#L269-L277' title='Snippet source file'>snippet source</a> | <a href='#snippet-CustomHeaders' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/ExcelsiorClosedXml.Tests/Tests.cs#L265-L273' title='Snippet source file'>snippet source</a> | <a href='#snippet-CustomHeaders' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
 #### Result:
 
-<img src="/src/Tests/Tests.CustomHeaders_Sheet1.png">
+<img src="/src/ExcelsiorClosedXml.Tests/Tests.CustomHeaders_Sheet1.png">
 
 
 ### Column Ordering
@@ -138,18 +144,18 @@ builder.AddSheet(data)
 <a id='snippet-ColumnOrdering'></a>
 ```cs
 var builder = new BookBuilder();
-builder.AddSheet(data)
+builder.AddSheet(employees)
     .Column(_ => _.Email, _ => _.Order = 1)
     .Column(_ => _.Name, _ => _.Order = 2)
     .Column(_ => _.Salary, _ => _.Order = 3);
 ```
-<sup><a href='/src/Excelsior.Tests/Tests.cs#L289-L297' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnOrdering' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/ExcelsiorClosedXml.Tests/Tests.cs#L285-L293' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnOrdering' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
 #### Result:
 
-<img src="/src/Tests/Tests.ColumnOrdering_Sheet1.png">
+<img src="/src/ExcelsiorClosedXml.Tests/Tests.ColumnOrdering_Sheet1.png">
 
 
 ### Header Style
@@ -166,13 +172,13 @@ var builder = new BookBuilder(
     });
 builder.AddSheet(data);
 ```
-<sup><a href='/src/Excelsior.Tests/Tests.cs#L309-L320' title='Snippet source file'>snippet source</a> | <a href='#snippet-HeaderStyle' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/ExcelsiorClosedXml.Tests/Tests.cs#L305-L316' title='Snippet source file'>snippet source</a> | <a href='#snippet-HeaderStyle' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
 #### Result:
 
-<img src="/src/Tests/Tests.HeaderStyle_Sheet1.png">
+<img src="/src/ExcelsiorClosedXml.Tests/Tests.HeaderStyle_Sheet1.png">
 
 
 ### Global Style
@@ -189,13 +195,13 @@ var builder = new BookBuilder(
     });
 builder.AddSheet(data);
 ```
-<sup><a href='/src/Excelsior.Tests/Tests.cs#L332-L343' title='Snippet source file'>snippet source</a> | <a href='#snippet-GlobalStyle' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/ExcelsiorClosedXml.Tests/Tests.cs#L328-L339' title='Snippet source file'>snippet source</a> | <a href='#snippet-GlobalStyle' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
 #### Result:
 
-<img src="/src/Tests/Tests.GlobalStyle_Sheet1.png">
+<img src="/src/ExcelsiorClosedXml.Tests/Tests.GlobalStyle_Sheet1.png">
 
 
 ### Conditional Styling
@@ -236,13 +242,13 @@ builder.AddSheet(employees)
             };
         });
 ```
-<sup><a href='/src/Excelsior.Tests/Tests.cs#L355-L390' title='Snippet source file'>snippet source</a> | <a href='#snippet-ConditionalStyling' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/ExcelsiorClosedXml.Tests/Tests.cs#L351-L386' title='Snippet source file'>snippet source</a> | <a href='#snippet-ConditionalStyling' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
 #### Result:
 
-<img src="/src/Tests/Tests.ConditionalStyling_Sheet1.png">
+<img src="/src/ExcelsiorClosedXml.Tests/Tests.ConditionalStyling_Sheet1.png">
 
 
 ### Render
@@ -251,7 +257,7 @@ builder.AddSheet(employees)
 <a id='snippet-CustomRender'></a>
 ```cs
 var builder = new BookBuilder();
-builder.AddSheet(data)
+builder.AddSheet(employees)
     .Column(
         _ => _.Email,
         _ => _.Render = value => $"📧 {value}")
@@ -262,13 +268,13 @@ builder.AddSheet(data)
         _ => _.HireDate,
         _ => _.Format = "yyyy-MM-dd");
 ```
-<sup><a href='/src/Excelsior.Tests/Tests.cs#L402-L416' title='Snippet source file'>snippet source</a> | <a href='#snippet-CustomRender' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/ExcelsiorClosedXml.Tests/Tests.cs#L398-L412' title='Snippet source file'>snippet source</a> | <a href='#snippet-CustomRender' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
 #### Result:
 
-<img src="/src/Tests/Tests.Render_Sheet1.png">
+<img src="/src/ExcelsiorClosedXml.Tests/Tests.Render_Sheet1.png">
 
 
 ### Worksheet Name
@@ -279,7 +285,7 @@ builder.AddSheet(data)
 var builder = new BookBuilder();
 builder.AddSheet(employees, "Employee Report");
 ```
-<sup><a href='/src/Excelsior.Tests/Tests.cs#L428-L433' title='Snippet source file'>snippet source</a> | <a href='#snippet-WorksheetName' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/ExcelsiorClosedXml.Tests/Tests.cs#L424-L429' title='Snippet source file'>snippet source</a> | <a href='#snippet-WorksheetName' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -289,18 +295,18 @@ builder.AddSheet(employees, "Employee Report");
 <a id='snippet-ColumnWidths'></a>
 ```cs
 var builder = new BookBuilder();
-builder.AddSheet(data)
+builder.AddSheet(employees)
     .Column(_ => _.Name, _ => _.ColumnWidth = 25)
     .Column(_ => _.Email, _ => _.ColumnWidth = 30)
     .Column(_ => _.HireDate, _ => _.ColumnWidth = 15);
 ```
-<sup><a href='/src/Excelsior.Tests/Tests.cs#L445-L453' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnWidths' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/ExcelsiorClosedXml.Tests/Tests.cs#L441-L449' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnWidths' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
 #### Result:
 
-<img src="/src/Excelsior.Tests/Tests.ColumnWidths_Sheet1.png">
+<img src="/src/ExcelsiorClosedXml.Tests/Tests.ColumnWidths_Sheet1.png">
 
 
 ### Complex Types
@@ -317,7 +323,14 @@ public record Person(string Name, Address Address);
 
 public record Address(int Number, string Street, string City, State State, ushort PostCode);
 ```
-<sup><a href='/src/Excelsior.Tests/ComplexTypeWithToString.cs#L9-L15' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeModels' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/ExcelsiorAspose.Tests/ComplexTypeWithToString.cs#L9-L15' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeModels' title='Start of snippet'>anchor</a></sup>
+<a id='snippet-ComplexTypeModels-1'></a>
+```cs
+public record Person(string Name, Address Address);
+
+public record Address(int Number, string Street, string City, State State, ushort PostCode);
+```
+<sup><a href='/src/ExcelsiorClosedXml.Tests/ComplexTypeWithToString.cs#L10-L16' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeModels-1' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -326,6 +339,8 @@ public record Address(int Number, string Street, string City, State State, ushor
 <!-- snippet: ComplexTypeWithToString -->
 <a id='snippet-ComplexTypeWithToString'></a>
 ```cs
+var builder = new BookBuilder();
+
 List<Person> data =
 [
     new("John Doe",
@@ -337,16 +352,32 @@ List<Person> data =
             PostCode: 5000)),
 ];
 
-var builder = new BookBuilder();
 builder.AddSheet(data);
 ```
-<sup><a href='/src/Excelsior.Tests/ComplexTypeWithToString.cs#L21-L37' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeWithToString' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/ExcelsiorAspose.Tests/ComplexTypeWithToString.cs#L21-L37' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeWithToString' title='Start of snippet'>anchor</a></sup>
+<a id='snippet-ComplexTypeWithToString-1'></a>
+```cs
+var builder = new BookBuilder();
+
+List<Person> data =
+[
+    new("John Doe",
+        new Address(
+            Number: 900,
+            Street: "Victoria Square",
+            City: "Adelaide",
+            State: State.SA,
+            PostCode: 5000)),
+];
+builder.AddSheet(data);
+```
+<sup><a href='/src/ExcelsiorClosedXml.Tests/ComplexTypeWithToString.cs#L21-L37' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeWithToString-1' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
 #### Result:
 
-<img src="/src/Excelsior.Tests/ComplexTypeWithToString.Test_Sheet1.png">
+<img src="/src/ExcelsiorClosedXml.Tests/ComplexTypeWithToString.Test_Sheet1.png">
 
 
 ### Custom render for Complex Types
@@ -354,6 +385,8 @@ builder.AddSheet(data);
 <!-- snippet: ComplexTypeWithCustomRender -->
 <a id='snippet-ComplexTypeWithCustomRender'></a>
 ```cs
+var builder = new BookBuilder();
+
 List<Person> data =
 [
     new("John Doe",
@@ -365,19 +398,37 @@ List<Person> data =
             PostCode: 5000)),
 ];
 
-BookBuilder.RenderFor<Address>(
+ValueRenderer.For<Address>(
+    _ => $"{_.Number}, {_.Street}, {_.City}, {_.State}, {_.PostCode}");
+builder.AddSheet(data);
+```
+<sup><a href='/src/ExcelsiorAspose.Tests/ComplexTypeWithCustomRender.cs#L18-L37' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeWithCustomRender' title='Start of snippet'>anchor</a></sup>
+<a id='snippet-ComplexTypeWithCustomRender-1'></a>
+```cs
+ValueRenderer.For<Address>(
     _ => $"{_.Number}, {_.Street}, {_.City}, {_.State}, {_.PostCode}");
 
 var builder = new BookBuilder();
+
+List<Person> data =
+[
+    new("John Doe",
+        new Address(
+            Number: 900,
+            Street: "Victoria Square",
+            City: "Adelaide",
+            State: State.SA,
+            PostCode: 5000)),
+];
 builder.AddSheet(data);
 ```
-<sup><a href='/src/Excelsior.Tests/ComplexTypeWithCustomRender.cs#L17-L36' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeWithCustomRender' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/ExcelsiorClosedXml.Tests/ComplexTypeWithCustomRender.cs#L17-L36' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeWithCustomRender-1' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
 #### Result:
 
-<img src="/src/Excelsior.Tests/ComplexTypeWithCustomRender.Test_Sheet1.png">
+<img src="/src/ExcelsiorClosedXml.Tests/ComplexTypeWithCustomRender.Test_Sheet1.png">
 
 
 ### Whitespace
@@ -387,6 +438,8 @@ By default whitespace is trimmed
 <!-- snippet: Whitespace -->
 <a id='snippet-Whitespace'></a>
 ```cs
+var builder = new BookBuilder();
+
 List<Employee> data =
 [
     new()
@@ -396,19 +449,17 @@ List<Employee> data =
         Email = "    john@company.com    ",
     }
 ];
-
-var builder = new BookBuilder();
 builder.AddSheet(data);
 
 var book = await builder.Build();
 ```
-<sup><a href='/src/Excelsior.Tests/Tests.cs#L80-L97' title='Snippet source file'>snippet source</a> | <a href='#snippet-Whitespace' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/ExcelsiorClosedXml.Tests/Tests.cs#L78-L95' title='Snippet source file'>snippet source</a> | <a href='#snippet-Whitespace' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
 #### Result
 
-<img src="/src/Excelsior.Tests/Tests.Whitespace_Sheet1.png">
+<img src="/src/ExcelsiorClosedXml.Tests/Tests.Whitespace_Sheet1.png">
 
 
 #### Disable whitespace trimming
@@ -431,13 +482,13 @@ builder.AddSheet(data);
 
 var book = await builder.Build();
 ```
-<sup><a href='/src/Excelsior.Tests/Tests.cs#L104-L121' title='Snippet source file'>snippet source</a> | <a href='#snippet-DisableWhitespaceTrim' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/ExcelsiorClosedXml.Tests/Tests.cs#L102-L119' title='Snippet source file'>snippet source</a> | <a href='#snippet-DisableWhitespaceTrim' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
 #### Result
 
-<img src="/src/Excelsior.Tests/Tests.DisableWhitespaceTrim_Sheet1.png">
+<img src="/src/ExcelsiorClosedXml.Tests/Tests.DisableWhitespaceTrim_Sheet1.png">
 
 
 ## Icon

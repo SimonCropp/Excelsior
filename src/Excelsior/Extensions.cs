@@ -10,6 +10,13 @@
         throw new ArgumentException("Expression must be a property access", nameof(propertyExpression));
     }
 
+    public static string DisplayName(this Enum enumValue)
+    {
+        var field = enumValue.GetType().GetField(enumValue.ToString());
+        var attribute = field?.GetCustomAttribute<DisplayAttribute>();
+        return attribute?.Name ?? enumValue.ToString();
+    }
+
     public static bool IsNumericType(this Type type) =>
         Type.GetTypeCode(type)
             switch

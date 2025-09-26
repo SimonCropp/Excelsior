@@ -1,0 +1,32 @@
+﻿{
+  HasMacro: False,
+  HasRevisions: False,
+  IsDigitallySigned: False,
+  Sheets: [
+    {
+      Name: Sheet1,
+      Columns: [
+        {
+          Name: Product ID,
+          FirstValue: 1.0
+        },
+        {
+          Name: Product Name,
+          FirstValue: Laptop
+        },
+        {
+          Name: Unit Price,
+          FirstValue: 999.99
+        },
+        {
+          Name: Product Category,
+          FirstValue: Electronic Items
+        },
+        {
+          Name: Is Available,
+          FirstValue: True
+        }
+      ]
+    }
+  ]
+}

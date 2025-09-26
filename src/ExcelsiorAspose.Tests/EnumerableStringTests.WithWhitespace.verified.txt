@@ -1,0 +1,28 @@
+﻿{
+  HasMacro: False,
+  HasRevisions: False,
+  IsDigitallySigned: False,
+  Sheets: [
+    {
+      Name: Sheet1,
+      Columns: [
+        {
+          Name: Value1,
+          FirstValue: Value1
+        },
+        {
+          Name: Value2,
+          FirstValue:
+    ● a 
+    ●a 
+    ●a 
+    ●a 
+    ●a 
+    ●a 
+    ●a 
+    ●a  
+        }
+      ]
+    }
+  ]
+}

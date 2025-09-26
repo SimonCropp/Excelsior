@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="ClosedXML" />
+    <PackageReference Include="ProjectDefaults" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.Sbom.Targets" PrivateAssets="all" />
+    <PackageReference Include="System.ComponentModel.Annotations" />
+    <PackageReference Include="System.Linq.Async" />
+    <ProjectReference Include="..\Excelsior\Excelsior.csproj" />
+  </ItemGroup>
+</Project>

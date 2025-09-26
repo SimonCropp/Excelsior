@@ -17,8 +17,9 @@ public class ComplexTypeWithToString
     [Test]
     public async Task Test()
     {
-        // ReSharper disable once ArrangeObjectCreationWhenTypeNotEvident
+        // ReSharper disable ArrangeObjectCreationWhenTypeNotEvident
         #region ComplexTypeWithToString
+        var builder = new BookBuilder();
 
         List<Person> data =
         [
@@ -31,7 +32,6 @@ public class ComplexTypeWithToString
                     PostCode: 5000)),
         ];
 
-        var builder = new BookBuilder();
         builder.AddSheet(data);
 
         #endregion

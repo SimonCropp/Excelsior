@@ -6,6 +6,7 @@ public class EnumerableStringTests
     [Test]
     public async Task Test()
     {
+        var builder = new BookBuilder();
         List<Person> data =
         [
             new("John Doe",
@@ -16,8 +17,6 @@ public class EnumerableStringTests
                     "+1 8634446859"
                 ]),
         ];
-
-        var builder = new BookBuilder();
         builder.AddSheet(data);
 
         var book = await builder.Build();
@@ -25,12 +24,12 @@ public class EnumerableStringTests
         await Verify(book);
     }
 
-
     public record Target(string Value1, string[] Value2);
 
     [Test]
     public async Task WithNewlines()
     {
+        var builder = new BookBuilder();
         List<Target> data =
         [
             new("Value1",
@@ -49,8 +48,6 @@ public class EnumerableStringTests
                     "\r\na",
                 ]),
         ];
-
-        var builder = new BookBuilder();
         builder.AddSheet(data);
 
         var book = await builder.Build();
@@ -61,6 +58,7 @@ public class EnumerableStringTests
     [Test]
     public async Task WithWhitespace()
     {
+        var builder = new BookBuilder();
         List<Target> data =
         [
             new("Value1",
@@ -76,8 +74,6 @@ public class EnumerableStringTests
                     "\na\n",
                 ]),
         ];
-
-        var builder = new BookBuilder();
         builder.AddSheet(data);
 
         var book = await builder.Build();

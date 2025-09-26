@@ -23,6 +23,10 @@ public class ComplexTypeWithInheritedCustomRender
     [Test]
     public async Task Test()
     {
+        ValueRenderer.For<IAddress>(
+            _ => $"{_.Number}, {_.Street}, {_.City}, {_.State}, {_.PostCode}");
+
+        var builder = new BookBuilder();
         List<Person> data =
         [
             new("John Doe",
@@ -33,11 +37,6 @@ public class ComplexTypeWithInheritedCustomRender
                     State: State.SA,
                     PostCode: 5000)),
         ];
-
-        ValueRenderer.For<IAddress>(
-            _ => $"{_.Number}, {_.Street}, {_.City}, {_.State}, {_.PostCode}");
-
-        var builder = new BookBuilder();
         builder.AddSheet(data);
 
         var book = await builder.Build();

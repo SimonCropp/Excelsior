@@ -39,6 +39,8 @@ public class Tests
     {
         #region Usage
 
+        var builder = new BookBuilder();
+
         List<Employee> data =
         [
             new()
@@ -62,8 +64,6 @@ public class Tests
                 Status = EmployeeStatus.FullTime
             },
         ];
-
-        var builder = new BookBuilder();
         builder.AddSheet(data);
 
         var book = await builder.Build();
@@ -77,6 +77,8 @@ public class Tests
     {
         #region Whitespace
 
+        var builder = new BookBuilder();
+
         List<Employee> data =
         [
             new()
@@ -86,8 +88,6 @@ public class Tests
                 Email = "    john@company.com    ",
             }
         ];
-
-        var builder = new BookBuilder();
         builder.AddSheet(data);
 
         var book = await builder.Build();
@@ -124,6 +124,7 @@ public class Tests
     [Test]
     public async Task Nulls()
     {
+        var builder = new BookBuilder();
         List<NullableTargets> data =
         [
             new()
@@ -143,8 +144,6 @@ public class Tests
                 Bool = true
             },
         ];
-
-        var builder = new BookBuilder();
         builder.AddSheet(data);
 
         var book = await builder.Build();
@@ -155,6 +154,7 @@ public class Tests
     [Test]
     public async Task NullsWithOverride()
     {
+        var builder = new BookBuilder();
         List<NullableTargets> data =
         [
             new()
@@ -174,8 +174,6 @@ public class Tests
                 Bool = true
             },
         ];
-
-        var builder = new BookBuilder();
         var sheet = builder.AddSheet(data);
         sheet.Column(
             _ => _.Number,
@@ -262,12 +260,12 @@ public class Tests
     [Test]
     public async Task CustomHeaders()
     {
-        var data = GetSampleEmployees();
+        var employees = GetSampleEmployees();
 
         #region CustomHeaders
 
         var builder = new BookBuilder();
-        builder.AddSheet(data)
+        builder.AddSheet(employees)
             .Column(
                 _ => _.Name,
                 _ => _.HeaderText = "Employee Name");
@@ -282,12 +280,12 @@ public class Tests
     [Test]
     public async Task ColumnOrdering()
     {
-        var data = GetSampleEmployees();
+        var employees = GetSampleEmployees();
 
         #region ColumnOrdering
 
         var builder = new BookBuilder();
-        builder.AddSheet(data)
+        builder.AddSheet(employees)
             .Column(_ => _.Email, _ => _.Order = 1)
             .Column(_ => _.Name, _ => _.Order = 2)
             .Column(_ => _.Salary, _ => _.Order = 3);
@@ -395,12 +393,12 @@ public class Tests
     [Test]
     public async Task Render()
     {
-        var data = GetSampleEmployees();
+        var employees = GetSampleEmployees();
 
         #region CustomRender
 
         var builder = new BookBuilder();
-        builder.AddSheet(data)
+        builder.AddSheet(employees)
             .Column(
                 _ => _.Email,
                 _ => _.Render = value => $"📧 {value}")
@@ -438,12 +436,12 @@ public class Tests
     [Test]
     public async Task ColumnWidths()
     {
-        var data = GetSampleEmployees();
+        var employees = GetSampleEmployees();
 
         #region ColumnWidths
 
         var builder = new BookBuilder();
-        builder.AddSheet(data)
+        builder.AddSheet(employees)
             .Column(_ => _.Name, _ => _.ColumnWidth = 25)
             .Column(_ => _.Email, _ => _.ColumnWidth = 30)
             .Column(_ => _.HireDate, _ => _.ColumnWidth = 15);
@@ -458,6 +456,7 @@ public class Tests
     [Test]
     public async Task NullValues()
     {
+        var builder = new BookBuilder();
         var employees = new List<EmployeeWithNulls>
         {
             new()
@@ -482,8 +481,6 @@ public class Tests
                 HireDate = new DateTime(2021, 7, 10)
             }
         };
-
-        var builder = new BookBuilder();
         builder.AddSheet(employees)
             .Column(_ => _.Name, _ => _.NullDisplayText = "[No Name]")
             .Column(_ => _.Email, _ => _.NullDisplayText = "[No Email]");
@@ -548,6 +545,7 @@ public class Tests
     [Test]
     public async Task DisplayAttributes()
     {
+        var builder = new BookBuilder();
         var products = new List<Product>
         {
             new()
@@ -567,8 +565,6 @@ public class Tests
                 IsAvailable = false
             }
         };
-
-        var builder = new BookBuilder();
         builder.AddSheet(products);
 
         var book = await builder.Build();

@@ -1,4 +1,6 @@
-﻿[TestFixture]
+﻿// ReSharper disable ArrangeObjectCreationWhenTypeNotEvident
+
+[TestFixture]
 public class ComplexTypeWithCustomRender
 {
     public enum State
@@ -13,8 +15,9 @@ public class ComplexTypeWithCustomRender
     [Test]
     public async Task Test()
     {
-        // ReSharper disable once ArrangeObjectCreationWhenTypeNotEvident
         #region ComplexTypeWithCustomRender
+
+        var builder = new BookBuilder();
 
         List<Person> data =
         [
@@ -29,8 +32,6 @@ public class ComplexTypeWithCustomRender
 
         ValueRenderer.For<Address>(
             _ => $"{_.Number}, {_.Street}, {_.City}, {_.State}, {_.PostCode}");
-
-        var builder = new BookBuilder();
         builder.AddSheet(data);
 
         #endregion

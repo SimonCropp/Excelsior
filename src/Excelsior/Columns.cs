@@ -7,12 +7,10 @@
             .Items
             .OrderBy(_ =>
             {
-                if (columns.TryGetValue(_.Name, out var config))
+                if (columns.TryGetValue(_.Name, out var config) &&
+                    config.Order != null)
                 {
-                    if (config.Order != null)
-                    {
-                        return config.Order.Value;
-                    }
+                    return config.Order.Value;
                 }
 
                 return _.Order ?? int.MaxValue;

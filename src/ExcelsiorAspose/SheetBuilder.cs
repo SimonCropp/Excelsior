@@ -68,9 +68,12 @@ public class SheetBuilder<T>(
         await PopulateData(sheet, properties, cancel);
 
         ApplyGlobalStyling(sheet);
-        //TODO:
-        //sheet.RangeUsed()!.SetAutoFilter();
+        var cells = sheet.Cells;
+        var row = CellsHelper.RowIndexToName(cells.MaxRow);
+        var column = CellsHelper.ColumnIndexToName(cells.MaxColumn);
+        sheet.AutoFilter.Range = $"A1:{column}{row}";
         AutoSizeColumns(sheet, properties);
+        sheet.AutoFitRows();
     }
 
     List<Property<T>> GetProperties() =>
@@ -239,34 +242,25 @@ public class SheetBuilder<T>(
     {
         style.IsTextWrapped = true;
         var list = enumerable.ToList();
-        foreach (var item in list)
+        var builder = new StringBuilder("<ul>");
+        for (var index = 0; index < list.Count; index++)
         {
-            var builder = new StringBuilder("<ul>");
-            foreach (var line in item.AsSpan().EnumerateLines())
+            var item = list[index];
+            builder.AppendLine("<li>");
+
+            if (trimWhitespace)
             {
-                builder.AppendLine("<li>");
-                if (trimWhitespace)
-                {
-                    if (line.Length == 0)
-                    {
-                        continue;
-                    }
-
-                    var encoded = WebUtility.HtmlEncode(line.Trim().ToString());
-                    builder.Append(encoded);
-                }
-                else
-                {
-                    builder.Append(WebUtility.HtmlEncode(line.ToString()));
-                }
-
-                builder.AppendLine("</li>");
+                item = item.Trim();
             }
 
-            builder.AppendLine("</ul>");
+            builder.Append(WebUtility.HtmlEncode(item));
 
-            cell.HtmlString = builder.ToString();
+            builder.AppendLine("</li>");
         }
+
+        builder.AppendLine("</ul>");
+
+        cell.HtmlString = builder.ToString();
     }
 
     void ApplyHeaderStyling(Cell cell, Property<T> property)

@@ -124,7 +124,7 @@ var book = await builder.Build();
 
 ### Result:
 
-<img src="/src/Excelsior.Tests/Tests.Simple_Sheet1.png">
+<img src="/src/ExcelsiorClosedXml.Tests/Tests.Simple_Sheet1.png">
 
 
 ### Saving to a stream
@@ -159,7 +159,7 @@ builder.AddSheet(data)
 
 #### Result:
 
-<img src="/src/Tests/Tests.CustomHeaders_Sheet1.png">
+<img src="/src/ExcelsiorClosedXml.Tests/Tests.CustomHeaders_Sheet1.png">
 
 
 ### Column Ordering
@@ -179,7 +179,7 @@ builder.AddSheet(data)
 
 #### Result:
 
-<img src="/src/Tests/Tests.ColumnOrdering_Sheet1.png">
+<img src="/src/ExcelsiorClosedXml.Tests/Tests.ColumnOrdering_Sheet1.png">
 
 
 ### Header Style
@@ -202,7 +202,7 @@ builder.AddSheet(data);
 
 #### Result:
 
-<img src="/src/Tests/Tests.HeaderStyle_Sheet1.png">
+<img src="/src/ExcelsiorClosedXml.Tests/Tests.HeaderStyle_Sheet1.png">
 
 
 ### Global Style
@@ -225,7 +225,7 @@ builder.AddSheet(data);
 
 #### Result:
 
-<img src="/src/Tests/Tests.GlobalStyle_Sheet1.png">
+<img src="/src/ExcelsiorClosedXml.Tests/Tests.GlobalStyle_Sheet1.png">
 
 
 ### Conditional Styling
@@ -272,7 +272,7 @@ builder.AddSheet(employees)
 
 #### Result:
 
-<img src="/src/Tests/Tests.ConditionalStyling_Sheet1.png">
+<img src="/src/ExcelsiorClosedXml.Tests/Tests.ConditionalStyling_Sheet1.png">
 
 
 ### Render
@@ -298,7 +298,7 @@ builder.AddSheet(data)
 
 #### Result:
 
-<img src="/src/Tests/Tests.Render_Sheet1.png">
+<img src="/src/ExcelsiorClosedXml.Tests/Tests.Render_Sheet1.png">
 
 
 ### Worksheet Name

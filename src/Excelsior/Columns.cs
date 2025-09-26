@@ -1,17 +1,22 @@
 ﻿class Columns<TStyle>
 {
-    Dictionary<string, Column<TStyle>?> columns = [];
-
-    public int? GetOrder(string name)
-    {
-        var config = columns.GetValueOrDefault(name);
-        return config?.Order;
-    }
+    Dictionary<string, Column<TStyle>> columns = [];
 
     public List<Property<T>> ResolveProperties<T>() =>
         Properties<T>
             .Items
-            .OrderBy(_ => GetOrder(_.Name) ?? _.Order ?? int.MaxValue)
+            .OrderBy(_ =>
+            {
+                if (columns.TryGetValue(_.Name, out var config))
+                {
+                    if (config.Order != null)
+                    {
+                        return config.Order.Value;
+                    }
+                }
+
+                return _.Order ?? int.MaxValue;
+            })
             .ToList();
 
     public void Add<T, TProperty>(

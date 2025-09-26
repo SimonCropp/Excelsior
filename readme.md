@@ -62,6 +62,10 @@ public class Employee
 
 ### Builder
 
+`BookBuilder` is the root entry point.
+
+Once instantiated the data for multiple sheets can be added.
+
 <!-- snippet: Usage -->
 <a id='snippet-Usage'></a>
 ```cs

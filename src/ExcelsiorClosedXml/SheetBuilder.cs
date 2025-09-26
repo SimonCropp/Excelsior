@@ -11,7 +11,7 @@ public class SheetBuilder<T>(
     where T : class
 {
     int rowIndex;
-    ColumnSettings columnSettings = new();
+    Columns<IXLStyle> columns = new();
 
     /// <summary>
     /// Configure a column using property expression (type-safe)
@@ -19,9 +19,9 @@ public class SheetBuilder<T>(
     /// <returns>The converter instance for fluent chaining</returns>
     public SheetBuilder<T> Column<TProperty>(
         Expression<Func<T, TProperty>> property,
-        Action<ColumnSettings<IXLStyle, TProperty>> configuration)
+        Action<Column<IXLStyle, TProperty>> configuration)
     {
-        columnSettings.Add(property, configuration);
+        columns.Add(property, configuration);
         return this;
     }
 
@@ -44,7 +44,7 @@ public class SheetBuilder<T>(
         // Order by display order if specified
         Properties<T>
             .Items
-            .OrderBy(_ => columnSettings.GetOrder(_.Name) ?? _.Order ?? int.MaxValue)
+            .OrderBy(_ => columns.GetOrder(_.Name) ?? _.Order ?? int.MaxValue)
             .ToList();
 
     void CreateHeaders(Sheet sheet, List<Property<T>> properties)
@@ -54,7 +54,7 @@ public class SheetBuilder<T>(
             var property = properties[i];
             var cell = sheet.Cell(1, i + 1);
 
-            cell.Value = GetHeaderText(property);
+            cell.Value = columns.GetHeaderText(property);
 
             ApplyHeaderStyling(cell, property);
         }
@@ -88,7 +88,7 @@ public class SheetBuilder<T>(
 
     void SetCellValue(Cell cell, object? value, Property<T> property)
     {
-        if (columnSettings.TryGetValue(property.Name, out var config))
+        if (columns.TryGetValue(property.Name, out var config))
         {
             if (value == null)
             {
@@ -242,7 +242,7 @@ public class SheetBuilder<T>(
         // Apply global header styling
         headerStyle?.Invoke(cell.Style);
 
-        if (columnSettings.TryGetValue(property.Name, out var config))
+        if (columns.TryGetValue(property.Name, out var config))
         {
             config.HeaderStyle?.Invoke(cell.Style);
         }
@@ -259,7 +259,7 @@ public class SheetBuilder<T>(
             style.Fill.BackgroundColor = alternateRowColor;
         }
 
-        if (!columnSettings.TryGetValue(property.Name, out var config))
+        if (!columns.TryGetValue(property.Name, out var config))
         {
             return;
         }
@@ -287,23 +287,11 @@ public class SheetBuilder<T>(
         for (var i = 0; i < properties.Count; i++)
         {
             var property = properties[i];
-            if (columnSettings.TryGetValue(property.Name, out var config) &&
+            if (columns.TryGetValue(property.Name, out var config) &&
                 config.ColumnWidth.HasValue)
             {
                 sheet.Column(i + 1).Width = config.ColumnWidth.Value;
             }
         }
     }
-
-    string GetHeaderText(Property<T> property)
-    {
-        if (columnSettings.TryGetValue(property.Name, out var config) &&
-            config.HeaderText != null)
-        {
-            return config.HeaderText;
-        }
-
-        return property.DisplayName;
-    }
-
 }

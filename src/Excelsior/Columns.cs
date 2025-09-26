@@ -1,6 +1,6 @@
-﻿class ColumnSettings
+﻿class Columns<TStyle>
 {
-    Dictionary<string, ColumnSettings<IXLStyle>?> columns = [];
+    Dictionary<string, Column<TStyle>?> columns = [];
 
     public int? GetOrder(string name)
     {
@@ -10,10 +10,10 @@
 
     public void Add<T, TProperty>(
         Expression<Func<T, TProperty>> property,
-        Action<ColumnSettings<IXLStyle, TProperty>> configuration)
+        Action<Column<TStyle, TProperty>> configuration)
     {
         var name = property.PropertyName();
-        var config = new ColumnSettings<IXLStyle, TProperty>();
+        var config = new Column<TStyle, TProperty>();
         configuration(config);
         Func<object, string?>? render;
         if (config.Render == null)
@@ -39,6 +39,17 @@
         };
     }
 
-    public bool TryGetValue(string name, [NotNullWhen(true)] out ColumnSettings<IXLStyle>? settings) =>
+    public bool TryGetValue(string name, [NotNullWhen(true)] out Column<TStyle>? settings) =>
         columns.TryGetValue(name, out settings);
+
+    public string GetHeaderText<T>(Property<T> property)
+    {
+        if (TryGetValue(property.Name, out var config) &&
+            config.HeaderText != null)
+        {
+            return config.HeaderText;
+        }
+
+        return property.DisplayName;
+    }
 }

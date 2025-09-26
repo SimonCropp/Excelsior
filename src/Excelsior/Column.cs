@@ -1,6 +1,6 @@
 namespace Excelsior;
 
-class ColumnSettings<TStyle>
+class Column<TStyle>
 {
     public required string? HeaderText { get; init; }
     public required int? Order { get; init; }
@@ -13,7 +13,7 @@ class ColumnSettings<TStyle>
     public required Func<object, string?>? Render { get; init; }
 }
 
-public class ColumnSettings<TStyle, TProperty>
+public class Column<TStyle, TProperty>
 {
     public string? HeaderText { get; set; }
     public int? Order { get; set; }

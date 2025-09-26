@@ -1,16 +1,21 @@
 # <img src="/src/icon.png" height="30px"> Excelsior
 
 [![Build status](https://ci.appveyor.com/api/projects/status/fo33wu7ud6es1t2o/branch/main?svg=true)](https://ci.appveyor.com/project/SimonCropp/Excelsior)
-[![NuGet Status](https://img.shields.io/nuget/vExcelsiorClosedXml.svg)](https://www.nuget.org/packages/ExcelsiorClosedXml/)
+[![NuGet Status](https://img.shields.io/nuget/v/ExcelsiorClosedXml.svg?label=ExcelsiorClosedXml)](https://www.nuget.org/packages/ExcelsiorClosedXml/)
+[![NuGet Status](https://img.shields.io/nuget/v/ExcelsiorClosedXml.svg?label=ExcelsiorAspose)](https://www.nuget.org/packages/ExcelsiorAspose/)
 
-Excelsior is an Excel spreadsheet generation library with a distinctive data-driven approach that leverages [ClosedXML](https://github.com/ClosedXML/ClosedXML) to create Excel-compatible files.
+Excelsior is an Excel spreadsheet generation library with a distinctive data-driven approach to create Excel-compatible files.
 
 **See [Milestones](../../milestones?state=closed) for release notes.**
 
+## Supported libraries
 
-## NuGet package
+The architecture is designed to support multiple spreadsheet creation libraries.
 
-https://nuget.org/packages/ExcelsiorClosedXml/
+Currently supported libraries include:
+
+ * [ClosedXML](https://github.com/ClosedXML/ClosedXML) via the [ExcelsiorClosedXml](https://nuget.org/packages/ExcelsiorClosedXml/) nuget
+ * [Aspose.Cells](https://docs.aspose.com/cells/net/) via the [ExcelsiorAspose](https://nuget.org/packages/ExcelsiorAspose/) nuget
 
 
 ## Usage
@@ -45,7 +50,32 @@ public class Employee
     public  EmployeeStatus Status { get; init; }
 }
 ```
-<sup><a href='/src/Model/Employee.cs#L1-L21' title='Snippet source file'>snippet source</a> | <a href='#snippet-Employee.cs' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/ExcelsiorAspose.Tests/Sample/Employee.cs#L1-L21' title='Snippet source file'>snippet source</a> | <a href='#snippet-Employee.cs' title='Start of snippet'>anchor</a></sup>
+<a id='snippet-Employee.cs-1'></a>
+```cs
+public class Employee
+{
+    [Display(Name = "Employee ID", Order = 1)]
+    public required int Id { get; init; }
+
+    [Display(Name = "Full Name", Order = 2)]
+    public required string Name { get; init; }
+
+    [Display(Name = "Email Address", Order = 3)]
+    public required string Email { get; init; }
+
+    [Display(Name = "Hire Date", Order = 4)]
+    public DateTime HireDate { get; init; }
+
+    [Display(Name = "Annual Salary", Order = 5)]
+    public int Salary { get; init; }
+
+    public bool IsActive { get; init; }
+
+    public  EmployeeStatus Status { get; init; }
+}
+```
+<sup><a href='/src/ExcelsiorClosedXml.Tests/Sample/Employee.cs#L1-L21' title='Snippet source file'>snippet source</a> | <a href='#snippet-Employee.cs-1' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 `[DisplayAttribute]` is optional. If it is omitted:

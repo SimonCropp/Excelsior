@@ -1,7 +1,6 @@
 namespace Excelsior;
 
-[Experimental("ColumnSettingsTStyle")]
-public class ColumnSettings<TStyle>
+class ColumnSettings<TStyle>
 {
     public required string? HeaderText { get; init; }
     public required int? Order { get; init; }

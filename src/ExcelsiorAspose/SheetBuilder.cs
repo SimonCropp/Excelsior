@@ -10,16 +10,8 @@ public class SheetBuilder<T>(
     bool trimWhitespace)
     where T : class
 {
-    static SheetBuilder() =>
-        properties = typeof(T)
-            .GetProperties(BindingFlags.Public | BindingFlags.Instance)
-            .Where(_ => _.CanRead)
-            .Select(_ => new Property<T>(_))
-            .ToList();
-
     int rowIndex;
     Dictionary<string, ColumnSettings<Style>> settings = [];
-    static IReadOnlyList<Property<T>> properties;
 
     /// <summary>
     /// Configure a column using property expression (type-safe)
@@ -75,7 +67,8 @@ public class SheetBuilder<T>(
 
     List<Property<T>> GetProperties() =>
         // Order by display order if specified
-        properties
+        Properties<T>
+            .Items
             .OrderBy(_ =>
             {
                 var config = settings.GetValueOrDefault(_.Name);

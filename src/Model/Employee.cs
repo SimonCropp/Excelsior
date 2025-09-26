@@ -10,12 +10,12 @@ public class Employee
     public required string Email { get; init; }
 
     [Display(Name = "Hire Date", Order = 4)]
-    public DateTime HireDate { get; init; }
+    public DateTime? HireDate { get; init; }
 
     [Display(Name = "Annual Salary", Order = 5)]
     public int Salary { get; init; }
 
     public bool IsActive { get; init; }
 
-    public  EmployeeStatus Status { get; init; }
+    public EmployeeStatus Status { get; init; }
 }

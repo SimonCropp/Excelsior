@@ -45,6 +45,7 @@
             Format = config.Format,
             NullDisplayText = config.NullDisplayText,
             Render = render,
+            TreatAsHtml = config.TreatAsHtml
         };
     }
 

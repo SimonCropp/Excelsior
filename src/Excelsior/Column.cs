@@ -11,6 +11,7 @@ class Column<TStyle>
     public required string? Format { get; init; }
     public required string? NullDisplayText { get; init; }
     public required Func<object, string?>? Render { get; init; }
+    public required bool TreatAsHtml { get; init; }
 }
 
 public class Column<TStyle, TProperty>
@@ -24,4 +25,5 @@ public class Column<TStyle, TProperty>
     public string? Format { get; set; }
     public string? NullDisplayText { get; set; }
     public Func<TProperty, string?>? Render { get; set; }
+    public bool TreatAsHtml { get; set; }
 }

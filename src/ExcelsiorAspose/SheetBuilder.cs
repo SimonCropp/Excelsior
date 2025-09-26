@@ -94,18 +94,19 @@ public class SheetBuilder<T>(
 
             if (config.Render != null)
             {
-                cell.Value = config.Render(value);
+                SetStringOrHtml(config.Render(value));
                 return;
             }
 
             if (ValueRenderer.TryRender(property.Type, value, out var result))
             {
-                cell.Value = result;
+                SetStringOrHtml(result);
                 return;
             }
 
             if (value is DateTime dateTime)
             {
+                ThrowIfHtml();
                 cell.Value = dateTime;
                 if (config.Format != null)
                 {
@@ -117,18 +118,21 @@ public class SheetBuilder<T>(
 
             if (value is bool boolean)
             {
+                ThrowIfHtml();
                 cell.Value = boolean.ToString();
                 return;
             }
 
             if (value is Enum enumValue)
             {
+                ThrowIfHtml();
                 cell.Value = enumValue.DisplayName();
                 return;
             }
 
             if (property.IsNumber)
             {
+                ThrowIfHtml();
                 cell.Value = Convert.ToDouble(value);
                 if (config.Format != null)
                 {
@@ -136,6 +140,35 @@ public class SheetBuilder<T>(
                 }
 
                 return;
+            }
+
+            if (value is IEnumerable<string> enumerable)
+            {
+                ThrowIfHtml();
+                WriteEnumerable(cell, enumerable, style);
+                return;
+            }
+
+            SetStringOrHtml( GetTrimmedValue(value));
+
+            void ThrowIfHtml()
+            {
+                if (config.TreatAsHtml)
+                {
+                    throw new("TreatAsHtml is not compatible with this type");
+                }
+            }
+
+            void SetStringOrHtml(string? rendered)
+            {
+                if (config.TreatAsHtml)
+                {
+                    cell.HtmlString = rendered;
+                }
+                else
+                {
+                    cell.Value = rendered;
+                }
             }
         }
         else
@@ -175,22 +208,25 @@ public class SheetBuilder<T>(
                 cell.Value = Convert.ToDouble(value);
                 return;
             }
-        }
+            if (value is IEnumerable<string> enumerable)
+            {
+                WriteEnumerable(cell, enumerable, style);
+                return;
+            }
 
-        if (value is IEnumerable<string> enumerable)
+            cell.Value = GetTrimmedValue(value);
+        }
+    }
+
+    string? GetTrimmedValue(object value)
+    {
+        var result = value.ToString();
+        if (result != null && trimWhitespace)
         {
-            WriteEnumerable(cell, enumerable, style);
-            return;
+            return result.Trim();
         }
 
-        var valueAsString = value.ToString();
-        // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
-        if (valueAsString != null && trimWhitespace)
-        {
-            valueAsString = valueAsString.Trim();
-        }
-
-        cell.Value = valueAsString;
+        return result;
     }
 
     void WriteEnumerable(Cell cell, IEnumerable<string> enumerable, Style style)

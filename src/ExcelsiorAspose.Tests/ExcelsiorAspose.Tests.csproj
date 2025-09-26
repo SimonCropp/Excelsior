@@ -13,6 +13,7 @@
     <PackageReference Include="NUnit" />
     <PackageReference Include="NUnit3TestAdapter" />
     <ProjectReference Include="..\ExcelsiorAspose\ExcelsiorAspose.csproj" />
+    <ProjectReference Include="..\Model\Model.csproj" />
     <Using Include="NUnit.Framework.Legacy.ClassicAssert" Static="True" />
     <PackageReference Include="ProjectDefaults" PrivateAssets="all" />
   </ItemGroup>

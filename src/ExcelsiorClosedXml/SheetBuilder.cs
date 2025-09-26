@@ -162,7 +162,7 @@ public class SheetBuilder<T>(
 
             if (value is Enum enumValue)
             {
-                cell.Value = GetEnumDisplayText(enumValue);
+                cell.Value = enumValue.DisplayName();
                 return;
             }
 
@@ -205,7 +205,7 @@ public class SheetBuilder<T>(
 
             if (value is Enum enumValue)
             {
-                cell.Value = GetEnumDisplayText(enumValue);
+                cell.Value = enumValue.DisplayName();
                 return;
             }
 
@@ -341,10 +341,4 @@ public class SheetBuilder<T>(
         return property.DisplayName;
     }
 
-    static string GetEnumDisplayText(Enum enumValue)
-    {
-        var field = enumValue.GetType().GetField(enumValue.ToString());
-        var attribute = field?.GetCustomAttribute<DisplayAttribute>();
-        return attribute?.Name ?? enumValue.ToString();
-    }
 }

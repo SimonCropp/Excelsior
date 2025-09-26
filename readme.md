@@ -109,6 +109,10 @@ var book = await builder.Build();
 
 ### Saving to a stream
 
+The above sample builds a instance of the Workbook for the target library. `Aspose.Cells.Workbook` for Aspose, and `ClosedXML.Excel.IXLWorkbook` for ClosedXml.
+
+To instead save to a stream use `ToStream()`.
+
 <!-- snippet: ToStream -->
 <a id='snippet-ToStream'></a>
 ```cs
@@ -123,6 +127,8 @@ await builder.ToStream(stream);
 
 
 ### Custom Headers
+
+The header text for a column can be overridden:
 
 <!-- snippet: CustomHeaders -->
 <a id='snippet-CustomHeaders'></a>
@@ -143,6 +149,8 @@ builder.AddSheet(employees)
 
 
 ### Column Ordering
+
+The column order can be overridden:
 
 <!-- snippet: ColumnOrdering -->
 <a id='snippet-ColumnOrdering'></a>

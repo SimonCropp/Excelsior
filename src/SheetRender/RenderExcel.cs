@@ -12,14 +12,20 @@ public class RenderExcel
     [Explicit]
     public void Run()
     {
-        var directory = AttributeReader.GetProjectDirectory();
-        var imageFiles = Directory.EnumerateFiles(directory, "*.png").ToList();
+        var directory = AttributeReader.GetSolutionDirectory();
+        var imageFiles = Directory.EnumerateFiles(directory, "*.png", SearchOption.AllDirectories).ToList();
+
         foreach (var file in imageFiles)
         {
+            if (file.Contains(".verified."))
+            {
+                continue;
+            }
+
             File.Delete(file);
         }
 
-        var excelFiles = Directory.EnumerateFiles(directory, "*.verified.xlsx").ToList();
+        var excelFiles = Directory.EnumerateFiles(directory, "*.verified.xlsx", SearchOption.AllDirectories).ToList();
         foreach (var file in excelFiles)
         {
             var name = Path.GetFileName(file);
@@ -28,20 +34,11 @@ public class RenderExcel
                 continue;
             }
 
-            if (!name.Contains("DotNet"))
-            {
-                continue;
-            }
-
-            ExcelRender.Convert(file);
+            Convert(file);
         }
-
     }
-}
 
-public static class ExcelRender
-{
-    public static void Convert(string excelPath)
+    static void Convert(string excelPath)
     {
         Thread.Sleep(100);
         Application? excel = null;

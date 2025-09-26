@@ -17,7 +17,8 @@ public class RenderExcel
 
         foreach (var file in imageFiles)
         {
-            if (file.Contains(".verified."))
+            if (file.Contains(".verified.") &&
+                !file.EndsWith("icon.png"))
             {
                 continue;
             }

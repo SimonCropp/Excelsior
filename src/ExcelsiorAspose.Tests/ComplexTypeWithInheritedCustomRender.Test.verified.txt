@@ -1,0 +1,20 @@
+﻿{
+  HasMacro: False,
+  HasRevisions: False,
+  IsDigitallySigned: False,
+  Sheets: [
+    {
+      Name: Sheet1,
+      Columns: [
+        {
+          Name: Name,
+          FirstValue: John Doe
+        },
+        {
+          Name: Address,
+          FirstValue: 900, Victoria Square, Adelaide, SA, 5000
+        }
+      ]
+    }
+  ]
+}

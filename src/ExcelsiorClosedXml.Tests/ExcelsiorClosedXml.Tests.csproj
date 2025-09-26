@@ -1,10 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net48;net9.0</TargetFrameworks>
+    <TargetFramework>net9.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="ClosedXML" />
-    <PackageReference Include="Microsoft.Office.Interop.Excel" />
     <PackageReference Include="Verify.ClosedXml" />
     <PackageReference Include="Verify.DiffPlex" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
@@ -16,6 +15,5 @@
     <ProjectReference Include="..\ExcelsiorClosedXml\ExcelsiorClosedXml.csproj" />
     <Using Include="NUnit.Framework.Legacy.ClassicAssert" Static="True" />
     <PackageReference Include="ProjectDefaults" PrivateAssets="all" />
-    <Reference Include="System.Windows.Forms" Condition="'$(TargetFramework)' == 'net48'" />
   </ItemGroup>
 </Project>

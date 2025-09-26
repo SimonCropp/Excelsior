@@ -1,0 +1,40 @@
+﻿{
+  HasMacro: False,
+  HasRevisions: False,
+  IsDigitallySigned: False,
+  Sheets: [
+    {
+      Name: Sheet1,
+      Columns: [
+        {
+          Name: Employee ID,
+          FirstValue: 1.0
+        },
+        {
+          Name: Full Name,
+          FirstValue: John Doe
+        },
+        {
+          Name: Email Address,
+          FirstValue: john@company.com
+        },
+        {
+          Name: Hire Date,
+          FirstValue: 43845.0
+        },
+        {
+          Name: Annual Salary,
+          FirstValue: 75000.0
+        },
+        {
+          Name: Is Active,
+          FirstValue: True
+        },
+        {
+          Name: Status,
+          FirstValue: Status: FullTime
+        }
+      ]
+    }
+  ]
+}

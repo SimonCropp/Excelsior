@@ -1,0 +1,14 @@
+﻿{
+  SheetNames: [
+    Employee Report
+  ],
+  Properties: {},
+  WorksheetCount: 1,
+  DefaultFont: Calibri,
+  CalculateMode: Default,
+  Style: {
+    Font: {
+      Name: Calibri
+    }
+  }
+}

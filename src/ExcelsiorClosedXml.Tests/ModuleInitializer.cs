@@ -6,7 +6,6 @@ public static class ModuleInitializer
     {
         VerifierSettings.DontScrubDateTimes();
         VerifierSettings.DontScrubGuids();
-        VerifierSettings.UniqueForTargetFramework();
         VerifyImageMagick.RegisterComparers(threshold: 0.05);
         VerifierSettings.InitializePlugins();
     }

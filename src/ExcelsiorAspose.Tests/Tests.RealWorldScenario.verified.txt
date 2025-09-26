@@ -1,0 +1,40 @@
+﻿{
+  HasMacro: False,
+  HasRevisions: False,
+  IsDigitallySigned: False,
+  Sheets: [
+    {
+      Name: Employee Report 2024,
+      Columns: [
+        {
+          Name: Employee ID,
+          FirstValue: 1001.0
+        },
+        {
+          Name: Full Name,
+          FirstValue: Sarah Connor
+        },
+        {
+          Name: Email Address,
+          FirstValue: s.connor@techcorp.com
+        },
+        {
+          Name: Hire Date,
+          FirstValue: 2018-03-15
+        },
+        {
+          Name: Annual Salary,
+          FirstValue: 125000.0
+        },
+        {
+          Name: Is Active,
+          FirstValue: ✓ Active
+        },
+        {
+          Name: Status,
+          FirstValue: Full Time
+        }
+      ]
+    }
+  ]
+}

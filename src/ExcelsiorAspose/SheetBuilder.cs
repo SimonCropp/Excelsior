@@ -18,7 +18,9 @@ public class SheetBuilder<T>(
             .ToList();
 
     int rowIndex;
+#pragma warning disable ColumnSettingsTStyle
     Dictionary<string, ColumnSettings<Style>> settings = [];
+#pragma warning restore ColumnSettingsTStyle
     static IReadOnlyList<Property<T>> properties;
 
     /// <summary>

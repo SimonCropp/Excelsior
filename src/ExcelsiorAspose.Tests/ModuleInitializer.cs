@@ -20,8 +20,8 @@ public static class ModuleInitializer
             throw new("Expected a `AsposeLicense` environment variable");
         }
 
-        var stream = new MemoryStream();
-        var writer = new StreamWriter(stream);
+        using var stream = new MemoryStream();
+        using var writer = new StreamWriter(stream);
         writer.Write(licenseText);
         writer.Flush();
 

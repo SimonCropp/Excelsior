@@ -112,13 +112,13 @@ public class RenderExcel
                 }
                 finally
                 {
-                    Thread.Sleep(100);
+                    Thread.Sleep(500);
                 }
             }
 
             using var image = Clipboard.GetImage()!;
             var imageFile = excelPath
-                .Replace(".DotNet.verified", "")
+                .Replace(".verified", "")
                 .Replace(".xlsx", $"_{sheet.Name}.png");
             image.Save(imageFile, ImageFormat.Png);
         }

@@ -7,7 +7,9 @@
             var cells = sheet.Cells;
             sheet.AutoFitRows();
             //Round row since Aspose AutoFitRows is not deterministic
-            for (var index = 0; index < cells.MaxRow; index++)
+            //MaxRow is expensive so cache
+            var maxRow = cells.MaxRow;
+            for (var index = 0; index <= maxRow; index++)
             {
                 var height = cells.GetRowHeight(index);
                 cells.SetRowHeight(index, Math.Round(height));

@@ -1,11 +1,17 @@
 ﻿[TestFixture]
 public class EnumerableStringTests
 {
+    #region EnumerableModel
+
     public record Person(string Name, string[] PhoneNumbers);
+
+    #endregion
 
     [Test]
     public async Task Test()
     {
+        #region EnumerableUsage
+
         List<Person> data =
         [
             new("John Doe",
@@ -19,6 +25,8 @@ public class EnumerableStringTests
 
         var builder = new BookBuilder();
         builder.AddSheet(data);
+
+        #endregion
 
         var book = await builder.Build();
 

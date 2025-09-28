@@ -233,23 +233,35 @@ public class SheetBuilder<T>(
     {
         style.IsTextWrapped = true;
         var list = enumerable.ToList();
-        var builder = new StringBuilder("<ul>");
+        var builder = new StringBuilder(
+            """
+            <ul>
+            
+            """);
         for (var index = 0; index < list.Count; index++)
         {
             var item = list[index];
-            builder.AppendLine("<li>");
+            builder.Append("<li>");
 
             if (trimWhitespace)
             {
                 item = item.Trim();
             }
 
-            builder.Append(WebUtility.HtmlEncode(item));
+            item = WebUtility.HtmlEncode(item);
+
+            // works around a bug where aspose indents only the first item
+            if (index != 0)
+            {
+                item = $"&nbsp;{item}";
+            }
+
+            builder.Append(item);
 
             builder.AppendLine("</li>");
         }
 
-        builder.AppendLine("</ul>");
+        builder.Append("</ul>");
 
         cell.HtmlString = builder.ToString();
     }

@@ -503,6 +503,134 @@ var book = await builder.Build();
 <img src="/src/ExcelsiorClosedXml.Tests/Tests.DisableWhitespaceTrim_Sheet1.png">
 
 
+### Enumerable string properties
+
+Properties that are castable to an `IEnumerable<string>` will automatically be rendered as a point form list.
+
+
+#### Module
+
+<!-- snippet: EnumerableModel -->
+<a id='snippet-EnumerableModel'></a>
+```cs
+public record Person(string Name, string[] PhoneNumbers);
+```
+<sup><a href='/src/ExcelsiorClosedXml.Tests/EnumerableStringTests.cs#L4-L8' title='Snippet source file'>snippet source</a> | <a href='#snippet-EnumerableModel' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+
+#### Render
+
+<!-- snippet: EnumerableUsage -->
+<a id='snippet-EnumerableUsage'></a>
+```cs
+List<Person> data =
+[
+    new("John Doe",
+        PhoneNumbers:
+        [
+            "+1 3057380950",
+            "+1 5056169368",
+            "+1 8634446859"
+        ]),
+];
+
+var builder = new BookBuilder();
+builder.AddSheet(data);
+```
+<sup><a href='/src/ExcelsiorClosedXml.Tests/EnumerableStringTests.cs#L13-L29' title='Snippet source file'>snippet source</a> | <a href='#snippet-EnumerableUsage' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+
+#### Result
+
+<img src="/src/ExcelsiorClosedXml.Tests/EnumerableStringTests.Test_Sheet1.png">
+
+
+## Binding Model
+
+The recommended approach is to use are specific type for binding.
+
+This will make configuration and rendering simpler. It will often also result in better performance. The reason being that the project into the binding type can be done by the database via an ORM. This will result in a faster query response and less data being transferred from the database.
+
+Take for example of rendering employees to a sheet.
+
+The model could be is `Company`, `Employee`, and `Address`.
+
+<!-- snippet: DataModel -->
+<a id='snippet-DataModel'></a>
+```cs
+public class Address
+{
+    public required int StreetNumber { get; init; }
+
+    public required string Street { get; init; }
+}
+
+public class Company
+{
+    public required int Id { get; init; }
+
+    public required string Name { get; init; }
+}
+
+public class Employee
+{
+    public required int Id { get; init; }
+
+    public required string Name { get; init; }
+
+    public required Company Company { get; init; }
+
+    public required Address Address { get; init; }
+
+    public required string Email { get; init; }
+}
+```
+<sup><a href='/src/Model/BindingModel.cs#L6-L35' title='Snippet source file'>snippet source</a> | <a href='#snippet-DataModel' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+Then a custom binding type can be used.
+
+<!-- snippet: EmployeeBindingModel -->
+<a id='snippet-EmployeeBindingModel'></a>
+```cs
+public class EmployeeBindingModel
+{
+    public required string Name { get; init; }
+
+    public required string Email { get; init; }
+
+    public required string Company { get; init; }
+
+    public required string Address { get; init; }
+}
+```
+<sup><a href='/src/Model/BindingModel.cs#L37-L50' title='Snippet source file'>snippet source</a> | <a href='#snippet-EmployeeBindingModel' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+The custom binding type can be queried and  rendered into a sheet.
+
+<!-- snippet: ModelProjection -->
+<a id='snippet-ModelProjection'></a>
+```cs
+var employees = dbContext
+    .Employees
+    .Select(_ =>
+        new EmployeeBindingModel
+        {
+            Name = _.Name,
+            Email = _.Email,
+            Company = _.Company.Name,
+            Address = $"{_.Address.StreetNumber} {_.Address.Street}",
+        });
+var builder = new BookBuilder();
+builder.AddSheet(employees);
+```
+<sup><a href='/src/Model/BindingModel.cs#L62-L77' title='Snippet source file'>snippet source</a> | <a href='#snippet-ModelProjection' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+
 ## Icon
 
 [Excel](https://thenounproject.com/icon/excel-4558727/) designed by [Start Up Graphic Design](https://thenounproject.com/creator/ppanggm/) from [The Noun Project](https://thenounproject.com/).

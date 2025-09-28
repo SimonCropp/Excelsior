@@ -4,6 +4,11 @@
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="ClosedXML" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
     <PackageReference Include="ProjectDefaults" PrivateAssets="all" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ExcelsiorClosedXml\ExcelsiorClosedXml.csproj" />
   </ItemGroup>
 </Project>

@@ -12,9 +12,9 @@ public class EnumerableStringTests
             new("John Doe",
                 PhoneNumbers:
                 [
-                    "+1 3057380950",
-                    "+1 5056169368",
-                    "+1 8634446859"
+                    "3057380950",
+                    "5056169368",
+                    "8634446859"
                 ]),
         ];
         builder.AddSheet(data);

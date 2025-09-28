@@ -7,7 +7,8 @@ public class SheetBuilder<T>(
     XLColor? alternateRowColor,
     Action<IXLStyle>? headerStyle,
     Action<IXLStyle>? globalStyle,
-    bool trimWhitespace)
+    bool trimWhitespace):
+    ISheetBuilder<T,IXLStyle>
     where T : class
 {
     int rowIndex;
@@ -24,6 +25,11 @@ public class SheetBuilder<T>(
         columns.Add(property, configuration);
         return this;
     }
+
+    void ISheetBuilder<T, IXLStyle>.Column<TProperty>(
+        Expression<Func<T, TProperty>> property,
+        Action<Column<IXLStyle, TProperty>> configuration) =>
+        Column(property, configuration);
 
     internal async Task AddSheet(Book book, Cancel cancel)
     {

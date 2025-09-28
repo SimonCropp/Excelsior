@@ -7,7 +7,8 @@ public class SheetBuilder<T>(
     Color? alternateRowColor,
     Action<Style>? headerStyle,
     Action<Style>? globalStyle,
-    bool trimWhitespace)
+    bool trimWhitespace) :
+    ISheetBuilder<T, Style>
     where T : class
 {
     int rowIndex;
@@ -24,6 +25,11 @@ public class SheetBuilder<T>(
         columns.Add(property, configuration);
         return this;
     }
+
+    void ISheetBuilder<T, Style>.Column<TProperty>(
+        Expression<Func<T, TProperty>> property,
+        Action<Column<Style, TProperty>> configuration) =>
+        Column(property, configuration);
 
     internal async Task AddSheet(Book book, Cancel cancel)
     {
@@ -236,7 +242,7 @@ public class SheetBuilder<T>(
         var builder = new StringBuilder(
             """
             <ul>
-            
+
             """);
         for (var index = 0; index < list.Count; index++)
         {

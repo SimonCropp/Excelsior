@@ -1,6 +1,4 @@
-﻿using System.Drawing;
-
-public static class ExcelExportExamples
+﻿public static class ExcelExportExamples
 {
     public static async Task BasicExport()
     {

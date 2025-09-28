@@ -1,7 +1,4 @@
-﻿using System.Drawing;
-using System.Globalization;
-
-[TestFixture]
+﻿[TestFixture]
 public class Tests
 {
     [Test]

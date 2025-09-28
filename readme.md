@@ -551,11 +551,9 @@ builder.AddSheet(data);
 
 The recommended approach is to use are specific type for binding.
 
-This will make configuration and rendering simpler. It will often also result in better performance. The reason being that the project into the binding type can be done by the database via an ORM. This will result in a faster query response and less data being transferred from the database.
+This will make configuration and rendering simpler. It will often also result in better performance. The reason being that the projection into the binding type can be done by the database via an ORM. This will result in a faster query response and less data being transferred from the database.
 
-Take for example of rendering employees to a sheet.
-
-The model could be is `Company`, `Employee`, and `Address`.
+Take for example of rendering employees to a sheet. A potential model could be `Company`, `Employee`, and `Address`.
 
 <!-- snippet: DataModel -->
 <a id='snippet-DataModel'></a>

@@ -8,27 +8,21 @@ public class BindingModel
     public class Address
     {
         public required int StreetNumber { get; init; }
-
         public required string Street { get; init; }
     }
 
     public class Company
     {
         public required int Id { get; init; }
-
         public required string Name { get; init; }
     }
 
     public class Employee
     {
         public required int Id { get; init; }
-
         public required string Name { get; init; }
-
         public required Company Company { get; init; }
-
         public required Address Address { get; init; }
-
         public required string Email { get; init; }
     }
 
@@ -39,11 +33,8 @@ public class BindingModel
     public class EmployeeBindingModel
     {
         public required string Name { get; init; }
-
         public required string Email { get; init; }
-
         public required string Company { get; init; }
-
         public required string Address { get; init; }
     }
 

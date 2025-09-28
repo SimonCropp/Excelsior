@@ -16,7 +16,7 @@
         },
         {
           Name: Email Address,
-          FirstValue: 📧 john@company.com
+          FirstValue: ✉ john@company.com
         },
         {
           Name: Hire Date,

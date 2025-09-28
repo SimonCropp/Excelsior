@@ -367,7 +367,7 @@ public class Tests
         builder.AddSheet(employees)
             .Column(
                 _ => _.Email,
-                _ => _.Render = value => $"📧 {value}")
+                _ => _.Render = value => $"✉ {value}")
             .Column(
                 _ => _.IsActive,
                 _ => _.Render = active => active ? "✓ Active" : "✗ Inactive")

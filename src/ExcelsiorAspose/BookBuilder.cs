@@ -5,7 +5,8 @@ public class BookBuilder(
     Color? alternateRowColor = null,
     Action<Style>? headerStyle = null,
     Action<Style>? globalStyle = null,
-    bool trimWhitespace = true)
+    bool trimWhitespace = true) :
+    IBookBuilder
 {
     List<Func<Book, Cancel, Task>> actions = [];
 

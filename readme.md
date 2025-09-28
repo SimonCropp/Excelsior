@@ -561,31 +561,25 @@ Take for example of rendering employees to a sheet. A potential model could be `
 public class Address
 {
     public required int StreetNumber { get; init; }
-
     public required string Street { get; init; }
 }
 
 public class Company
 {
     public required int Id { get; init; }
-
     public required string Name { get; init; }
 }
 
 public class Employee
 {
     public required int Id { get; init; }
-
     public required string Name { get; init; }
-
     public required Company Company { get; init; }
-
     public required Address Address { get; init; }
-
     public required string Email { get; init; }
 }
 ```
-<sup><a href='/src/Model/BindingModel.cs#L6-L35' title='Snippet source file'>snippet source</a> | <a href='#snippet-DataModel' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Model/BindingModel.cs#L6-L29' title='Snippet source file'>snippet source</a> | <a href='#snippet-DataModel' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 Then a custom binding type can be used.
@@ -596,15 +590,12 @@ Then a custom binding type can be used.
 public class EmployeeBindingModel
 {
     public required string Name { get; init; }
-
     public required string Email { get; init; }
-
     public required string Company { get; init; }
-
     public required string Address { get; init; }
 }
 ```
-<sup><a href='/src/Model/BindingModel.cs#L37-L50' title='Snippet source file'>snippet source</a> | <a href='#snippet-EmployeeBindingModel' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Model/BindingModel.cs#L31-L41' title='Snippet source file'>snippet source</a> | <a href='#snippet-EmployeeBindingModel' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 The custom binding type can be queried and  rendered into a sheet.
@@ -625,7 +616,7 @@ var employees = dbContext
 var builder = new BookBuilder();
 builder.AddSheet(employees);
 ```
-<sup><a href='/src/Model/BindingModel.cs#L62-L77' title='Snippet source file'>snippet source</a> | <a href='#snippet-ModelProjection' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Model/BindingModel.cs#L53-L68' title='Snippet source file'>snippet source</a> | <a href='#snippet-ModelProjection' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 

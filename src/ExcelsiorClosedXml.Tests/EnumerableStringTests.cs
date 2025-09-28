@@ -92,7 +92,6 @@ public class EnumerableStringTests
     }
 
     [Test]
-    [Explicit]
     public async Task WithWhitespaceNoTrim()
     {
         List<Target> data =

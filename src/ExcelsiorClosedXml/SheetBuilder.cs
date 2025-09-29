@@ -7,8 +7,8 @@ public class SheetBuilder<T>(
     XLColor? alternateRowColor,
     Action<IXLStyle>? headerStyle,
     Action<IXLStyle>? globalStyle,
-    bool trimWhitespace):
-    ISheetBuilder<T,IXLStyle>
+    bool trimWhitespace) :
+    ISheetBuilder<T, IXLStyle>
     where T : class
 {
     int rowIndex;

@@ -400,8 +400,8 @@ public class Tests
         var builder = new BookBuilder();
         builder.AddSheet(employees)
             .Column(
-                _ => _.Email,
-                _ => _.Render = value => $"✉ {value}")
+                _ => _.Name,
+                _ => _.Render = value => value.ToUpper())
             .Column(
                 _ => _.IsActive,
                 _ => _.Render = active => active ? "✓ Active" : "✗ Inactive")
@@ -453,39 +453,95 @@ public class Tests
         await Verify(book);
     }
 
+    public class ModelWithNulls
+    {
+        public int Id { get; set; }
+        public string? Name { get; set; }
+        public string? Email { get; set; }
+        public DateTime? HireDate { get; set; }
+        public EmployeeStatus? Status { get; set; }
+    }
+
     [Test]
     public async Task NullValues()
     {
         var builder = new BookBuilder();
-        var employees = new List<EmployeeWithNulls>
+        var employees = new List<ModelWithNulls>
         {
             new()
             {
                 Id = 1,
                 Name = "John Doe",
                 Email = null,
-                HireDate = new DateTime(2020, 1, 15)
+                HireDate = new DateTime(2020, 1, 15),
+                Status = EmployeeStatus.Contract,
             },
             new()
             {
                 Id = 2,
                 Name = null,
                 Email = "jane@company.com",
-                HireDate = null
+                HireDate = null,
+                Status = EmployeeStatus.Contract,
             },
             new()
             {
                 Id = 3,
                 Name = "Bob Johnson",
                 Email = "bob@company.com",
-                HireDate = new DateTime(2021, 7, 10)
+                HireDate = new DateTime(2021, 7, 10),
+                Status = EmployeeStatus.PartTime,
             }
         };
         builder.AddSheet(employees)
             .Column(_ => _.Name, _ => _.NullDisplayText = "[No Name]")
-            .Column(_ => _.Email, _ => _.NullDisplayText = "[No Email]");
+            .Column(_ => _.HireDate, _ => _.NullDisplayText = "[No HireDate]")
+            .Column(_ => _.Email, _ => _.NullDisplayText = "[No Email]")
+            .Column(_ => _.Status, _ => _.NullDisplayText = "[No Status]");
 
         var book = await builder.Build();
+
+        await Verify(book);
+    }
+
+    [Test]
+    public async Task NullValuesShortcuts()
+    {
+        var bookBuilder = new BookBuilder();
+        var employees = new List<ModelWithNulls>
+        {
+            new()
+            {
+                Id = 1,
+                Name = "John Doe",
+                Email = null,
+                HireDate = new DateTime(2020, 1, 15),
+                Status = EmployeeStatus.Contract,
+            },
+            new()
+            {
+                Id = 2,
+                Name = null,
+                Email = "jane@company.com",
+                HireDate = null,
+                Status = EmployeeStatus.Contract,
+            },
+            new()
+            {
+                Id = 3,
+                Name = "Bob Johnson",
+                Email = "bob@company.com",
+                HireDate = new DateTime(2021, 7, 10),
+                Status = EmployeeStatus.PartTime,
+            }
+        };
+        var sheetBuilder = bookBuilder.AddSheet(employees);
+        sheetBuilder.NullDisplayText(_ => _.Name, "[No Name]");
+        sheetBuilder.NullDisplayText(_ => _.HireDate, "[No HireDate]");
+        sheetBuilder.NullDisplayText(_ => _.Email, "[No Email]");
+        sheetBuilder.NullDisplayText(_ => _.Status, "[No Status]");
+
+        var book = await bookBuilder.Build();
 
         await Verify(book);
     }
@@ -776,14 +832,6 @@ public class Tests
             Status = EmployeeStatus.Terminated
         }
     ];
-
-    public class EmployeeWithNulls
-    {
-        public int Id { get; set; }
-        public string? Name { get; set; }
-        public string? Email { get; set; }
-        public DateTime? HireDate { get; set; }
-    }
 
     public class Product
     {

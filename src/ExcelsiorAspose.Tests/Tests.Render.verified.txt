@@ -12,11 +12,11 @@
         },
         {
           Name: Full Name,
-          FirstValue: John Doe
+          FirstValue: JOHN DOE
         },
         {
           Name: Email Address,
-          FirstValue: ✉ john@company.com
+          FirstValue: john@company.com
         },
         {
           Name: Hire Date,

@@ -1,8 +1,4 @@
-﻿using Microsoft.Office.Interop.Excel;
-using System.Runtime.InteropServices;
-using System.Drawing.Imaging;
-using System.Windows.Forms;
-using Application = Microsoft.Office.Interop.Excel.Application;
+﻿using Application = Microsoft.Office.Interop.Excel.Application;
 
 [TestFixture]
 [Apartment(ApartmentState.STA)]

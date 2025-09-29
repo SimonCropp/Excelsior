@@ -370,7 +370,7 @@ public class Tests
                 _ => _.Render = value => value.ToUpper())
             .Column(
                 _ => _.IsActive,
-                _ => _.Render = active => active ? "✓ Active" : "✗ Inactive")
+                _ => _.Render = active => active ? "Active" : "Inactive")
             .Column(
                 _ => _.HireDate,
                 _ => _.Format = "yyyy-MM-dd");

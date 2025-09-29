@@ -78,6 +78,8 @@ public class SheetBuilder<T>(
 
                 var style = cell.GetStyle();
                 style.VerticalAlignment = TextAlignmentType.Top;
+                style.HorizontalAlignment = TextAlignmentType.Left;
+                style.IsTextWrapped = true;
                 var value = property.Get(item);
                 SetCellValue(cell, value, property, style);
                 ApplyDataCellStyling(property, rowIndex, value, style);
@@ -151,7 +153,7 @@ public class SheetBuilder<T>(
             if (value is IEnumerable<string> enumerable)
             {
                 ThrowIfHtml();
-                WriteEnumerable(cell, enumerable, style);
+                WriteEnumerable(cell, enumerable);
                 return;
             }
 
@@ -169,7 +171,6 @@ public class SheetBuilder<T>(
             {
                 if (config.TreatAsHtml)
                 {
-                    style.IsTextWrapped = true;
                     cell.SafeSetHtml(rendered);
                 }
                 else
@@ -218,7 +219,7 @@ public class SheetBuilder<T>(
 
             if (value is IEnumerable<string> enumerable)
             {
-                WriteEnumerable(cell, enumerable, style);
+                WriteEnumerable(cell, enumerable);
                 return;
             }
 
@@ -237,9 +238,8 @@ public class SheetBuilder<T>(
         return result;
     }
 
-    void WriteEnumerable(Cell cell, IEnumerable<string> enumerable, Style style)
+    void WriteEnumerable(Cell cell, IEnumerable<string> enumerable)
     {
-        style.IsTextWrapped = true;
         var list = enumerable.ToList();
         var builder = new StringBuilder(
             """

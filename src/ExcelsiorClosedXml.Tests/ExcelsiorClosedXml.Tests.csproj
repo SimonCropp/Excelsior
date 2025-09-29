@@ -7,7 +7,6 @@
     <PackageReference Include="Verify.ClosedXml" />
     <PackageReference Include="Verify.DiffPlex" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
-    <PackageReference Include="MarkdownSnippets.MsBuild" PrivateAssets="all" />
     <PackageReference Include="Verify.ImageMagick" />
     <PackageReference Include="Verify.NUnit" />
     <PackageReference Include="NUnit" />

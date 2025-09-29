@@ -2,39 +2,6 @@
 public class Tests
 {
     [Test]
-    public Task ClosedXmlFormatting()
-    {
-        List<string> items = [
-            "Item1",
-            "Item2",
-            "Item with spaces",
-            "Item\rwith\nnew\r\nlines",
-            "Last"];
-        using var book = new XLWorkbook();
-
-        var sheet = book.Worksheets.Add();
-
-        sheet.Cell("A1").Value = "ID";
-        var cell = sheet.Cell("B1");
-        cell.Style.Alignment.WrapText = true;
-        var richText = cell.CreateRichText();
-        foreach (var item in items)
-        {
-            richText.AddText("• ").SetBold();
-            var indented = item
-                .Replace("\r\n","\n")
-                .Replace("\r","\n")
-                .Replace("\n","\n   ");
-            richText.AddText(indented);
-            richText.AddNewLine();
-        }
-
-        sheet.Columns().AdjustToContents();
-
-        return Verify(book);
-    }
-
-    [Test]
     public async Task Simple()
     {
         #region Usage
@@ -404,7 +371,7 @@ public class Tests
                 _ => _.Render = value => value.ToUpper())
             .Column(
                 _ => _.IsActive,
-                _ => _.Render = active => active ? "✓ Active" : "✗ Inactive")
+                _ => _.Render = active => active ? "Active" : "Inactive")
             .Column(
                 _ => _.HireDate,
                 _ => _.Format = "yyyy-MM-dd");
@@ -733,7 +700,7 @@ public class Tests
                 _ => _.IsActive,
                 config =>
                 {
-                    config.Render = active => active ? "✓ Active" : "✗ Inactive";
+                    config.Render = active => active ? "Active" : "Inactive";
                     config.DataCellStyle = style =>
                     {
                         style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;

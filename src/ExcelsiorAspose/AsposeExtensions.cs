@@ -12,7 +12,7 @@
             for (var index = 0; index <= maxRow; index++)
             {
                 var height = cells.GetRowHeight(index);
-                cells.SetRowHeight(index, Math.Round(height));
+                cells.SetRowHeight(index, Math.Round(height) + 1);
             }
         }
 
@@ -23,7 +23,7 @@
             //Round widths since aspose AutoFitColumns is not deterministic
             foreach (var column in sheet.Cells.Columns)
             {
-                column.Width = Math.Round(column.Width);
+                column.Width = Math.Round(column.Width) + 1;
             }
         }
 

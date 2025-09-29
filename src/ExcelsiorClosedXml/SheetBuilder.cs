@@ -75,7 +75,10 @@ public class SheetBuilder<T>(
                 var property = properties[colIndex];
                 var cell = sheet.Cell(xlRow, colIndex + 1);
 
+                cell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
                 cell.Style.Alignment.Vertical = XLAlignmentVerticalValues.Top;
+                cell.Style.Alignment.WrapText = true;
+
                 var value = property.Get(item);
                 SetCellValue(cell, value, property);
                 ApplyDataCellStyling(cell, property, rowIndex, value);
@@ -198,7 +201,6 @@ public class SheetBuilder<T>(
 
     void WriteEnumerable(Cell cell, IEnumerable<string> enumerable)
     {
-        cell.Style.Alignment.WrapText = true;
         var rich = cell.CreateRichText();
         var list = enumerable.ToList();
         for (var index = 0; index < list.Count; index++)
@@ -282,15 +284,24 @@ public class SheetBuilder<T>(
 
     void AutoSizeColumns(Sheet sheet, List<Property<T>> properties)
     {
-        sheet.Columns().AdjustToContents();
+        var xlColumns = sheet.Columns().ToList();
 
         // Apply specific column widths
         for (var i = 0; i < properties.Count; i++)
         {
             if (columns.TryGetColumnWidth(properties[i], out var width))
             {
-                sheet.Column(i + 1).Width = width;
+                var xlColumn = sheet.Column(i + 1);
+                xlColumns.Remove(xlColumn);
+                xlColumn.Width = width;
             }
+        }
+
+        var endRow = sheet.RowsUsed().Count();
+        foreach (var column in xlColumns)
+        {
+            column.AdjustToContents(1, endRow);
+            column.Width += 2;
         }
     }
 }

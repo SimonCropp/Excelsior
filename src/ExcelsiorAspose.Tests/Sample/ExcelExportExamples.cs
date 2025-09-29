@@ -54,7 +54,7 @@
                 _ => _.IsActive,
                 config =>
                 {
-                    config.Render = active => active ? "✓ Yes" : "✗ No";
+                    config.Render = active => active ? "Yes" : "No";
                     config.DataCellStyle = style =>
                     {
                         style.HorizontalAlignment = TextAlignmentType.Center;

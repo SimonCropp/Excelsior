@@ -192,6 +192,7 @@ public class SheetBuilder<T>(
         {
             valueAsString = valueAsString.Trim();
         }
+
         cell.Value = valueAsString;
     }
 
@@ -213,6 +214,7 @@ public class SheetBuilder<T>(
                     {
                         continue;
                     }
+
                     builder.Append(line.Trim());
                 }
                 else

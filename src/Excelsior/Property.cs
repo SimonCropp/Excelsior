@@ -9,25 +9,62 @@
 
     public static IReadOnlyList<Property<T>> Items { get; }
 }
-
-class Property<T>(PropertyInfo info)
+class Property<T>
 {
-    static int? GetOrder(PropertyInfo info)
+    public Property(PropertyInfo info)
     {
-        var attribute = info.GetCustomAttribute<DisplayAttribute>();
-        return attribute?.Order;
+        Get = CreateGet(info);
+        var column = info.GetCustomAttribute<ColumnAttribute>();
+        var display = info.GetCustomAttribute<DisplayAttribute>();
+        DisplayName = GetDisplayName(info, display, column);
+        Name = info.Name;
+        Order = GetOrder(column, display);
+        Width = GetWidth(column);
+        Format = column?.Format;
+        NullDisplayText = column?.NullDisplayText;
+        TreatAsHtml = column?.TreatAsHtml;
+        Type = info.PropertyType;
+        IsNumber = info.PropertyType.IsNumericType();
     }
 
-    public Func<T, object?> Get { get; } = CreateGet(info);
-    public string DisplayName { get; } = GetDisplayName(info);
-    public string Name { get; } = info.Name;
-    public int? Order { get; } = GetOrder(info);
-    public Type Type { get; } = info.PropertyType;
-    public bool IsNumber { get; } = info.PropertyType.IsNumericType();
-
-    static string GetDisplayName(PropertyInfo info)
+    static int? GetOrder(ColumnAttribute? column, DisplayAttribute? display)
     {
-        var display = info.GetCustomAttribute<DisplayAttribute>();
+        if (column is { Order: > -1 })
+        {
+            return column.Order;
+        }
+
+        return display?.Order;
+    }
+
+    static double? GetWidth(ColumnAttribute? column)
+    {
+        if (column is { Width: > -1 })
+        {
+            return column.Width;
+        }
+
+        return null;
+    }
+
+    public Func<T, object?> Get { get; }
+    public string DisplayName { get; }
+    public string Name { get; }
+    public int? Order { get; }
+    public Type Type { get; }
+    public bool IsNumber { get; }
+    public double? Width { get; }
+    public string? Format { get; }
+    public string? NullDisplayText { get; }
+    public bool? TreatAsHtml { get; }
+
+    static string GetDisplayName(PropertyInfo info, DisplayAttribute? display, ColumnAttribute? column)
+    {
+        if (column?.HeaderText != null)
+        {
+            return column.HeaderText;
+        }
+
         if (display?.Name != null)
         {
             return display.Name;

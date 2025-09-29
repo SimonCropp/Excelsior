@@ -81,7 +81,7 @@ public class SheetBuilder<T>(
 
                 var value = property.Get(item);
                 SetCellValue(cell, value, property);
-                ApplyDataCellStyling(cell, property, rowIndex, value);
+                ApplyCellStyle(cell, property, rowIndex, value);
             }
 
             rowIndex++;
@@ -251,7 +251,7 @@ public class SheetBuilder<T>(
         }
     }
 
-    void ApplyDataCellStyling(Cell cell, Property<T> property, int index, object? value)
+    void ApplyCellStyle(Cell cell, Property<T> property, int index, object? value)
     {
         var style = cell.Style;
 
@@ -267,8 +267,7 @@ public class SheetBuilder<T>(
             return;
         }
 
-        config.DataCellStyle?.Invoke(style);
-        config.ConditionalStyling?.Invoke(style, value);
+        config.CellStyle?.Invoke(style, value);
     }
 
     void ApplyGlobalStyling(Sheet sheet, List<Property<T>> properties)

@@ -146,7 +146,7 @@ public class Tests
             _ => _.Number,
             _ =>
             {
-                _.ConditionalStyling = (style, value) =>
+                _.CellStyle = (style, value) =>
                 {
                     Debug.WriteLine(style);
                     Debug.WriteLine(value);
@@ -157,7 +157,7 @@ public class Tests
             _ => _.DateTime,
             _ =>
             {
-                _.ConditionalStyling = (style, value) =>
+                _.CellStyle = (style, value) =>
                 {
                     Debug.WriteLine(style);
                     Debug.WriteLine(value);
@@ -176,7 +176,7 @@ public class Tests
             _ => _.Enum,
             _ =>
             {
-                _.ConditionalStyling = (style, value) =>
+                _.CellStyle = (style, value) =>
                 {
                     Debug.WriteLine(style);
                     Debug.WriteLine(value);
@@ -187,7 +187,7 @@ public class Tests
             _ => _.String,
             _ =>
             {
-                _.ConditionalStyling = (style, value) =>
+                _.CellStyle = (style, value) =>
                 {
                     Debug.WriteLine(style);
                     Debug.WriteLine(value);
@@ -198,7 +198,7 @@ public class Tests
             _ => _.Bool,
             _ =>
             {
-                _.ConditionalStyling = (style, value) =>
+                _.CellStyle = (style, value) =>
                 {
                     Debug.WriteLine(style);
                     Debug.WriteLine(value);
@@ -311,11 +311,11 @@ public class Tests
     }
 
     [Test]
-    public async Task ConditionalStyling()
+    public async Task CellStyle()
     {
         var employees = GetSampleEmployees();
 
-        #region ConditionalStyling
+        #region CellStyle
 
         var builder = new BookBuilder();
         builder.AddSheet(employees)
@@ -323,9 +323,9 @@ public class Tests
                 _ => _.Salary,
                 config =>
                 {
-                    config.ConditionalStyling = (style, value) =>
+                    config.CellStyle = (style, salary) =>
                     {
-                        if (value > 100000)
+                        if (salary > 100000)
                         {
                             style.Font.FontColor = XLColor.DarkGreen;
                             style.Font.Bold = true;
@@ -336,7 +336,7 @@ public class Tests
                 _ => _.IsActive,
                 config =>
                 {
-                    config.ConditionalStyling = (style, isActive) =>
+                    config.CellStyle = (style, isActive) =>
                     {
                         var fill = style.Fill;
                         if (isActive)
@@ -677,7 +677,7 @@ public class Tests
                 config =>
                 {
                     config.Format = "$#,##0.00";
-                    config.ConditionalStyling = (style, salary) =>
+                    config.CellStyle = (style, salary) =>
                     {
                         if (salary >= 100000)
                         {
@@ -701,7 +701,7 @@ public class Tests
                 config =>
                 {
                     config.Render = active => active ? "Active" : "Inactive";
-                    config.DataCellStyle = style =>
+                    config.CellStyle = (style, _) =>
                     {
                         style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
                     };
@@ -710,7 +710,7 @@ public class Tests
                 _ => _.Status,
                 config =>
                 {
-                    config.ConditionalStyling = (style, status) =>
+                    config.CellStyle = (style, status) =>
                     {
                         switch (status)
                         {

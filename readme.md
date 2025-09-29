@@ -216,10 +216,10 @@ builder.AddSheet(data);
 <img src="/src/ExcelsiorClosedXml.Tests/Tests.GlobalStyle_Sheet1.png">
 
 
-### Conditional Styling
+### Cell Styling
 
-<!-- snippet: ConditionalStyling -->
-<a id='snippet-ConditionalStyling'></a>
+<!-- snippet: CellStyle -->
+<a id='snippet-CellStyle'></a>
 ```cs
 var builder = new BookBuilder();
 builder.AddSheet(employees)
@@ -227,9 +227,9 @@ builder.AddSheet(employees)
         _ => _.Salary,
         config =>
         {
-            config.ConditionalStyling = (style, value) =>
+            config.CellStyle = (style, salary) =>
             {
-                if (value > 100000)
+                if (salary > 100000)
                 {
                     style.Font.FontColor = XLColor.DarkGreen;
                     style.Font.Bold = true;
@@ -240,7 +240,7 @@ builder.AddSheet(employees)
         _ => _.IsActive,
         config =>
         {
-            config.ConditionalStyling = (style, isActive) =>
+            config.CellStyle = (style, isActive) =>
             {
                 var fill = style.Fill;
                 if (isActive)
@@ -254,13 +254,13 @@ builder.AddSheet(employees)
             };
         });
 ```
-<sup><a href='/src/ExcelsiorClosedXml.Tests/Tests.cs#L318-L353' title='Snippet source file'>snippet source</a> | <a href='#snippet-ConditionalStyling' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/ExcelsiorClosedXml.Tests/Tests.cs#L318-L353' title='Snippet source file'>snippet source</a> | <a href='#snippet-CellStyle' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
 #### Result:
 
-<img src="/src/ExcelsiorClosedXml.Tests/Tests.ConditionalStyling_Sheet1.png">
+<img src="/src/ExcelsiorClosedXml.Tests/Tests.CellStyle_Sheet1.png">
 
 
 ### Render

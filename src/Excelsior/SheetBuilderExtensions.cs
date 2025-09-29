@@ -28,17 +28,11 @@ public static class SheetBuilderExtensions
         where TModel : class =>
         builder.Column(property, _ => _.HeaderStyle = value);
 
-    public static void DataCellStyle<TModel, TStyle, TProperty>(this ISheetBuilder<TModel, TStyle> builder,
-        Expression<Func<TModel, TProperty>> property,
-        Action<TStyle> value)
-        where TModel : class =>
-        builder.Column(property, _ => _.DataCellStyle = value);
-
-    public static void ConditionalStyling<TModel, TStyle, TProperty>(this ISheetBuilder<TModel, TStyle> builder,
+    public static void CellStyle<TModel, TStyle, TProperty>(this ISheetBuilder<TModel, TStyle> builder,
         Expression<Func<TModel, TProperty>> property,
         Action<TStyle, TProperty> value)
         where TModel : class =>
-        builder.Column(property, _ => _.ConditionalStyling = value);
+        builder.Column(property, _ => _.CellStyle = value);
 
     public static void Format<TModel, TStyle, TProperty>(this ISheetBuilder<TModel, TStyle> builder,
         Expression<Func<TModel, TProperty>> property,

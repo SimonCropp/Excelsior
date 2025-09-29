@@ -82,7 +82,7 @@ public class SheetBuilder<T>(
                 style.IsTextWrapped = true;
                 var value = property.Get(item);
                 SetCellValue(cell, value, property, style);
-                ApplyDataCellStyling(property, rowIndex, value, style);
+                ApplyCellStyle(property, rowIndex, value, style);
                 cell.SetStyle(style);
             }
 
@@ -288,7 +288,7 @@ public class SheetBuilder<T>(
         cell.SetStyle(style);
     }
 
-    void ApplyDataCellStyling(Property<T> property, int index, object? value, Style style)
+    void ApplyCellStyle(Property<T> property, int index, object? value, Style style)
     {
         // Apply alternating row colors
         if (useAlternatingRowColors &&
@@ -302,8 +302,7 @@ public class SheetBuilder<T>(
             return;
         }
 
-        config.DataCellStyle?.Invoke(style);
-        config.ConditionalStyling?.Invoke(style, value);
+        config.CellStyle?.Invoke(style, value);
     }
 
     void ApplyGlobalStyling(Sheet sheet)

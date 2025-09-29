@@ -18,13 +18,11 @@ public class ComplexTypeWithCustomRender
         ValueRenderer.For<Address>(_ => $"{_.Number}, {_.Street}, {_.City}, {_.State}, {_.PostCode}");
 
     #endregion
+
     [Test]
     public async Task Test()
     {
         #region ComplexTypeWithCustomRender
-
-        ValueRenderer.For<Address>(
-            _ => $"{_.Number}, {_.Street}, {_.City}, {_.State}, {_.PostCode}");
 
         var builder = new BookBuilder();
 

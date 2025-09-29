@@ -407,9 +407,6 @@ public static void Init() =>
 <!-- snippet: ComplexTypeWithCustomRender -->
 <a id='snippet-ComplexTypeWithCustomRender'></a>
 ```cs
-ValueRenderer.For<Address>(
-    _ => $"{_.Number}, {_.Street}, {_.City}, {_.State}, {_.PostCode}");
-
 var builder = new BookBuilder();
 
 List<Person> data =
@@ -424,7 +421,7 @@ List<Person> data =
 ];
 builder.AddSheet(data);
 ```
-<sup><a href='/src/ExcelsiorClosedXml.Tests/ComplexTypeWithCustomRender.cs#L24-L43' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeWithCustomRender' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/ExcelsiorClosedXml.Tests/ComplexTypeWithCustomRender.cs#L25-L41' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeWithCustomRender' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 

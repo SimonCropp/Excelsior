@@ -35,4 +35,25 @@
             sheet.AutoFilter.Range = $"A1:{column}{row}";
         }
     }
+
+    extension(Cell cell)
+    {
+        public void SafeSetHtml(string? value)
+        {
+            if (value == null)
+            {
+                cell.PutValue("");
+                return;
+            }
+
+            try
+            {
+                cell.HtmlString = value;
+            }
+            catch
+            {
+                cell.Value = value;
+            }
+        }
+    }
 }

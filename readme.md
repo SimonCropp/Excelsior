@@ -122,7 +122,7 @@ builder.AddSheet(data);
 var stream = new MemoryStream();
 await builder.ToStream(stream);
 ```
-<sup><a href='/src/ExcelsiorClosedXml.Tests/Tests.cs#L580-L588' title='Snippet source file'>snippet source</a> | <a href='#snippet-ToStream' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/ExcelsiorClosedXml.Tests/Tests.cs#L636-L644' title='Snippet source file'>snippet source</a> | <a href='#snippet-ToStream' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -271,8 +271,8 @@ builder.AddSheet(employees)
 var builder = new BookBuilder();
 builder.AddSheet(employees)
     .Column(
-        _ => _.Email,
-        _ => _.Render = value => $"📧 {value}")
+        _ => _.Name,
+        _ => _.Render = value => value.ToUpper())
     .Column(
         _ => _.IsActive,
         _ => _.Render = active => active ? "✓ Active" : "✗ Inactive")

@@ -155,7 +155,7 @@ public class SheetBuilder<T>(
                 return;
             }
 
-            SetStringOrHtml( GetTrimmedValue(value));
+            SetStringOrHtml(GetTrimmedValue(value));
 
             void ThrowIfHtml()
             {
@@ -169,7 +169,8 @@ public class SheetBuilder<T>(
             {
                 if (config.TreatAsHtml)
                 {
-                    cell.HtmlString = rendered;
+                    style.IsTextWrapped = true;
+                    cell.SafeSetHtml(rendered);
                 }
                 else
                 {
@@ -214,6 +215,7 @@ public class SheetBuilder<T>(
                 cell.Value = Convert.ToDouble(value);
                 return;
             }
+
             if (value is IEnumerable<string> enumerable)
             {
                 WriteEnumerable(cell, enumerable, style);
@@ -269,7 +271,7 @@ public class SheetBuilder<T>(
 
         builder.Append("</ul>");
 
-        cell.HtmlString = builder.ToString();
+        cell.SafeSetHtml(builder.ToString());
     }
 
     void ApplyHeaderStyling(Cell cell, Property<T> property)

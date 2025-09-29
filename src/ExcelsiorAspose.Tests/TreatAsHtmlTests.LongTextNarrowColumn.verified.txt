@@ -8,7 +8,7 @@
       Columns: [
         {
           Name: Value1,
-          FirstValue:     ● the value
+          FirstValue: aaaaaaaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbbb cccccccccccccccccccccccccccc
         },
         {
           Name: Value2,

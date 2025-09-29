@@ -11,6 +11,13 @@ public class ComplexTypeWithCustomRender
 
     public record Address(int Number, string Street, string City, State State, ushort PostCode);
 
+    #region ComplexTypeWithCustomRenderInit
+
+    [ModuleInitializer]
+    public static void Init() =>
+        ValueRenderer.For<Address>(_ => $"{_.Number}, {_.Street}, {_.City}, {_.State}, {_.PostCode}");
+
+    #endregion
     [Test]
     public async Task Test()
     {

@@ -7,12 +7,10 @@
       Name: Sheet1,
       Columns: [
         {
-          Name: Value1,
-          FirstValue:     ● the value
+          Name: Value1
         },
         {
-          Name: Value2,
-          FirstValue: sss
+          Name: Value2
         }
       ]
     }

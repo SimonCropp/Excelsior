@@ -1,14 +1,29 @@
 namespace ExcelsiorClosedXml;
 
-public class BookBuilder(
-    bool useAlternatingRowColors = false,
-    XLColor? alternateRowColor = null,
-    Action<IXLStyle>? headerStyle = null,
-    Action<IXLStyle>? globalStyle = null,
-    bool trimWhitespace = true) :
+public class BookBuilder :
     IBookBuilder
 {
     List<Func<Book, Cancel, Task>> actions = [];
+    bool useAlternatingRowColors;
+    XLColor? alternateRowColor;
+    Action<IXLStyle>? headerStyle;
+    Action<IXLStyle>? globalStyle;
+    bool trimWhitespace;
+
+    public BookBuilder(
+        bool useAlternatingRowColors = false,
+        XLColor? alternateRowColor = null,
+        Action<IXLStyle>? headerStyle = null,
+        Action<IXLStyle>? globalStyle = null,
+        bool trimWhitespace = true)
+    {
+        ValueRenderer.SetBookBuilderUsed();
+        this.useAlternatingRowColors = useAlternatingRowColors;
+        this.alternateRowColor = alternateRowColor;
+        this.headerStyle = headerStyle;
+        this.globalStyle = globalStyle;
+        this.trimWhitespace = trimWhitespace;
+    }
 
     public SheetBuilder<T> AddSheet<T>(IEnumerable<T> data, string? name = null)
         where T : class =>

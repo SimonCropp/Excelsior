@@ -7,24 +7,19 @@
       Name: Sheet1,
       Columns: [
         {
-          Name: Product ID,
-          FirstValue: 1.0
+          Name: Product ID
         },
         {
-          Name: Product Name,
-          FirstValue: Laptop
+          Name: Product Name
         },
         {
-          Name: Unit Price,
-          FirstValue: 999.99
+          Name: Unit Price
         },
         {
-          Name: Product Category,
-          FirstValue: Electronic Items
+          Name: Product Category
         },
         {
-          Name: Is Available,
-          FirstValue: True
+          Name: Is Available
         }
       ]
     }

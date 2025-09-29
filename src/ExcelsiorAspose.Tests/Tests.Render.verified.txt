@@ -7,32 +7,25 @@
       Name: Sheet1,
       Columns: [
         {
-          Name: Employee ID,
-          FirstValue: 1.0
+          Name: Employee ID
         },
         {
-          Name: Full Name,
-          FirstValue: JOHN DOE
+          Name: Full Name
         },
         {
-          Name: Email Address,
-          FirstValue: john@company.com
+          Name: Email Address
         },
         {
-          Name: Hire Date,
-          FirstValue: 2020-01-15
+          Name: Hire Date
         },
         {
-          Name: Annual Salary,
-          FirstValue: 75000.0
+          Name: Annual Salary
         },
         {
-          Name: Is Active,
-          FirstValue: Active
+          Name: Is Active
         },
         {
-          Name: Status,
-          FirstValue: Full Time
+          Name: Status
         }
       ]
     }

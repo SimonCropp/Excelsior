@@ -1,14 +1,29 @@
 namespace ExcelsiorAspose;
 
-public class BookBuilder(
-    bool useAlternatingRowColors = false,
-    Color? alternateRowColor = null,
-    Action<Style>? headerStyle = null,
-    Action<Style>? globalStyle = null,
-    bool trimWhitespace = true) :
+public class BookBuilder :
     IBookBuilder
 {
     List<Func<Book, Cancel, Task>> actions = [];
+    bool useAlternatingRowColors;
+    Color? alternateRowColor;
+    Action<Style>? headerStyle;
+    Action<Style>? globalStyle;
+    bool trimWhitespace;
+
+    public BookBuilder(
+        bool useAlternatingRowColors = false,
+        Color? alternateRowColor = null,
+        Action<Style>? headerStyle = null,
+        Action<Style>? globalStyle = null,
+        bool trimWhitespace = true)
+    {
+        ValueRenderer.SetBookBuilderUsed();
+        this.useAlternatingRowColors = useAlternatingRowColors;
+        this.alternateRowColor = alternateRowColor;
+        this.headerStyle = headerStyle;
+        this.globalStyle = globalStyle;
+        this.trimWhitespace = trimWhitespace;
+    }
 
     public SheetBuilder<T> AddSheet<T>(IEnumerable<T> data, string? name = null)
         where T : class =>

@@ -20,12 +20,12 @@ public class ComplexTypeWithInheritedCustomRender
     public record Address(int Number, string Street, string City, State State, ushort PostCode) :
         IAddress;
 
+    [ModuleInitializer]
+    public static void Init() =>
+        ValueRenderer.For<IAddress>(_ => $"{_.Number}, {_.Street}, {_.City}, {_.State}, {_.PostCode}");
     [Test]
     public async Task Test()
     {
-        ValueRenderer.For<IAddress>(
-            _ => $"{_.Number}, {_.Street}, {_.City}, {_.State}, {_.PostCode}");
-
         var builder = new BookBuilder();
         List<Person> data =
         [

@@ -394,29 +394,19 @@ builder.AddSheet(data);
 
 ### Custom render for Complex Types
 
+<!-- snippet: ComplexTypeWithCustomRenderInit -->
+<a id='snippet-ComplexTypeWithCustomRenderInit'></a>
+```cs
+[ModuleInitializer]
+public static void Init() =>
+    ValueRenderer.For<Address>(_ => $"{_.Number}, {_.Street}, {_.City}, {_.State}, {_.PostCode}");
+```
+<sup><a href='/src/ExcelsiorClosedXml.Tests/ComplexTypeWithCustomRender.cs#L14-L20' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeWithCustomRenderInit' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
 <!-- snippet: ComplexTypeWithCustomRender -->
 <a id='snippet-ComplexTypeWithCustomRender'></a>
 ```cs
-var builder = new BookBuilder();
-
-List<Person> data =
-[
-    new("John Doe",
-        new Address(
-            Number: 900,
-            Street: "Victoria Square",
-            City: "Adelaide",
-            State: State.SA,
-            PostCode: 5000)),
-];
-
-ValueRenderer.For<Address>(
-    _ => $"{_.Number}, {_.Street}, {_.City}, {_.State}, {_.PostCode}");
-builder.AddSheet(data);
-```
-<sup><a href='/src/ExcelsiorAspose.Tests/ComplexTypeWithCustomRender.cs#L18-L37' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeWithCustomRender' title='Start of snippet'>anchor</a></sup>
-<a id='snippet-ComplexTypeWithCustomRender-1'></a>
-```cs
 ValueRenderer.For<Address>(
     _ => $"{_.Number}, {_.Street}, {_.City}, {_.State}, {_.PostCode}");
 
@@ -434,7 +424,7 @@ List<Person> data =
 ];
 builder.AddSheet(data);
 ```
-<sup><a href='/src/ExcelsiorClosedXml.Tests/ComplexTypeWithCustomRender.cs#L17-L36' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeWithCustomRender-1' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/ExcelsiorClosedXml.Tests/ComplexTypeWithCustomRender.cs#L24-L43' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeWithCustomRender' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 

@@ -7,15 +7,10 @@
       Name: Sheet1,
       Columns: [
         {
-          Name: Name,
-          FirstValue: John Doe
+          Name: Name
         },
         {
-          Name: Phone Numbers,
-          FirstValue:
-    ● 3057380950 
-    ● 5056169368 
-    ● 8634446859
+          Name: Phone Numbers
         }
       ]
     }

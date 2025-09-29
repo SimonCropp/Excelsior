@@ -12,11 +12,13 @@ public class ComplexTypeWithCustomRender
 
     public record Address(int Number, string Street, string City, State State, ushort PostCode);
 
+    [ModuleInitializer]
+    public static void Init() =>
+        ValueRenderer.For<Address>(_ => $"{_.Number}, {_.Street}, {_.City}, {_.State}, {_.PostCode}");
+
     [Test]
     public async Task Test()
     {
-        #region ComplexTypeWithCustomRender
-
         var builder = new BookBuilder();
 
         List<Person> data =
@@ -29,12 +31,7 @@ public class ComplexTypeWithCustomRender
                     State: State.SA,
                     PostCode: 5000)),
         ];
-
-        ValueRenderer.For<Address>(
-            _ => $"{_.Number}, {_.Street}, {_.City}, {_.State}, {_.PostCode}");
         builder.AddSheet(data);
-
-        #endregion
 
         var book = await builder.Build();
 

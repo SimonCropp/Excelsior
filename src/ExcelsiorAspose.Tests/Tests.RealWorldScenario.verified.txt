@@ -7,32 +7,25 @@
       Name: Employee Report 2024,
       Columns: [
         {
-          Name: Employee ID,
-          FirstValue: 1001.0
+          Name: Employee ID
         },
         {
-          Name: Full Name,
-          FirstValue: Sarah Connor
+          Name: Full Name
         },
         {
-          Name: Email Address,
-          FirstValue: s.connor@techcorp.com
+          Name: Email Address
         },
         {
-          Name: Hire Date,
-          FirstValue: 2018-03-15
+          Name: Hire Date
         },
         {
-          Name: Annual Salary,
-          FirstValue: 125000.0
+          Name: Annual Salary
         },
         {
-          Name: Is Active,
-          FirstValue: Active
+          Name: Is Active
         },
         {
-          Name: Status,
-          FirstValue: Full Time
+          Name: Status
         }
       ]
     }

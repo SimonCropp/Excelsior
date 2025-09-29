@@ -4,7 +4,7 @@
 [![NuGet Status](https://img.shields.io/nuget/v/ExcelsiorClosedXml.svg?label=ExcelsiorClosedXml)](https://www.nuget.org/packages/ExcelsiorClosedXml/)
 [![NuGet Status](https://img.shields.io/nuget/v/ExcelsiorClosedXml.svg?label=ExcelsiorAspose)](https://www.nuget.org/packages/ExcelsiorAspose/)
 
-Excelsior is an Excel spreadsheet generation library with a distinctive data-driven approach.
+Excelsior is a Excel spreadsheet generation library with a distinctive data-driven approach.
 
 **See [Milestones](../../milestones?state=closed) for release notes.**
 

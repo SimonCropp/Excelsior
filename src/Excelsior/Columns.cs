@@ -7,30 +7,21 @@
         foreach (var property in Properties<TModel>.Items)
         {
             var render = ValueRenderer.GetRender(property.Type);
-            Func<TModel, object, string?>? renderFunc;
-            if (render == null)
-            {
-                renderFunc = null;
-            }
-            else
-            {
-                renderFunc = (_, value) => render(value);
-            }
 
             columns[property.Name] = new()
             {
                 Name = property.Name,
                 Order = property.Order,
                 Header = property.DisplayName,
-                Width = null,
+                Width = property.Width,
                 HeaderStyle = null,
                 CellStyle = null,
-                Format = null,
-                NullDisplay = null,
-                Render = renderFunc,
-                IsHtml = false,
+                Format = property.Format,
+                NullDisplay = property.NullDisplay,
+                Render = render == null ? null : (_, value) => render(value),
+                IsHtml = property.IsHtml,
                 IsNumber = property.IsNumber,
-                GetValue = _ => property.Get(_),
+                GetValue = property.Get
             };
         }
     }

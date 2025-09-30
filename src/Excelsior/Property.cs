@@ -1,33 +1,59 @@
-﻿static class Properties<T>
+﻿class Property<T>
 {
-    static Properties() =>
-        Items = typeof(T)
-            .GetProperties(BindingFlags.Public | BindingFlags.Instance)
-            .Where(_ => _.CanRead)
-            .Select(_ => new Property<T>(_))
-            .ToList();
-
-    public static IReadOnlyList<Property<T>> Items { get; }
-}
-
-class Property<T>(PropertyInfo info)
-{
-    static int? GetOrder(PropertyInfo info)
+    public Property(PropertyInfo info)
     {
-        var attribute = info.GetCustomAttribute<DisplayAttribute>();
-        return attribute?.Order;
+        Get = CreateGet(info);
+        var column = info.GetCustomAttribute<ColumnAttribute>();
+        var display = info.GetCustomAttribute<DisplayAttribute>();
+        DisplayName = GetHeader(info, display, column);
+        Name = info.Name;
+        Order = GetOrder(column, display);
+        Width = GetWidth(column);
+        Format = column?.Format;
+        NullDisplay = column?.NullDisplay;
+        IsHtml = column?.IsHtml ?? false;
+        Type = info.PropertyType;
+        IsNumber = info.PropertyType.IsNumericType();
     }
 
-    public Func<T, object?> Get { get; } = CreateGet(info);
-    public string DisplayName { get; } = GetDisplayName(info);
-    public string Name { get; } = info.Name;
-    public int? Order { get; } = GetOrder(info);
-    public Type Type { get; } = info.PropertyType;
-    public bool IsNumber { get; } = info.PropertyType.IsNumericType();
-
-    static string GetDisplayName(PropertyInfo info)
+    static int? GetOrder(ColumnAttribute? column, DisplayAttribute? display)
     {
-        var display = info.GetCustomAttribute<DisplayAttribute>();
+        if (column is { Order: > -1 })
+        {
+            return column.Order;
+        }
+
+        return display?.Order;
+    }
+
+    static double? GetWidth(ColumnAttribute? column)
+    {
+        if (column is { Width: > -1 })
+        {
+            return column.Width;
+        }
+
+        return null;
+    }
+
+    public Func<T, object?> Get { get; }
+    public string DisplayName { get; }
+    public string Name { get; }
+    public int? Order { get; }
+    public Type Type { get; }
+    public bool IsNumber { get; }
+    public double? Width { get; }
+    public string? Format { get; }
+    public string? NullDisplay { get; }
+    public bool IsHtml { get; }
+
+    static string GetHeader(PropertyInfo info, DisplayAttribute? display, ColumnAttribute? column)
+    {
+        if (column?.Header != null)
+        {
+            return column.Header;
+        }
+
         if (display?.Name != null)
         {
             return display.Name;

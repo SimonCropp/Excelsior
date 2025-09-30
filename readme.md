@@ -582,6 +582,92 @@ builder.AddSheet(employees);
 <!-- endSnippet -->
 
 
+### ColumnAttribute
+
+`ColumnAttribute` allows customization of rendering at the model level.
+
+It is intended as an alternative to the usage of `DisplayAttribute` and `DisplayNameAttribute`.
+
+
+#### ColumnAttribute definition
+
+<!-- snippet: ColumnAttribute.cs -->
+<a id='snippet-ColumnAttribute.cs'></a>
+```cs
+namespace Excelsior;
+
+[AttributeUsage(AttributeTargets.Property)]
+public sealed class ColumnAttribute : Attribute
+{
+    public string? Header { get; set; }
+    public int Order { get; set; } = -1;
+    public double Width { get; set; } = -1;
+    public string? Format { get; set; }
+    public string? NullDisplay { get; set; }
+    public bool IsHtml { get; set; }
+}
+```
+<sup><a href='/src/Excelsior/ColumnAttribute.cs#L1-L12' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnAttribute.cs' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+
+#### Usage
+
+<!-- snippet: ColumnAttributeModel -->
+<a id='snippet-ColumnAttributeModel'></a>
+```cs
+public class Employee
+{
+    [Column(Header = "Employee ID", Order = 1, Format = "0000")]
+    public required int Id { get; init; }
+
+    [Column(Header = "Full Name", Order = 2, Width = 20)]
+    public required string Name { get; init; }
+
+    [Column(Header = "Email Address", Width = 30)]
+    public required string Email { get; init; }
+
+    [Column(Header = "Hire Date", Order = 3, NullDisplay = "unknown")]
+    public DateTime? HireDate { get; init; }
+}
+```
+<sup><a href='/src/ExcelsiorAspose.Tests/ColumnAttributeTests.cs#L4-L21' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnAttributeModel' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+<!-- snippet: ColumnAttribute -->
+<a id='snippet-ColumnAttribute'></a>
+```cs
+var builder = new BookBuilder();
+
+List<Employee> data =
+[
+    new()
+    {
+        Id = 1,
+        Name = "John Doe",
+        Email = "john@company.com",
+        HireDate = new(2020, 1, 15),
+    },
+    new()
+    {
+        Id = 2,
+        Name = "Jane Smith",
+        Email = "jane@company.com",
+        HireDate = null,
+    }
+];
+
+builder.AddSheet(data);
+```
+<sup><a href='/src/ExcelsiorAspose.Tests/ColumnAttributeTests.cs#L26-L50' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnAttribute' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+
+#### Result
+
+<img src="/src/ExcelsiorClosedXml.Tests/ColumnAttributeTests.Test_Sheet1.png">
+
+
 ## Icon
 
 [Excel](https://thenounproject.com/icon/excel-4558727/) designed by [Start Up Graphic Design](https://thenounproject.com/creator/ppanggm/) from [The Noun Project](https://thenounproject.com/).

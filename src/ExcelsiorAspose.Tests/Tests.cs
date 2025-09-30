@@ -40,59 +40,6 @@ public class Tests
 
         await Verify(book);
     }
-    [Test]
-    public async Task Whitespace()
-    {
-        #region AsposeWhitespace
-
-        var builder = new BookBuilder();
-
-        List<Employee> data =
-        [
-            new()
-            {
-                Id = 1,
-                Name = "    John Doe   ",
-                Email = "    john@company.com    ",
-            }
-        ];
-        builder.AddSheet(data);
-
-        var book = await builder.Build();
-
-        #endregion
-
-        await Verify(book);
-    }
-    [Test]
-    public async Task DisableWhitespaceTrim()
-    {
-        #region AsposeDisableWhitespaceTrim
-
-        List<Employee> data =
-        [
-            new()
-            {
-                Id = 1,
-                Name = "    John Doe   ",
-                Email = "    john@company.com    ",
-            }
-        ];
-
-        var builder = new BookBuilder(trimWhitespace: false);
-        builder.AddSheet(data);
-
-        var book = await builder.Build();
-
-        #endregion
-
-        await Verify(book);
-    }
-
-    public enum AnEnum
-    {
-        Value
-    }
 
     [Test]
     public async Task CustomHeaders()

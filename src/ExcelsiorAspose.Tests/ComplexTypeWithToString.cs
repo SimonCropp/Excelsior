@@ -1,4 +1,5 @@
-﻿[TestFixture]
+﻿// ReSharper disable ArrangeObjectCreationWhenTypeNotEvident
+[TestFixture]
 public class ComplexTypeWithToString
 {
     public enum State
@@ -17,8 +18,8 @@ public class ComplexTypeWithToString
     [Test]
     public async Task Test()
     {
-        // ReSharper disable ArrangeObjectCreationWhenTypeNotEvident
         #region ComplexTypeWithToString
+
         var builder = new BookBuilder();
 
         List<Person> data =
@@ -31,7 +32,6 @@ public class ComplexTypeWithToString
                     State: State.SA,
                     PostCode: 5000)),
         ];
-
         builder.AddSheet(data);
 
         #endregion

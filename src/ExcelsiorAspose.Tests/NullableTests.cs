@@ -5,7 +5,7 @@ public class NullableTests
     public async Task Nulls()
     {
         var builder = new BookBuilder();
-        builder.AddSheet(NullableTargets.Data);
+        builder.AddSheet(Data);
 
         var book = await builder.Build();
 
@@ -16,7 +16,7 @@ public class NullableTests
     public async Task WithRender()
     {
         var builder = new BookBuilder();
-        var sheet = builder.AddSheet(NullableTargets.Data);
+        var sheet = builder.AddSheet(Data);
         sheet.Column(
             _ => _.Number,
             _ => _.Render = (_, number) => number.ToString());
@@ -41,7 +41,7 @@ public class NullableTests
     public async Task NullDisplay()
     {
         var builder = new BookBuilder();
-        builder.AddSheet(NullableTargets.Data)
+        builder.AddSheet(Data)
             .Column(_ => _.Number, _ => _.NullDisplay = "[No Number]")
             .Column(_ => _.String, _ => _.NullDisplay = "[No String]")
             .Column(_ => _.DateTime, _ => _.NullDisplay = "[No DateTime]")
@@ -57,7 +57,7 @@ public class NullableTests
     public async Task NullDisplayShortcuts()
     {
         var bookBuilder = new BookBuilder();
-        var sheetBuilder = bookBuilder.AddSheet(NullableTargets.Data);
+        var sheetBuilder = bookBuilder.AddSheet(Data);
         sheetBuilder.NullDisplay(_ => _.Number, "[No Number]");
         sheetBuilder.NullDisplay(_ => _.String, "[No String]");
         sheetBuilder.NullDisplay(_ => _.DateTime, "[No DateTime]");
@@ -67,5 +67,40 @@ public class NullableTests
         var book = await bookBuilder.Build();
 
         await Verify(book);
+    }
+
+    static IReadOnlyList<NullableTargets> Data { get; } =
+    [
+        new()
+        {
+            Number = null,
+            String = null,
+            DateTime = null,
+            Enum = null,
+            Bool = null
+        },
+        new()
+        {
+            Number = 1,
+            String = "value",
+            DateTime = new DateTime(2020, 1, 1),
+            Enum = AnEnum.Value,
+            Bool = true
+        },
+    ];
+
+    class NullableTargets
+    {
+        public required int? Number { get; init; }
+        public required string? String { get; init; }
+        public required DateTime? DateTime { get; init; }
+        public required AnEnum? Enum { get; init; }
+        public required bool? Bool { get; init; }
+
+    }
+
+    enum AnEnum
+    {
+        Value
     }
 }

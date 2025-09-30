@@ -69,7 +69,7 @@
 
         if (config.CellStyle != null)
         {
-            column.CellStyle = (style, value) => config.CellStyle.Invoke(style, (TProperty)value!);
+            column.CellStyle = (style, model, value) => config.CellStyle.Invoke(style, model, (TProperty)value!);
         }
 
         if (config.Format != null)

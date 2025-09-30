@@ -227,7 +227,7 @@ builder.AddSheet(employees)
         _ => _.Salary,
         config =>
         {
-            config.CellStyle = (style, salary) =>
+            config.CellStyle = (style, employee, salary) =>
             {
                 if (salary > 100000)
                 {
@@ -240,7 +240,7 @@ builder.AddSheet(employees)
         _ => _.IsActive,
         config =>
         {
-            config.CellStyle = (style, isActive) =>
+            config.CellStyle = (style, employee, isActive) =>
             {
                 var fill = style.Fill;
                 if (isActive)

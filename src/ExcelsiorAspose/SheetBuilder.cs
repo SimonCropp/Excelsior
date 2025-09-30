@@ -70,11 +70,11 @@ public class SheetBuilder<TModel>(
         {
             var xlRow = startRow + rowIndex;
 
-            for (var colIndex = 0; colIndex < orderedColumns.Count; colIndex++)
+            for (var index = 0; index < orderedColumns.Count; index++)
             {
-                var column = orderedColumns[colIndex];
+                var column = orderedColumns[index];
 
-                var cell = sheet.Cells[xlRow, colIndex];
+                var cell = sheet.Cells[xlRow, index];
 
                 var style = cell.GetStyle();
                 style.VerticalAlignment = TextAlignmentType.Top;
@@ -82,7 +82,7 @@ public class SheetBuilder<TModel>(
                 style.IsTextWrapped = true;
                 var value = column.GetValue(item);
                 SetCellValue(cell, value, style, column, item);
-                ApplyCellStyle(rowIndex, value, style, column);
+                ApplyCellStyle(rowIndex, value, style, column, item);
                 cell.SetStyle(style);
             }
 
@@ -229,7 +229,7 @@ public class SheetBuilder<TModel>(
         cell.SetStyle(style);
     }
 
-    void ApplyCellStyle(int index, object? value, Style style, Column<Style, TModel> column)
+    void ApplyCellStyle(int index, object? value, Style style, Column<Style, TModel> column, TModel model)
     {
         // Apply alternating row colors
         if (useAlternatingRowColors &&
@@ -239,7 +239,7 @@ public class SheetBuilder<TModel>(
         }
 
 
-        column.CellStyle?.Invoke(style, value);
+        column.CellStyle?.Invoke(style, model, value);
     }
 
     void ApplyGlobalStyling(Sheet sheet)

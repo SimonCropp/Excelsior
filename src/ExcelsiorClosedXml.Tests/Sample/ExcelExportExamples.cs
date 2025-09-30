@@ -34,7 +34,7 @@
                     {
                         style.Fill.BackgroundColor = XLColor.Green;
                     };
-                    config.CellStyle = (style, value) =>
+                    config.CellStyle = (style, _, value) =>
                     {
                         if (value > 100000)
                         {
@@ -55,7 +55,7 @@
                 config =>
                 {
                     config.Render = (_, active) => active ? "Yes" : "No";
-                    config.CellStyle = (style, _) =>
+                    config.CellStyle = (style, _, _) =>
                     {
                         style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
                     };
@@ -64,7 +64,7 @@
                 _ => _.Status,
                 config =>
                 {
-                    config.CellStyle = (style, status) =>
+                    config.CellStyle = (style, _, status) =>
                     {
                         switch (status)
                         {

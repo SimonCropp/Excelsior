@@ -69,10 +69,10 @@ public class SheetBuilder<TModel>(
         {
             var xlRow = startRow + rowIndex;
 
-            for (var colIndex = 0; colIndex < orderedColumns.Count; colIndex++)
+            for (var index = 0; index < orderedColumns.Count; index++)
             {
-                var column = orderedColumns[colIndex];
-                var cell = sheet.Cell(xlRow, colIndex + 1);
+                var column = orderedColumns[index];
+                var cell = sheet.Cell(xlRow, index + 1);
 
                 cell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
                 cell.Style.Alignment.Vertical = XLAlignmentVerticalValues.Top;
@@ -80,7 +80,7 @@ public class SheetBuilder<TModel>(
 
                 var value = column.GetValue(item);
                 SetCellValue(cell, value, column, item);
-                ApplyCellStyle(cell, rowIndex, value, column);
+                ApplyCellStyle(cell, rowIndex, value, column, item);
             }
 
             rowIndex++;
@@ -200,7 +200,7 @@ public class SheetBuilder<TModel>(
         column.HeaderStyle?.Invoke(cell.Style);
     }
 
-    void ApplyCellStyle(Cell cell, int index, object? value, Column<IXLStyle, TModel> column)
+    void ApplyCellStyle(Cell cell, int index, object? value, Column<IXLStyle, TModel> column, TModel item)
     {
         var style = cell.Style;
 
@@ -211,7 +211,7 @@ public class SheetBuilder<TModel>(
             style.Fill.BackgroundColor = alternateRowColor;
         }
 
-        column.CellStyle?.Invoke(style, value);
+        column.CellStyle?.Invoke(style, item, value);
     }
 
     void ApplyGlobalStyling(Sheet sheet, List<Column<IXLStyle, TModel>> orderedColumns)

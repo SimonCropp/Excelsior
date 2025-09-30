@@ -35,9 +35,16 @@ public static class SheetBuilderExtensions
     public static void CellStyle<TModel, TStyle, TProperty>(
         this ISheetBuilder<TModel, TStyle> builder,
         Expression<Func<TModel, TProperty>> property,
-        Action<TStyle, TProperty> value)
+        Action<TStyle, TModel, TProperty> value)
         where TModel : class =>
         builder.Column(property, _ => _.CellStyle = value);
+
+    public static void CellStyle<TModel, TStyle, TProperty>(
+        this ISheetBuilder<TModel, TStyle> builder,
+        Expression<Func<TModel, TProperty>> property,
+        Action<TStyle, TProperty> value)
+        where TModel : class =>
+        builder.Column(property, _ => _.CellStyle  = (style, _, property) => value(style, property));
 
     public static void Format<TModel, TStyle, TProperty>(
         this ISheetBuilder<TModel, TStyle> builder,

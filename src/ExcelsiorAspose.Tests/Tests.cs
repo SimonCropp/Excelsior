@@ -147,7 +147,7 @@ public class Tests
             _ => _.Number,
             _ =>
             {
-                _.CellStyle = (style, value) =>
+                _.CellStyle = (style, _, value) =>
                 {
                     Debug.WriteLine(style);
                     Debug.WriteLine(value);
@@ -158,7 +158,7 @@ public class Tests
             _ => _.DateTime,
             _ =>
             {
-                _.CellStyle = (style, value) =>
+                _.CellStyle = (style, _, value) =>
                 {
                     Debug.WriteLine(style);
                     Debug.WriteLine(value);
@@ -177,7 +177,7 @@ public class Tests
             _ => _.Enum,
             _ =>
             {
-                _.CellStyle = (style, value) =>
+                _.CellStyle = (style, _, value) =>
                 {
                     Debug.WriteLine(style);
                     Debug.WriteLine(value);
@@ -188,7 +188,7 @@ public class Tests
             _ => _.String,
             _ =>
             {
-                _.CellStyle = (style, value) =>
+                _.CellStyle = (style, _, value) =>
                 {
                     Debug.WriteLine(style);
                     Debug.WriteLine(value);
@@ -199,7 +199,7 @@ public class Tests
             _ => _.Bool,
             _ =>
             {
-                _.CellStyle = (style, value) =>
+                _.CellStyle = (style, _, value) =>
                 {
                     Debug.WriteLine(style);
                     Debug.WriteLine(value);
@@ -324,7 +324,7 @@ public class Tests
                 _ => _.Salary,
                 config =>
                 {
-                    config.CellStyle = (style, value) =>
+                    config.CellStyle = (style, employee, value) =>
                     {
                         if (value > 100000)
                         {
@@ -337,7 +337,7 @@ public class Tests
                 _ => _.IsActive,
                 config =>
                 {
-                    config.CellStyle = (style, isActive) =>
+                    config.CellStyle = (style, employee, isActive) =>
                     {
                         if (isActive)
                         {
@@ -677,7 +677,7 @@ public class Tests
                 config =>
                 {
                     config.Format = "$#,##0.00";
-                    config.CellStyle = (style, salary) =>
+                    config.CellStyle = (style, _, salary) =>
                     {
                         if (salary >= 100000)
                         {
@@ -701,7 +701,7 @@ public class Tests
                 config =>
                 {
                     config.Render = (_, value) => value ? "Active" : "Inactive";
-                    config.CellStyle = (style, _) =>
+                    config.CellStyle = (style, _, _) =>
                     {
                         style.HorizontalAlignment = TextAlignmentType.Center;
                     };
@@ -710,7 +710,7 @@ public class Tests
                 _ => _.Status,
                 config =>
                 {
-                    config.CellStyle = (style, status) =>
+                    config.CellStyle = (style, _, status) =>
                     {
                         switch (status)
                         {

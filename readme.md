@@ -663,6 +663,11 @@ builder.AddSheet(data);
 <!-- endSnippet -->
 
 
+#### Result
+
+<img src="/src/ExcelsiorClosedXml.Tests/ColumnAttributeTests.Test_Sheet1.png">
+
+
 ## Icon
 
 [Excel](https://thenounproject.com/icon/excel-4558727/) designed by [Start Up Graphic Design](https://thenounproject.com/creator/ppanggm/) from [The Noun Project](https://thenounproject.com/).

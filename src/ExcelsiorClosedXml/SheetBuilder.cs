@@ -82,7 +82,7 @@ public class SheetBuilder<T>(
                 cell.Style.Alignment.WrapText = true;
 
                 var value = property.Get(item);
-                SetCellValue(cell, value, property, column);
+                SetCellValue(cell, value, column);
                 ApplyCellStyle(cell, rowIndex, value, column);
             }
 
@@ -90,7 +90,7 @@ public class SheetBuilder<T>(
         }
     }
 
-    void SetCellValue(Cell cell, object? value, Property<T> property, Column<IXLStyle> column)
+    void SetCellValue(Cell cell, object? value, Column<IXLStyle> column)
     {
         if (value == null)
         {
@@ -101,12 +101,6 @@ public class SheetBuilder<T>(
         if (column.Render != null)
         {
             cell.Value = column.Render(value);
-            return;
-        }
-
-        if (ValueRenderer.TryRender(property.Type, value, out var result))
-        {
-            cell.Value = result;
             return;
         }
 

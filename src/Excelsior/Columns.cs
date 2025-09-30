@@ -6,6 +6,7 @@
     {
         foreach (var property in Properties<TModel>.Items)
         {
+            var render = ValueRenderer.GetRender(property.Type);
             columns[property.Name] = new()
             {
                 Name = property.Name,
@@ -16,9 +17,9 @@
                 CellStyle = null,
                 Format = null,
                 NullDisplayText = null,
-                Render = null,
+                Render = render,
                 TreatAsHtml = false,
-                IsNumber = property.IsNumber
+                IsNumber = property.IsNumber,
             };
         }
     }

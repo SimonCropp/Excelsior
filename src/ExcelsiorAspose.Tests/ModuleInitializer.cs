@@ -4,7 +4,6 @@ public static class ModuleInitializer
     public static void Init()
     {
         ApplyAsposeLicense();
-
         VerifierSettings.DontScrubDateTimes();
         VerifierSettings.DontScrubGuids();
         VerifyImageMagick.RegisterComparers(threshold: 0.8);

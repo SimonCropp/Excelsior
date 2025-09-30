@@ -8,6 +8,7 @@
         {
             columns[property.Name] = new()
             {
+                Name = property.Name,
                 Order = property.Order,
                 HeaderText = property.DisplayName,
                 ColumnWidth = null,
@@ -95,21 +96,12 @@
         }
     }
 
+    public List<Column<TStyle>> OrderedColumns() =>
+        columns.Values.OrderBy(_ => _.Order ?? int.MaxValue).ToList();
     public bool TryGetValue(string name, [NotNullWhen(true)] out Column<TStyle>? settings) =>
         columns.TryGetValue(name, out settings);
 
     public Column<TStyle> GetValue(string name) => columns[name];
-
-    public string GetHeaderText<T>(Property<T> property)
-    {
-        if (TryGetValue(property.Name, out var config) &&
-            config.HeaderText != null)
-        {
-            return config.HeaderText;
-        }
-
-        return property.DisplayName;
-    }
 
     public bool TryGetColumnWidth<T>(Property<T> property, out double width)
     {

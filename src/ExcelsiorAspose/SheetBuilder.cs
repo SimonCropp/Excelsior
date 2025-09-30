@@ -36,8 +36,9 @@ public class SheetBuilder<T>(
         var sheet = book.Worksheets.Add(name);
 
         var properties = columns.ResolveProperties<T>();
-
-        CreateHeaders(sheet, properties);
+        var orderedColumns = columns.OrderedColumns();
+        Debug.Assert(properties.Select(_=>_.Name).SequenceEqual(orderedColumns.Select(_=>_.Name)));
+        CreateHeaders(sheet, properties, orderedColumns);
 
         await PopulateData(sheet, properties, cancel);
 
@@ -47,14 +48,15 @@ public class SheetBuilder<T>(
         sheet.AutoSizeRows();
     }
 
-    void CreateHeaders(Sheet sheet, List<Property<T>> properties)
+    void CreateHeaders(Sheet sheet, List<Property<T>> properties, List<Column<Style>> orderedColumns)
     {
         for (var i = 0; i < properties.Count; i++)
         {
             var property = properties[i];
+            var column = orderedColumns[i];
             var cell = sheet.Cells[0, i];
 
-            cell.Value = columns.GetHeaderText(property);
+            cell.Value = column.HeaderText;
 
             ApplyHeaderStyling(cell, property);
         }

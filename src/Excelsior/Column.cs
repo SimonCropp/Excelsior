@@ -2,7 +2,7 @@ namespace Excelsior;
 
 class Column<TStyle>
 {
-    public required string? HeaderText { get; set; }
+    public required string HeaderText { get; set; }
     public required int? Order { get; set; }
     public required double? ColumnWidth { get; set; }
     public required Action<TStyle>? HeaderStyle { get; set; }
@@ -11,7 +11,8 @@ class Column<TStyle>
     public required string? NullDisplayText { get; set; }
     public required Func<object, string?>? Render { get; set; }
     public required bool TreatAsHtml { get; set; }
-    public bool IsNumber { get; set; }
+    public required bool IsNumber { get; set; }
+    public required string Name { get; set; }
 }
 
 public class Column<TStyle, TProperty>

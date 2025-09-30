@@ -25,16 +25,16 @@ public class BookBuilder :
         this.trimWhitespace = trimWhitespace;
     }
 
-    public SheetBuilder<T> AddSheet<T>(IEnumerable<T> data, string? name = null)
-        where T : class =>
+    public SheetBuilder<TModel> AddSheet<TModel>(IEnumerable<TModel> data, string? name = null)
+        where TModel : class =>
         AddSheet(data.ToAsyncEnumerable(), name);
 
-    public SheetBuilder<T> AddSheet<T>(IAsyncEnumerable<T> data, string? name = null)
-        where T : class
+    public SheetBuilder<TModel> AddSheet<TModel>(IAsyncEnumerable<TModel> data, string? name = null)
+        where TModel : class
     {
         name ??= $"Sheet{actions.Count + 1}";
 
-        var converter = new SheetBuilder<T>(
+        var converter = new SheetBuilder<TModel>(
             name,
             data,
             useAlternatingRowColors,

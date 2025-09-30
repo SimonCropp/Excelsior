@@ -1,68 +1,67 @@
 ﻿namespace ExcelsiorAspose;
 
-public class SheetBuilder<T>(
+public class SheetBuilder<TModel>(
     string name,
-    IAsyncEnumerable<T> data,
+    IAsyncEnumerable<TModel> data,
     bool useAlternatingRowColors,
     Color? alternateRowColor,
     Action<Style>? headerStyle,
     Action<Style>? globalStyle,
     bool trimWhitespace) :
-    ISheetBuilder<T, Style>
-    where T : class
+    ISheetBuilder<TModel, Style>
+    where TModel : class
 {
     int rowIndex;
-    Columns<Style> columns = new();
+    Columns<TModel, Style> columns = new();
 
     /// <summary>
     /// Configure a column using property expression (type-safe)
     /// </summary>
     /// <returns>The converter instance for fluent chaining</returns>
-    public SheetBuilder<T> Column<TProperty>(
-        Expression<Func<T, TProperty>> property,
-        Action<Column<Style, TProperty>> configuration)
+    public SheetBuilder<TModel> Column<TProperty>(
+        Expression<Func<TModel, TProperty>> property,
+        Action<Column<Style, TModel, TProperty>> configuration)
     {
         columns.Add(property, configuration);
         return this;
     }
 
-    void ISheetBuilder<T, Style>.Column<TProperty>(
-        Expression<Func<T, TProperty>> property,
-        Action<Column<Style, TProperty>> configuration) =>
+    void ISheetBuilder<TModel, Style>.Column<TProperty>(
+        Expression<Func<TModel, TProperty>> property,
+        Action<Column<Style, TModel, TProperty>> configuration) =>
         Column(property, configuration);
 
     internal async Task AddSheet(Book book, Cancel cancel)
     {
         var sheet = book.Worksheets.Add(name);
 
-        var properties = columns.ResolveProperties<T>();
+        var orderedColumns = columns.OrderedColumns();
+        CreateHeaders(sheet, orderedColumns);
 
-        CreateHeaders(sheet, properties);
-
-        await PopulateData(sheet, properties, cancel);
+        await PopulateData(sheet, orderedColumns, cancel);
 
         ApplyGlobalStyling(sheet);
         sheet.AutoFilterAll();
-        AutoSizeColumns(sheet, properties);
+        AutoSizeColumns(sheet, orderedColumns);
         sheet.AutoSizeRows();
     }
 
-    void CreateHeaders(Sheet sheet, List<Property<T>> properties)
+    void CreateHeaders(Sheet sheet, List<Column<Style, TModel>> orderedColumns)
     {
-        for (var i = 0; i < properties.Count; i++)
+        for (var i = 0; i < orderedColumns.Count; i++)
         {
-            var property = properties[i];
+            var column = orderedColumns[i];
             var cell = sheet.Cells[0, i];
 
-            cell.Value = columns.GetHeaderText(property);
+            cell.Value = column.Header;
 
-            ApplyHeaderStyling(cell, property);
+            ApplyHeaderStyling(cell, column);
         }
 
         sheet.FreezePanes(1, 0, 1, 0);
     }
 
-    async Task PopulateData(Sheet sheet, List<Property<T>> properties, Cancel cancel)
+    async Task PopulateData(Sheet sheet, List<Column<Style, TModel>> orderedColumns, Cancel cancel)
     {
         //Skip header
         var startRow = 1;
@@ -71,18 +70,19 @@ public class SheetBuilder<T>(
         {
             var xlRow = startRow + rowIndex;
 
-            for (var colIndex = 0; colIndex < properties.Count; colIndex++)
+            for (var index = 0; index < orderedColumns.Count; index++)
             {
-                var property = properties[colIndex];
-                var cell = sheet.Cells[xlRow, colIndex];
+                var column = orderedColumns[index];
+
+                var cell = sheet.Cells[xlRow, index];
 
                 var style = cell.GetStyle();
                 style.VerticalAlignment = TextAlignmentType.Top;
                 style.HorizontalAlignment = TextAlignmentType.Left;
                 style.IsTextWrapped = true;
-                var value = property.Get(item);
-                SetCellValue(cell, value, property, style);
-                ApplyCellStyle(property, rowIndex, value, style);
+                var value = column.GetValue(item);
+                SetCellValue(cell, value, style, column, item);
+                ApplyCellStyle(rowIndex, value, style, column, item);
                 cell.SetStyle(style);
             }
 
@@ -90,140 +90,85 @@ public class SheetBuilder<T>(
         }
     }
 
-    void SetCellValue(Cell cell, object? value, Property<T> property, Style style)
+    void SetCellValue(Cell cell, object? value, Style style, Column<Style, TModel> column, TModel item)
     {
-        if (columns.TryGetValue(property.Name, out var config))
+        if (value == null)
         {
-            if (value == null)
+            cell.Value = column.NullDisplay;
+            return;
+        }
+
+        if (column.Render != null)
+        {
+            SetStringOrHtml(column.Render(item, value));
+            return;
+        }
+
+        if (value is DateTime dateTime)
+        {
+            ThrowIfHtml();
+            cell.Value = dateTime;
+            if (column.Format != null)
             {
-                cell.Value = config.NullDisplayText;
-                return;
+                style.Custom = column.Format;
             }
 
-            if (config.Render != null)
+            return;
+        }
+
+        if (value is bool boolean)
+        {
+            ThrowIfHtml();
+            cell.Value = boolean.ToString();
+            return;
+        }
+
+        if (value is Enum enumValue)
+        {
+            ThrowIfHtml();
+            cell.Value = enumValue.DisplayName();
+            return;
+        }
+
+        if (column.IsNumber)
+        {
+            ThrowIfHtml();
+            cell.Value = Convert.ToDouble(value);
+            if (column.Format != null)
             {
-                SetStringOrHtml(config.Render(value));
-                return;
+                style.Custom = column.Format;
             }
 
-            if (ValueRenderer.TryRender(property.Type, value, out var result))
+            return;
+        }
+
+        if (value is IEnumerable<string> enumerable)
+        {
+            ThrowIfHtml();
+            WriteEnumerable(cell, enumerable);
+            return;
+        }
+
+        SetStringOrHtml(GetTrimmedValue(value));
+
+        void ThrowIfHtml()
+        {
+            if (column.IsHtml)
             {
-                SetStringOrHtml(result);
-                return;
-            }
-
-            if (value is DateTime dateTime)
-            {
-                ThrowIfHtml();
-                cell.Value = dateTime;
-                if (config.Format != null)
-                {
-                    style.Custom = config.Format;
-                }
-
-                return;
-            }
-
-            if (value is bool boolean)
-            {
-                ThrowIfHtml();
-                cell.Value = boolean.ToString();
-                return;
-            }
-
-            if (value is Enum enumValue)
-            {
-                ThrowIfHtml();
-                cell.Value = enumValue.DisplayName();
-                return;
-            }
-
-            if (property.IsNumber)
-            {
-                ThrowIfHtml();
-                cell.Value = Convert.ToDouble(value);
-                if (config.Format != null)
-                {
-                    style.Custom = config.Format;
-                }
-
-                return;
-            }
-
-            if (value is IEnumerable<string> enumerable)
-            {
-                ThrowIfHtml();
-                WriteEnumerable(cell, enumerable);
-                return;
-            }
-
-            SetStringOrHtml(GetTrimmedValue(value));
-
-            void ThrowIfHtml()
-            {
-                if (config.TreatAsHtml)
-                {
-                    throw new("TreatAsHtml is not compatible with this type");
-                }
-            }
-
-            void SetStringOrHtml(string? rendered)
-            {
-                if (config.TreatAsHtml)
-                {
-                    cell.SafeSetHtml(rendered);
-                }
-                else
-                {
-                    cell.Value = rendered;
-                }
+                throw new("TreatAsHtml is not compatible with this type");
             }
         }
-        else
+
+        void SetStringOrHtml(string? rendered)
         {
-            if (value == null)
+            if (column.IsHtml)
             {
-                cell.Value = "";
-                return;
+                cell.SafeSetHtml(rendered);
             }
-
-            if (ValueRenderer.TryRender(property.Type, value, out var result))
+            else
             {
-                cell.Value = result;
-                return;
+                cell.Value = rendered;
             }
-
-            if (value is DateTime dateTime)
-            {
-                cell.Value = dateTime;
-                return;
-            }
-
-            if (value is bool boolean)
-            {
-                cell.Value = boolean.ToString();
-                return;
-            }
-
-            if (value is Enum enumValue)
-            {
-                cell.Value = enumValue.DisplayName();
-                return;
-            }
-
-            if (property.IsNumber)
-            {
-                cell.Value = Convert.ToDouble(value);
-                return;
-            }
-
-            if (value is IEnumerable<string> enumerable)
-            {
-                WriteEnumerable(cell, enumerable);
-                return;
-            }
-
-            cell.Value = GetTrimmedValue(value);
         }
     }
 
@@ -274,21 +219,17 @@ public class SheetBuilder<T>(
         cell.SafeSetHtml(builder.ToString());
     }
 
-    void ApplyHeaderStyling(Cell cell, Property<T> property)
+    void ApplyHeaderStyling(Cell cell, Column<Style, TModel> column)
     {
         var style = cell.GetStyle();
-        // Apply global header styling
         headerStyle?.Invoke(style);
 
-        if (columns.TryGetHeaderStyle(property, out var columnHeaderStyle))
-        {
-            columnHeaderStyle.Invoke(style);
-        }
+        column.HeaderStyle?.Invoke(style);
 
         cell.SetStyle(style);
     }
 
-    void ApplyCellStyle(Property<T> property, int index, object? value, Style style)
+    void ApplyCellStyle(int index, object? value, Style style, Column<Style, TModel> column, TModel model)
     {
         // Apply alternating row colors
         if (useAlternatingRowColors &&
@@ -297,12 +238,8 @@ public class SheetBuilder<T>(
             style.BackgroundColor = alternateRowColor!.Value;
         }
 
-        if (!columns.TryGetValue(property.Name, out var config))
-        {
-            return;
-        }
 
-        config.CellStyle?.Invoke(style, value);
+        column.CellStyle?.Invoke(style, model, value);
     }
 
     void ApplyGlobalStyling(Sheet sheet)
@@ -324,16 +261,16 @@ public class SheetBuilder<T>(
         sheet.Cells.ApplyStyle(style, flag);
     }
 
-    void AutoSizeColumns(Sheet sheet, List<Property<T>> properties)
+    static void AutoSizeColumns(Sheet sheet, List<Column<Style, TModel>> orderedColumns)
     {
         sheet.AutoSizeColumns();
 
-        // Apply specific column widths
-        for (var i = 0; i < properties.Count; i++)
+        for (var index = 0; index < orderedColumns.Count; index++)
         {
-            if (columns.TryGetColumnWidth(properties[i], out var width))
+            var column = orderedColumns[index];
+            if (column.Width != null)
             {
-                sheet.Cells.Columns[i].Width = width;
+                sheet.Cells.Columns[index].Width = column.Width.Value;
             }
         }
     }

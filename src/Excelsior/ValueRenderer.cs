@@ -15,19 +15,17 @@ public static class ValueRenderer
         renders[typeof(T)] = _ => func((T) _);
     }
 
-    internal static bool TryRender(Type memberType, object instance, [NotNullWhen(true)] out string? result)
+    internal static Func<object, string>? GetRender(Type memberType)
     {
         foreach (var (key, value) in renders)
         {
             if (key.IsAssignableTo(memberType))
             {
-                result = value(instance);
-                return true;
+                return value;
             }
         }
 
-        result = null;
-        return false;
+        return null;
     }
 
     internal static void SetBookBuilderUsed() => bookBuilderUsed = true;

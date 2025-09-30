@@ -1,9 +1,9 @@
 namespace Excelsior;
 
-public interface ISheetBuilder<T,TStyle>
-    where T : class
+public interface ISheetBuilder<TModel,TStyle>
+    where TModel : class
 {
     internal void Column<TProperty>(
-        Expression<Func<T, TProperty>> property,
-        Action<Column<TStyle, TProperty>> configuration);
+        Expression<Func<TModel, TProperty>> property,
+        Action<Column<TStyle, TModel, TProperty>> configuration);
 }

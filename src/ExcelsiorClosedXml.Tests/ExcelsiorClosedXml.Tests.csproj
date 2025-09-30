@@ -18,5 +18,8 @@
 
     <Compile Include="..\ExcelsiorAspose.Tests\NullableTests.cs" />
     <Compile Include="..\ExcelsiorAspose.Tests\EnumerableStringTests.cs" />
+    <Compile Include="..\ExcelsiorAspose.Tests\ComplexTypeWithCustomRender.cs" />
+    <Compile Include="..\ExcelsiorAspose.Tests\ComplexTypeWithInheritedCustomRender.cs" />
+    <Compile Include="..\ExcelsiorAspose.Tests\ComplexTypeWithToString.cs" />
   </ItemGroup>
 </Project>

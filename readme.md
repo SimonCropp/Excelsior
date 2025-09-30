@@ -335,14 +335,7 @@ public record Person(string Name, Address Address);
 
 public record Address(int Number, string Street, string City, State State, ushort PostCode);
 ```
-<sup><a href='/src/ExcelsiorAspose.Tests/ComplexTypeWithToString.cs#L9-L15' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeModels' title='Start of snippet'>anchor</a></sup>
-<a id='snippet-ComplexTypeModels-1'></a>
-```cs
-public record Person(string Name, Address Address);
-
-public record Address(int Number, string Street, string City, State State, ushort PostCode);
-```
-<sup><a href='/src/ExcelsiorClosedXml.Tests/ComplexTypeWithToString.cs#L10-L16' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeModels-1' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/ExcelsiorAspose.Tests/ComplexTypeWithToString.cs#L10-L16' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeModels' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -363,27 +356,9 @@ List<Person> data =
             State: State.SA,
             PostCode: 5000)),
 ];
-
 builder.AddSheet(data);
 ```
 <sup><a href='/src/ExcelsiorAspose.Tests/ComplexTypeWithToString.cs#L21-L37' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeWithToString' title='Start of snippet'>anchor</a></sup>
-<a id='snippet-ComplexTypeWithToString-1'></a>
-```cs
-var builder = new BookBuilder();
-
-List<Person> data =
-[
-    new("John Doe",
-        new Address(
-            Number: 900,
-            Street: "Victoria Square",
-            City: "Adelaide",
-            State: State.SA,
-            PostCode: 5000)),
-];
-builder.AddSheet(data);
-```
-<sup><a href='/src/ExcelsiorClosedXml.Tests/ComplexTypeWithToString.cs#L21-L37' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeWithToString-1' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -401,7 +376,7 @@ builder.AddSheet(data);
 public static void Init() =>
     ValueRenderer.For<Address>(_ => $"{_.Number}, {_.Street}, {_.City}, {_.State}, {_.PostCode}");
 ```
-<sup><a href='/src/ExcelsiorClosedXml.Tests/ComplexTypeWithCustomRender.cs#L14-L20' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeWithCustomRenderInit' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/ExcelsiorAspose.Tests/ComplexTypeWithCustomRender.cs#L14-L20' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeWithCustomRenderInit' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 <!-- snippet: ComplexTypeWithCustomRender -->
@@ -421,7 +396,7 @@ List<Person> data =
 ];
 builder.AddSheet(data);
 ```
-<sup><a href='/src/ExcelsiorClosedXml.Tests/ComplexTypeWithCustomRender.cs#L25-L41' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeWithCustomRender' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/ExcelsiorAspose.Tests/ComplexTypeWithCustomRender.cs#L25-L41' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeWithCustomRender' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 

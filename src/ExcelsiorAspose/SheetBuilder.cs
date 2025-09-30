@@ -38,7 +38,7 @@ public class SheetBuilder<T>(
         var properties = columns.ResolveProperties<T>();
         var orderedColumns = columns.OrderedColumns();
         Debug.Assert(properties.Select(_=>_.Name).SequenceEqual(orderedColumns.Select(_=>_.Name)));
-        CreateHeaders(sheet, properties, orderedColumns);
+        CreateHeaders(sheet, orderedColumns);
 
         await PopulateData(sheet, properties, cancel);
 
@@ -48,17 +48,16 @@ public class SheetBuilder<T>(
         sheet.AutoSizeRows();
     }
 
-    void CreateHeaders(Sheet sheet, List<Property<T>> properties, List<Column<Style>> orderedColumns)
+    void CreateHeaders(Sheet sheet, List<Column<Style>> orderedColumns)
     {
-        for (var i = 0; i < properties.Count; i++)
+        for (var i = 0; i < orderedColumns.Count; i++)
         {
-            var property = properties[i];
             var column = orderedColumns[i];
             var cell = sheet.Cells[0, i];
 
             cell.Value = column.HeaderText;
 
-            ApplyHeaderStyling(cell, property);
+            ApplyHeaderStyling(cell, column);
         }
 
         sheet.FreezePanes(1, 0, 1, 0);
@@ -228,16 +227,12 @@ public class SheetBuilder<T>(
         cell.SafeSetHtml(builder.ToString());
     }
 
-    void ApplyHeaderStyling(Cell cell, Property<T> property)
+    void ApplyHeaderStyling(Cell cell, Column<Style> column)
     {
         var style = cell.GetStyle();
-        // Apply global header styling
         headerStyle?.Invoke(style);
 
-        if (columns.TryGetHeaderStyle(property, out var columnHeaderStyle))
-        {
-            columnHeaderStyle.Invoke(style);
-        }
+        column.HeaderStyle?.Invoke(style);
 
         cell.SetStyle(style);
     }

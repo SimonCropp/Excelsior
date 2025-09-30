@@ -308,9 +308,9 @@ builder.AddSheet(employees, "Employee Report");
 ```cs
 var builder = new BookBuilder();
 builder.AddSheet(employees)
-    .Column(_ => _.Name, _ => _.ColumnWidth = 25)
-    .Column(_ => _.Email, _ => _.ColumnWidth = 30)
-    .Column(_ => _.HireDate, _ => _.ColumnWidth = 15);
+    .Column(_ => _.Name, _ => _.Width = 25)
+    .Column(_ => _.Email, _ => _.Width = 30)
+    .Column(_ => _.HireDate, _ => _.Width = 15);
 ```
 <sup><a href='/src/ExcelsiorClosedXml.Tests/Tests.cs#L408-L416' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnWidths' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->

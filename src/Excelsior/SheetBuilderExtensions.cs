@@ -20,7 +20,7 @@ public static class SheetBuilderExtensions
         Expression<Func<TModel, TProperty>> property,
         double? value)
         where TModel : class =>
-        builder.Column(property, _ => _.ColumnWidth = value);
+        builder.Column(property, _ => _.Width = value);
 
     public static void HeaderStyle<TModel, TStyle, TProperty>(this ISheetBuilder<TModel, TStyle> builder,
         Expression<Func<TModel, TProperty>> property,

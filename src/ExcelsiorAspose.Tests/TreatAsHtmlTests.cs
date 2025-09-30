@@ -55,7 +55,7 @@ public class TreatAsHtmlTests
             _ => _.Value1,
             _ =>
             {
-                _.ColumnWidth = 20;
+                _.Width = 20;
                 _.TreatAsHtml = true;
             });
         var book = await bookBuilder.Build();

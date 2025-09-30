@@ -11,7 +11,7 @@
                 Name = property.Name,
                 Order = property.Order,
                 HeaderText = property.DisplayName,
-                ColumnWidth = null,
+                Width = null,
                 HeaderStyle = null,
                 CellStyle = null,
                 Format = null,
@@ -46,9 +46,9 @@
             column.Order = config.Order;
         }
 
-        if (config.ColumnWidth != null)
+        if (config.Width != null)
         {
-            column.ColumnWidth = config.ColumnWidth;
+            column.Width = config.Width;
         }
 
         if (config.HeaderStyle != null)

@@ -268,9 +268,9 @@ public class SheetBuilder<T>(
         for (var index = 0; index < orderedColumns.Count; index++)
         {
             var column = orderedColumns[index];
-            if (column.ColumnWidth != null)
+            if (column.Width != null)
             {
-                sheet.Cells.Columns[index].Width = column.ColumnWidth.Value;
+                sheet.Cells.Columns[index].Width = column.Width.Value;
             }
         }
     }

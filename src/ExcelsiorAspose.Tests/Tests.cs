@@ -408,9 +408,9 @@ public class Tests
 
         var builder = new BookBuilder();
         builder.AddSheet(employees)
-            .Column(_ => _.Name, _ => _.ColumnWidth = 25)
-            .Column(_ => _.Email, _ => _.ColumnWidth = 30)
-            .Column(_ => _.HireDate, _ => _.ColumnWidth = 15);
+            .Column(_ => _.Name, _ => _.Width = 25)
+            .Column(_ => _.Email, _ => _.Width = 30)
+            .Column(_ => _.HireDate, _ => _.Width = 15);
 
         #endregion
 
@@ -538,7 +538,7 @@ public class Tests
                 _ =>
                 {
                     _.HeaderText = "Full Name";
-                    _.ColumnWidth = 20;
+                    _.Width = 20;
                 })
             .Column(
                 _ => _.Salary,
@@ -693,7 +693,7 @@ public class Tests
                 config =>
                 {
                     config.Format = "MMM dd, yyyy";
-                    config.ColumnWidth = 15;
+                    config.Width = 15;
                 })
             .Column(
                 _ => _.IsActive,

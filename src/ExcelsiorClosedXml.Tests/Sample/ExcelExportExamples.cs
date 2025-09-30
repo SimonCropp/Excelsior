@@ -48,7 +48,7 @@
                 config =>
                 {
                     config.Format = "yyyy-MM-dd";
-                    config.ColumnWidth = 15;
+                    config.Width = 15;
                 })
             .Column(
                 _ => _.IsActive,

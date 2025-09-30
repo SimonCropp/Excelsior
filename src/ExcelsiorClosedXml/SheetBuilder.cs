@@ -233,11 +233,11 @@ public class SheetBuilder<T>(
         for (var i = 0; i < orderedColumns.Count; i++)
         {
             var column = orderedColumns[i];
-            if (column.ColumnWidth != null)
+            if (column.Width != null)
             {
                 var xlColumn = sheet.Column(i + 1);
                 xlColumns.Remove(xlColumn);
-                xlColumn.Width = column.ColumnWidth.Value;
+                xlColumn.Width = column.Width.Value;
             }
         }
 

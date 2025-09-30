@@ -4,7 +4,7 @@ class Column<TStyle>
 {
     public required string HeaderText { get; set; }
     public required int? Order { get; set; }
-    public required double? ColumnWidth { get; set; }
+    public required double? Width { get; set; }
     public required Action<TStyle>? HeaderStyle { get; set; }
     public required Action<TStyle, object?>? CellStyle { get; set; }
     public required string? Format { get; set; }
@@ -20,7 +20,7 @@ public class Column<TStyle, TProperty>
 {
     public string? HeaderText { get; set; }
     public int? Order { get; set; }
-    public double? ColumnWidth { get; set; }
+    public double? Width { get; set; }
     public Action<TStyle>? HeaderStyle { get; set; }
     public Action<TStyle, TProperty>? CellStyle { get; set; }
     public string? Format { get; set; }

@@ -502,7 +502,7 @@ Properties that are castable to an `IEnumerable<string>` will automatically be r
 ```cs
 public record Person(string Name, string[] PhoneNumbers);
 ```
-<sup><a href='/src/ExcelsiorClosedXml.Tests/EnumerableStringTests.cs#L4-L8' title='Snippet source file'>snippet source</a> | <a href='#snippet-EnumerableModel' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/ExcelsiorAspose.Tests/EnumerableStringTests.cs#L4-L8' title='Snippet source file'>snippet source</a> | <a href='#snippet-EnumerableModel' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -525,7 +525,7 @@ List<Person> data =
 var builder = new BookBuilder();
 builder.AddSheet(data);
 ```
-<sup><a href='/src/ExcelsiorClosedXml.Tests/EnumerableStringTests.cs#L13-L29' title='Snippet source file'>snippet source</a> | <a href='#snippet-EnumerableUsage' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/ExcelsiorAspose.Tests/EnumerableStringTests.cs#L13-L29' title='Snippet source file'>snippet source</a> | <a href='#snippet-EnumerableUsage' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 

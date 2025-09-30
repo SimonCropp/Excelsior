@@ -15,10 +15,8 @@
     <ProjectReference Include="..\Model\Model.csproj" />
     <Using Include="NUnit.Framework.Legacy.ClassicAssert" Static="True" />
     <PackageReference Include="ProjectDefaults" PrivateAssets="all" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="..\ExcelsiorAspose.Tests\NullableTests.cs">
-      <Link>NullableTests.cs</Link>
-    </Compile>
+
+    <Compile Include="..\ExcelsiorAspose.Tests\NullableTests.cs" />
+    <Compile Include="..\ExcelsiorAspose.Tests\EnumerableStringTests.cs" />
   </ItemGroup>
 </Project>

@@ -1,23 +1,32 @@
 ﻿[TestFixture]
 public class EnumerableStringTests
 {
+    #region EnumerableModel
+
     public record Person(string Name, string[] PhoneNumbers);
+
+    #endregion
 
     [Test]
     public async Task Test()
     {
-        var builder = new BookBuilder();
+        #region EnumerableUsage
+
         List<Person> data =
         [
             new("John Doe",
                 PhoneNumbers:
                 [
-                    "3057380950",
-                    "5056169368",
-                    "8634446859"
+                    "+1 3057380950",
+                    "+1 5056169368",
+                    "+1 8634446859"
                 ]),
         ];
+
+        var builder = new BookBuilder();
         builder.AddSheet(data);
+
+        #endregion
 
         var book = await builder.Build();
 
@@ -82,8 +91,6 @@ public class EnumerableStringTests
     }
 
     [Test]
-    //TODO: work out why aspose is non deterministic for the row height
-    [Explicit]
     public async Task WithWhitespaceNoTrim()
     {
         List<Target> data =

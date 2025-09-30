@@ -6,6 +6,17 @@
     {
         foreach (var property in Properties<TModel>.Items)
         {
+            var render = ValueRenderer.GetRender(property.Type);
+            Func<TModel, object, string?>? renderFunc;
+            if (render == null)
+            {
+                renderFunc = null;
+            }
+            else
+            {
+                renderFunc = (_, value) => render(value);
+            }
+
             columns[property.Name] = new()
             {
                 Name = property.Name,
@@ -16,7 +27,7 @@
                 CellStyle = null,
                 Format = null,
                 NullDisplay = null,
-                Render = ValueRenderer.GetRender(property.Type),
+                Render = renderFunc,
                 IsHtml = false,
                 IsNumber = property.IsNumber,
                 GetValue = _ => property.Get(_),
@@ -73,7 +84,7 @@
 
         if (config.Render != null)
         {
-            column.Render = value => config.Render.Invoke((TProperty)value);
+            column.Render = (model, value) => config.Render.Invoke(model, (TProperty)value);
         }
 
         if (config.IsHtml != null)

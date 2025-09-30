@@ -54,7 +54,7 @@
                 _ => _.IsActive,
                 config =>
                 {
-                    config.Render = active => active ? "Yes" : "No";
+                    config.Render = (_, active) => active ? "Yes" : "No";
                     config.CellStyle = (style, _) =>
                     {
                         style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;

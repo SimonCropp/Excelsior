@@ -81,7 +81,7 @@ public class SheetBuilder<TModel>(
                 style.HorizontalAlignment = TextAlignmentType.Left;
                 style.IsTextWrapped = true;
                 var value = column.GetValue(item);
-                SetCellValue(cell, value, style, column);
+                SetCellValue(cell, value, style, column, item);
                 ApplyCellStyle(rowIndex, value, style, column);
                 cell.SetStyle(style);
             }
@@ -90,7 +90,7 @@ public class SheetBuilder<TModel>(
         }
     }
 
-    void SetCellValue(Cell cell, object? value, Style style, Column<Style, TModel> column)
+    void SetCellValue(Cell cell, object? value, Style style, Column<Style, TModel> column, TModel item)
     {
         if (value == null)
         {
@@ -100,7 +100,7 @@ public class SheetBuilder<TModel>(
 
         if (column.Render != null)
         {
-            SetStringOrHtml(column.Render(value));
+            SetStringOrHtml(column.Render(item,value));
             return;
         }
 

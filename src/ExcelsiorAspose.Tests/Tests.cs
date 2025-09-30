@@ -1,4 +1,5 @@
-﻿[TestFixture]
+﻿// ReSharper disable UnusedParameter.Local
+[TestFixture]
 public class Tests
 {
     [Test]
@@ -151,7 +152,7 @@ public class Tests
                     Debug.WriteLine(style);
                     Debug.WriteLine(value);
                 };
-                _.Render = _ => _.ToString();
+                _.Render = (_, number) => number.ToString();
             });
         sheet.Column(
             _ => _.DateTime,
@@ -162,11 +163,11 @@ public class Tests
                     Debug.WriteLine(style);
                     Debug.WriteLine(value);
                 };
-                _.Render = _ =>
+                _.Render = (_,dateTime) =>
                 {
-                    if (_.HasValue)
+                    if (dateTime.HasValue)
                     {
-                        return _.Value.ToString(CultureInfo.InvariantCulture);
+                        return dateTime.Value.ToString(CultureInfo.InvariantCulture);
                     }
 
                     return null;
@@ -181,7 +182,7 @@ public class Tests
                     Debug.WriteLine(style);
                     Debug.WriteLine(value);
                 };
-                _.Render = _ => _.ToString();
+                _.Render = (_,enumValue) => enumValue.ToString();
             });
         sheet.Column(
             _ => _.String,
@@ -192,7 +193,7 @@ public class Tests
                     Debug.WriteLine(style);
                     Debug.WriteLine(value);
                 };
-                _.Render = _ => _?.ToString();
+                _.Render = (_, value) => value?.ToString();
             });
         sheet.Column(
             _ => _.Bool,
@@ -203,7 +204,7 @@ public class Tests
                     Debug.WriteLine(style);
                     Debug.WriteLine(value);
                 };
-                _.Render = _ => _?.ToString().ToUpper();
+                _.Render = (_, value) => value?.ToString().ToUpper();
             });
         var book = await builder.Build();
 
@@ -367,10 +368,10 @@ public class Tests
         builder.AddSheet(employees)
             .Column(
                 _ => _.Name,
-                _ => _.Render = value => value.ToUpper())
+                _ => _.Render = (employee, name) => name.ToUpper())
             .Column(
                 _ => _.IsActive,
-                _ => _.Render = active => active ? "Active" : "Inactive")
+                _ => _.Render = (employee, isActive) => isActive ? "Active" : "Inactive")
             .Column(
                 _ => _.HireDate,
                 _ => _.Format = "yyyy-MM-dd");
@@ -502,10 +503,10 @@ public class Tests
             }
         };
         var sheetBuilder = bookBuilder.AddSheet(employees);
-        sheetBuilder.NullDisplayText(_ => _.Name, "[No Name]");
-        sheetBuilder.NullDisplayText(_ => _.HireDate, "[No HireDate]");
-        sheetBuilder.NullDisplayText(_ => _.Email, "[No Email]");
-        sheetBuilder.NullDisplayText(_ => _.Status, "[No Status]");
+        sheetBuilder.NullDisplay(_ => _.Name, "[No Name]");
+        sheetBuilder.NullDisplay(_ => _.HireDate, "[No HireDate]");
+        sheetBuilder.NullDisplay(_ => _.Email, "[No Email]");
+        sheetBuilder.NullDisplay(_ => _.Status, "[No Status]");
 
         var book = await bookBuilder.Build();
 
@@ -520,7 +521,7 @@ public class Tests
         builder.AddSheet(employees)
             .Column(
                 _ => _.Status,
-                _ => _.Render = enumValue => $"Status: {enumValue}");
+                _ => _.Render = (_, value) => $"Status: {value}");
 
         var book = await builder.Build();
 
@@ -699,7 +700,7 @@ public class Tests
                 _ => _.IsActive,
                 config =>
                 {
-                    config.Render = active => active ? "Active" : "Inactive";
+                    config.Render = (_, value) => value ? "Active" : "Inactive";
                     config.CellStyle = (style, _) =>
                     {
                         style.HorizontalAlignment = TextAlignmentType.Center;

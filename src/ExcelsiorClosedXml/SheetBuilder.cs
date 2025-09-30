@@ -79,7 +79,7 @@ public class SheetBuilder<TModel>(
                 cell.Style.Alignment.WrapText = true;
 
                 var value = column.GetValue(item);
-                SetCellValue(cell, value, column);
+                SetCellValue(cell, value, column, item);
                 ApplyCellStyle(cell, rowIndex, value, column);
             }
 
@@ -87,7 +87,7 @@ public class SheetBuilder<TModel>(
         }
     }
 
-    void SetCellValue(Cell cell, object? value, Column<IXLStyle, TModel> column)
+    void SetCellValue(Cell cell, object? value, Column<IXLStyle, TModel> column, TModel item)
     {
         if (value == null)
         {
@@ -97,7 +97,7 @@ public class SheetBuilder<TModel>(
 
         if (column.Render != null)
         {
-            cell.Value = column.Render(value);
+            cell.Value = column.Render(item, value);
             return;
         }
 

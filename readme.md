@@ -137,7 +137,7 @@ var builder = new BookBuilder();
 builder.AddSheet(employees)
     .Column(
         _ => _.Name,
-        _ => _.HeaderText = "Employee Name");
+        _ => _.Header = "Employee Name");
 ```
 <sup><a href='/src/ExcelsiorClosedXml.Tests/Tests.cs#L232-L240' title='Snippet source file'>snippet source</a> | <a href='#snippet-CustomHeaders' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->

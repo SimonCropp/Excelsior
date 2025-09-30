@@ -235,7 +235,7 @@ public class Tests
         builder.AddSheet(employees)
             .Column(
                 _ => _.Name,
-                _ => _.HeaderText = "Employee Name");
+                _ => _.Header = "Employee Name");
 
         #endregion
 
@@ -461,10 +461,10 @@ public class Tests
             }
         };
         builder.AddSheet(employees)
-            .Column(_ => _.Name, _ => _.NullDisplayText = "[No Name]")
-            .Column(_ => _.HireDate, _ => _.NullDisplayText = "[No HireDate]")
-            .Column(_ => _.Email, _ => _.NullDisplayText = "[No Email]")
-            .Column(_ => _.Status, _ => _.NullDisplayText = "[No Status]");
+            .Column(_ => _.Name, _ => _.NullDisplay = "[No Name]")
+            .Column(_ => _.HireDate, _ => _.NullDisplay = "[No HireDate]")
+            .Column(_ => _.Email, _ => _.NullDisplay = "[No Email]")
+            .Column(_ => _.Status, _ => _.NullDisplay = "[No Status]");
 
         var book = await builder.Build();
 
@@ -538,7 +538,7 @@ public class Tests
                 _ => _.Name,
                 _ =>
                 {
-                    _.HeaderText = "Full Name";
+                    _.Header = "Full Name";
                     _.Width = 20;
                 })
             .Column(

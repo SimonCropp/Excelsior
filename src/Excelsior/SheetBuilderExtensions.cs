@@ -8,7 +8,7 @@ public static class SheetBuilderExtensions
         Expression<Func<TModel, TProperty>> property,
         string value)
         where TModel : class =>
-        builder.Column(property, _ => _.HeaderText = value);
+        builder.Column(property, _ => _.Header = value);
 
     public static void Order<TModel, TStyle, TProperty>(this ISheetBuilder<TModel, TStyle> builder,
         Expression<Func<TModel, TProperty>> property,
@@ -44,7 +44,7 @@ public static class SheetBuilderExtensions
         Expression<Func<TModel, TProperty>> property,
         string value)
         where TModel : class =>
-        builder.Column(property, _ => _.NullDisplayText = value);
+        builder.Column(property, _ => _.NullDisplay = value);
 
     public static void IsHtml<TModel, TStyle, TProperty>(this ISheetBuilder<TModel, TStyle> builder,
         Expression<Func<TModel, TProperty>> property)

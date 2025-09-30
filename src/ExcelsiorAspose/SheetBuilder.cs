@@ -53,7 +53,7 @@ public class SheetBuilder<T>(
             var column = orderedColumns[i];
             var cell = sheet.Cells[0, i];
 
-            cell.Value = column.HeaderText;
+            cell.Value = column.Header;
 
             ApplyHeaderStyling(cell, column);
         }
@@ -94,7 +94,7 @@ public class SheetBuilder<T>(
     {
         if (value == null)
         {
-            cell.Value = column.NullDisplayText;
+            cell.Value = column.NullDisplay;
             return;
         }
 

@@ -10,12 +10,12 @@
             {
                 Name = property.Name,
                 Order = property.Order,
-                HeaderText = property.DisplayName,
+                Header = property.DisplayName,
                 Width = null,
                 HeaderStyle = null,
                 CellStyle = null,
                 Format = null,
-                NullDisplayText = null,
+                NullDisplay = null,
                 Render = ValueRenderer.GetRender(property.Type),
                 IsHtml = false,
                 IsNumber = property.IsNumber,
@@ -36,9 +36,9 @@
 
         var config = new Column<TStyle, TProperty>();
         configuration(config);
-        if (config.HeaderText != null)
+        if (config.Header != null)
         {
-            column.HeaderText = config.HeaderText;
+            column.Header = config.Header;
         }
 
         if (config.Order != null)
@@ -66,9 +66,9 @@
             column.Format = config.Format;
         }
 
-        if (config.NullDisplayText != null)
+        if (config.NullDisplay != null)
         {
-            column.NullDisplayText = config.NullDisplayText;
+            column.NullDisplay = config.NullDisplay;
         }
 
         if (config.Render != null)

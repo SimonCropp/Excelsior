@@ -296,8 +296,18 @@ public class PropertiesTests
     }
 
     record RecordPrimaryConstructorModel(
-        [Column(Header = "Column1")] string Member1,
-        [Column(Header = "Column2")] string Member2);
+        [Column(Header = "Column1")]
+        string Member1,
+        [Column(Header = "Column2")]
+        string Member2)
+    {
+        // ReSharper disable once IntroduceOptionalParameters.Local
+        // constructor with fewer paramters
+        public RecordPrimaryConstructorModel() :
+            this("a", "b")
+        {
+        }
+    }
 
     [Test]
     public Task RecordPrimaryConstructor() =>

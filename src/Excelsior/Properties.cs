@@ -5,9 +5,9 @@
         var type = typeof(T);
         var defaultConstructor = type.GetConstructors(BindingFlags.Public | BindingFlags.Instance)
             .Select(_ => _.GetParameters())
-            .OrderBy(_ => _.Length)
+            .OrderByDescending(_ => _.Length)
             .FirstOrDefault();
-        var properties = type
+        Items = type
             .GetProperties(BindingFlags.Public | BindingFlags.Instance)
             .Where(_ => _.CanRead)
             .Select(property =>
@@ -16,8 +16,6 @@
                 return new Property<T>(property, constructorParameter);
             })
             .ToList();
-
-        Items = properties;
     }
 
     public static IReadOnlyList<Property<T>> Items { get; }

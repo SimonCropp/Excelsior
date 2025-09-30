@@ -84,34 +84,4 @@
 
     public List<Column<TStyle>> OrderedColumns() =>
         columns.Values.OrderBy(_ => _.Order ?? int.MaxValue).ToList();
-    public bool TryGetValue(string name, [NotNullWhen(true)] out Column<TStyle>? settings) =>
-        columns.TryGetValue(name, out settings);
-
-    public Column<TStyle> GetValue(string name) => columns[name];
-
-    public bool TryGetColumnWidth<T>(Property<T> property, out double width)
-    {
-        if (TryGetValue(property.Name, out var config) &&
-            config.ColumnWidth.HasValue)
-        {
-            width = config.ColumnWidth.Value;
-            return true;
-        }
-
-        width = 0;
-        return false;
-    }
-
-    public bool TryGetHeaderStyle<T>(Property<T> property, [NotNullWhen(true)] out Action<TStyle>? headerStyle)
-    {
-        if (TryGetValue(property.Name, out var config) &&
-            config.HeaderStyle != null)
-        {
-            headerStyle = config.HeaderStyle;
-            return true;
-        }
-
-        headerStyle = null;
-        return false;
-    }
 }

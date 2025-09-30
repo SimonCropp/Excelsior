@@ -65,4 +65,11 @@ public static class SheetBuilderExtensions
         Func<TModel, TProperty, string?> value)
         where TModel : class =>
         builder.Column(property, _ => _.Render = value);
+
+    public static void Render<TModel, TStyle, TProperty>(
+        this ISheetBuilder<TModel, TStyle> builder,
+        Expression<Func<TModel, TProperty>> property,
+        Func<TProperty, string?> value)
+        where TModel : class =>
+        builder.Column(property, _ => _.Render = (_, property) => value(property));
 }

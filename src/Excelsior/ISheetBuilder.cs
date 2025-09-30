@@ -5,5 +5,5 @@ public interface ISheetBuilder<TModel,TStyle>
 {
     internal void Column<TProperty>(
         Expression<Func<TModel, TProperty>> property,
-        Action<Column<TStyle, TProperty>> configuration);
+        Action<Column<TStyle, TModel, TProperty>> configuration);
 }

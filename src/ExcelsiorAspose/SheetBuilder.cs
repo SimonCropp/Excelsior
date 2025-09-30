@@ -20,7 +20,7 @@ public class SheetBuilder<TModel>(
     /// <returns>The converter instance for fluent chaining</returns>
     public SheetBuilder<TModel> Column<TProperty>(
         Expression<Func<TModel, TProperty>> property,
-        Action<Column<Style, TProperty>> configuration)
+        Action<Column<Style, TModel, TProperty>> configuration)
     {
         columns.Add(property, configuration);
         return this;
@@ -28,7 +28,7 @@ public class SheetBuilder<TModel>(
 
     void ISheetBuilder<TModel, Style>.Column<TProperty>(
         Expression<Func<TModel, TProperty>> property,
-        Action<Column<Style, TProperty>> configuration) =>
+        Action<Column<Style, TModel, TProperty>> configuration) =>
         Column(property, configuration);
 
     internal async Task AddSheet(Book book, Cancel cancel)
@@ -46,7 +46,7 @@ public class SheetBuilder<TModel>(
         sheet.AutoSizeRows();
     }
 
-    void CreateHeaders(Sheet sheet, List<Column<Style>> orderedColumns)
+    void CreateHeaders(Sheet sheet, List<Column<Style, TModel>> orderedColumns)
     {
         for (var i = 0; i < orderedColumns.Count; i++)
         {
@@ -61,7 +61,7 @@ public class SheetBuilder<TModel>(
         sheet.FreezePanes(1, 0, 1, 0);
     }
 
-    async Task PopulateData(Sheet sheet, List<Column<Style>> orderedColumns, Cancel cancel)
+    async Task PopulateData(Sheet sheet, List<Column<Style, TModel>> orderedColumns, Cancel cancel)
     {
         //Skip header
         var startRow = 1;
@@ -90,7 +90,7 @@ public class SheetBuilder<TModel>(
         }
     }
 
-    void SetCellValue(Cell cell, object? value, Style style, Column<Style> column)
+    void SetCellValue(Cell cell, object? value, Style style, Column<Style, TModel> column)
     {
         if (value == null)
         {
@@ -219,7 +219,7 @@ public class SheetBuilder<TModel>(
         cell.SafeSetHtml(builder.ToString());
     }
 
-    void ApplyHeaderStyling(Cell cell, Column<Style> column)
+    void ApplyHeaderStyling(Cell cell, Column<Style, TModel> column)
     {
         var style = cell.GetStyle();
         headerStyle?.Invoke(style);
@@ -229,7 +229,7 @@ public class SheetBuilder<TModel>(
         cell.SetStyle(style);
     }
 
-    void ApplyCellStyle(int index, object? value, Style style, Column<Style> column)
+    void ApplyCellStyle(int index, object? value, Style style, Column<Style, TModel> column)
     {
         // Apply alternating row colors
         if (useAlternatingRowColors &&
@@ -261,7 +261,7 @@ public class SheetBuilder<TModel>(
         sheet.Cells.ApplyStyle(style, flag);
     }
 
-    static void AutoSizeColumns(Sheet sheet, List<Column<Style>> orderedColumns)
+    static void AutoSizeColumns(Sheet sheet, List<Column<Style, TModel>> orderedColumns)
     {
         sheet.AutoSizeColumns();
 

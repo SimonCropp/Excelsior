@@ -20,7 +20,7 @@ public class SheetBuilder<TModel>(
     /// <returns>The converter instance for fluent chaining</returns>
     public SheetBuilder<TModel> Column<TProperty>(
         Expression<Func<TModel, TProperty>> property,
-        Action<Column<IXLStyle, TProperty>> configuration)
+        Action<Column<IXLStyle, TModel, TProperty>> configuration)
     {
         columns.Add(property, configuration);
         return this;
@@ -28,7 +28,7 @@ public class SheetBuilder<TModel>(
 
     void ISheetBuilder<TModel, IXLStyle>.Column<TProperty>(
         Expression<Func<TModel, TProperty>> property,
-        Action<Column<IXLStyle, TProperty>> configuration) =>
+        Action<Column<IXLStyle, TModel, TProperty>> configuration) =>
         Column(property, configuration);
 
     internal async Task AddSheet(Book book, Cancel cancel)
@@ -45,7 +45,7 @@ public class SheetBuilder<TModel>(
         AutoSizeColumns(sheet, orderedColumns);
     }
 
-    void CreateHeaders(Sheet sheet, List<Column<IXLStyle>> orderedColumns)
+    void CreateHeaders(Sheet sheet, List<Column<IXLStyle, TModel>> orderedColumns)
     {
         for (var i = 0; i < orderedColumns.Count; i++)
         {
@@ -60,7 +60,7 @@ public class SheetBuilder<TModel>(
         sheet.SheetView.FreezeRows(1);
     }
 
-    async Task PopulateData(Sheet sheet, List<Column<IXLStyle>> orderedColumns, Cancel cancel)
+    async Task PopulateData(Sheet sheet, List<Column<IXLStyle, TModel>> orderedColumns, Cancel cancel)
     {
         //Skip header
         var startRow = 2;
@@ -87,7 +87,7 @@ public class SheetBuilder<TModel>(
         }
     }
 
-    void SetCellValue(Cell cell, object? value, Column<IXLStyle> column)
+    void SetCellValue(Cell cell, object? value, Column<IXLStyle, TModel> column)
     {
         if (value == null)
         {
@@ -193,14 +193,14 @@ public class SheetBuilder<TModel>(
         }
     }
 
-    void ApplyHeaderStyling(Cell cell, Column<IXLStyle> column)
+    void ApplyHeaderStyling(Cell cell, Column<IXLStyle, TModel> column)
     {
         headerStyle?.Invoke(cell.Style);
 
         column.HeaderStyle?.Invoke(cell.Style);
     }
 
-    void ApplyCellStyle(Cell cell, int index, object? value, Column<IXLStyle> column)
+    void ApplyCellStyle(Cell cell, int index, object? value, Column<IXLStyle, TModel> column)
     {
         var style = cell.Style;
 
@@ -214,7 +214,7 @@ public class SheetBuilder<TModel>(
         column.CellStyle?.Invoke(style, value);
     }
 
-    void ApplyGlobalStyling(Sheet sheet, List<Column<IXLStyle>> orderedColumns)
+    void ApplyGlobalStyling(Sheet sheet, List<Column<IXLStyle, TModel>> orderedColumns)
     {
         if (globalStyle == null)
         {
@@ -225,7 +225,7 @@ public class SheetBuilder<TModel>(
         globalStyle(range.Style);
     }
 
-    static void AutoSizeColumns(Sheet sheet, List<Column<IXLStyle>> orderedColumns)
+    static void AutoSizeColumns(Sheet sheet, List<Column<IXLStyle, TModel>> orderedColumns)
     {
         var xlColumns = sheet.Columns().ToList();
 

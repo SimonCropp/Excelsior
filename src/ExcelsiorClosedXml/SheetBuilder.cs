@@ -40,7 +40,7 @@ public class SheetBuilder<T>(
         Debug.Assert(properties.Select(_=>_.Name).SequenceEqual(orderedColumns.Select(_=>_.Name)));
         CreateHeaders(sheet, orderedColumns);
 
-        await PopulateData(sheet, properties, cancel);
+        await PopulateData(sheet, properties, orderedColumns, cancel);
 
         ApplyGlobalStyling(sheet, properties);
         sheet.RangeUsed()!.SetAutoFilter();
@@ -62,7 +62,7 @@ public class SheetBuilder<T>(
         sheet.SheetView.FreezeRows(1);
     }
 
-    async Task PopulateData(Sheet sheet, List<Property<T>> properties, Cancel cancel)
+    async Task PopulateData(Sheet sheet, List<Property<T>> properties, List<Column<IXLStyle>> orderedColumns, Cancel cancel)
     {
         //Skip header
         var startRow = 2;
@@ -74,6 +74,7 @@ public class SheetBuilder<T>(
             for (var colIndex = 0; colIndex < properties.Count; colIndex++)
             {
                 var property = properties[colIndex];
+                var column = orderedColumns[colIndex];
                 var cell = sheet.Cell(xlRow, colIndex + 1);
 
                 cell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
@@ -82,7 +83,7 @@ public class SheetBuilder<T>(
 
                 var value = property.Get(item);
                 SetCellValue(cell, value, property);
-                ApplyCellStyle(cell, property, rowIndex, value);
+                ApplyCellStyle(cell, rowIndex, value, column);
             }
 
             rowIndex++;
@@ -209,7 +210,7 @@ public class SheetBuilder<T>(
         column.HeaderStyle?.Invoke(cell.Style);
     }
 
-    void ApplyCellStyle(Cell cell, Property<T> property, int index, object? value)
+    void ApplyCellStyle(Cell cell, int index, object? value, Column<IXLStyle> column)
     {
         var style = cell.Style;
 
@@ -220,12 +221,7 @@ public class SheetBuilder<T>(
             style.Fill.BackgroundColor = alternateRowColor;
         }
 
-        if (!columns.TryGetValue(property.Name, out var config))
-        {
-            return;
-        }
-
-        config.CellStyle?.Invoke(style, value);
+        column.CellStyle?.Invoke(style, value);
     }
 
     void ApplyGlobalStyling(Sheet sheet, List<Property<T>> properties)

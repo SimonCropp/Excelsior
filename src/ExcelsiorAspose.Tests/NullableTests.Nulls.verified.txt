@@ -16,6 +16,9 @@
           Name: Date Time
         },
         {
+          Name: Date
+        },
+        {
           Name: Enum
         },
         {

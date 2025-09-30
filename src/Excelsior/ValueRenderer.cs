@@ -12,6 +12,16 @@ public static class ValueRenderer
         internal get;
     } = "yyyy-MM-dd";
 
+    public static string DefaultDateTimeFormat
+    {
+        set
+        {
+            ThrowIfBookBuilderUsed();
+            field = value;
+        }
+        internal get;
+    } = "yyyy-MM-dd HH:mm:ss";
+
     static bool bookBuilderUsed;
     static Dictionary<Type, Func<object, string>> renders = [];
 

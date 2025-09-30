@@ -597,7 +597,7 @@ It is intended as an alternative to the usage of `DisplayAttribute` and `Display
 ```cs
 namespace Excelsior;
 
-[AttributeUsage(AttributeTargets.Property)]
+[AttributeUsage(AttributeTargets.Property | AttributeTargets.Parameter)]
 public sealed class ColumnAttribute : Attribute
 {
     public string? Header { get; set; }

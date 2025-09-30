@@ -1,0 +1,18 @@
+﻿[
+  {
+    Get: {Scrubbed},
+    DisplayName: Column1,
+    Name: Member1,
+    Type: string,
+    IsNumber: false,
+    IsHtml: false
+  },
+  {
+    Get: {Scrubbed},
+    DisplayName: Column2,
+    Name: Member2,
+    Type: string,
+    IsNumber: false,
+    IsHtml: false
+  }
+]

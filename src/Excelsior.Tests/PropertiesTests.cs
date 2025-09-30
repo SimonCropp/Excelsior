@@ -1,6 +1,9 @@
 ﻿// ReSharper disable UnusedAutoPropertyAccessor.Local
 // ReSharper disable UnusedMember.Local
 // ReSharper disable ClassNeverInstantiated.Local
+// ReSharper disable NotAccessedPositionalProperty.Local
+#pragma warning disable CS9113 // Parameter is unread.
+#pragma warning disable CA1822
 [TestFixture]
 public class PropertiesTests
 {
@@ -9,12 +12,10 @@ public class PropertiesTests
         public int Id { get; set; }
         public string Name { get; set; } = "";
 
-#pragma warning disable CA1822
         public string WriteOnly
         {
             set => _ = value;
         }
-#pragma warning restore CA1822
     }
 
     class AttributedModel
@@ -293,4 +294,13 @@ public class PropertiesTests
 
         Assert.That(prop.Get(model), Is.Null);
     }
+
+    record RecordPrimaryConstructorModel(
+        [Column(Header = "Column1")] string Member1,
+        [Column(Header = "Column2")] string Member2);
+
+    [Test]
+    public Task RecordPrimaryConstructor() =>
+        Verify(Properties<RecordPrimaryConstructorModel>.Items)
+            .ScrubMember("Get");
 }

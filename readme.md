@@ -433,7 +433,7 @@ var book = await builder.Build();
 
 #### Result
 
-<img src="/src/ExcelsiorClosedXml.Tests/Tests.Whitespace_Sheet1.png">
+<img src="/src/ExcelsiorClosedXml.Tests/WhitespaceTests.Whitespace_Sheet1.png">
 
 
 #### Disable whitespace trimming
@@ -462,7 +462,7 @@ var book = await builder.Build();
 
 #### Result
 
-<img src="/src/ExcelsiorClosedXml.Tests/Tests.DisableWhitespaceTrim_Sheet1.png">
+<img src="/src/ExcelsiorClosedXml.Tests/WhitespaceTests.Disable_Sheet1.png">
 
 
 ### Enumerable string properties

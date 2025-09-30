@@ -1,90 +1,98 @@
-﻿class Columns<TStyle>
+﻿class Columns<TModel, TStyle>
 {
-    Dictionary<string, Column<TStyle>> columns = [];
+    Dictionary<string, Column<TStyle, TModel>> columns = [];
 
-    public List<Property<T>> ResolveProperties<T>() =>
-        Properties<T>
-            .Items
-            .OrderBy(_ =>
+    public Columns()
+    {
+        foreach (var property in Properties<TModel>.Items)
+        {
+            var render = ValueRenderer.GetRender(property.Type);
+            Func<TModel, object, string?>? renderFunc;
+            if (render == null)
             {
-                if (columns.TryGetValue(_.Name, out var config) &&
-                    config.Order != null)
-                {
-                    return config.Order.Value;
-                }
+                renderFunc = null;
+            }
+            else
+            {
+                renderFunc = (_, value) => render(value);
+            }
 
-                return _.Order ?? int.MaxValue;
-            })
-            .ToList();
+            columns[property.Name] = new()
+            {
+                Name = property.Name,
+                Order = property.Order,
+                Header = property.DisplayName,
+                Width = null,
+                HeaderStyle = null,
+                CellStyle = null,
+                Format = null,
+                NullDisplay = null,
+                Render = renderFunc,
+                IsHtml = false,
+                IsNumber = property.IsNumber,
+                GetValue = _ => property.Get(_),
+            };
+        }
+    }
 
-    public void Add<T, TProperty>(
-        Expression<Func<T, TProperty>> property,
-        Action<Column<TStyle, TProperty>> configuration)
+    public void Add<TProperty>(
+        Expression<Func<TModel, TProperty>> property,
+        Action<Column<TStyle, TModel, TProperty>> configuration)
     {
         var name = property.PropertyName();
-        var config = new Column<TStyle, TProperty>();
+        if (!columns.TryGetValue(name, out var column))
+        {
+            throw new($"Could not find property: {name}");
+        }
+
+        var config = new Column<TStyle, TModel, TProperty>();
         configuration(config);
-        Func<object, string?>? render;
-        if (config.Render == null)
+        if (config.Header != null)
         {
-            render = null;
-        }
-        else
-        {
-            render = o => config.Render.Invoke((TProperty) o);
+            column.Header = config.Header;
         }
 
-        columns[name] = new()
+        if (config.Order != null)
         {
-            HeaderText = config.HeaderText,
-            Order = config.Order,
-            ColumnWidth = config.ColumnWidth,
-            HeaderStyle = config.HeaderStyle,
-            CellStyle = (style, value) => config.CellStyle?.Invoke(style, (TProperty) value!),
-            Format = config.Format,
-            NullDisplayText = config.NullDisplayText,
-            Render = render,
-            TreatAsHtml = config.TreatAsHtml
-        };
+            column.Order = config.Order;
+        }
+
+        if (config.Width != null)
+        {
+            column.Width = config.Width;
+        }
+
+        if (config.HeaderStyle != null)
+        {
+            column.HeaderStyle = config.HeaderStyle;
+        }
+
+        if (config.CellStyle != null)
+        {
+            column.CellStyle = (style, model, value) => config.CellStyle.Invoke(style, model, (TProperty)value!);
+        }
+
+        if (config.Format != null)
+        {
+            column.Format = config.Format;
+        }
+
+        if (config.NullDisplay != null)
+        {
+            column.NullDisplay = config.NullDisplay;
+        }
+
+        if (config.Render != null)
+        {
+            column.Render = (model, value) => config.Render.Invoke(model, (TProperty)value);
+        }
+
+        if (config.IsHtml != null)
+        {
+            column.IsHtml = config.IsHtml.Value;
+        }
     }
 
-    public bool TryGetValue(string name, [NotNullWhen(true)] out Column<TStyle>? settings) =>
-        columns.TryGetValue(name, out settings);
-
-    public string GetHeaderText<T>(Property<T> property)
-    {
-        if (TryGetValue(property.Name, out var config) &&
-            config.HeaderText != null)
-        {
-            return config.HeaderText;
-        }
-
-        return property.DisplayName;
-    }
-
-    public bool TryGetColumnWidth<T>(Property<T> property, out double width)
-    {
-        if (TryGetValue(property.Name, out var config) &&
-            config.ColumnWidth.HasValue)
-        {
-            width = config.ColumnWidth.Value;
-            return true;
-        }
-
-        width = 0;
-        return false;
-    }
-
-    public bool TryGetHeaderStyle<T>(Property<T> property, [NotNullWhen(true)]out Action<TStyle>? headerStyle)
-    {
-        if (TryGetValue(property.Name, out var config) &&
-            config.HeaderStyle != null)
-        {
-            headerStyle = config.HeaderStyle;
-            return true;
-        }
-
-        headerStyle = null;
-        return false;
-    }
+    public List<Column<TStyle, TModel>> OrderedColumns() =>
+        columns.Values.OrderBy(_ => _.Order ?? int.MaxValue).ToList();
 }

@@ -1,5 +1,5 @@
 ﻿[TestFixture]
-public class TreatAsHtmlTests
+public class HtmlTests
 {
     public record Target(string Value1, string Value2 = "sss");
 
@@ -16,7 +16,7 @@ public class TreatAsHtmlTests
 
         sheetBuilder.Column(
             _ => _.Value1,
-            _ => _.TreatAsHtml = true);
+            _ => _.IsHtml = true);
         var book = await bookBuilder.Build();
 
         await Verify(book);
@@ -34,7 +34,7 @@ public class TreatAsHtmlTests
 
         sheetBuilder.Column(
             _ => _.Value1,
-            _ => _.TreatAsHtml = true);
+            _ => _.IsHtml = true);
         var book = await bookBuilder.Build();
 
         await Verify(book);
@@ -55,8 +55,8 @@ public class TreatAsHtmlTests
             _ => _.Value1,
             _ =>
             {
-                _.ColumnWidth = 20;
-                _.TreatAsHtml = true;
+                _.Width = 20;
+                _.IsHtml = true;
             });
         var book = await bookBuilder.Build();
 

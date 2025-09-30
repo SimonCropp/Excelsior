@@ -17,8 +17,14 @@
         return attribute?.Name ?? enumValue.ToString();
     }
 
-    public static bool IsNumericType(this Type type) =>
-        Type.GetTypeCode(type)
+    public static bool IsNumericType(this Type type)
+    {
+        if (type.IsEnum)
+        {
+            return false;
+        }
+
+        return Type.GetTypeCode(type)
             switch
             {
                 TypeCode.Byte or
@@ -34,4 +40,5 @@
                     TypeCode.Single => true,
                 _ => false
             };
+    }
 }

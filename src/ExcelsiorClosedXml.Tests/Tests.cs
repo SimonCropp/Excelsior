@@ -1,4 +1,5 @@
-﻿[TestFixture]
+﻿// ReSharper disable UnusedParameter.Local
+[TestFixture]
 public class Tests
 {
     [Test]
@@ -39,6 +40,7 @@ public class Tests
 
         await Verify(book);
     }
+
     [Test]
     public async Task Whitespace()
     {
@@ -63,6 +65,7 @@ public class Tests
 
         await Verify(book);
     }
+
     [Test]
     public async Task DisableWhitespaceTrim()
     {
@@ -146,27 +149,27 @@ public class Tests
             _ => _.Number,
             _ =>
             {
-                _.CellStyle = (style, value) =>
+                _.CellStyle = (style, _, value) =>
                 {
                     Debug.WriteLine(style);
                     Debug.WriteLine(value);
                 };
-                _.Render = _ => _.ToString();
+                _.Render = (_, value) => value.ToString();
             });
         sheet.Column(
             _ => _.DateTime,
             _ =>
             {
-                _.CellStyle = (style, value) =>
+                _.CellStyle = (style, _, value) =>
                 {
                     Debug.WriteLine(style);
                     Debug.WriteLine(value);
                 };
-                _.Render = _ =>
+                _.Render = (_, value) =>
                 {
-                    if (_.HasValue)
+                    if (value.HasValue)
                     {
-                        return _.Value.ToString(CultureInfo.InvariantCulture);
+                        return value.Value.ToString(CultureInfo.InvariantCulture);
                     }
 
                     return null;
@@ -176,34 +179,34 @@ public class Tests
             _ => _.Enum,
             _ =>
             {
-                _.CellStyle = (style, value) =>
+                _.CellStyle = (style, _, value) =>
                 {
                     Debug.WriteLine(style);
                     Debug.WriteLine(value);
                 };
-                _.Render = _ => _.ToString();
+                _.Render = (_ ,value) => value.ToString();
             });
         sheet.Column(
             _ => _.String,
             _ =>
             {
-                _.CellStyle = (style, value) =>
+                _.CellStyle = (style, _, value) =>
                 {
                     Debug.WriteLine(style);
                     Debug.WriteLine(value);
                 };
-                _.Render = _ => _?.ToString();
+                _.Render = (_, value) => value?.ToString();
             });
         sheet.Column(
             _ => _.Bool,
             _ =>
             {
-                _.CellStyle = (style, value) =>
+                _.CellStyle = (style, _, value) =>
                 {
                     Debug.WriteLine(style);
                     Debug.WriteLine(value);
                 };
-                _.Render = _ => _?.ToString().ToUpper();
+                _.Render = (_, value) => value?.ToString().ToUpper();
             });
         var book = await builder.Build();
 
@@ -235,7 +238,7 @@ public class Tests
         builder.AddSheet(employees)
             .Column(
                 _ => _.Name,
-                _ => _.HeaderText = "Employee Name");
+                _ => _.Header = "Employee Name");
 
         #endregion
 
@@ -323,7 +326,7 @@ public class Tests
                 _ => _.Salary,
                 config =>
                 {
-                    config.CellStyle = (style, salary) =>
+                    config.CellStyle = (style, employee, salary) =>
                     {
                         if (salary > 100000)
                         {
@@ -336,7 +339,7 @@ public class Tests
                 _ => _.IsActive,
                 config =>
                 {
-                    config.CellStyle = (style, isActive) =>
+                    config.CellStyle = (style, employee, isActive) =>
                     {
                         var fill = style.Fill;
                         if (isActive)
@@ -368,10 +371,10 @@ public class Tests
         builder.AddSheet(employees)
             .Column(
                 _ => _.Name,
-                _ => _.Render = value => value.ToUpper())
+                _ => _.Render = (employee, name) => name.ToUpper())
             .Column(
                 _ => _.IsActive,
-                _ => _.Render = active => active ? "Active" : "Inactive")
+                _ => _.Render = (employee, active) => active ? "Active" : "Inactive")
             .Column(
                 _ => _.HireDate,
                 _ => _.Format = "yyyy-MM-dd");
@@ -409,9 +412,9 @@ public class Tests
 
         var builder = new BookBuilder();
         builder.AddSheet(employees)
-            .Column(_ => _.Name, _ => _.ColumnWidth = 25)
-            .Column(_ => _.Email, _ => _.ColumnWidth = 30)
-            .Column(_ => _.HireDate, _ => _.ColumnWidth = 15);
+            .Column(_ => _.Name, _ => _.Width = 25)
+            .Column(_ => _.Email, _ => _.Width = 30)
+            .Column(_ => _.HireDate, _ => _.Width = 15);
 
         #endregion
 
@@ -461,10 +464,10 @@ public class Tests
             }
         };
         builder.AddSheet(employees)
-            .Column(_ => _.Name, _ => _.NullDisplayText = "[No Name]")
-            .Column(_ => _.HireDate, _ => _.NullDisplayText = "[No HireDate]")
-            .Column(_ => _.Email, _ => _.NullDisplayText = "[No Email]")
-            .Column(_ => _.Status, _ => _.NullDisplayText = "[No Status]");
+            .Column(_ => _.Name, _ => _.NullDisplay = "[No Name]")
+            .Column(_ => _.HireDate, _ => _.NullDisplay = "[No HireDate]")
+            .Column(_ => _.Email, _ => _.NullDisplay = "[No Email]")
+            .Column(_ => _.Status, _ => _.NullDisplay = "[No Status]");
 
         var book = await builder.Build();
 
@@ -503,10 +506,10 @@ public class Tests
             }
         };
         var sheetBuilder = bookBuilder.AddSheet(employees);
-        sheetBuilder.NullDisplayText(_ => _.Name, "[No Name]");
-        sheetBuilder.NullDisplayText(_ => _.HireDate, "[No HireDate]");
-        sheetBuilder.NullDisplayText(_ => _.Email, "[No Email]");
-        sheetBuilder.NullDisplayText(_ => _.Status, "[No Status]");
+        sheetBuilder.NullDisplay(_ => _.Name, "[No Name]");
+        sheetBuilder.NullDisplay(_ => _.HireDate, "[No HireDate]");
+        sheetBuilder.NullDisplay(_ => _.Email, "[No Email]");
+        sheetBuilder.NullDisplay(_ => _.Status, "[No Status]");
 
         var book = await bookBuilder.Build();
 
@@ -521,7 +524,7 @@ public class Tests
         builder.AddSheet(employees)
             .Column(
                 _ => _.Status,
-                _ => _.Render = enumValue => $"Status: {enumValue}");
+                _ => _.Render = (_, value) => $"Status: {value}");
 
         var book = await builder.Build();
 
@@ -538,8 +541,8 @@ public class Tests
                 _ => _.Name,
                 _ =>
                 {
-                    _.HeaderText = "Full Name";
-                    _.ColumnWidth = 20;
+                    _.Header = "Full Name";
+                    _.Width = 20;
                 })
             .Column(
                 _ => _.Salary,
@@ -677,7 +680,7 @@ public class Tests
                 config =>
                 {
                     config.Format = "$#,##0.00";
-                    config.CellStyle = (style, salary) =>
+                    config.CellStyle = (style, _, salary) =>
                     {
                         if (salary >= 100000)
                         {
@@ -694,14 +697,14 @@ public class Tests
                 config =>
                 {
                     config.Format = "MMM dd, yyyy";
-                    config.ColumnWidth = 15;
+                    config.Width = 15;
                 })
             .Column(
                 _ => _.IsActive,
                 config =>
                 {
-                    config.Render = active => active ? "Active" : "Inactive";
-                    config.CellStyle = (style, _) =>
+                    config.Render = (_, value) => value ? "Active" : "Inactive";
+                    config.CellStyle = (style, _, _) =>
                     {
                         style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
                     };
@@ -710,7 +713,7 @@ public class Tests
                 _ => _.Status,
                 config =>
                 {
-                    config.CellStyle = (style, status) =>
+                    config.CellStyle = (style, _, status) =>
                     {
                         switch (status)
                         {

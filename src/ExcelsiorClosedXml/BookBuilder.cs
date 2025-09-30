@@ -6,15 +6,15 @@ public class BookBuilder :
     List<Func<Book, Cancel, Task>> actions = [];
     bool useAlternatingRowColors;
     XLColor? alternateRowColor;
-    Action<IXLStyle>? headerStyle;
-    Action<IXLStyle>? globalStyle;
+    Action<Style>? headerStyle;
+    Action<Style>? globalStyle;
     bool trimWhitespace;
 
     public BookBuilder(
         bool useAlternatingRowColors = false,
         XLColor? alternateRowColor = null,
-        Action<IXLStyle>? headerStyle = null,
-        Action<IXLStyle>? globalStyle = null,
+        Action<Style>? headerStyle = null,
+        Action<Style>? globalStyle = null,
         bool trimWhitespace = true)
     {
         ValueRenderer.SetBookBuilderUsed();
@@ -25,16 +25,16 @@ public class BookBuilder :
         this.trimWhitespace = trimWhitespace;
     }
 
-    public SheetBuilder<T> AddSheet<T>(IEnumerable<T> data, string? name = null)
-        where T : class =>
+    public SheetBuilder<TModel> AddSheet<TModel>(IEnumerable<TModel> data, string? name = null)
+        where TModel : class =>
         AddSheet(data.ToAsyncEnumerable(), name);
 
-    public SheetBuilder<T> AddSheet<T>(IAsyncEnumerable<T> data, string? name = null)
-        where T : class
+    public SheetBuilder<TModel> AddSheet<TModel>(IAsyncEnumerable<TModel> data, string? name = null)
+        where TModel : class
     {
         name ??= $"Sheet{actions.Count + 1}";
 
-        var converter = new SheetBuilder<T>(
+        var converter = new SheetBuilder<TModel>(
             name,
             data,
             useAlternatingRowColors,

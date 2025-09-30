@@ -35,15 +35,14 @@ public class SheetBuilder<T>(
     {
         var sheet = book.Worksheets.Add(name);
 
-        var properties = columns.ResolveProperties<T>();
         var orderedColumns = columns.OrderedColumns();
         CreateHeaders(sheet, orderedColumns);
 
         await PopulateData(sheet, orderedColumns, cancel);
 
-        ApplyGlobalStyling(sheet, properties);
+        ApplyGlobalStyling(sheet, orderedColumns);
         sheet.RangeUsed()!.SetAutoFilter();
-        AutoSizeColumns(sheet, properties);
+        AutoSizeColumns(sheet, orderedColumns);
     }
 
     void CreateHeaders(Sheet sheet, List<Column<IXLStyle>> orderedColumns)
@@ -215,29 +214,30 @@ public class SheetBuilder<T>(
         column.CellStyle?.Invoke(style, value);
     }
 
-    void ApplyGlobalStyling(Sheet sheet, List<Property<T>> properties)
+    void ApplyGlobalStyling(Sheet sheet, List<Column<IXLStyle>> orderedColumns)
     {
         if (globalStyle == null)
         {
             return;
         }
 
-        var range = sheet.Range(1, 1, rowIndex + 1, properties.Count);
+        var range = sheet.Range(1, 1, rowIndex + 1, orderedColumns.Count);
         globalStyle(range.Style);
     }
 
-    void AutoSizeColumns(Sheet sheet, List<Property<T>> properties)
+    static void AutoSizeColumns(Sheet sheet, List<Column<IXLStyle>> orderedColumns)
     {
         var xlColumns = sheet.Columns().ToList();
 
         // Apply specific column widths
-        for (var i = 0; i < properties.Count; i++)
+        for (var i = 0; i < orderedColumns.Count; i++)
         {
-            if (columns.TryGetColumnWidth(properties[i], out var width))
+            var column = orderedColumns[i];
+            if (column.ColumnWidth != null)
             {
                 var xlColumn = sheet.Column(i + 1);
                 xlColumns.Remove(xlColumn);
-                xlColumn.Width = width;
+                xlColumn.Width = column.ColumnWidth.Value;
             }
         }
 

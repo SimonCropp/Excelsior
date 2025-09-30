@@ -24,21 +24,6 @@
         }
     }
 
-    public List<Property<T>> ResolveProperties<T>() =>
-        Properties<T>
-            .Items
-            .OrderBy(_ =>
-            {
-                if (columns.TryGetValue(_.Name, out var config) &&
-                    config.Order != null)
-                {
-                    return config.Order.Value;
-                }
-
-                return _.Order ?? int.MaxValue;
-            })
-            .ToList();
-
     public void Add<T, TProperty>(
         Expression<Func<T, TProperty>> property,
         Action<Column<TStyle, TProperty>> configuration)

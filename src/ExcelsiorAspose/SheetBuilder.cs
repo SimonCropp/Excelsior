@@ -35,7 +35,6 @@ public class SheetBuilder<T>(
     {
         var sheet = book.Worksheets.Add(name);
 
-        var properties = columns.ResolveProperties<T>();
         var orderedColumns = columns.OrderedColumns();
         CreateHeaders(sheet, orderedColumns);
 
@@ -43,7 +42,7 @@ public class SheetBuilder<T>(
 
         ApplyGlobalStyling(sheet);
         sheet.AutoFilterAll();
-        AutoSizeColumns(sheet, properties);
+        AutoSizeColumns(sheet, orderedColumns);
         sheet.AutoSizeRows();
     }
 
@@ -262,16 +261,16 @@ public class SheetBuilder<T>(
         sheet.Cells.ApplyStyle(style, flag);
     }
 
-    void AutoSizeColumns(Sheet sheet, List<Property<T>> properties)
+    static void AutoSizeColumns(Sheet sheet, List<Column<Style>> orderedColumns)
     {
         sheet.AutoSizeColumns();
 
-        // Apply specific column widths
-        for (var i = 0; i < properties.Count; i++)
+        for (var index = 0; index < orderedColumns.Count; index++)
         {
-            if (columns.TryGetColumnWidth(properties[i], out var width))
+            var column = orderedColumns[index];
+            if (column.ColumnWidth != null)
             {
-                sheet.Cells.Columns[i].Width = width;
+                sheet.Cells.Columns[index].Width = column.ColumnWidth.Value;
             }
         }
     }

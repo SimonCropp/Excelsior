@@ -5,14 +5,14 @@ public class SheetBuilder<TModel>(
     IAsyncEnumerable<TModel> data,
     bool useAlternatingRowColors,
     XLColor? alternateRowColor,
-    Action<IXLStyle>? headerStyle,
-    Action<IXLStyle>? globalStyle,
+    Action<Style>? headerStyle,
+    Action<Style>? globalStyle,
     bool trimWhitespace) :
-    ISheetBuilder<TModel, IXLStyle>
+    ISheetBuilder<TModel, Style>
     where TModel : class
 {
     int rowIndex;
-    Columns<TModel, IXLStyle> columns = new();
+    Columns<TModel, Style> columns = new();
 
     /// <summary>
     /// Configure a column using property expression (type-safe)
@@ -20,15 +20,15 @@ public class SheetBuilder<TModel>(
     /// <returns>The converter instance for fluent chaining</returns>
     public SheetBuilder<TModel> Column<TProperty>(
         Expression<Func<TModel, TProperty>> property,
-        Action<Column<IXLStyle, TModel, TProperty>> configuration)
+        Action<Column<Style, TModel, TProperty>> configuration)
     {
         columns.Add(property, configuration);
         return this;
     }
 
-    void ISheetBuilder<TModel, IXLStyle>.Column<TProperty>(
+    void ISheetBuilder<TModel, Style>.Column<TProperty>(
         Expression<Func<TModel, TProperty>> property,
-        Action<Column<IXLStyle, TModel, TProperty>> configuration) =>
+        Action<Column<Style, TModel, TProperty>> configuration) =>
         Column(property, configuration);
 
     internal async Task AddSheet(Book book, Cancel cancel)
@@ -45,7 +45,7 @@ public class SheetBuilder<TModel>(
         AutoSizeColumns(sheet, orderedColumns);
     }
 
-    void CreateHeaders(Sheet sheet, List<Column<IXLStyle, TModel>> orderedColumns)
+    void CreateHeaders(Sheet sheet, List<Column<Style, TModel>> orderedColumns)
     {
         for (var i = 0; i < orderedColumns.Count; i++)
         {
@@ -60,7 +60,7 @@ public class SheetBuilder<TModel>(
         sheet.SheetView.FreezeRows(1);
     }
 
-    async Task PopulateData(Sheet sheet, List<Column<IXLStyle, TModel>> orderedColumns, Cancel cancel)
+    async Task PopulateData(Sheet sheet, List<Column<Style, TModel>> orderedColumns, Cancel cancel)
     {
         //Skip header
         var startRow = 2;
@@ -87,7 +87,7 @@ public class SheetBuilder<TModel>(
         }
     }
 
-    void SetCellValue(Cell cell, object? value, Column<IXLStyle, TModel> column, TModel item)
+    void SetCellValue(Cell cell, object? value, Column<Style, TModel> column, TModel item)
     {
         if (value == null)
         {
@@ -193,14 +193,14 @@ public class SheetBuilder<TModel>(
         }
     }
 
-    void ApplyHeaderStyling(Cell cell, Column<IXLStyle, TModel> column)
+    void ApplyHeaderStyling(Cell cell, Column<Style, TModel> column)
     {
         headerStyle?.Invoke(cell.Style);
 
         column.HeaderStyle?.Invoke(cell.Style);
     }
 
-    void ApplyCellStyle(Cell cell, int index, object? value, Column<IXLStyle, TModel> column, TModel item)
+    void ApplyCellStyle(Cell cell, int index, object? value, Column<Style, TModel> column, TModel item)
     {
         var style = cell.Style;
 
@@ -214,7 +214,7 @@ public class SheetBuilder<TModel>(
         column.CellStyle?.Invoke(style, item, value);
     }
 
-    void ApplyGlobalStyling(Sheet sheet, List<Column<IXLStyle, TModel>> orderedColumns)
+    void ApplyGlobalStyling(Sheet sheet, List<Column<Style, TModel>> orderedColumns)
     {
         if (globalStyle == null)
         {
@@ -225,7 +225,7 @@ public class SheetBuilder<TModel>(
         globalStyle(range.Style);
     }
 
-    static void AutoSizeColumns(Sheet sheet, List<Column<IXLStyle, TModel>> orderedColumns)
+    static void AutoSizeColumns(Sheet sheet, List<Column<Style, TModel>> orderedColumns)
     {
         var xlColumns = sheet.Columns().ToList();
 

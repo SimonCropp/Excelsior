@@ -6,15 +6,15 @@ public class BookBuilder :
     List<Func<Book, Cancel, Task>> actions = [];
     bool useAlternatingRowColors;
     XLColor? alternateRowColor;
-    Action<IXLStyle>? headerStyle;
-    Action<IXLStyle>? globalStyle;
+    Action<Style>? headerStyle;
+    Action<Style>? globalStyle;
     bool trimWhitespace;
 
     public BookBuilder(
         bool useAlternatingRowColors = false,
         XLColor? alternateRowColor = null,
-        Action<IXLStyle>? headerStyle = null,
-        Action<IXLStyle>? globalStyle = null,
+        Action<Style>? headerStyle = null,
+        Action<Style>? globalStyle = null,
         bool trimWhitespace = true)
     {
         ValueRenderer.SetBookBuilderUsed();

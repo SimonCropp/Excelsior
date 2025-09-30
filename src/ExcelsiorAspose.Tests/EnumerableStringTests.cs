@@ -90,6 +90,8 @@ public class EnumerableStringTests
         await Verify(book);
     }
 
+#if DEBUG
+
     [Test]
     public async Task WithWhitespaceNoTrim()
     {
@@ -116,6 +118,8 @@ public class EnumerableStringTests
 
         await Verify(book);
     }
+
+#endif
 
     [Test]
     public async Task WithNewlinesNoTrim()

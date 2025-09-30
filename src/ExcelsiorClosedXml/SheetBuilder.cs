@@ -82,7 +82,7 @@ public class SheetBuilder<T>(
                 cell.Style.Alignment.WrapText = true;
 
                 var value = property.Get(item);
-                SetCellValue(cell, value, property);
+                SetCellValue(cell, value, property, column);
                 ApplyCellStyle(cell, rowIndex, value, column);
             }
 
@@ -90,18 +90,17 @@ public class SheetBuilder<T>(
         }
     }
 
-    void SetCellValue(Cell cell, object? value, Property<T> property)
+    void SetCellValue(Cell cell, object? value, Property<T> property, Column<IXLStyle> column)
     {
-        var config = columns.GetValue(property.Name);
         if (value == null)
         {
-            cell.Value = config.NullDisplayText;
+            cell.Value = column.NullDisplayText;
             return;
         }
 
-        if (config.Render != null)
+        if (column.Render != null)
         {
-            cell.Value = config.Render(value);
+            cell.Value = column.Render(value);
             return;
         }
 
@@ -114,9 +113,9 @@ public class SheetBuilder<T>(
         if (value is DateTime dateTime)
         {
             cell.Value = dateTime;
-            if (config.Format != null)
+            if (column.Format != null)
             {
-                cell.Style.DateFormat.Format = config.Format;
+                cell.Style.DateFormat.Format = column.Format;
             }
 
             return;
@@ -134,12 +133,12 @@ public class SheetBuilder<T>(
             return;
         }
 
-        if (config.IsNumber)
+        if (column.IsNumber)
         {
             cell.Value = Convert.ToDouble(value);
-            if (config.Format != null)
+            if (column.Format != null)
             {
-                cell.Style.NumberFormat.Format = config.Format;
+                cell.Style.NumberFormat.Format = column.Format;
             }
 
             return;

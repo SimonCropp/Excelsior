@@ -84,7 +84,7 @@ public class SheetBuilder<T>(
                 style.HorizontalAlignment = TextAlignmentType.Left;
                 style.IsTextWrapped = true;
                 var value = property.Get(item);
-                SetCellValue(cell, value, property, style);
+                SetCellValue(cell, value, property, style, column);
                 ApplyCellStyle(rowIndex, value, style, column);
                 cell.SetStyle(style);
             }
@@ -93,18 +93,17 @@ public class SheetBuilder<T>(
         }
     }
 
-    void SetCellValue(Cell cell, object? value, Property<T> property, Style style)
+    void SetCellValue(Cell cell, object? value, Property<T> property, Style style, Column<Style> column)
     {
-        var config = columns.GetValue(property.Name);
         if (value == null)
         {
-            cell.Value = config.NullDisplayText;
+            cell.Value = column.NullDisplayText;
             return;
         }
 
-        if (config.Render != null)
+        if (column.Render != null)
         {
-            SetStringOrHtml(config.Render(value));
+            SetStringOrHtml(column.Render(value));
             return;
         }
 
@@ -118,9 +117,9 @@ public class SheetBuilder<T>(
         {
             ThrowIfHtml();
             cell.Value = dateTime;
-            if (config.Format != null)
+            if (column.Format != null)
             {
-                style.Custom = config.Format;
+                style.Custom = column.Format;
             }
 
             return;
@@ -140,13 +139,13 @@ public class SheetBuilder<T>(
             return;
         }
 
-        if (config.IsNumber)
+        if (column.IsNumber)
         {
             ThrowIfHtml();
             cell.Value = Convert.ToDouble(value);
-            if (config.Format != null)
+            if (column.Format != null)
             {
-                style.Custom = config.Format;
+                style.Custom = column.Format;
             }
 
             return;
@@ -163,7 +162,7 @@ public class SheetBuilder<T>(
 
         void ThrowIfHtml()
         {
-            if (config.TreatAsHtml)
+            if (column.TreatAsHtml)
             {
                 throw new("TreatAsHtml is not compatible with this type");
             }
@@ -171,7 +170,7 @@ public class SheetBuilder<T>(
 
         void SetStringOrHtml(string? rendered)
         {
-            if (config.TreatAsHtml)
+            if (column.TreatAsHtml)
             {
                 cell.SafeSetHtml(rendered);
             }

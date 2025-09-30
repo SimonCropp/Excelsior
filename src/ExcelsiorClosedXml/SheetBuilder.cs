@@ -1,33 +1,33 @@
 ﻿namespace ExcelsiorClosedXml;
 
-public class SheetBuilder<T>(
+public class SheetBuilder<TModel>(
     string name,
-    IAsyncEnumerable<T> data,
+    IAsyncEnumerable<TModel> data,
     bool useAlternatingRowColors,
     XLColor? alternateRowColor,
     Action<IXLStyle>? headerStyle,
     Action<IXLStyle>? globalStyle,
     bool trimWhitespace) :
-    ISheetBuilder<T, IXLStyle>
-    where T : class
+    ISheetBuilder<TModel, IXLStyle>
+    where TModel : class
 {
     int rowIndex;
-    Columns<T, IXLStyle> columns = new();
+    Columns<TModel, IXLStyle> columns = new();
 
     /// <summary>
     /// Configure a column using property expression (type-safe)
     /// </summary>
     /// <returns>The converter instance for fluent chaining</returns>
-    public SheetBuilder<T> Column<TProperty>(
-        Expression<Func<T, TProperty>> property,
+    public SheetBuilder<TModel> Column<TProperty>(
+        Expression<Func<TModel, TProperty>> property,
         Action<Column<IXLStyle, TProperty>> configuration)
     {
         columns.Add(property, configuration);
         return this;
     }
 
-    void ISheetBuilder<T, IXLStyle>.Column<TProperty>(
-        Expression<Func<T, TProperty>> property,
+    void ISheetBuilder<TModel, IXLStyle>.Column<TProperty>(
+        Expression<Func<TModel, TProperty>> property,
         Action<Column<IXLStyle, TProperty>> configuration) =>
         Column(property, configuration);
 

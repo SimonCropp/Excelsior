@@ -1,33 +1,33 @@
 ﻿namespace ExcelsiorAspose;
 
-public class SheetBuilder<T>(
+public class SheetBuilder<TModel>(
     string name,
-    IAsyncEnumerable<T> data,
+    IAsyncEnumerable<TModel> data,
     bool useAlternatingRowColors,
     Color? alternateRowColor,
     Action<Style>? headerStyle,
     Action<Style>? globalStyle,
     bool trimWhitespace) :
-    ISheetBuilder<T, Style>
-    where T : class
+    ISheetBuilder<TModel, Style>
+    where TModel : class
 {
     int rowIndex;
-    Columns<T, Style> columns = new();
+    Columns<TModel, Style> columns = new();
 
     /// <summary>
     /// Configure a column using property expression (type-safe)
     /// </summary>
     /// <returns>The converter instance for fluent chaining</returns>
-    public SheetBuilder<T> Column<TProperty>(
-        Expression<Func<T, TProperty>> property,
+    public SheetBuilder<TModel> Column<TProperty>(
+        Expression<Func<TModel, TProperty>> property,
         Action<Column<Style, TProperty>> configuration)
     {
         columns.Add(property, configuration);
         return this;
     }
 
-    void ISheetBuilder<T, Style>.Column<TProperty>(
-        Expression<Func<T, TProperty>> property,
+    void ISheetBuilder<TModel, Style>.Column<TProperty>(
+        Expression<Func<TModel, TProperty>> property,
         Action<Column<Style, TProperty>> configuration) =>
         Column(property, configuration);
 

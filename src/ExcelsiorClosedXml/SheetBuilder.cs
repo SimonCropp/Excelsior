@@ -97,7 +97,8 @@ public class SheetBuilder<TModel>(
     void ISheetBuilder<TModel, Style, Cell>.SetCellValue(Cell cell, object value) =>
         cell.Value = XLCellValue.FromObject(value);
 
-    void ISheetBuilder<TModel, Style, Cell>.SetCellHtml(Cell cell, string value) => throw new ("ClosedXml does not support html");
+    void ISheetBuilder<TModel, Style, Cell>.SetCellHtml(Cell cell, string value) =>
+        throw new ("ClosedXml does not support html");
 
     void ISheetBuilder<TModel, Style, Cell>.WriteEnumerable(Cell cell, IEnumerable<string> enumerable)
     {

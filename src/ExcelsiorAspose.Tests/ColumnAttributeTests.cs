@@ -15,7 +15,7 @@ public class ColumnAttributeTests
         public required string Email { get; init; }
 
         [Column(Header = "Hire Date", Order = 3, NullDisplay = "unknown")]
-        public DateTime? HireDate { get; init; }
+        public Date? HireDate { get; init; }
     }
 
     #endregion

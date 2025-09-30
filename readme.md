@@ -41,7 +41,7 @@ public class Employee
     public required string Email { get; init; }
 
     [Display(Name = "Hire Date", Order = 4)]
-    public DateTime? HireDate { get; init; }
+    public Date? HireDate { get; init; }
 
     [Display(Name = "Annual Salary", Order = 5)]
     public int Salary { get; init; }
@@ -629,7 +629,7 @@ public class Employee
     public required string Email { get; init; }
 
     [Column(Header = "Hire Date", Order = 3, NullDisplay = "unknown")]
-    public DateTime? HireDate { get; init; }
+    public Date? HireDate { get; init; }
 }
 ```
 <sup><a href='/src/ExcelsiorAspose.Tests/ColumnAttributeTests.cs#L4-L21' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnAttributeModel' title='Start of snippet'>anchor</a></sup>

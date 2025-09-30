@@ -24,6 +24,9 @@ public class NullableTests
             _ => _.DateTime,
             _ => _.Render = (_, dateTime) => dateTime?.ToString(CultureInfo.InvariantCulture));
         sheet.Column(
+            _ => _.Date,
+            _ => _.Render = (_, date) => date?.ToString(CultureInfo.InvariantCulture));
+        sheet.Column(
             _ => _.Enum,
             _ => _.Render = (_, enumValue) => enumValue.ToString());
         sheet.Column(
@@ -45,6 +48,7 @@ public class NullableTests
             .Column(_ => _.Number, _ => _.NullDisplay = "[No Number]")
             .Column(_ => _.String, _ => _.NullDisplay = "[No String]")
             .Column(_ => _.DateTime, _ => _.NullDisplay = "[No DateTime]")
+            .Column(_ => _.Date, _ => _.NullDisplay = "[No Date]")
             .Column(_ => _.Enum, _ => _.NullDisplay = "[No Enum]")
             .Column(_ => _.Bool, _ => _.NullDisplay = "[No Bool]");
 
@@ -61,6 +65,7 @@ public class NullableTests
         sheetBuilder.NullDisplay(_ => _.Number, "[No Number]");
         sheetBuilder.NullDisplay(_ => _.String, "[No String]");
         sheetBuilder.NullDisplay(_ => _.DateTime, "[No DateTime]");
+        sheetBuilder.NullDisplay(_ => _.Date, "[No Date]");
         sheetBuilder.NullDisplay(_ => _.Enum, "[No Enum]");
         sheetBuilder.NullDisplay(_ => _.Bool, "[No Bool]");
 
@@ -76,6 +81,7 @@ public class NullableTests
             Number = null,
             String = null,
             DateTime = null,
+            Date = null,
             Enum = null,
             Bool = null
         },
@@ -83,7 +89,8 @@ public class NullableTests
         {
             Number = 1,
             String = "value",
-            DateTime = new DateTime(2020, 1, 1),
+            DateTime = new DateTime(2020, 1, 1, 10, 15, 5),
+            Date = new Date(2020, 1, 1),
             Enum = AnEnum.Value,
             Bool = true
         },
@@ -94,9 +101,9 @@ public class NullableTests
         public required int? Number { get; init; }
         public required string? String { get; init; }
         public required DateTime? DateTime { get; init; }
+        public required Date? Date { get; init; }
         public required AnEnum? Enum { get; init; }
         public required bool? Bool { get; init; }
-
     }
 
     enum AnEnum

@@ -1,20 +1,20 @@
 ﻿[TestFixture]
 public class ColumnAttributeTests
 {
-    #region ColumnAttributeModels
+    #region ColumnAttributeModel
 
     public class Employee
     {
-        [Column(Header = "Employee ID", Order = 1)]
+        [Column(Header = "Employee ID", Order = 1, Format = "0000")]
         public required int Id { get; init; }
 
-        [Column(Header = "Full Name", Order = 2)]
+        [Column(Header = "Full Name", Order = 2, Width = 20)]
         public required string Name { get; init; }
 
-        [Column(Header = "Email Address")]
+        [Column(Header = "Email Address", Width = 30)]
         public required string Email { get; init; }
 
-        [Column(Header = "Hire Date", Order = 3)]
+        [Column(Header = "Hire Date", Order = 3, NullDisplay = "unknown")]
         public DateTime? HireDate { get; init; }
     }
 
@@ -35,6 +35,13 @@ public class ColumnAttributeTests
                 Name = "John Doe",
                 Email = "john@company.com",
                 HireDate = new(2020, 1, 15),
+            },
+            new()
+            {
+                Id = 2,
+                Name = "Jane Smith",
+                Email = "jane@company.com",
+                HireDate = null,
             }
         ];
 

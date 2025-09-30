@@ -100,7 +100,7 @@ public class SheetBuilder<TModel>(
 
         if (column.Render != null)
         {
-            SetStringOrHtml(column.Render(item,value));
+            SetStringOrHtml(column.Render(item, value));
             return;
         }
 

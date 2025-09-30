@@ -587,6 +587,7 @@ builder.AddSheet(employees);
 `ColumnAttribute` allows customization of rendering at the model level.
 
 It is intended as an alternative to the usage of `DisplayAttribute` and `DisplayNameAttribute`.
+`DisplayAttribute` and `DisplayNameAttribute` are support for scenarios where it is not convenient to reference Excelsior from that assembly.
 
 
 #### ColumnAttribute definition

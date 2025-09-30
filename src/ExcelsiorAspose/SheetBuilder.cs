@@ -153,7 +153,7 @@ public class SheetBuilder<T>(
 
         void ThrowIfHtml()
         {
-            if (column.TreatAsHtml)
+            if (column.IsHtml)
             {
                 throw new("TreatAsHtml is not compatible with this type");
             }
@@ -161,7 +161,7 @@ public class SheetBuilder<T>(
 
         void SetStringOrHtml(string? rendered)
         {
-            if (column.TreatAsHtml)
+            if (column.IsHtml)
             {
                 cell.SafeSetHtml(rendered);
             }

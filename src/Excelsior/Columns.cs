@@ -17,7 +17,7 @@
                 Format = null,
                 NullDisplayText = null,
                 Render = ValueRenderer.GetRender(property.Type),
-                TreatAsHtml = false,
+                IsHtml = false,
                 IsNumber = property.IsNumber,
                 GetValue = _ => property.Get((TModel)_),
             };
@@ -76,9 +76,9 @@
             column.Render = value => config.Render.Invoke((TProperty)value);
         }
 
-        if (config.TreatAsHtml != null)
+        if (config.IsHtml != null)
         {
-            column.TreatAsHtml = config.TreatAsHtml.Value;
+            column.IsHtml = config.IsHtml.Value;
         }
     }
 

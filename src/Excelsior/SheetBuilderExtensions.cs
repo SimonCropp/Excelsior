@@ -16,7 +16,7 @@ public static class SheetBuilderExtensions
         where TModel : class =>
         builder.Column(property, _ => _.Order = value);
 
-    public static void ColumnWidth<TModel, TStyle, TProperty>(this ISheetBuilder<TModel, TStyle> builder,
+    public static void Width<TModel, TStyle, TProperty>(this ISheetBuilder<TModel, TStyle> builder,
         Expression<Func<TModel, TProperty>> property,
         double? value)
         where TModel : class =>
@@ -46,10 +46,10 @@ public static class SheetBuilderExtensions
         where TModel : class =>
         builder.Column(property, _ => _.NullDisplayText = value);
 
-    public static void TreatAsHtml<TModel, TStyle, TProperty>(this ISheetBuilder<TModel, TStyle> builder,
+    public static void IsHtml<TModel, TStyle, TProperty>(this ISheetBuilder<TModel, TStyle> builder,
         Expression<Func<TModel, TProperty>> property)
         where TModel : class =>
-        builder.Column(property, _ => _.TreatAsHtml = true);
+        builder.Column(property, _ => _.IsHtml = true);
 
     public static void Render<TModel, TStyle, TProperty>(this ISheetBuilder<TModel, TStyle> builder,
         Expression<Func<TModel, TProperty>> property,

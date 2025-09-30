@@ -104,11 +104,11 @@ public class SheetBuilder<TModel>(
     {
         var rich = cell.CreateRichText();
         var list = enumerable.ToList();
+        var builder = new StringBuilder();
         for (var index = 0; index < list.Count; index++)
         {
             var item = list[index];
             rich.AddText("• ").SetBold();
-            var builder = new StringBuilder();
             foreach (var line in item.AsSpan().EnumerateLines())
             {
                 if (trimWhitespace)
@@ -138,6 +138,7 @@ public class SheetBuilder<TModel>(
             }
 
             rich.AddText(builder.ToString());
+            builder.Clear();
         }
     }
 

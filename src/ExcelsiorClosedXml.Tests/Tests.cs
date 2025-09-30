@@ -42,61 +42,6 @@ public class Tests
     }
 
     [Test]
-    public async Task Whitespace()
-    {
-        #region Whitespace
-
-        var builder = new BookBuilder();
-
-        List<Employee> data =
-        [
-            new()
-            {
-                Id = 1,
-                Name = "    John Doe   ",
-                Email = "    john@company.com    ",
-            }
-        ];
-        builder.AddSheet(data);
-
-        var book = await builder.Build();
-
-        #endregion
-
-        await Verify(book);
-    }
-
-    [Test]
-    public async Task DisableWhitespaceTrim()
-    {
-        #region DisableWhitespaceTrim
-
-        List<Employee> data =
-        [
-            new()
-            {
-                Id = 1,
-                Name = "    John Doe   ",
-                Email = "    john@company.com    ",
-            }
-        ];
-
-        var builder = new BookBuilder(trimWhitespace: false);
-        builder.AddSheet(data);
-
-        var book = await builder.Build();
-
-        #endregion
-
-        await Verify(book);
-    }
-
-    public enum AnEnum
-    {
-        Value
-    }
-
-    [Test]
     public async Task CustomHeaders()
     {
         var employees = GetSampleEmployees();
@@ -611,3 +556,4 @@ public class Tests
         HomeGarden
     }
 }
+// ReSharper disable UnusedParameter.Local

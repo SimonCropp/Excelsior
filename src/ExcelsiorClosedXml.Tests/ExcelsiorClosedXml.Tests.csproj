@@ -21,5 +21,6 @@
     <Compile Include="..\ExcelsiorAspose.Tests\ComplexTypeWithCustomRender.cs" />
     <Compile Include="..\ExcelsiorAspose.Tests\ComplexTypeWithInheritedCustomRender.cs" />
     <Compile Include="..\ExcelsiorAspose.Tests\ComplexTypeWithToString.cs" />
+    <Compile Include="..\ExcelsiorAspose.Tests\WhitespaceTests.cs" />
   </ItemGroup>
 </Project>

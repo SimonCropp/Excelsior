@@ -1,4 +1,7 @@
-﻿[TestFixture]
+﻿// ReSharper disable UnusedAutoPropertyAccessor.Local
+// ReSharper disable UnusedMember.Local
+// ReSharper disable ClassNeverInstantiated.Local
+[TestFixture]
 public class PropertiesTests
 {
     class SimpleModel
@@ -28,41 +31,15 @@ public class PropertiesTests
         public string NoAttributes { get; set; } = "";
     }
 
-    class OrderTestModel
-    {
-        [Column(Order = 2)]
-        public string Second { get; set; } = "";
-
-        [Display(Order = 1)]
-        public string First { get; set; } = "";
-
-        [Column(Order = 3)]
-        [Display(Order = 10)]
-        public string Third { get; set; } = "";
-
-        public string NoOrder { get; set; } = "";
-    }
-
-    class NumericModel
-    {
-        public int Integer { get; set; }
-        public long Long { get; set; }
-        public decimal Decimal { get; set; }
-        public double Double { get; set; }
-        public float Float { get; set; }
-        public byte Byte { get; set; }
-        public string NotNumeric { get; set; } = "";
-    }
-
     [Test]
     public void Properties_OnlyIncludesReadablePublicInstanceProperties()
     {
         var items = Properties<SimpleModel>.Items;
 
         Assert.That(items, Has.Count.EqualTo(2));
-        Assert.That(items, Has.Some.Matches<Property<SimpleModel>>(p => p.Name == "Id"));
-        Assert.That(items, Has.Some.Matches<Property<SimpleModel>>(p => p.Name == "Name"));
-        Assert.That(items, Has.None.Matches<Property<SimpleModel>>(p => p.Name == "WriteOnly"));
+        Assert.That(items, Has.Some.Matches<Property<SimpleModel>>(_ => _.Name == "Id"));
+        Assert.That(items, Has.Some.Matches<Property<SimpleModel>>(_ => _.Name == "Name"));
+        Assert.That(items, Has.None.Matches<Property<SimpleModel>>(_ => _.Name == "WriteOnly"));
     }
 
     [Test]
@@ -82,8 +59,8 @@ public class PropertiesTests
             Id = 42,
             Name = "Test"
         };
-        var idProp = Properties<SimpleModel>.Items.First(p => p.Name == "Id");
-        var nameProp = Properties<SimpleModel>.Items.First(p => p.Name == "Name");
+        var idProp = Properties<SimpleModel>.Items.First(_ => _.Name == "Id");
+        var nameProp = Properties<SimpleModel>.Items.First(_ => _.Name == "Name");
 
         Assert.That(idProp.Get(model), Is.EqualTo(42));
         Assert.That(nameProp.Get(model), Is.EqualTo("Test"));
@@ -96,7 +73,7 @@ public class PropertiesTests
         {
             Name = null!
         };
-        var prop = Properties<AttributedModel>.Items.First(p => p.Name == "Name");
+        var prop = Properties<AttributedModel>.Items.First(_ => _.Name == "Name");
 
         Assert.That(prop.Get(model), Is.Null);
     }
@@ -104,7 +81,7 @@ public class PropertiesTests
     [Test]
     public void Property_ColumnAttribute_AllPropertiesRead()
     {
-        var prop = Properties<AttributedModel>.Items.First(p => p.Name == "Price");
+        var prop = Properties<AttributedModel>.Items.First(_ => _.Name == "Price");
 
         Assert.That(prop.DisplayName, Is.EqualTo("Custom Header"));
         Assert.That(prop.Order, Is.EqualTo(1));
@@ -117,7 +94,7 @@ public class PropertiesTests
     [Test]
     public void Property_DisplayAttribute_UsedForHeaderAndOrder()
     {
-        var prop = Properties<AttributedModel>.Items.First(p => p.Name == "Name");
+        var prop = Properties<AttributedModel>.Items.First(_ => _.Name == "Name");
 
         Assert.That(prop.DisplayName, Is.EqualTo("Display Name"));
         Assert.That(prop.Order, Is.EqualTo(2));
@@ -126,7 +103,7 @@ public class PropertiesTests
     [Test]
     public void Property_DisplayNameAttribute_UsedForHeader()
     {
-        var prop = Properties<AttributedModel>.Items.First(p => p.Name == "Description");
+        var prop = Properties<AttributedModel>.Items.First(_ => _.Name == "Description");
 
         Assert.That(prop.DisplayName, Is.EqualTo("DisplayName Attribute"));
     }
@@ -134,15 +111,30 @@ public class PropertiesTests
     [Test]
     public void Property_NoAttributes_UsesCamelCaseSplit()
     {
-        var prop = Properties<AttributedModel>.Items.First(p => p.Name == "NoAttributes");
+        var prop = Properties<AttributedModel>.Items.First(_ => _.Name == "NoAttributes");
 
         Assert.That(prop.DisplayName, Is.EqualTo("No Attributes"));
+    }
+
+    class OrderTestModel
+    {
+        [Column(Order = 2)]
+        public string Second { get; set; } = "";
+
+        [Display(Order = 1)]
+        public string First { get; set; } = "";
+
+        [Column(Order = 3)]
+        [Display(Order = 10)]
+        public string Third { get; set; } = "";
+
+        public string NoOrder { get; set; } = "";
     }
 
     [Test]
     public void Property_Order_ColumnAttributeTakesPrecedenceOverDisplay()
     {
-        var prop = Properties<OrderTestModel>.Items.First(p => p.Name == "Third");
+        var prop = Properties<OrderTestModel>.Items.First(_ => _.Name == "Third");
 
         Assert.That(prop.Order, Is.EqualTo(3));
     }
@@ -150,7 +142,7 @@ public class PropertiesTests
     [Test]
     public void Property_Order_NegativeColumnOrderIgnored()
     {
-        var prop = Properties<AttributedModel>.Items.First(p => p.Name == "NoAttributes");
+        var prop = Properties<AttributedModel>.Items.First(_ => _.Name == "NoAttributes");
 
         Assert.That(prop.Order, Is.Null);
     }
@@ -158,7 +150,7 @@ public class PropertiesTests
     [Test]
     public void Property_Width_NegativeValueReturnsNull()
     {
-        var prop = Properties<AttributedModel>.Items.First(p => p.Name == "Name");
+        var prop = Properties<AttributedModel>.Items.First(_ => _.Name == "Name");
 
         Assert.That(prop.Width, Is.Null);
     }
@@ -166,7 +158,7 @@ public class PropertiesTests
     [Test]
     public void Property_Width_PositiveValueReturned()
     {
-        var prop = Properties<AttributedModel>.Items.First(p => p.Name == "Price");
+        var prop = Properties<AttributedModel>.Items.First(_ => _.Name == "Price");
 
         Assert.That(prop.Width, Is.EqualTo(150));
     }
@@ -174,7 +166,7 @@ public class PropertiesTests
     [Test]
     public void Property_Format_ReturnsNullWhenNotSet()
     {
-        var prop = Properties<AttributedModel>.Items.First(p => p.Name == "Name");
+        var prop = Properties<AttributedModel>.Items.First(_ => _.Name == "Name");
 
         Assert.That(prop.Format, Is.Null);
     }
@@ -182,7 +174,7 @@ public class PropertiesTests
     [Test]
     public void Property_NullDisplay_ReturnsNullWhenNotSet()
     {
-        var prop = Properties<AttributedModel>.Items.First(p => p.Name == "Name");
+        var prop = Properties<AttributedModel>.Items.First(_ => _.Name == "Name");
 
         Assert.That(prop.NullDisplay, Is.Null);
     }
@@ -190,7 +182,7 @@ public class PropertiesTests
     [Test]
     public void Property_IsHtml_DefaultsToFalse()
     {
-        var prop = Properties<AttributedModel>.Items.First(p => p.Name == "Name");
+        var prop = Properties<AttributedModel>.Items.First(_ => _.Name == "Name");
 
         Assert.That(prop.IsHtml, Is.False);
     }
@@ -198,11 +190,22 @@ public class PropertiesTests
     [Test]
     public void Property_Type_ReflectsPropertyType()
     {
-        var idProp = Properties<SimpleModel>.Items.First(p => p.Name == "Id");
-        var nameProp = Properties<SimpleModel>.Items.First(p => p.Name == "Name");
+        var idProp = Properties<SimpleModel>.Items.First(_ => _.Name == "Id");
+        var nameProp = Properties<SimpleModel>.Items.First(_ => _.Name == "Name");
 
         Assert.That(idProp.Type, Is.EqualTo(typeof(int)));
         Assert.That(nameProp.Type, Is.EqualTo(typeof(string)));
+    }
+
+    class NumericModel
+    {
+        public int Integer { get; set; }
+        public long Long { get; set; }
+        public decimal Decimal { get; set; }
+        public double Double { get; set; }
+        public float Float { get; set; }
+        public byte Byte { get; set; }
+        public string NotNumeric { get; set; } = "";
     }
 
     [Test]
@@ -210,19 +213,19 @@ public class PropertiesTests
     {
         var props = Properties<NumericModel>.Items;
 
-        Assert.That(props.First(p => p.Name == "Integer").IsNumber, Is.True);
-        Assert.That(props.First(p => p.Name == "Long").IsNumber, Is.True);
-        Assert.That(props.First(p => p.Name == "Decimal").IsNumber, Is.True);
-        Assert.That(props.First(p => p.Name == "Double").IsNumber, Is.True);
-        Assert.That(props.First(p => p.Name == "Float").IsNumber, Is.True);
-        Assert.That(props.First(p => p.Name == "Byte").IsNumber, Is.True);
-        Assert.That(props.First(p => p.Name == "NotNumeric").IsNumber, Is.False);
+        Assert.That(props.First(_ => _.Name == "Integer").IsNumber, Is.True);
+        Assert.That(props.First(_ => _.Name == "Long").IsNumber, Is.True);
+        Assert.That(props.First(_ => _.Name == "Decimal").IsNumber, Is.True);
+        Assert.That(props.First(_ => _.Name == "Double").IsNumber, Is.True);
+        Assert.That(props.First(_ => _.Name == "Float").IsNumber, Is.True);
+        Assert.That(props.First(_ => _.Name == "Byte").IsNumber, Is.True);
+        Assert.That(props.First(_ => _.Name == "NotNumeric").IsNumber, Is.False);
     }
 
     [Test]
     public void Property_Name_MatchesPropertyName()
     {
-        var prop = Properties<SimpleModel>.Items.First(p => p.Name == "Id");
+        var prop = Properties<SimpleModel>.Items.First(_ => _.Name == "Id");
 
         Assert.That(prop.Name, Is.EqualTo("Id"));
     }
@@ -249,7 +252,7 @@ public class PropertiesTests
     [Test]
     public void Property_ComplexScenario_AllAttributesCombine()
     {
-        var nameProp = Properties<ComplexModel>.Items.First(p => p.Name == "Name");
+        var nameProp = Properties<ComplexModel>.Items.First(_ => _.Name == "Name");
 
         Assert.That(nameProp.DisplayName, Is.EqualTo("Full Name"));
         Assert.That(nameProp.Order, Is.EqualTo(1));
@@ -263,8 +266,8 @@ public class PropertiesTests
     {
         var items = Properties<ComplexModel>.Items;
 
-        Assert.That(items, Has.None.Matches<Property<ComplexModel>>(p => p.Name == "Secret"));
-        Assert.That(items, Has.None.Matches<Property<ComplexModel>>(p => p.Name == "ProtectedInternal"));
+        Assert.That(items, Has.None.Matches<Property<ComplexModel>>(_ => _.Name == "Secret"));
+        Assert.That(items, Has.None.Matches<Property<ComplexModel>>(_ => _.Name == "ProtectedInternal"));
     }
 
     [Test]
@@ -274,7 +277,7 @@ public class PropertiesTests
         {
             Amount = 123.45m
         };
-        var prop = Properties<ComplexModel>.Items.First(p => p.Name == "Amount");
+        var prop = Properties<ComplexModel>.Items.First(_ => _.Name == "Amount");
 
         Assert.That(prop.Get(model), Is.EqualTo(123.45m));
     }
@@ -286,7 +289,7 @@ public class PropertiesTests
         {
             Amount = null
         };
-        var prop = Properties<ComplexModel>.Items.First(p => p.Name == "Amount");
+        var prop = Properties<ComplexModel>.Items.First(_ => _.Name == "Amount");
 
         Assert.That(prop.Get(model), Is.Null);
     }

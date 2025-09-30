@@ -35,6 +35,15 @@ public class RenderExcel
         }
     }
 
+    [Test]
+    [Explicit]
+    public void RunSingle()
+    {
+        var directory = AttributeReader.GetSolutionDirectory();
+        var path = Path.Combine(directory,@"ExcelsiorClosedXml.Tests\Tests.Simple.verified.xlsx");
+        Convert(path);
+    }
+
     static void Convert(string excelPath)
     {
         Thread.Sleep(100);

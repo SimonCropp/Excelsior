@@ -423,51 +423,35 @@ public class Tests
         await Verify(book);
     }
 
-    public class ModelWithNulls
-    {
-        public int Id { get; set; }
-        public string? Name { get; set; }
-        public string? Email { get; set; }
-        public DateTime? HireDate { get; set; }
-        public EmployeeStatus? Status { get; set; }
-    }
-
     [Test]
     public async Task NullValues()
     {
         var builder = new BookBuilder();
-        var employees = new List<ModelWithNulls>
-        {
+        List<NullableTargets> data =
+        [
             new()
             {
-                Id = 1,
-                Name = "John Doe",
-                Email = null,
-                HireDate = new DateTime(2020, 1, 15),
-                Status = EmployeeStatus.Contract,
+                Number = null,
+                String = null,
+                DateTime = null,
+                Enum = null,
+                Bool = null
             },
             new()
             {
-                Id = 2,
-                Name = null,
-                Email = "jane@company.com",
-                HireDate = null,
-                Status = EmployeeStatus.Contract,
+                Number = 1,
+                String = "value",
+                DateTime = new DateTime(2020, 1, 1),
+                Enum = AnEnum.Value,
+                Bool = true
             },
-            new()
-            {
-                Id = 3,
-                Name = "Bob Johnson",
-                Email = "bob@company.com",
-                HireDate = new DateTime(2021, 7, 10),
-                Status = EmployeeStatus.PartTime,
-            }
-        };
-        builder.AddSheet(employees)
-            .Column(_ => _.Name, _ => _.NullDisplay = "[No Name]")
-            .Column(_ => _.HireDate, _ => _.NullDisplay = "[No HireDate]")
-            .Column(_ => _.Email, _ => _.NullDisplay = "[No Email]")
-            .Column(_ => _.Status, _ => _.NullDisplay = "[No Status]");
+        ];
+        builder.AddSheet(data)
+            .Column(_ => _.Number, _ => _.NullDisplay = "[No Number]")
+            .Column(_ => _.String, _ => _.NullDisplay = "[No String]")
+            .Column(_ => _.DateTime, _ => _.NullDisplay = "[No DateTime]")
+            .Column(_ => _.Enum, _ => _.NullDisplay = "[No Enum]")
+            .Column(_ => _.Bool, _ => _.NullDisplay = "[No Bool]");
 
         var book = await builder.Build();
 
@@ -475,41 +459,34 @@ public class Tests
     }
 
     [Test]
-    public async Task NullValuesShortcuts()
+    public async Task NullDisplayShortcuts()
     {
         var bookBuilder = new BookBuilder();
-        var employees = new List<ModelWithNulls>
-        {
+        List<NullableTargets> data =
+        [
             new()
             {
-                Id = 1,
-                Name = "John Doe",
-                Email = null,
-                HireDate = new DateTime(2020, 1, 15),
-                Status = EmployeeStatus.Contract,
+                Number = null,
+                String = null,
+                DateTime = null,
+                Enum = null,
+                Bool = null
             },
             new()
             {
-                Id = 2,
-                Name = null,
-                Email = "jane@company.com",
-                HireDate = null,
-                Status = EmployeeStatus.Contract,
+                Number = 1,
+                String = "value",
+                DateTime = new DateTime(2020, 1, 1),
+                Enum = AnEnum.Value,
+                Bool = true
             },
-            new()
-            {
-                Id = 3,
-                Name = "Bob Johnson",
-                Email = "bob@company.com",
-                HireDate = new DateTime(2021, 7, 10),
-                Status = EmployeeStatus.PartTime,
-            }
-        };
-        var sheetBuilder = bookBuilder.AddSheet(employees);
-        sheetBuilder.NullDisplay(_ => _.Name, "[No Name]");
-        sheetBuilder.NullDisplay(_ => _.HireDate, "[No HireDate]");
-        sheetBuilder.NullDisplay(_ => _.Email, "[No Email]");
-        sheetBuilder.NullDisplay(_ => _.Status, "[No Status]");
+        ];
+        var sheetBuilder = bookBuilder.AddSheet(data);
+        sheetBuilder.NullDisplay(_ => _.Number, "[No Number]");
+        sheetBuilder.NullDisplay(_ => _.String, "[No String]");
+        sheetBuilder.NullDisplay(_ => _.DateTime, "[No DateTime]");
+        sheetBuilder.NullDisplay(_ => _.Enum, "[No Enum]");
+        sheetBuilder.NullDisplay(_ => _.Bool, "[No Bool]");
 
         var book = await bookBuilder.Build();
 

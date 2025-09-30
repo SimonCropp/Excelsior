@@ -2,15 +2,16 @@ namespace Excelsior;
 
 class Column<TStyle>
 {
-    public required string? HeaderText { get; init; }
-    public required int? Order { get; init; }
-    public required double? ColumnWidth { get; init; }
-    public required Action<TStyle>? HeaderStyle { get; init; }
-    public required Action<TStyle, object?>? CellStyle { get; init; }
-    public required string? Format { get; init; }
-    public required string? NullDisplayText { get; init; }
-    public required Func<object, string?>? Render { get; init; }
-    public required bool TreatAsHtml { get; init; }
+    public required string? HeaderText { get; set; }
+    public required int? Order { get; set; }
+    public required double? ColumnWidth { get; set; }
+    public required Action<TStyle>? HeaderStyle { get; set; }
+    public required Action<TStyle, object?>? CellStyle { get; set; }
+    public required string? Format { get; set; }
+    public required string? NullDisplayText { get; set; }
+    public required Func<object, string?>? Render { get; set; }
+    public required bool TreatAsHtml { get; set; }
+    public bool IsNumber { get; set; }
 }
 
 public class Column<TStyle, TProperty>
@@ -23,5 +24,5 @@ public class Column<TStyle, TProperty>
     public string? Format { get; set; }
     public string? NullDisplayText { get; set; }
     public Func<TProperty, string?>? Render { get; set; }
-    public bool TreatAsHtml { get; set; }
+    public bool? TreatAsHtml { get; set; }
 }

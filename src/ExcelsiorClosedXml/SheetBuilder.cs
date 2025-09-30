@@ -12,7 +12,7 @@ public class SheetBuilder<T>(
     where T : class
 {
     int rowIndex;
-    Columns<IXLStyle> columns = new();
+    Columns<T, IXLStyle> columns = new();
 
     /// <summary>
     /// Configure a column using property expression (type-safe)
@@ -90,98 +90,59 @@ public class SheetBuilder<T>(
 
     void SetCellValue(Cell cell, object? value, Property<T> property)
     {
-        if (columns.TryGetValue(property.Name, out var config))
+        var config = columns.GetValue(property.Name);
+        if (value == null)
         {
-            if (value == null)
-            {
-                cell.Value = config.NullDisplayText;
-                return;
-            }
-
-            if (config.Render != null)
-            {
-                cell.Value = config.Render(value);
-                return;
-            }
-
-            if (ValueRenderer.TryRender(property.Type, value, out var result))
-            {
-                cell.Value = result;
-                return;
-            }
-
-            if (value is DateTime dateTime)
-            {
-                cell.Value = dateTime;
-                if (config.Format != null)
-                {
-                    cell.Style.DateFormat.Format = config.Format;
-                }
-
-                return;
-            }
-
-            if (value is bool boolean)
-            {
-                cell.Value = boolean.ToString();
-                return;
-            }
-
-            if (value is Enum enumValue)
-            {
-                cell.Value = enumValue.DisplayName();
-                return;
-            }
-
-            if (property.IsNumber)
-            {
-                cell.Value = Convert.ToDouble(value);
-                if (config.Format != null)
-                {
-                    cell.Style.NumberFormat.Format = config.Format;
-                }
-
-                return;
-            }
+            cell.Value = config.NullDisplayText;
+            return;
         }
-        else
+
+        if (config.Render != null)
         {
-            if (value == null)
-            {
-                cell.Value = "";
-                return;
-            }
-
-            if (ValueRenderer.TryRender(property.Type, value, out var result))
-            {
-                cell.Value = result;
-                return;
-            }
-
-            if (value is DateTime dateTime)
-            {
-                cell.Value = dateTime;
-                return;
-            }
-
-            if (value is bool boolean)
-            {
-                cell.Value = boolean.ToString();
-                return;
-            }
-
-            if (value is Enum enumValue)
-            {
-                cell.Value = enumValue.DisplayName();
-                return;
-            }
-
-            if (property.IsNumber)
-            {
-                cell.Value = Convert.ToDouble(value);
-                return;
-            }
+            cell.Value = config.Render(value);
+            return;
         }
+
+        if (ValueRenderer.TryRender(property.Type, value, out var result))
+        {
+            cell.Value = result;
+            return;
+        }
+
+        if (value is DateTime dateTime)
+        {
+            cell.Value = dateTime;
+            if (config.Format != null)
+            {
+                cell.Style.DateFormat.Format = config.Format;
+            }
+
+            return;
+        }
+
+        if (value is bool boolean)
+        {
+            cell.Value = boolean.ToString();
+            return;
+        }
+
+        if (value is Enum enumValue)
+        {
+            cell.Value = enumValue.DisplayName();
+            return;
+        }
+
+        if (config.IsNumber)
+        {
+            cell.Value = Convert.ToDouble(value);
+            if (config.Format != null)
+            {
+                cell.Style.NumberFormat.Format = config.Format;
+            }
+
+            return;
+        }
+
 
         if (value is IEnumerable<string> enumerable)
         {

@@ -1,9 +1,110 @@
 namespace Excelsior;
 
-public interface ISheetBuilder<TModel,TStyle>
+public interface ISheetBuilder<TModel, TStyle, TCell>
     where TModel : class
 {
     internal void Column<TProperty>(
         Expression<Func<TModel, TProperty>> property,
         Action<Column<TStyle, TModel, TProperty>> configuration);
+
+    internal void SetDateFormat(TStyle style, string format);
+    internal void SetNumberFormat(TStyle style, string format);
+    internal void SetCellValue(TCell cell, object value);
+    internal void SetCellHtml(TCell cell, string value);
+    internal void WriteEnumerable(TCell cell, IEnumerable<string> enumerable);
+
+    internal void SetCellValue(TCell cell, TStyle style, object? value, Column<TStyle, TModel> column, TModel item, bool trimWhitespace)
+    {
+        void SetStringOrHtml(string content)
+        {
+            if (column.IsHtml)
+            {
+                SetCellHtml(cell,content);
+            }
+            else
+            {
+                SetCellValue(cell,content);
+            }
+        }
+        void ThrowIfHtml()
+        {
+            if (column.IsHtml)
+            {
+                throw new("TreatAsHtml is not compatible with this type");
+            }
+        }
+        if (value == null)
+        {
+            if (column.NullDisplay != null)
+            {
+                SetCellValue(cell, column.NullDisplay);
+            }
+
+            return;
+        }
+
+        if (column.Render != null)
+        {
+            var render = column.Render(item, value);
+            if (render != null)
+            {
+                SetStringOrHtml(render);
+            }
+            return;
+        }
+
+        if (value is DateTime dateTime)
+        {
+            ThrowIfHtml();
+            SetCellValue(cell, dateTime);
+            SetDateFormat(style, column.Format ?? ValueRenderer.DefaultDateFormat);
+
+            return;
+        }
+
+        if (value is bool boolean)
+        {
+            ThrowIfHtml();
+            SetCellValue(cell, boolean);
+            return;
+        }
+
+        if (value is Enum enumValue)
+        {
+            ThrowIfHtml();
+            SetCellValue(cell, enumValue.DisplayName());
+            return;
+        }
+
+        if (column.IsNumber)
+        {
+            ThrowIfHtml();
+            SetCellValue(cell, Convert.ToDouble(value));
+            if (column.Format != null)
+            {
+                SetNumberFormat(style, column.Format);
+            }
+
+            return;
+        }
+
+        if (value is IEnumerable<string> enumerable)
+        {
+            ThrowIfHtml();
+            WriteEnumerable(cell, enumerable);
+            return;
+        }
+
+        var valueAsString = value.ToString();
+        // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
+        if (valueAsString != null && trimWhitespace)
+        {
+            valueAsString = valueAsString.Trim();
+        }
+
+        if (valueAsString != null)
+        {
+            SetStringOrHtml(valueAsString);
+        }
+    }
 }

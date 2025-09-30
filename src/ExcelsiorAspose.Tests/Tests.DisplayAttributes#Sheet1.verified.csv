@@ -1,3 +1,3 @@
 ﻿Product ID,Product Name,Unit Price,Product Category,Is Available
-1,Laptop,999.99,Electronic Items,True
-2,Book,29.99,Books & Literature,False
+1,Laptop,999.99,Electronic Items,TRUE
+2,Book,29.99,Books & Literature,FALSE

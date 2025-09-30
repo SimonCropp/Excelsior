@@ -24,8 +24,8 @@
         }
     }
 
-    public void Add<T, TProperty>(
-        Expression<Func<T, TProperty>> property,
+    public void Add<TProperty>(
+        Expression<Func<TModel, TProperty>> property,
         Action<Column<TStyle, TProperty>> configuration)
     {
         var name = property.PropertyName();

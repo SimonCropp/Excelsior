@@ -8,7 +8,7 @@ public class SheetBuilder<TModel>(
     Action<Style>? headerStyle,
     Action<Style>? globalStyle,
     bool trimWhitespace) :
-    ISheetBuilder<TModel, Style>
+    ISheetBuilder<TModel, Style, Cell>
     where TModel : class
 {
     int rowIndex;
@@ -26,7 +26,7 @@ public class SheetBuilder<TModel>(
         return this;
     }
 
-    void ISheetBuilder<TModel, Style>.Column<TProperty>(
+    void ISheetBuilder<TModel, Style, Cell>.Column<TProperty>(
         Expression<Func<TModel, TProperty>> property,
         Action<Column<Style, TModel, TProperty>> configuration) =>
         Column(property, configuration);
@@ -81,7 +81,7 @@ public class SheetBuilder<TModel>(
                 style.HorizontalAlignment = TextAlignmentType.Left;
                 style.IsTextWrapped = true;
                 var value = column.GetValue(item);
-                SetCellValue(cell, value, style, column, item);
+                ((ISheetBuilder<TModel, Style, Cell>) this).SetCellValue(cell,style,value,column,item, trimWhitespace);
                 ApplyCellStyle(rowIndex, value, style, column, item);
                 cell.SetStyle(style);
             }
@@ -90,97 +90,19 @@ public class SheetBuilder<TModel>(
         }
     }
 
-    void SetCellValue(Cell cell, object? value, Style style, Column<Style, TModel> column, TModel item)
-    {
-        if (value == null)
-        {
-            cell.Value = column.NullDisplay;
-            return;
-        }
+    void ISheetBuilder<TModel, Style, Cell>.SetDateFormat(Style style, string format) =>
+        style.Custom = format;
 
-        if (column.Render != null)
-        {
-            SetStringOrHtml(column.Render(item, value));
-            return;
-        }
+    void ISheetBuilder<TModel, Style, Cell>.SetNumberFormat(Style style, string format) =>
+        style.Custom = format;
 
-        if (value is DateTime dateTime)
-        {
-            ThrowIfHtml();
-            cell.Value = dateTime;
-            style.Custom = column.Format ?? ValueRenderer.DefaultDateFormat;
+    void ISheetBuilder<TModel, Style, Cell>.SetCellValue(Cell cell, object value) =>
+        cell.Value = value;
 
-            return;
-        }
+    public void SetCellHtml(Cell cell, string value) =>
+        cell.SafeSetHtml(value);
 
-        if (value is bool boolean)
-        {
-            ThrowIfHtml();
-            cell.Value = boolean.ToString();
-            return;
-        }
-
-        if (value is Enum enumValue)
-        {
-            ThrowIfHtml();
-            cell.Value = enumValue.DisplayName();
-            return;
-        }
-
-        if (column.IsNumber)
-        {
-            ThrowIfHtml();
-            cell.Value = Convert.ToDouble(value);
-            if (column.Format != null)
-            {
-                style.Custom = column.Format;
-            }
-
-            return;
-        }
-
-        if (value is IEnumerable<string> enumerable)
-        {
-            ThrowIfHtml();
-            WriteEnumerable(cell, enumerable);
-            return;
-        }
-
-        SetStringOrHtml(GetTrimmedValue(value));
-
-        void ThrowIfHtml()
-        {
-            if (column.IsHtml)
-            {
-                throw new("TreatAsHtml is not compatible with this type");
-            }
-        }
-
-        void SetStringOrHtml(string? rendered)
-        {
-            if (column.IsHtml)
-            {
-                cell.SafeSetHtml(rendered);
-            }
-            else
-            {
-                cell.Value = rendered;
-            }
-        }
-    }
-
-    string? GetTrimmedValue(object value)
-    {
-        var result = value.ToString();
-        if (result != null && trimWhitespace)
-        {
-            return result.Trim();
-        }
-
-        return result;
-    }
-
-    void WriteEnumerable(Cell cell, IEnumerable<string> enumerable)
+    void ISheetBuilder<TModel, Style, Cell>.WriteEnumerable(Cell cell, IEnumerable<string> enumerable)
     {
         var list = enumerable.ToList();
         var builder = new StringBuilder(

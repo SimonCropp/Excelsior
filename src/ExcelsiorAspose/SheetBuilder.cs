@@ -37,10 +37,9 @@ public class SheetBuilder<T>(
 
         var properties = columns.ResolveProperties<T>();
         var orderedColumns = columns.OrderedColumns();
-        Debug.Assert(properties.Select(_=>_.Name).SequenceEqual(orderedColumns.Select(_=>_.Name)));
         CreateHeaders(sheet, orderedColumns);
 
-        await PopulateData(sheet, properties, orderedColumns, cancel);
+        await PopulateData(sheet, orderedColumns, cancel);
 
         ApplyGlobalStyling(sheet);
         sheet.AutoFilterAll();
@@ -63,7 +62,7 @@ public class SheetBuilder<T>(
         sheet.FreezePanes(1, 0, 1, 0);
     }
 
-    async Task PopulateData(Sheet sheet, List<Property<T>> properties, List<Column<Style>> orderedColumns, Cancel cancel)
+    async Task PopulateData(Sheet sheet, List<Column<Style>> orderedColumns, Cancel cancel)
     {
         //Skip header
         var startRow = 1;
@@ -72,9 +71,8 @@ public class SheetBuilder<T>(
         {
             var xlRow = startRow + rowIndex;
 
-            for (var colIndex = 0; colIndex < properties.Count; colIndex++)
+            for (var colIndex = 0; colIndex < orderedColumns.Count; colIndex++)
             {
-                var property = properties[colIndex];
                 var column = orderedColumns[colIndex];
 
                 var cell = sheet.Cells[xlRow, colIndex];
@@ -83,7 +81,7 @@ public class SheetBuilder<T>(
                 style.VerticalAlignment = TextAlignmentType.Top;
                 style.HorizontalAlignment = TextAlignmentType.Left;
                 style.IsTextWrapped = true;
-                var value = property.Get(item);
+                var value = column.GetValue(item);
                 SetCellValue(cell, value, style, column);
                 ApplyCellStyle(rowIndex, value, style, column);
                 cell.SetStyle(style);

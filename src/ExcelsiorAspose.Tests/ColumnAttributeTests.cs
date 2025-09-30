@@ -5,16 +5,16 @@ public class ColumnAttributeTests
 
     public class Employee
     {
-        [Column(HeaderText = "Employee ID", Order = 1)]
+        [Column(Header = "Employee ID", Order = 1)]
         public required int Id { get; init; }
 
-        [Column(HeaderText = "Full Name", Order = 2)]
+        [Column(Header = "Full Name", Order = 2)]
         public required string Name { get; init; }
 
-        [Column(HeaderText = "Email Address", Order = 3)]
+        [Column(Header = "Email Address")]
         public required string Email { get; init; }
 
-        [Column(HeaderText = "Hire Date", Order = 4)]
+        [Column(Header = "Hire Date", Order = 3)]
         public DateTime? HireDate { get; init; }
     }
 

@@ -1,28 +1,17 @@
-﻿static class Properties<T>
-{
-    static Properties() =>
-        Items = typeof(T)
-            .GetProperties(BindingFlags.Public | BindingFlags.Instance)
-            .Where(_ => _.CanRead)
-            .Select(_ => new Property<T>(_))
-            .ToList();
-
-    public static IReadOnlyList<Property<T>> Items { get; }
-}
-class Property<T>
+﻿class Property<T>
 {
     public Property(PropertyInfo info)
     {
         Get = CreateGet(info);
         var column = info.GetCustomAttribute<ColumnAttribute>();
         var display = info.GetCustomAttribute<DisplayAttribute>();
-        DisplayName = GetDisplayName(info, display, column);
+        DisplayName = GetHeader(info, display, column);
         Name = info.Name;
         Order = GetOrder(column, display);
         Width = GetWidth(column);
         Format = column?.Format;
-        NullDisplayText = column?.NullDisplayText;
-        TreatAsHtml = column?.TreatAsHtml;
+        NullDisplay = column?.NullDisplay;
+        IsHtml = column?.IsHtml ?? false;
         Type = info.PropertyType;
         IsNumber = info.PropertyType.IsNumericType();
     }
@@ -55,14 +44,14 @@ class Property<T>
     public bool IsNumber { get; }
     public double? Width { get; }
     public string? Format { get; }
-    public string? NullDisplayText { get; }
-    public bool? TreatAsHtml { get; }
+    public string? NullDisplay { get; }
+    public bool IsHtml { get; }
 
-    static string GetDisplayName(PropertyInfo info, DisplayAttribute? display, ColumnAttribute? column)
+    static string GetHeader(PropertyInfo info, DisplayAttribute? display, ColumnAttribute? column)
     {
-        if (column?.HeaderText != null)
+        if (column?.Header != null)
         {
-            return column.HeaderText;
+            return column.Header;
         }
 
         if (display?.Name != null)

@@ -13,7 +13,7 @@ class Column<TStyle, TModel>
     public required bool IsHtml { get; set; }
     public required bool IsNumber { get; set; }
     public required string Name { get; set; }
-    public required Func<object, object?> GetValue { get; set; }
+    public required Func<TModel, object?> GetValue { get; set; }
 }
 
 public class Column<TStyle, TModel, TProperty>

@@ -19,7 +19,7 @@
                 Render = ValueRenderer.GetRender(property.Type),
                 IsHtml = false,
                 IsNumber = property.IsNumber,
-                GetValue = _ => property.Get((TModel)_),
+                GetValue = _ => property.Get(_),
             };
         }
     }

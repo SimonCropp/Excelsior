@@ -57,6 +57,15 @@ public interface ISheetBuilder<TModel, TStyle, TCell>
         {
             ThrowIfHtml();
             SetCellValue(cell, dateTime);
+            SetDateFormat(style, column.Format ?? ValueRenderer.DefaultDateTimeFormat);
+
+            return;
+        }
+
+        if (value is Date date)
+        {
+            ThrowIfHtml();
+            SetCellValue(cell, date.ToDateTime(new(0, 0)));
             SetDateFormat(style, column.Format ?? ValueRenderer.DefaultDateFormat);
 
             return;

@@ -10,7 +10,7 @@ public class Employee
     public required string Email { get; init; }
 
     [Display(Name = "Hire Date", Order = 4)]
-    public DateTime? HireDate { get; init; }
+    public Date? HireDate { get; init; }
 
     [Display(Name = "Annual Salary", Order = 5)]
     public int Salary { get; init; }

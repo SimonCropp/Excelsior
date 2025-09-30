@@ -2,17 +2,32 @@
 
 public static class ValueRenderer
 {
-    private static bool bookBuilderUsed;
+    public static string DefaultDateFormat
+    {
+        set
+        {
+            ThrowIfBookBuilderUsed();
+            field = value;
+        }
+        internal get;
+    } = "yyyy-MM-dd";
+
+    static bool bookBuilderUsed;
     static Dictionary<Type, Func<object, string>> renders = [];
 
     public static void For<T>(Func<T, string> func)
     {
-        if (bookBuilderUsed)
-        {
-            throw new("Any calls to ValueRenderer.For must be done before any calls to BookBuilder. The recommended approach is to place calls to ValueRenderer.For in a ModuleInitializer.");
-        }
+        ThrowIfBookBuilderUsed();
 
         renders[typeof(T)] = _ => func((T) _);
+    }
+
+    static void ThrowIfBookBuilderUsed()
+    {
+        if (bookBuilderUsed)
+        {
+            throw new("Any calls to ValueRenderer must be done before any calls to BookBuilder. The recommended approach is to place calls to ValueRenderer in a ModuleInitializer.");
+        }
     }
 
     internal static Func<object, string>? GetRender(Type memberType)

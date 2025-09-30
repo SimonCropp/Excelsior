@@ -104,10 +104,7 @@ public class SheetBuilder<TModel>(
         if (value is DateTime dateTime)
         {
             cell.Value = dateTime;
-            if (column.Format != null)
-            {
-                cell.Style.DateFormat.Format = column.Format;
-            }
+            cell.Style.DateFormat.Format = column.Format ?? ValueRenderer.DefaultDateFormat;
 
             return;
         }

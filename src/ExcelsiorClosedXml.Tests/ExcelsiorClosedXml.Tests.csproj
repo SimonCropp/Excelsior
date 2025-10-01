@@ -15,7 +15,8 @@
     <ProjectReference Include="..\Model\Model.csproj" />
     <Using Include="NUnit.Framework.Legacy.ClassicAssert" Static="True" />
     <PackageReference Include="ProjectDefaults" PrivateAssets="all" />
-
+    
+    <Compile Include="..\ExcelsiorAspose.Tests\Saving.cs" />
     <Compile Include="..\ExcelsiorAspose.Tests\Headings.cs" />
     <Compile Include="..\ExcelsiorAspose.Tests\UsageTests.cs" />
     <Compile Include="..\ExcelsiorAspose.Tests\ColumnOrdering.cs" />
@@ -27,5 +28,97 @@
     <Compile Include="..\ExcelsiorAspose.Tests\ComplexTypeWithInheritedCustomRender.cs" />
     <Compile Include="..\ExcelsiorAspose.Tests\ComplexTypeWithToString.cs" />
     <Compile Include="..\ExcelsiorAspose.Tests\WhitespaceTests.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Tests.CellStyle#Sheet1.verified.csv">
+      <DependentUpon>Saving.cs</DependentUpon>
+    </None>
+    <None Update="Tests.CellStyle.verified.txt">
+      <DependentUpon>Saving.cs</DependentUpon>
+    </None>
+    <None Update="Tests.CellStyle.verified.xlsx">
+      <DependentUpon>Saving.cs</DependentUpon>
+    </None>
+    <None Update="Tests.ColumnWidths#Sheet1.verified.csv">
+      <DependentUpon>Saving.cs</DependentUpon>
+    </None>
+    <None Update="Tests.ColumnWidths.verified.txt">
+      <DependentUpon>Saving.cs</DependentUpon>
+    </None>
+    <None Update="Tests.ColumnWidths.verified.xlsx">
+      <DependentUpon>Saving.cs</DependentUpon>
+    </None>
+    <None Update="Tests.DisplayAttributes#Sheet1.verified.csv">
+      <DependentUpon>Saving.cs</DependentUpon>
+    </None>
+    <None Update="Tests.DisplayAttributes.verified.txt">
+      <DependentUpon>Saving.cs</DependentUpon>
+    </None>
+    <None Update="Tests.DisplayAttributes.verified.xlsx">
+      <DependentUpon>Saving.cs</DependentUpon>
+    </None>
+    <None Update="Tests.EmptyList#Sheet1.verified.csv">
+      <DependentUpon>Saving.cs</DependentUpon>
+    </None>
+    <None Update="Tests.EmptyList.verified.txt">
+      <DependentUpon>Saving.cs</DependentUpon>
+    </None>
+    <None Update="Tests.EmptyList.verified.xlsx">
+      <DependentUpon>Saving.cs</DependentUpon>
+    </None>
+    <None Update="Tests.Enums#Sheet1.verified.csv">
+      <DependentUpon>Saving.cs</DependentUpon>
+    </None>
+    <None Update="Tests.Enums.verified.txt">
+      <DependentUpon>Saving.cs</DependentUpon>
+    </None>
+    <None Update="Tests.Enums.verified.xlsx">
+      <DependentUpon>Saving.cs</DependentUpon>
+    </None>
+    <None Update="Tests.GlobalStyle#Sheet1.verified.csv">
+      <DependentUpon>Saving.cs</DependentUpon>
+    </None>
+    <None Update="Tests.GlobalStyle.verified.txt">
+      <DependentUpon>Saving.cs</DependentUpon>
+    </None>
+    <None Update="Tests.GlobalStyle.verified.xlsx">
+      <DependentUpon>Saving.cs</DependentUpon>
+    </None>
+    <None Update="Tests.HeadingStyle#Sheet1.verified.csv">
+      <DependentUpon>Saving.cs</DependentUpon>
+    </None>
+    <None Update="Tests.HeadingStyle.verified.txt">
+      <DependentUpon>Saving.cs</DependentUpon>
+    </None>
+    <None Update="Tests.HeadingStyle.verified.xlsx">
+      <DependentUpon>Saving.cs</DependentUpon>
+    </None>
+    <None Update="Tests.Render#Sheet1.verified.csv">
+      <DependentUpon>Saving.cs</DependentUpon>
+    </None>
+    <None Update="Tests.Render.verified.txt">
+      <DependentUpon>Saving.cs</DependentUpon>
+    </None>
+    <None Update="Tests.Render.verified.xlsx">
+      <DependentUpon>Saving.cs</DependentUpon>
+    </None>
+    <None Update="Tests.ToStream#Sheet1.verified.csv">
+      <DependentUpon>Saving.cs</DependentUpon>
+    </None>
+    <None Update="Tests.ToStream.verified.txt">
+      <DependentUpon>Saving.cs</DependentUpon>
+    </None>
+    <None Update="Tests.ToStream.verified.xlsx">
+      <DependentUpon>Saving.cs</DependentUpon>
+    </None>
+    <None Update="Tests.WorksheetName#Employee Report.verified.csv">
+      <DependentUpon>Saving.cs</DependentUpon>
+    </None>
+    <None Update="Tests.WorksheetName.verified.txt">
+      <DependentUpon>Saving.cs</DependentUpon>
+    </None>
+    <None Update="Tests.WorksheetName.verified.xlsx">
+      <DependentUpon>Saving.cs</DependentUpon>
+    </None>
   </ItemGroup>
 </Project>

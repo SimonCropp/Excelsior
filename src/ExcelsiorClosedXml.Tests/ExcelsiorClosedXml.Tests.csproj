@@ -124,5 +124,41 @@
     <None Update="Tests.WorksheetName.verified.xlsx">
       <DependentUpon>Saving.cs</DependentUpon>
     </None>
+    <None Update="Tests.CellStyle#Sheet1.received.csv">
+      <DependentUpon>StyleTests.cs</DependentUpon>
+    </None>
+    <None Update="Tests.CellStyle.received.txt">
+      <DependentUpon>StyleTests.cs</DependentUpon>
+    </None>
+    <None Update="Tests.CellStyle.received.xlsx">
+      <DependentUpon>StyleTests.cs</DependentUpon>
+    </None>
+    <None Update="Tests.EmptyList#Sheet1.received.csv">
+      <DependentUpon>StyleTests.cs</DependentUpon>
+    </None>
+    <None Update="Tests.EmptyList.received.txt">
+      <DependentUpon>StyleTests.cs</DependentUpon>
+    </None>
+    <None Update="Tests.EmptyList.received.xlsx">
+      <DependentUpon>StyleTests.cs</DependentUpon>
+    </None>
+    <None Update="Tests.GlobalStyle#Sheet1.received.csv">
+      <DependentUpon>StyleTests.cs</DependentUpon>
+    </None>
+    <None Update="Tests.GlobalStyle.received.txt">
+      <DependentUpon>StyleTests.cs</DependentUpon>
+    </None>
+    <None Update="Tests.GlobalStyle.received.xlsx">
+      <DependentUpon>StyleTests.cs</DependentUpon>
+    </None>
+    <None Update="Tests.HeadingStyle#Sheet1.received.csv">
+      <DependentUpon>StyleTests.cs</DependentUpon>
+    </None>
+    <None Update="Tests.HeadingStyle.received.txt">
+      <DependentUpon>StyleTests.cs</DependentUpon>
+    </None>
+    <None Update="Tests.HeadingStyle.received.xlsx">
+      <DependentUpon>StyleTests.cs</DependentUpon>
+    </None>
   </ItemGroup>
 </Project>

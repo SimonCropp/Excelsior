@@ -1,6 +1,6 @@
 ﻿// ReSharper disable UnusedParameter.Local
 [TestFixture]
-public class Tests
+public class StyleTests
 {
     [Test]
     public async Task HeadingStyle()
@@ -104,67 +104,5 @@ public class Tests
         var book = await builder.Build();
 
         await Verify(book);
-    }
-
-    [Test]
-    public async Task DisplayAttributes()
-    {
-        var builder = new BookBuilder();
-        var products = new List<Product>
-        {
-            new()
-            {
-                Id = 1,
-                Name = "Laptop",
-                Price = 999.99m,
-                Category = ProductCategory.Electronics,
-                IsAvailable = true
-            },
-            new()
-            {
-                Id = 2,
-                Name = "Book",
-                Price = 29.99m,
-                Category = ProductCategory.Books,
-                IsAvailable = false
-            }
-        };
-        builder.AddSheet(products);
-
-        var book = await builder.Build();
-
-        await Verify(book);
-    }
-
-    public class Product
-    {
-        [Display(Name = "Product ID", Order = 1)]
-        public required int Id { get; set; }
-
-        [Display(Name = "Product Name", Order = 2)]
-        public required string Name { get; set; }
-
-        [Display(Name = "Unit Price", Order = 3)]
-        public required decimal Price { get; set; }
-
-        [DisplayName("Product Category")]
-        public required ProductCategory Category { get; set; }
-
-        public required bool IsAvailable { get; set; }
-    }
-
-    public enum ProductCategory
-    {
-        [Display(Name = "Electronic Items")]
-        Electronics,
-
-        [Display(Name = "Books & Literature")]
-        Books,
-
-        [Display(Name = "Clothing & Apparel")]
-        Clothing,
-
-        [Display(Name = "Home & Garden")]
-        HomeGarden
     }
 }

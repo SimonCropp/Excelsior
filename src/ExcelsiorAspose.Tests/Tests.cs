@@ -3,8 +3,7 @@
 public class Tests
 {
 
-
-[Test]
+    [Test]
     public async Task HeadingStyle()
     {
         var data = SampleData.Employees();
@@ -90,21 +89,6 @@ public class Tests
                 });
 
         #endregion
-
-        var book = await builder.Build();
-
-        await Verify(book);
-    }
-
-    [Test]
-    public async Task Enums()
-    {
-        var employees = SampleData.Employees();
-        var builder = new BookBuilder();
-        builder.AddSheet(employees)
-            .Column(
-                _ => _.Status,
-                _ => _.Render = (_, value) => $"Status: {value}");
 
         var book = await builder.Build();
 

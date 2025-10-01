@@ -725,4 +725,4 @@ builder.AddSheet(data);
 
 [Grim Fandango](https://github.com/PapirusDevelopmentTeam/papirus-icon-theme/blob/master/Papirus/64x64/apps/grim-fandango-remastered.svg) from [Papirus Icons](https://github.com/PapirusDevelopmentTeam/papirus-icon-theme).
 
-The "Excelsior Line" is a travel package sold by Manuel Calavera in the Lucas Arts game "Grim Fandango". The package consists of nothing more than a walking stick with a compass in the handle.
+The [Excelsior Line](https://grim-fandango.fandom.com/wiki/Excelsior_Line) is a travel package sold by Manuel Calavera in the Lucas Arts game "Grim Fandango". The package consists of nothing more than a walking stick with a compass in the handle.

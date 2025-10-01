@@ -241,7 +241,7 @@ builder.AddSheet(data);
 
 #### Result:
 
-<img src="/src/ExcelsiorClosedXml.Tests/Tests.HeadingStyle_Sheet1.png">
+<img src="/src/ExcelsiorClosedXml.Tests/StyleTests.HeadingStyle_Sheet1.png">
 
 
 ### Global Style
@@ -264,7 +264,7 @@ builder.AddSheet(data);
 
 #### Result:
 
-<img src="/src/ExcelsiorClosedXml.Tests/Tests.GlobalStyle_Sheet1.png">
+<img src="/src/ExcelsiorClosedXml.Tests/StyleTests.GlobalStyle_Sheet1.png">
 
 
 ### Cell Styling
@@ -311,7 +311,7 @@ builder.AddSheet(employees)
 
 #### Result:
 
-<img src="/src/ExcelsiorClosedXml.Tests/Tests.CellStyle_Sheet1.png">
+<img src="/src/ExcelsiorClosedXml.Tests/StyleTests.CellStyle_Sheet1.png">
 
 
 ### Render

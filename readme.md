@@ -106,7 +106,7 @@ var book = await builder.Build();
 
 ### Result:
 
-<img src="/src/ExcelsiorClosedXml.Tests/Tests.Simple_Sheet1.png">
+<img src="/src/ExcelsiorClosedXml.Tests/UsageTests.Test_Sheet1.png">
 
 
 ### DataAnnotations Attributes
@@ -196,7 +196,7 @@ builder.AddSheet(employees)
 
 #### Result:
 
-<img src="/src/ExcelsiorClosedXml.Tests/Tests.CustomHeadings_Sheet1.png">
+<img src="/src/ExcelsiorClosedXml.Tests/Headings.Fluent_Sheet1.png">
 
 
 ### Column Ordering
@@ -218,7 +218,7 @@ builder.AddSheet(employees)
 
 #### Result:
 
-<img src="/src/ExcelsiorClosedXml.Tests/Tests.ColumnOrdering_Sheet1.png">
+<img src="/src/ExcelsiorClosedXml.Tests/ColumnOrdering.Fluent_Sheet1.png">
 
 
 ### Heading Style

@@ -3,46 +3,6 @@
 public class Tests
 {
     [Test]
-    public async Task CustomHeadings()
-    {
-        var employees = SampleData.Employees();
-
-        #region AsposeCustomHeadings
-
-        var builder = new BookBuilder();
-        builder.AddSheet(employees)
-            .Column(
-                _ => _.Name,
-                _ => _.Heading = "Employee Name");
-
-        #endregion
-
-        var book = await builder.Build();
-
-        await Verify(book);
-    }
-
-    [Test]
-    public async Task ColumnOrdering()
-    {
-        var employees = SampleData.Employees();
-
-        #region AsposeColumnOrdering
-
-        var builder = new BookBuilder();
-        builder.AddSheet(employees)
-            .Column(_ => _.Email, _ => _.Order = 1)
-            .Column(_ => _.Name, _ => _.Order = 2)
-            .Column(_ => _.Salary, _ => _.Order = 3);
-
-        #endregion
-
-        var book = await builder.Build();
-
-        await Verify(book);
-    }
-
-    [Test]
     public async Task HeadingStyle()
     {
         var data = SampleData.Employees();

@@ -16,7 +16,9 @@
     <Using Include="NUnit.Framework.Legacy.ClassicAssert" Static="True" />
     <PackageReference Include="ProjectDefaults" PrivateAssets="all" />
 
+    <Compile Include="..\ExcelsiorAspose.Tests\Headings.cs" />
     <Compile Include="..\ExcelsiorAspose.Tests\UsageTests.cs" />
+    <Compile Include="..\ExcelsiorAspose.Tests\ColumnOrdering.cs" />
     <Compile Include="..\ExcelsiorAspose.Tests\ColumnAttributeTests.cs" />
     <Compile Include="..\ExcelsiorAspose.Tests\DataAnnotationsTests.cs" />
     <Compile Include="..\ExcelsiorAspose.Tests\NullableTests.cs" />

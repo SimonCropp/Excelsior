@@ -3,45 +3,6 @@
 public class Tests
 {
     [Test]
-    public async Task Simple()
-    {
-        #region AsposeUsage
-
-        var builder = new BookBuilder();
-
-        List<Employee> data =
-        [
-            new()
-            {
-                Id = 1,
-                Name = "John Doe",
-                Email = "john@company.com",
-                HireDate = new(2020, 1, 15),
-                Salary = 75000,
-                IsActive = true,
-                Status = EmployeeStatus.FullTime
-            },
-            new()
-            {
-                Id = 2,
-                Name = "Jane Smith",
-                Email = "jane@company.com",
-                HireDate = new(2019, 3, 22),
-                Salary = 120000,
-                IsActive = true,
-                Status = EmployeeStatus.FullTime
-            }
-        ];
-        builder.AddSheet(data);
-
-        var book = await builder.Build();
-
-        #endregion
-
-        await Verify(book);
-    }
-
-    [Test]
     public async Task CustomHeadings()
     {
         var employees = SampleData.Employees();

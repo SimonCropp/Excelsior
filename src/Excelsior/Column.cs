@@ -2,10 +2,10 @@ namespace Excelsior;
 
 class Column<TStyle, TModel>
 {
-    public required string Header { get; set; }
+    public required string Heading { get; set; }
     public required int? Order { get; set; }
     public required double? Width { get; set; }
-    public required Action<TStyle>? HeaderStyle { get; set; }
+    public required Action<TStyle>? HeadingStyle { get; set; }
     public required Action<TStyle, TModel, object?>? CellStyle { get; set; }
     public required string? Format { get; set; }
     public required string? NullDisplay { get; set; }
@@ -18,10 +18,10 @@ class Column<TStyle, TModel>
 
 public class Column<TStyle, TModel, TProperty>
 {
-    public string? Header { get; set; }
+    public string? Heading { get; set; }
     public int? Order { get; set; }
     public double? Width { get; set; }
-    public Action<TStyle>? HeaderStyle { get; set; }
+    public Action<TStyle>? HeadingStyle { get; set; }
     public Action<TStyle, TModel, TProperty>? CellStyle { get; set; }
     public string? Format { get; set; }
     public string? NullDisplay { get; set; }

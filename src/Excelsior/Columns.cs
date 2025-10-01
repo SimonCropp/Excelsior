@@ -12,9 +12,9 @@
             {
                 Name = property.Name,
                 Order = property.Order,
-                Header = property.DisplayName,
+                Heading = property.DisplayName,
                 Width = property.Width,
-                HeaderStyle = null,
+                HeadingStyle = null,
                 CellStyle = null,
                 Format = property.Format,
                 NullDisplay = property.NullDisplay,
@@ -38,9 +38,9 @@
 
         var config = new Column<TStyle, TModel, TProperty>();
         configuration(config);
-        if (config.Header != null)
+        if (config.Heading != null)
         {
-            column.Header = config.Header;
+            column.Heading = config.Heading;
         }
 
         if (config.Order != null)
@@ -53,9 +53,9 @@
             column.Width = config.Width;
         }
 
-        if (config.HeaderStyle != null)
+        if (config.HeadingStyle != null)
         {
-            column.HeaderStyle = config.HeaderStyle;
+            column.HeadingStyle = config.HeadingStyle;
         }
 
         if (config.CellStyle != null)

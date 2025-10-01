@@ -5,7 +5,7 @@ public class SheetBuilder<TModel>(
     IAsyncEnumerable<TModel> data,
     bool useAlternatingRowColors,
     XLColor? alternateRowColor,
-    Action<Style>? headerStyle,
+    Action<Style>? headingStyle,
     Action<Style>? globalStyle,
     bool trimWhitespace) :
     ISheetBuilder<TModel, Style, Cell>
@@ -36,7 +36,7 @@ public class SheetBuilder<TModel>(
         var sheet = book.Worksheets.Add(name);
 
         var orderedColumns = columns.OrderedColumns();
-        CreateHeaders(sheet, orderedColumns);
+        CreateHeadings(sheet, orderedColumns);
 
         await PopulateData(sheet, orderedColumns, cancel);
 
@@ -45,16 +45,16 @@ public class SheetBuilder<TModel>(
         AutoSizeColumns(sheet, orderedColumns);
     }
 
-    void CreateHeaders(Sheet sheet, List<Column<Style, TModel>> orderedColumns)
+    void CreateHeadings(Sheet sheet, List<Column<Style, TModel>> orderedColumns)
     {
         for (var i = 0; i < orderedColumns.Count; i++)
         {
             var column = orderedColumns[i];
             var cell = sheet.Cell(1, i + 1);
 
-            cell.Value = column.Header;
+            cell.Value = column.Heading;
 
-            ApplyHeaderStyling(cell, column);
+            ApplyHeadingStyling(cell, column);
         }
 
         sheet.SheetView.FreezeRows(1);
@@ -62,7 +62,7 @@ public class SheetBuilder<TModel>(
 
     async Task PopulateData(Sheet sheet, List<Column<Style, TModel>> orderedColumns, Cancel cancel)
     {
-        //Skip header
+        //Skip heading
         var startRow = 2;
 
         await foreach (var item in data.WithCancellation(cancel))
@@ -142,11 +142,11 @@ public class SheetBuilder<TModel>(
         }
     }
 
-    void ApplyHeaderStyling(Cell cell, Column<Style, TModel> column)
+    void ApplyHeadingStyling(Cell cell, Column<Style, TModel> column)
     {
-        headerStyle?.Invoke(cell.Style);
+        headingStyle?.Invoke(cell.Style);
 
-        column.HeaderStyle?.Invoke(cell.Style);
+        column.HeadingStyle?.Invoke(cell.Style);
     }
 
     void ApplyCellStyle(Cell cell, int index, object? value, Column<Style, TModel> column, TModel item)

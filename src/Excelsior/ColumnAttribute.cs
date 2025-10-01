@@ -4,7 +4,7 @@ namespace Excelsior;
 public sealed class ColumnAttribute :
     Attribute
 {
-    public string? Header { get; set; }
+    public string? Heading { get; set; }
     public int Order { get; set; } = -1;
     public double Width { get; set; } = -1;
     public string? Format { get; set; }

@@ -5,7 +5,7 @@ public class SheetBuilder<TModel>(
     IAsyncEnumerable<TModel> data,
     bool useAlternatingRowColors,
     Color? alternateRowColor,
-    Action<Style>? headerStyle,
+    Action<Style>? headingStyle,
     Action<Style>? globalStyle,
     bool trimWhitespace) :
     ISheetBuilder<TModel, Style, Cell>
@@ -36,7 +36,7 @@ public class SheetBuilder<TModel>(
         var sheet = book.Worksheets.Add(name);
 
         var orderedColumns = columns.OrderedColumns();
-        CreateHeaders(sheet, orderedColumns);
+        CreateHeadings(sheet, orderedColumns);
 
         await PopulateData(sheet, orderedColumns, cancel);
 
@@ -46,16 +46,16 @@ public class SheetBuilder<TModel>(
         sheet.AutoSizeRows();
     }
 
-    void CreateHeaders(Sheet sheet, List<Column<Style, TModel>> orderedColumns)
+    void CreateHeadings(Sheet sheet, List<Column<Style, TModel>> orderedColumns)
     {
         for (var i = 0; i < orderedColumns.Count; i++)
         {
             var column = orderedColumns[i];
             var cell = sheet.Cells[0, i];
 
-            cell.Value = column.Header;
+            cell.Value = column.Heading;
 
-            ApplyHeaderStyling(cell, column);
+            ApplyHeadingStyling(cell, column);
         }
 
         sheet.FreezePanes(1, 0, 1, 0);
@@ -63,7 +63,7 @@ public class SheetBuilder<TModel>(
 
     async Task PopulateData(Sheet sheet, List<Column<Style, TModel>> orderedColumns, Cancel cancel)
     {
-        //Skip header
+        //Skip heading
         var startRow = 1;
 
         await foreach (var item in data.WithCancellation(cancel))
@@ -138,12 +138,12 @@ public class SheetBuilder<TModel>(
         cell.SafeSetHtml(builder.ToString());
     }
 
-    void ApplyHeaderStyling(Cell cell, Column<Style, TModel> column)
+    void ApplyHeadingStyling(Cell cell, Column<Style, TModel> column)
     {
         var style = cell.GetStyle();
-        headerStyle?.Invoke(style);
+        headingStyle?.Invoke(style);
 
-        column.HeaderStyle?.Invoke(style);
+        column.HeadingStyle?.Invoke(style);
 
         cell.SetStyle(style);
     }

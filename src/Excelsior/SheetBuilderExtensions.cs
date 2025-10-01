@@ -4,12 +4,12 @@ namespace Excelsior;
 
 public static class SheetBuilderExtensions
 {
-    public static void HeaderText<TModel, TStyle, TCell, TProperty>(
+    public static void HeadingText<TModel, TStyle, TCell, TProperty>(
         this ISheetBuilder<TModel, TStyle, TCell> builder,
         Expression<Func<TModel, TProperty>> property,
         string value)
         where TModel : class =>
-        builder.Column(property, _ => _.Header = value);
+        builder.Column(property, _ => _.Heading = value);
 
     public static void Order<TModel, TStyle, TCell, TProperty>(
         this ISheetBuilder<TModel, TStyle, TCell> builder,
@@ -25,12 +25,12 @@ public static class SheetBuilderExtensions
         where TModel : class =>
         builder.Column(property, _ => _.Width = value);
 
-    public static void HeaderStyle<TModel, TStyle, TCell, TProperty>(
+    public static void HeadingStyle<TModel, TStyle, TCell, TProperty>(
         this ISheetBuilder<TModel, TStyle, TCell> builder,
         Expression<Func<TModel, TProperty>> property,
         Action<TStyle> value)
         where TModel : class =>
-        builder.Column(property, _ => _.HeaderStyle = value);
+        builder.Column(property, _ => _.HeadingStyle = value);
 
     public static void CellStyle<TModel, TStyle, TCell, TProperty>(
         this ISheetBuilder<TModel, TStyle, TCell> builder,

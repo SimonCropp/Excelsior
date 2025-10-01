@@ -33,19 +33,19 @@ using Excelsior;
 
 public class Employee
 {
-    [Column(Header = "Employee ID", Order = 1)]
+    [Column(Heading = "Employee ID", Order = 1)]
     public required int Id { get; init; }
 
-    [Column(Header = "Full Name", Order = 2)]
+    [Column(Heading = "Full Name", Order = 2)]
     public required string Name { get; init; }
 
-    [Column(Header = "Email Address", Order = 3)]
+    [Column(Heading = "Email Address", Order = 3)]
     public required string Email { get; init; }
 
-    [Column(Header = "Hire Date", Order = 4)]
+    [Column(Heading = "Hire Date", Order = 4)]
     public Date? HireDate { get; init; }
 
-    [Column(Header = "Annual Salary", Order = 5)]
+    [Column(Heading = "Annual Salary", Order = 5)]
     public int Salary { get; init; }
 
     public bool IsActive { get; init; }
@@ -59,7 +59,7 @@ public class Employee
 `[ColumnAttribute]` is optional. If omitted:
 
  * Order is based on the order of the properties defined in the class. Order can be [programmatically controlled](#column-ordering)
- * Header text is based on the property names that is camel case split. Headers can be [programmatically controlled](#custom-headers)
+ * Heading text is based on the property names that is camel case split. Headings can be [programmatically controlled](#custom-headings)
 
 
 ### Builder
@@ -177,26 +177,26 @@ await builder.ToStream(stream);
 <!-- endSnippet -->
 
 
-### Custom Headers
+### Custom Headings
 
-The header text for a column can be overridden:
+The heading text for a column can be overridden:
 
-<!-- snippet: CustomHeaders -->
-<a id='snippet-CustomHeaders'></a>
+<!-- snippet: CustomHeadings -->
+<a id='snippet-CustomHeadings'></a>
 ```cs
 var builder = new BookBuilder();
 builder.AddSheet(employees)
     .Column(
         _ => _.Name,
-        _ => _.Header = "Employee Name");
+        _ => _.Heading = "Employee Name");
 ```
-<sup><a href='/src/ExcelsiorClosedXml.Tests/Tests.cs#L49-L57' title='Snippet source file'>snippet source</a> | <a href='#snippet-CustomHeaders' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/ExcelsiorClosedXml.Tests/Tests.cs#L49-L57' title='Snippet source file'>snippet source</a> | <a href='#snippet-CustomHeadings' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
 #### Result:
 
-<img src="/src/ExcelsiorClosedXml.Tests/Tests.CustomHeaders_Sheet1.png">
+<img src="/src/ExcelsiorClosedXml.Tests/Tests.CustomHeadings_Sheet1.png">
 
 
 ### Column Ordering
@@ -221,13 +221,13 @@ builder.AddSheet(employees)
 <img src="/src/ExcelsiorClosedXml.Tests/Tests.ColumnOrdering_Sheet1.png">
 
 
-### Header Style
+### Heading Style
 
-<!-- snippet: HeaderStyle -->
-<a id='snippet-HeaderStyle'></a>
+<!-- snippet: HeadingStyle -->
+<a id='snippet-HeadingStyle'></a>
 ```cs
 var builder = new BookBuilder(
-    headerStyle: style =>
+    headingStyle: style =>
     {
         style.Font.Bold = true;
         style.Font.FontColor = XLColor.White;
@@ -235,13 +235,13 @@ var builder = new BookBuilder(
     });
 builder.AddSheet(data);
 ```
-<sup><a href='/src/ExcelsiorClosedXml.Tests/Tests.cs#L89-L100' title='Snippet source file'>snippet source</a> | <a href='#snippet-HeaderStyle' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/ExcelsiorClosedXml.Tests/Tests.cs#L89-L100' title='Snippet source file'>snippet source</a> | <a href='#snippet-HeadingStyle' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
 #### Result:
 
-<img src="/src/ExcelsiorClosedXml.Tests/Tests.HeaderStyle_Sheet1.png">
+<img src="/src/ExcelsiorClosedXml.Tests/Tests.HeadingStyle_Sheet1.png">
 
 
 ### Global Style
@@ -652,7 +652,7 @@ namespace Excelsior;
 public sealed class ColumnAttribute :
     Attribute
 {
-    public string? Header { get; set; }
+    public string? Heading { get; set; }
     public int Order { get; set; } = -1;
     public double Width { get; set; } = -1;
     public string? Format { get; set; }
@@ -671,16 +671,16 @@ public sealed class ColumnAttribute :
 ```cs
 public class Employee
 {
-    [Column(Header = "Employee ID", Order = 1, Format = "0000")]
+    [Column(Heading = "Employee ID", Order = 1, Format = "0000")]
     public required int Id { get; init; }
 
-    [Column(Header = "Full Name", Order = 2, Width = 20)]
+    [Column(Heading = "Full Name", Order = 2, Width = 20)]
     public required string Name { get; init; }
 
-    [Column(Header = "Email Address", Width = 30)]
+    [Column(Heading = "Email Address", Width = 30)]
     public required string Email { get; init; }
 
-    [Column(Header = "Hire Date", Order = 3, NullDisplay = "unknown")]
+    [Column(Heading = "Hire Date", Order = 3, NullDisplay = "unknown")]
     public Date? HireDate { get; init; }
 }
 ```

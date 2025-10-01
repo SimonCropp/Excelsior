@@ -6,21 +6,21 @@ public class BookBuilder :
     List<Func<Book, Cancel, Task>> actions = [];
     bool useAlternatingRowColors;
     XLColor? alternateRowColor;
-    Action<Style>? headerStyle;
+    Action<Style>? headingStyle;
     Action<Style>? globalStyle;
     bool trimWhitespace;
 
     public BookBuilder(
         bool useAlternatingRowColors = false,
         XLColor? alternateRowColor = null,
-        Action<Style>? headerStyle = null,
+        Action<Style>? headingStyle = null,
         Action<Style>? globalStyle = null,
         bool trimWhitespace = true)
     {
         ValueRenderer.SetBookBuilderUsed();
         this.useAlternatingRowColors = useAlternatingRowColors;
         this.alternateRowColor = alternateRowColor;
-        this.headerStyle = headerStyle;
+        this.headingStyle = headingStyle;
         this.globalStyle = globalStyle;
         this.trimWhitespace = trimWhitespace;
     }
@@ -39,7 +39,7 @@ public class BookBuilder :
             data,
             useAlternatingRowColors,
             alternateRowColor,
-            headerStyle,
+            headingStyle,
             globalStyle,
             trimWhitespace);
         actions.Add((book, cancel) => converter.AddSheet(book, cancel));

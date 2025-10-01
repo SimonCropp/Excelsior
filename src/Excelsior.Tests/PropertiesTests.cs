@@ -20,7 +20,7 @@ public class PropertiesTests
 
     class AttributedModel
     {
-        [Column(Header = "Custom Header", Order = 1, Width = 150, Format = "N2", NullDisplay = "N/A", IsHtml = true)]
+        [Column(Heading = "Custom Heading", Order = 1, Width = 150, Format = "N2", NullDisplay = "N/A", IsHtml = true)]
         public decimal Price { get; set; }
 
         [Display(Name = "Display Name", Order = 2)]
@@ -84,7 +84,7 @@ public class PropertiesTests
     {
         var prop = Properties<AttributedModel>.Items.First(_ => _.Name == "Price");
 
-        Assert.That(prop.DisplayName, Is.EqualTo("Custom Header"));
+        Assert.That(prop.DisplayName, Is.EqualTo("Custom Heading"));
         Assert.That(prop.Order, Is.EqualTo(1));
         Assert.That(prop.Width, Is.EqualTo(150));
         Assert.That(prop.Format, Is.EqualTo("N2"));
@@ -93,7 +93,7 @@ public class PropertiesTests
     }
 
     [Test]
-    public void Property_DisplayAttribute_UsedForHeaderAndOrder()
+    public void Property_DisplayAttribute_UsedForHeadingAndOrder()
     {
         var prop = Properties<AttributedModel>.Items.First(_ => _.Name == "Name");
 
@@ -102,7 +102,7 @@ public class PropertiesTests
     }
 
     [Test]
-    public void Property_DisplayNameAttribute_UsedForHeader()
+    public void Property_DisplayNameAttribute_UsedForHeading()
     {
         var prop = Properties<AttributedModel>.Items.First(_ => _.Name == "Description");
 
@@ -233,7 +233,7 @@ public class PropertiesTests
 
     class ComplexModel
     {
-        [Column(Header = "ID", Order = 0, Width = 50)]
+        [Column(Heading = "ID", Order = 0, Width = 50)]
         public int Id { get; set; }
 
         [Display(Name = "Full Name", Order = 1)]
@@ -296,9 +296,9 @@ public class PropertiesTests
     }
 
     record RecordPrimaryConstructorModel(
-        [Column(Header = "Column1")]
+        [Column(Heading = "Column1")]
         string Member1,
-        [Column(Header = "Column2")]
+        [Column(Heading = "Column2")]
         string Member2)
     {
         // ReSharper disable once IntroduceOptionalParameters.Local

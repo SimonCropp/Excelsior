@@ -6,7 +6,7 @@
         var column = info.GetCustomAttribute<ColumnAttribute>() ?? constructorParameter?.GetCustomAttribute<ColumnAttribute>();
         var display = info.GetCustomAttribute<DisplayAttribute>() ?? constructorParameter?.GetCustomAttribute<DisplayAttribute>();
         var displayName = info.GetCustomAttribute<DisplayNameAttribute>() ?? constructorParameter?.GetCustomAttribute<DisplayNameAttribute>();
-        DisplayName = GetHeader(info, display, column,displayName);
+        DisplayName = GetHeading(info, display, column,displayName);
         Name = info.Name;
         Order = GetOrder(column, display);
         Width = GetWidth(column);
@@ -48,11 +48,11 @@
     public string? NullDisplay { get; }
     public bool IsHtml { get; }
 
-    static string GetHeader(PropertyInfo info, DisplayAttribute? display, ColumnAttribute? column, DisplayNameAttribute? displayName)
+    static string GetHeading(PropertyInfo info, DisplayAttribute? display, ColumnAttribute? column, DisplayNameAttribute? displayName)
     {
-        if (column?.Header != null)
+        if (column?.Heading != null)
         {
-            return column.Header;
+            return column.Heading;
         }
 
         if (display?.Name != null)

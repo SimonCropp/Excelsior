@@ -42,17 +42,17 @@ public class Tests
     }
 
     [Test]
-    public async Task CustomHeaders()
+    public async Task CustomHeadings()
     {
         var employees = GetSampleEmployees();
 
-        #region AsposeCustomHeaders
+        #region AsposeCustomHeadings
 
         var builder = new BookBuilder();
         builder.AddSheet(employees)
             .Column(
                 _ => _.Name,
-                _ => _.Header = "Employee Name");
+                _ => _.Heading = "Employee Name");
 
         #endregion
 
@@ -82,14 +82,14 @@ public class Tests
     }
 
     [Test]
-    public async Task HeaderStyle()
+    public async Task HeadingStyle()
     {
         var data = GetSampleEmployees();
 
-        #region AsposeHeaderStyle
+        #region AsposeHeadingStyle
 
         var builder = new BookBuilder(
-            headerStyle: style =>
+            headingStyle: style =>
             {
                 style.Font.IsBold = true;
                 style.Font.Color = Color.White;
@@ -261,7 +261,7 @@ public class Tests
                 _ => _.Name,
                 _ =>
                 {
-                    _.Header = "Full Name";
+                    _.Heading = "Full Name";
                     _.Width = 20;
                 })
             .Column(
@@ -269,7 +269,7 @@ public class Tests
                 _ =>
                 {
                     _.Format = "$#,##0.00";
-                    _.HeaderStyle = _ => _.Font.Color = Color.Green;
+                    _.HeadingStyle = _ => _.Font.Color = Color.Green;
                 });
 
         var book = await builder.Build();
@@ -387,7 +387,7 @@ public class Tests
         var builder = new BookBuilder(
             useAlternatingRowColors: true,
             alternateRowColor: Color.AliceBlue,
-            headerStyle: style =>
+            headingStyle: style =>
             {
                 style.Font.IsBold = true;
                 style.Font.Color = Color.White;

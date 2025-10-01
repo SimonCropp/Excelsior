@@ -18,7 +18,7 @@
         var builder = new BookBuilder(
             useAlternatingRowColors: true,
             alternateRowColor: Color.AliceBlue,
-            headerStyle: style =>
+            headingStyle: style =>
             {
                 style.Font.IsBold = true;
                 style.Font.Color =  Color.White;
@@ -30,7 +30,7 @@
                 config =>
                 {
                     config.Format = "#,##0.00";
-                    config.HeaderStyle = style =>
+                    config.HeadingStyle = style =>
                     {
                         style.BackgroundColor = Color.Green;
                     };

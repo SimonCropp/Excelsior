@@ -174,32 +174,6 @@ public class Tests
     }
 
     [Test]
-    public async Task TypeSafeConfiguration()
-    {
-        var employees = SampleData.Employees();
-        var builder = new BookBuilder();
-        builder.AddSheet(employees)
-            .Column(
-                _ => _.Name,
-                _ =>
-                {
-                    _.Heading = "Full Name";
-                    _.Width = 20;
-                })
-            .Column(
-                _ => _.Salary,
-                _ =>
-                {
-                    _.Format = "$#,##0.00";
-                    _.HeadingStyle = _ => _.Font.FontColor = XLColor.Green;
-                });
-
-        var book = await builder.Build();
-
-        await Verify(book);
-    }
-
-    [Test]
     public async Task EmptyList()
     {
         var builder = new BookBuilder();

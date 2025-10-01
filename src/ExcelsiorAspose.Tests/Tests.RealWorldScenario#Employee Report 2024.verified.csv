@@ -1,7 +1,0 @@
-﻿Employee ID,Full Name,Email Address,Hire Date,Annual Salary,Is Active,Status
-1001,Sarah Connor,s.connor@techcorp.com,"Mar 15, 2018","$125,000.00",Active,Full Time
-1002,John Matrix,j.matrix@techcorp.com,"Jul 22, 2020","$95,000.00",Active,Full Time
-1003,Ellen Ripley,e.ripley@techcorp.com,"Nov 08, 2019","$110,000.00",Active,Full Time
-1004,Dutch Schaefer,d.schaefer@techcorp.com,"Feb 14, 2021","$75,000.00",Active,Contract
-1005,Kyle Reese,k.reese@techcorp.com,"Jun 30, 2022","$45,000.00",Inactive,Part Time
-1006,Roy Batty,r.batty@techcorp.com,"Dec 01, 2017","$140,000.00",Inactive,Terminated

@@ -16,4 +16,102 @@
     <Using Include="NUnit.Framework.Legacy.ClassicAssert" Static="True" />
     <PackageReference Include="ProjectDefaults" PrivateAssets="all" />
   </ItemGroup>
+  <ItemGroup>
+    <None Update="Tests.ConditionalStyling#Sheet1.received.csv">
+      <DependentUpon>StyleTests.cs</DependentUpon>
+    </None>
+    <None Update="Tests.ConditionalStyling#Sheet1.received.png">
+      <DependentUpon>StyleTests.cs</DependentUpon>
+    </None>
+    <None Update="Tests.ConditionalStyling.received.txt">
+      <DependentUpon>StyleTests.cs</DependentUpon>
+    </None>
+    <None Update="Tests.ConditionalStyling.received.xlsx">
+      <DependentUpon>StyleTests.cs</DependentUpon>
+    </None>
+    <None Update="Tests.EmptyList#Sheet1.received.csv">
+      <DependentUpon>StyleTests.cs</DependentUpon>
+    </None>
+    <None Update="Tests.EmptyList#Sheet1.received.png">
+      <DependentUpon>StyleTests.cs</DependentUpon>
+    </None>
+    <None Update="Tests.EmptyList.received.txt">
+      <DependentUpon>StyleTests.cs</DependentUpon>
+    </None>
+    <None Update="Tests.EmptyList.received.xlsx">
+      <DependentUpon>StyleTests.cs</DependentUpon>
+    </None>
+    <None Update="Tests.GlobalStyle#Sheet1.received.csv">
+      <DependentUpon>StyleTests.cs</DependentUpon>
+    </None>
+    <None Update="Tests.GlobalStyle#Sheet1.received.png">
+      <DependentUpon>StyleTests.cs</DependentUpon>
+    </None>
+    <None Update="Tests.GlobalStyle.received.txt">
+      <DependentUpon>StyleTests.cs</DependentUpon>
+    </None>
+    <None Update="Tests.GlobalStyle.received.xlsx">
+      <DependentUpon>StyleTests.cs</DependentUpon>
+    </None>
+    <None Update="Tests.HeadingStyle#Sheet1.received.csv">
+      <DependentUpon>StyleTests.cs</DependentUpon>
+    </None>
+    <None Update="Tests.HeadingStyle#Sheet1.received.png">
+      <DependentUpon>StyleTests.cs</DependentUpon>
+    </None>
+    <None Update="Tests.HeadingStyle.received.txt">
+      <DependentUpon>StyleTests.cs</DependentUpon>
+    </None>
+    <None Update="Tests.HeadingStyle.received.xlsx">
+      <DependentUpon>StyleTests.cs</DependentUpon>
+    </None>
+    <None Update="Tests.ConditionalStyling#Sheet1.verified.csv">
+      <DependentUpon>StyleTests.cs</DependentUpon>
+    </None>
+    <None Update="Tests.ConditionalStyling#Sheet1.verified.png">
+      <DependentUpon>StyleTests.cs</DependentUpon>
+    </None>
+    <None Update="Tests.ConditionalStyling.verified.txt">
+      <DependentUpon>StyleTests.cs</DependentUpon>
+    </None>
+    <None Update="Tests.ConditionalStyling.verified.xlsx">
+      <DependentUpon>StyleTests.cs</DependentUpon>
+    </None>
+    <None Update="Tests.EmptyList#Sheet1.verified.csv">
+      <DependentUpon>StyleTests.cs</DependentUpon>
+    </None>
+    <None Update="Tests.EmptyList#Sheet1.verified.png">
+      <DependentUpon>StyleTests.cs</DependentUpon>
+    </None>
+    <None Update="Tests.EmptyList.verified.txt">
+      <DependentUpon>StyleTests.cs</DependentUpon>
+    </None>
+    <None Update="Tests.EmptyList.verified.xlsx">
+      <DependentUpon>StyleTests.cs</DependentUpon>
+    </None>
+    <None Update="Tests.GlobalStyle#Sheet1.verified.csv">
+      <DependentUpon>StyleTests.cs</DependentUpon>
+    </None>
+    <None Update="Tests.GlobalStyle#Sheet1.verified.png">
+      <DependentUpon>StyleTests.cs</DependentUpon>
+    </None>
+    <None Update="Tests.GlobalStyle.verified.txt">
+      <DependentUpon>StyleTests.cs</DependentUpon>
+    </None>
+    <None Update="Tests.GlobalStyle.verified.xlsx">
+      <DependentUpon>StyleTests.cs</DependentUpon>
+    </None>
+    <None Update="Tests.HeadingStyle#Sheet1.verified.csv">
+      <DependentUpon>StyleTests.cs</DependentUpon>
+    </None>
+    <None Update="Tests.HeadingStyle#Sheet1.verified.png">
+      <DependentUpon>StyleTests.cs</DependentUpon>
+    </None>
+    <None Update="Tests.HeadingStyle.verified.txt">
+      <DependentUpon>StyleTests.cs</DependentUpon>
+    </None>
+    <None Update="Tests.HeadingStyle.verified.xlsx">
+      <DependentUpon>StyleTests.cs</DependentUpon>
+    </None>
+  </ItemGroup>
 </Project>

@@ -44,7 +44,7 @@ public class Tests
     [Test]
     public async Task CustomHeadings()
     {
-        var employees = GetSampleEmployees();
+        var employees = SampleData.Employees();
 
         #region CustomHeadings
 
@@ -64,7 +64,7 @@ public class Tests
     [Test]
     public async Task ColumnOrdering()
     {
-        var employees = GetSampleEmployees();
+        var employees = SampleData.Employees();
 
         #region ColumnOrdering
 
@@ -84,7 +84,7 @@ public class Tests
     [Test]
     public async Task HeadingStyle()
     {
-        var data = GetSampleEmployees();
+        var data = SampleData.Employees();
 
         #region HeadingStyle
 
@@ -107,7 +107,7 @@ public class Tests
     [Test]
     public async Task GlobalStyle()
     {
-        var data = GetSampleEmployees();
+        var data = SampleData.Employees();
 
         #region GlobalStyle
 
@@ -130,7 +130,7 @@ public class Tests
     [Test]
     public async Task CellStyle()
     {
-        var employees = GetSampleEmployees();
+        var employees = SampleData.Employees();
 
         #region CellStyle
 
@@ -177,7 +177,7 @@ public class Tests
     [Test]
     public async Task Render()
     {
-        var employees = GetSampleEmployees();
+        var employees = SampleData.Employees();
 
         #region CustomRender
 
@@ -203,7 +203,7 @@ public class Tests
     [Test]
     public async Task WorksheetName()
     {
-        var employees = GetSampleEmployees();
+        var employees = SampleData.Employees();
 
         #region WorksheetName
 
@@ -220,7 +220,7 @@ public class Tests
     [Test]
     public async Task ColumnWidths()
     {
-        var employees = GetSampleEmployees();
+        var employees = SampleData.Employees();
 
         #region ColumnWidths
 
@@ -240,7 +240,7 @@ public class Tests
     [Test]
     public async Task Enums()
     {
-        var employees = GetSampleEmployees();
+        var employees = SampleData.Employees();
         var builder = new BookBuilder();
         builder.AddSheet(employees)
             .Column(
@@ -255,7 +255,7 @@ public class Tests
     [Test]
     public async Task TypeSafeConfiguration()
     {
-        var employees = GetSampleEmployees();
+        var employees = SampleData.Employees();
         var builder = new BookBuilder();
         builder.AddSheet(employees)
             .Column(
@@ -322,7 +322,7 @@ public class Tests
     [Test]
     public async Task ToStream()
     {
-        var data = GetSampleEmployees();
+        var data = SampleData.Employees();
 
         #region ToStream
 
@@ -336,50 +336,6 @@ public class Tests
 
         await Verify(stream, extension: "xlsx");
     }
-
-    static List<Employee> GetSampleEmployees() =>
-    [
-        new()
-        {
-            Id = 1,
-            Name = "John Doe",
-            Email = "john@company.com",
-            HireDate = new(2020, 1, 15),
-            Salary = 75000,
-            IsActive = true,
-            Status = EmployeeStatus.FullTime
-        },
-        new()
-        {
-            Id = 2,
-            Name = "Jane Smith",
-            Email = "jane@company.com",
-            HireDate = new(2019, 3, 22),
-            Salary = 120000,
-            IsActive = true,
-            Status = EmployeeStatus.FullTime
-        },
-        new()
-        {
-            Id = 3,
-            Name = "Bob Johnson",
-            Email = "bob@company.com",
-            HireDate = new(2021, 7, 10),
-            Salary = 45000,
-            IsActive = false,
-            Status = EmployeeStatus.PartTime
-        },
-        new()
-        {
-            Id = 4,
-            Name = "Alice Brown",
-            Email = "alice@company.com",
-            HireDate = new(2018, 11, 5),
-            Salary = 95000,
-            IsActive = true,
-            Status = EmployeeStatus.Contract
-        }
-    ];
 
     [Test]
     public async Task RealWorldScenario()

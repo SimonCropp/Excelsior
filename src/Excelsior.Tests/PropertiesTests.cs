@@ -313,4 +313,34 @@ public class PropertiesTests
     public Task RecordPrimaryConstructor() =>
         Verify(Properties<RecordPrimaryConstructorModel>.Items)
             .ScrubMember("Get");
+
+    class ModelWithIgnore
+    {
+        public string? Include { get; set; }
+        [Excelsior.Ignore]
+        public string? Ignore { get; set; }
+    }
+
+    [Test]
+    public Task WithIgnore() =>
+        Verify(Properties<ModelWithIgnore>.Items)
+            .ScrubMember("Get");
+
+    record RecordPrimaryConstructorWithIgnore(
+        string? Include,
+        [Excelsior.Ignore]
+        string? Ignore)
+    {
+        // ReSharper disable once IntroduceOptionalParameters.Local
+        // constructor with fewer paramters
+        public RecordPrimaryConstructorWithIgnore() :
+            this("a", "b")
+        {
+        }
+    }
+
+    [Test]
+    public Task RecordPrimaryConstructorIgnore() =>
+        Verify(Properties<RecordPrimaryConstructorWithIgnore>.Items)
+            .ScrubMember("Get");
 }

@@ -1,7 +1,8 @@
 namespace Excelsior;
 
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Parameter)]
-public sealed class ColumnAttribute : Attribute
+public sealed class ColumnAttribute :
+    Attribute
 {
     public string? Header { get; set; }
     public int Order { get; set; } = -1;

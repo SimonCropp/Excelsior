@@ -1,18 +1,20 @@
+using Excelsior;
+
 public class Employee
 {
-    [Display(Name = "Employee ID", Order = 1)]
+    [Column(Header = "Employee ID", Order = 1)]
     public required int Id { get; init; }
 
-    [Display(Name = "Full Name", Order = 2)]
+    [Column(Header = "Full Name", Order = 2)]
     public required string Name { get; init; }
 
-    [Display(Name = "Email Address", Order = 3)]
+    [Column(Header = "Email Address", Order = 3)]
     public required string Email { get; init; }
 
-    [Display(Name = "Hire Date", Order = 4)]
+    [Column(Header = "Hire Date", Order = 4)]
     public Date? HireDate { get; init; }
 
-    [Display(Name = "Annual Salary", Order = 5)]
+    [Column(Header = "Annual Salary", Order = 5)]
     public int Salary { get; init; }
 
     public bool IsActive { get; init; }

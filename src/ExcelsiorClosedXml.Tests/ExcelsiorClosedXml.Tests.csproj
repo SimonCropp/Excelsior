@@ -17,6 +17,7 @@
     <PackageReference Include="ProjectDefaults" PrivateAssets="all" />
 
     <Compile Include="..\ExcelsiorAspose.Tests\ColumnAttributeTests.cs" />
+    <Compile Include="..\ExcelsiorAspose.Tests\DataAnnotationsTests.cs" />
     <Compile Include="..\ExcelsiorAspose.Tests\NullableTests.cs" />
     <Compile Include="..\ExcelsiorAspose.Tests\EnumerableStringTests.cs" />
     <Compile Include="..\ExcelsiorAspose.Tests\ComplexTypeWithCustomRender.cs" />

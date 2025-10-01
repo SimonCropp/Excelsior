@@ -1,21 +1,36 @@
 ﻿static class Properties<T>
 {
-    static Properties()
+    static Properties() =>
+        Items = GetProperties().ToList();
+
+    static IEnumerable<Property<T>> GetProperties()
     {
         var type = typeof(T);
         var defaultConstructor = type.GetConstructors(BindingFlags.Public | BindingFlags.Instance)
             .Select(_ => _.GetParameters())
             .OrderByDescending(_ => _.Length)
             .FirstOrDefault();
-        Items = type
-            .GetProperties(BindingFlags.Public | BindingFlags.Instance)
-            .Where(_ => _.CanRead)
-            .Select(property =>
+        foreach (var property in type
+                     .GetProperties(BindingFlags.Public | BindingFlags.Instance))
+        {
+            if (!property.CanRead)
             {
-                var constructorParameter = defaultConstructor?.SingleOrDefault(_ => _.Name == property.Name);
-                return new Property<T>(property, constructorParameter);
-            })
-            .ToList();
+                continue;
+            }
+
+            if (property.GetCustomAttribute<IgnoreAttribute>() != null)
+            {
+                continue;
+            }
+
+            var constructorParameter = defaultConstructor?.SingleOrDefault(_ => _.Name == property.Name);
+            if (constructorParameter?.GetCustomAttribute<IgnoreAttribute>() != null)
+            {
+                continue;
+            }
+
+            yield return new(property, constructorParameter);
+        }
     }
 
     public static IReadOnlyList<Property<T>> Items { get; }

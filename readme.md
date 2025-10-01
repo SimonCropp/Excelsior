@@ -29,21 +29,23 @@ Given an input class:
 <!-- snippet: Employee.cs -->
 <a id='snippet-Employee.cs'></a>
 ```cs
+using Excelsior;
+
 public class Employee
 {
-    [Display(Name = "Employee ID", Order = 1)]
+    [Column(Header = "Employee ID", Order = 1)]
     public required int Id { get; init; }
 
-    [Display(Name = "Full Name", Order = 2)]
+    [Column(Header = "Full Name", Order = 2)]
     public required string Name { get; init; }
 
-    [Display(Name = "Email Address", Order = 3)]
+    [Column(Header = "Email Address", Order = 3)]
     public required string Email { get; init; }
 
-    [Display(Name = "Hire Date", Order = 4)]
+    [Column(Header = "Hire Date", Order = 4)]
     public Date? HireDate { get; init; }
 
-    [Display(Name = "Annual Salary", Order = 5)]
+    [Column(Header = "Annual Salary", Order = 5)]
     public int Salary { get; init; }
 
     public bool IsActive { get; init; }
@@ -51,10 +53,10 @@ public class Employee
     public EmployeeStatus Status { get; init; }
 }
 ```
-<sup><a href='/src/Model/Employee.cs#L1-L21' title='Snippet source file'>snippet source</a> | <a href='#snippet-Employee.cs' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Model/Employee.cs#L1-L23' title='Snippet source file'>snippet source</a> | <a href='#snippet-Employee.cs' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
-`[DisplayAttribute]` is optional. If omitted:
+`[ColumnAttribute]` is optional. If omitted:
 
  * Order is based on the order of the properties defined in the class. Order can be [programmatically controlled](#column-ordering)
  * Header text is based on the property names that is camel case split. Headers can be [programmatically controlled](#custom-headers)
@@ -105,6 +107,55 @@ var book = await builder.Build();
 ### Result:
 
 <img src="/src/ExcelsiorClosedXml.Tests/Tests.Simple_Sheet1.png">
+
+
+### DataAnnotations Attributes
+
+`DisplayAttribute` and `DisplayNameAttribute` from System.ComponentModel.DataAnnotations are supported.
+
+<!-- snippet: DataAnnotationsModel -->
+<a id='snippet-DataAnnotationsModel'></a>
+```cs
+public class Employee
+{
+    [Display(Name = "Employee ID", Order = 1)]
+    public required int Id { get; init; }
+
+    [Display(Name = "Full Name", Order = 2)]
+    public required string Name { get; init; }
+
+    [Display(Name = "Email Address", Order = 3)]
+    public required string Email { get; init; }
+
+    [Display(Name = "Hire Date", Order = 4)]
+    public Date? HireDate { get; init; }
+
+    [Display(Name = "Annual Salary", Order = 5)]
+    public int Salary { get; init; }
+
+    [DisplayName("IsActive")]
+    public bool IsActive { get; init; }
+
+    public EmployeeStatus Status { get; init; }
+}
+
+public enum EmployeeStatus
+{
+    [Display(Name = "Full Time")]
+    FullTime,
+
+    [Display(Name = "Part Time")]
+    PartTime,
+
+    [Display(Name = "Contract")]
+    Contract,
+
+    [Display(Name = "Terminated")]
+    Terminated
+}
+```
+<sup><a href='/src/ExcelsiorAspose.Tests/DataAnnotationsTests.cs#L43-L83' title='Snippet source file'>snippet source</a> | <a href='#snippet-DataAnnotationsModel' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
 
 
 ### Saving to a stream
@@ -598,7 +649,8 @@ It is intended as an alternative to the usage of `DisplayAttribute` and `Display
 namespace Excelsior;
 
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Parameter)]
-public sealed class ColumnAttribute : Attribute
+public sealed class ColumnAttribute :
+    Attribute
 {
     public string? Header { get; set; }
     public int Order { get; set; } = -1;
@@ -608,7 +660,7 @@ public sealed class ColumnAttribute : Attribute
     public bool IsHtml { get; set; }
 }
 ```
-<sup><a href='/src/Excelsior/ColumnAttribute.cs#L1-L12' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnAttribute.cs' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior/ColumnAttribute.cs#L1-L13' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnAttribute.cs' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 

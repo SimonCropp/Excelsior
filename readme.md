@@ -369,7 +369,7 @@ builder.AddSheet(employees)
 
 #### Result:
 
-<img src="/src/ExcelsiorClosedXml.Tests/Tests.ColumnWidths_Sheet1.png">
+<img src="/src/ExcelsiorClosedXml.Tests/ColumnWidths.Fluent_Sheet1.png">
 
 
 ### Complex Types

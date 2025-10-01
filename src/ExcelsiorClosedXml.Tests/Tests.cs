@@ -97,44 +97,6 @@ public class Tests
         await Verify(book);
     }
 
-
-    [Test]
-    public async Task WorksheetName()
-    {
-        var employees = SampleData.Employees();
-
-        #region WorksheetName
-
-        var builder = new BookBuilder();
-        builder.AddSheet(employees, "Employee Report");
-
-        #endregion
-
-        var book = await builder.Build();
-
-        await Verify(book);
-    }
-
-    [Test]
-    public async Task ColumnWidths()
-    {
-        var employees = SampleData.Employees();
-
-        #region ColumnWidths
-
-        var builder = new BookBuilder();
-        builder.AddSheet(employees)
-            .Column(_ => _.Name, _ => _.Width = 25)
-            .Column(_ => _.Email, _ => _.Width = 30)
-            .Column(_ => _.HireDate, _ => _.Width = 15);
-
-        #endregion
-
-        var book = await builder.Build();
-
-        await Verify(book);
-    }
-
     [Test]
     public async Task Enums()
     {

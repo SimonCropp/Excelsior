@@ -2,7 +2,9 @@
 [TestFixture]
 public class Tests
 {
-    [Test]
+
+
+[Test]
     public async Task HeadingStyle()
     {
         var data = SampleData.Employees();
@@ -86,43 +88,6 @@ public class Tests
                         }
                     };
                 });
-
-        #endregion
-
-        var book = await builder.Build();
-
-        await Verify(book);
-    }
-
-    [Test]
-    public async Task WorksheetName()
-    {
-        var employees = SampleData.Employees();
-
-        #region AsposeWorksheetName
-
-        var builder = new BookBuilder();
-        builder.AddSheet(employees, "Employee Report");
-
-        #endregion
-
-        var book = await builder.Build();
-
-        await Verify(book);
-    }
-
-    [Test]
-    public async Task ColumnWidths()
-    {
-        var employees = SampleData.Employees();
-
-        #region AsposeColumnWidths
-
-        var builder = new BookBuilder();
-        builder.AddSheet(employees)
-            .Column(_ => _.Name, _ => _.Width = 25)
-            .Column(_ => _.Email, _ => _.Width = 30)
-            .Column(_ => _.HireDate, _ => _.Width = 15);
 
         #endregion
 

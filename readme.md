@@ -235,7 +235,7 @@ var builder = new BookBuilder(
     });
 builder.AddSheet(data);
 ```
-<sup><a href='/src/ExcelsiorClosedXml.Tests/Tests.cs#L10-L21' title='Snippet source file'>snippet source</a> | <a href='#snippet-HeadingStyle' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/ExcelsiorClosedXml.Tests/Tests.cs#L12-L23' title='Snippet source file'>snippet source</a> | <a href='#snippet-HeadingStyle' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -258,7 +258,7 @@ var builder = new BookBuilder(
     });
 builder.AddSheet(data);
 ```
-<sup><a href='/src/ExcelsiorClosedXml.Tests/Tests.cs#L33-L44' title='Snippet source file'>snippet source</a> | <a href='#snippet-GlobalStyle' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/ExcelsiorClosedXml.Tests/Tests.cs#L35-L46' title='Snippet source file'>snippet source</a> | <a href='#snippet-GlobalStyle' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -305,7 +305,7 @@ builder.AddSheet(employees)
             };
         });
 ```
-<sup><a href='/src/ExcelsiorClosedXml.Tests/Tests.cs#L56-L91' title='Snippet source file'>snippet source</a> | <a href='#snippet-CellStyle' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/ExcelsiorClosedXml.Tests/Tests.cs#L58-L93' title='Snippet source file'>snippet source</a> | <a href='#snippet-CellStyle' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -331,13 +331,13 @@ builder.AddSheet(employees)
         _ => _.HireDate,
         _ => _.Format = "yyyy-MM-dd");
 ```
-<sup><a href='/src/ExcelsiorClosedXml.Tests/Tests.cs#L103-L117' title='Snippet source file'>snippet source</a> | <a href='#snippet-CustomRender' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/ExcelsiorAspose.Tests/Render.cs#L10-L24' title='Snippet source file'>snippet source</a> | <a href='#snippet-CustomRender' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
 #### Result:
 
-<img src="/src/ExcelsiorClosedXml.Tests/Tests.Render_Sheet1.png">
+<img src="/src/ExcelsiorClosedXml.Tests/Render.Fluent_Sheet1.png">
 
 
 ### Worksheet Name
@@ -348,7 +348,7 @@ builder.AddSheet(employees)
 var builder = new BookBuilder();
 builder.AddSheet(employees, "Employee Report");
 ```
-<sup><a href='/src/ExcelsiorClosedXml.Tests/Tests.cs#L129-L134' title='Snippet source file'>snippet source</a> | <a href='#snippet-WorksheetName' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/ExcelsiorClosedXml.Tests/Tests.cs#L106-L111' title='Snippet source file'>snippet source</a> | <a href='#snippet-WorksheetName' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -363,7 +363,7 @@ builder.AddSheet(employees)
     .Column(_ => _.Email, _ => _.Width = 30)
     .Column(_ => _.HireDate, _ => _.Width = 15);
 ```
-<sup><a href='/src/ExcelsiorClosedXml.Tests/Tests.cs#L146-L154' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnWidths' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/ExcelsiorClosedXml.Tests/Tests.cs#L123-L131' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnWidths' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 

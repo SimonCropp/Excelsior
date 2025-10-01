@@ -95,32 +95,6 @@ public class Tests
     }
 
     [Test]
-    public async Task Render()
-    {
-        var employees = SampleData.Employees();
-
-        #region AsposeCustomRender
-
-        var builder = new BookBuilder();
-        builder.AddSheet(employees)
-            .Column(
-                _ => _.Name,
-                _ => _.Render = (employee, name) => name.ToUpper())
-            .Column(
-                _ => _.IsActive,
-                _ => _.Render = (employee, isActive) => isActive ? "Active" : "Inactive")
-            .Column(
-                _ => _.HireDate,
-                _ => _.Format = "yyyy-MM-dd");
-
-        #endregion
-
-        var book = await builder.Build();
-
-        await Verify(book);
-    }
-
-    [Test]
     public async Task WorksheetName()
     {
         var employees = SampleData.Employees();

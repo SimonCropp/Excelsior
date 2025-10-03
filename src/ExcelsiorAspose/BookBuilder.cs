@@ -3,7 +3,6 @@ namespace ExcelsiorAspose;
 public class BookBuilder : BookBuilderBase<Book, Sheet,Style,Cell>,
 IBookBuilder
 {
-    List<Func<Book, Cancel, Task>> actions = [];
     bool useAlternatingRowColors;
     Color? alternateRowColor;
     Action<Style>? headingStyle;

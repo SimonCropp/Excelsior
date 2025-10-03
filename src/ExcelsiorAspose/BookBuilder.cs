@@ -1,6 +1,6 @@
 namespace ExcelsiorAspose;
 
-public class BookBuilder : BookBuilderBase<Book, Sheet,Style>,
+public class BookBuilder : BookBuilderBase<Book, Sheet,Style, Cell>,
 IBookBuilder
 {
     bool useAlternatingRowColors;
@@ -28,7 +28,13 @@ IBookBuilder
     {
         name ??= $"Sheet{actions.Count + 1}";
 
-        var converter = new SheetBuilder<TModel>(
+        var converter = ConstructSheetBuilder(data, name);
+        actions.Add((book, cancel) => converter.AddSheet(book, cancel));
+        return converter;
+    }
+
+    protected override SheetBuilderBase<TModel, Style, Cell, Book> ConstructSheetBuilder<TModel>(IAsyncEnumerable<TModel> data, string name) =>
+        new SheetBuilder<TModel>(
             name,
             data,
             useAlternatingRowColors,
@@ -36,9 +42,6 @@ IBookBuilder
             headingStyle,
             globalStyle,
             trimWhitespace);
-        actions.Add((book, cancel) => converter.AddSheet(book, cancel));
-        return converter;
-    }
 
     public override async Task ToStream(Stream stream, Cancel cancel = default)
     {

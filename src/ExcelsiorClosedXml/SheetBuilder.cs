@@ -8,7 +8,7 @@ public class SheetBuilder<TModel>(
     Action<Style>? headingStyle,
     Action<Style>? globalStyle,
     bool trimWhitespace) :
-    SheetBuilderBase<TModel, Style, Cell>
+    SheetBuilderBase<TModel, Style, Cell, Book>
 {
     int rowIndex;
     Columns<TModel, Style> columns = new();
@@ -25,7 +25,7 @@ public class SheetBuilder<TModel>(
         return this;
     }
 
-    internal async Task AddSheet(Book book, Cancel cancel)
+    internal override async Task AddSheet(Book book, Cancel cancel)
     {
         var sheet = book.Worksheets.Add(name);
 

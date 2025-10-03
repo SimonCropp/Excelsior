@@ -1,6 +1,6 @@
 ﻿namespace Excelsior;
 
-public abstract partial class SheetBuilderBase<TModel, TStyle, TCell>:
+public abstract partial class SheetBuilderBase<TModel, TStyle, TCell, TBook>:
     ISheetBuilder<TModel, TStyle>
 {
     public abstract ISheetBuilder<TModel, TStyle> Column<TProperty>(Expression<Func<TModel, TProperty>> property, Action<Column<TStyle, TModel, TProperty>> configuration);
@@ -8,6 +8,7 @@ public abstract partial class SheetBuilderBase<TModel, TStyle, TCell>:
     protected abstract void SetNumberFormat(TStyle style, string format);
     protected abstract void SetCellValue(TCell cell, object value);
     protected abstract void SetCellHtml(TCell cell, string value);
+    internal abstract Task AddSheet(TBook book, Cancel cancel);
     protected abstract void WriteEnumerable(TCell cell, IEnumerable<string> enumerable);
     internal void SetCellValue(TCell cell, TStyle style, object? value, Column<TStyle, TModel> column, TModel item, bool trimWhitespace)
     {

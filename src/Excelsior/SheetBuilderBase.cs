@@ -1,6 +1,7 @@
 ﻿namespace Excelsior;
 
-public abstract partial class SheetBuilderBase<TModel, TStyle, TCell, TBook>
+public abstract partial class SheetBuilderBase<TModel, TStyle, TCell, TBook>:
+    ISheetBuilder<TModel, TStyle>
 {
     internal Columns<TModel, TStyle> Columns = new();
     protected abstract void SetDateFormat(TStyle style, string format);
@@ -14,7 +15,7 @@ public abstract partial class SheetBuilderBase<TModel, TStyle, TCell, TBook>
     /// Configure a column using property expression (type-safe)
     /// </summary>
     /// <returns>The converter instance for fluent chaining</returns>
-    public SheetBuilderBase<TModel, TStyle, TCell, TBook> Column<TProperty>(
+    public ISheetBuilder<TModel, TStyle> Column<TProperty>(
         Expression<Func<TModel, TProperty>> property,
         Action<Column<TStyle, TModel, TProperty>> configuration)
     {

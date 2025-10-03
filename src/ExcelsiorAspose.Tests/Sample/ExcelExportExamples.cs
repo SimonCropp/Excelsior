@@ -7,7 +7,7 @@
         var builder = new BookBuilder();
         builder.AddSheet(employees);
 
-        await using var stream = new FileStream("employees.xlsx", FileMode.Create);
+        using var stream = new FileStream("employees.xlsx", FileMode.Create);
         await builder.ToStream(stream);
     }
 
@@ -31,7 +31,9 @@
                 {
                     config.Format = "#,##0.00";
                     config.HeadingStyle = style =>
+                    {
                         style.BackgroundColor = Color.Green;
+                    };
                     config.CellStyle = (style, _,  value) =>
                     {
                         if (value > 100000)
@@ -54,7 +56,9 @@
                 {
                     config.Render = (_, active) => active ? "Yes" : "No";
                     config.CellStyle = (style, _, _) =>
+                    {
                         style.HorizontalAlignment = TextAlignmentType.Center;
+                    };
                 })
             .Column(
                 _ => _.Status,
@@ -80,7 +84,7 @@
                     };
                 });
 
-        await using var stream = new FileStream("advanced_employees.xlsx", FileMode.Create);
+        using var stream = new FileStream("advanced_employees.xlsx", FileMode.Create);
         await builder.ToStream(stream);
     }
 

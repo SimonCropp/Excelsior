@@ -25,10 +25,7 @@ public class BookBuilder : BookBuilderBase<Book, Sheet,Style,Cell>,
         this.trimWhitespace = trimWhitespace;
     }
 
-    public ISheetBuilder<TModel, Style, Cell> AddSheet<TModel>(IEnumerable<TModel> data, string? name = null) =>
-        AddSheet(data.ToAsyncEnumerable(), name);
-
-    public ISheetBuilder<TModel, Style, Cell> AddSheet<TModel>(IAsyncEnumerable<TModel> data, string? name = null)
+    public override ISheetBuilder<TModel, Style, Cell> AddSheet<TModel>(IAsyncEnumerable<TModel> data, string? name = null)
     {
         name ??= $"Sheet{actions.Count + 1}";
 

@@ -8,8 +8,6 @@
     bool trimWhitespace) :
     SheetBuilderBase<TModel, Style, Cell, Book>
 {
-    int rowIndex;
-
     internal override async Task AddSheet(Book book, Cancel cancel)
     {
         var sheet = book.Worksheets.Add(name);
@@ -44,6 +42,7 @@
         //Skip heading
         var startRow = 2;
 
+        var rowIndex = 0;
         await foreach (var item in data.WithCancellation(cancel))
         {
             var xlRow = startRow + rowIndex;
@@ -149,7 +148,9 @@
             return;
         }
 
-        var range = sheet.Range(1, 1, rowIndex + 1, orderedColumns.Count);
+        var lastRow = sheet.LastRowUsed();
+        var lastRowNumber = lastRow!.RowNumber();
+        var range = sheet.Range(1, 1, lastRowNumber, orderedColumns.Count);
         globalStyle(range.Style);
     }
 

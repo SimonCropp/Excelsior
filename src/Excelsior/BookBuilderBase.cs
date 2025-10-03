@@ -1,4 +1,5 @@
-﻿namespace Excelsior;
+﻿// ReSharper disable UnusedTypeParameter
+namespace Excelsior;
 
 public abstract class BookBuilderBase<TBook, TSheet, TStyle, TCell>
 {

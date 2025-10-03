@@ -11,25 +11,12 @@ public class SheetBuilder<TModel>(
     SheetBuilderBase<TModel, Style, Cell, Book>
 {
     int rowIndex;
-    Columns<TModel, Style> columns = new();
-
-    /// <summary>
-    /// Configure a column using property expression (type-safe)
-    /// </summary>
-    /// <returns>The converter instance for fluent chaining</returns>
-    public override ISheetBuilder<TModel, Style> Column<TProperty>(
-        Expression<Func<TModel, TProperty>> property,
-        Action<Column<Style, TModel, TProperty>> configuration)
-    {
-        columns.Add(property, configuration);
-        return this;
-    }
 
     internal override async Task AddSheet(Book book, Cancel cancel)
     {
         var sheet = book.Worksheets.Add(name);
 
-        var orderedColumns = columns.OrderedColumns();
+        var orderedColumns = Columns.OrderedColumns();
         CreateHeadings(sheet, orderedColumns);
 
         await PopulateData(sheet, orderedColumns, cancel);

@@ -3,13 +3,26 @@
 public abstract partial class SheetBuilderBase<TModel, TStyle, TCell, TBook>:
     ISheetBuilder<TModel, TStyle>
 {
-    public abstract ISheetBuilder<TModel, TStyle> Column<TProperty>(Expression<Func<TModel, TProperty>> property, Action<Column<TStyle, TModel, TProperty>> configuration);
+    internal Columns<TModel, TStyle> Columns = new();
     protected abstract void SetDateFormat(TStyle style, string format);
     protected abstract void SetNumberFormat(TStyle style, string format);
     protected abstract void SetCellValue(TCell cell, object value);
     protected abstract void SetCellHtml(TCell cell, string value);
     internal abstract Task AddSheet(TBook book, Cancel cancel);
     protected abstract void WriteEnumerable(TCell cell, IEnumerable<string> enumerable);
+
+    /// <summary>
+    /// Configure a column using property expression (type-safe)
+    /// </summary>
+    /// <returns>The converter instance for fluent chaining</returns>
+    public ISheetBuilder<TModel, TStyle> Column<TProperty>(
+        Expression<Func<TModel, TProperty>> property,
+        Action<Column<TStyle, TModel, TProperty>> configuration)
+    {
+        Columns.Add(property, configuration);
+        return this;
+    }
+
     internal void SetCellValue(TCell cell, TStyle style, object? value, Column<TStyle, TModel> column, TModel item, bool trimWhitespace)
     {
         void SetStringOrHtml(string content)

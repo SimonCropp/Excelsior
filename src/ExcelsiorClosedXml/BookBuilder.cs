@@ -25,12 +25,10 @@ public class BookBuilder :
         this.trimWhitespace = trimWhitespace;
     }
 
-    public SheetBuilder<TModel> AddSheet<TModel>(IEnumerable<TModel> data, string? name = null)
-        where TModel : class =>
+    public SheetBuilder<TModel> AddSheet<TModel>(IEnumerable<TModel> data, string? name = null) =>
         AddSheet(data.ToAsyncEnumerable(), name);
 
     public SheetBuilder<TModel> AddSheet<TModel>(IAsyncEnumerable<TModel> data, string? name = null)
-        where TModel : class
     {
         name ??= $"Sheet{actions.Count + 1}";
 

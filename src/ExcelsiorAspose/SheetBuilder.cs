@@ -85,38 +85,8 @@ public class SheetBuilder<TModel>(
 
     protected override void WriteEnumerable(Cell cell, IEnumerable<string> enumerable)
     {
-        var list = enumerable.ToList();
-        var builder = new StringBuilder(
-            """
-            <ul>
-
-            """);
-        for (var index = 0; index < list.Count; index++)
-        {
-            var item = list[index];
-            builder.Append("<li>");
-
-            if (trimWhitespace)
-            {
-                item = item.Trim();
-            }
-
-            item = WebUtility.HtmlEncode(item);
-
-            // works around a bug where aspose indents only the first item
-            if (index != 0)
-            {
-                item = $"&nbsp;{item}";
-            }
-
-            builder.Append(item);
-
-            builder.AppendLine("</li>");
-        }
-
-        builder.Append("</ul>");
-
-        cell.SafeSetHtml(builder.ToString());
+        var value = Html.Enumerable(enumerable, trimWhitespace);
+        cell.SafeSetHtml(value);
     }
 
     void ApplyHeadingStyling(Cell cell, Column<Style, TModel> column)

@@ -22,6 +22,7 @@ public abstract class BookBuilderBase<TBook, TSheet, TStyle, TCell>
         name ??= $"Sheet{actions.Count + 1}";
 
         var converter = ConstructSheetBuilder(data, name);
+
         actions.Add((book, cancel) => converter.AddSheet(book, cancel));
         return converter;
     }

@@ -1,6 +1,7 @@
 namespace ExcelsiorClosedXml;
 
-public class BookBuilder : BookBuilderBase<Book, Sheet,Style,Cell>,
+public class BookBuilder :
+    BookBuilderBase<Book, Sheet,Style,Cell>,
     IBookBuilder
 {
     bool useAlternatingRowColors;
@@ -40,21 +41,11 @@ public class BookBuilder : BookBuilderBase<Book, Sheet,Style,Cell>,
         return converter;
     }
 
-    public async Task ToStream(Stream stream, Cancel cancel = default)
+    public override async Task ToStream(Stream stream, Cancel cancel = default)
     {
         using var book = await Build(cancel);
         book.SaveAs(stream);
     }
 
-    public async Task<Book> Build(Cancel cancel = default)
-    {
-        var book = new XLWorkbook();
-        foreach (var action in actions)
-        {
-            cancel.ThrowIfCancellationRequested();
-            await action(book, cancel);
-        }
-
-        return book;
-    }
+    protected override Book BuildBook() => new XLWorkbook();
 }

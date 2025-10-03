@@ -40,23 +40,16 @@ IBookBuilder
         return converter;
     }
 
-    public async Task ToStream(Stream stream, Cancel cancel = default)
+    public override async Task ToStream(Stream stream, Cancel cancel = default)
     {
         using var book = await Build(cancel);
         await book.SaveAsync(stream, saveFormat: SaveFormat.Xlsx);
     }
 
-    public async Task<Book> Build(Cancel cancel = default)
+    protected override Book BuildBook()
     {
         var book = new Book();
         book.Worksheets.Clear();
-        foreach (var action in actions)
-        {
-            cancel.ThrowIfCancellationRequested();
-            await action(book, cancel);
-        }
-
         return book;
     }
-
 }

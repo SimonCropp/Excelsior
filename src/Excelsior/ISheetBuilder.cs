@@ -18,13 +18,14 @@ public interface ISheetBuilder<TModel, TStyle, TCell>
         {
             if (column.IsHtml)
             {
-                SetCellHtml(cell,content);
+                SetCellHtml(cell, content);
             }
             else
             {
-                SetCellValue(cell,content);
+                SetCellValue(cell, content);
             }
         }
+
         void ThrowIfHtml()
         {
             if (column.IsHtml)
@@ -32,6 +33,7 @@ public interface ISheetBuilder<TModel, TStyle, TCell>
                 throw new("TreatAsHtml is not compatible with this type");
             }
         }
+
         if (value == null)
         {
             if (column.NullDisplay != null)
@@ -49,6 +51,7 @@ public interface ISheetBuilder<TModel, TStyle, TCell>
             {
                 SetStringOrHtml(render);
             }
+
             return;
         }
 

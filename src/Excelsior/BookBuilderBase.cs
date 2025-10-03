@@ -3,14 +3,20 @@
 public abstract class BookBuilderBase<TBook, TSheet, TStyle, TCell>
 {
     protected abstract TBook BuildBook();
-    protected List<Func<TBook, Cancel, Task>> actions = [];
+    List<Func<TBook, Cancel, Task>> actions = [];
 
-    public ISheetBuilder<TModel, TStyle> AddSheet<TModel>(IEnumerable<TModel> data, string? name = null) =>
+    public ISheetBuilder<TModel, TStyle> AddSheet<TModel>(
+        IEnumerable<TModel> data,
+        string? name = null) =>
         AddSheet(data.ToAsyncEnumerable(), name);
 
-    protected abstract SheetBuilderBase<TModel, TStyle, TCell, TBook> ConstructSheetBuilder<TModel>(IAsyncEnumerable<TModel> data, string name);
+    protected abstract SheetBuilderBase<TModel, TStyle, TCell, TBook> ConstructSheetBuilder<TModel>(
+        IAsyncEnumerable<TModel> data,
+        string name);
 
-    public ISheetBuilder<TModel, TStyle> AddSheet<TModel>(IAsyncEnumerable<TModel> data, string? name = null)
+    public ISheetBuilder<TModel, TStyle> AddSheet<TModel>(
+        IAsyncEnumerable<TModel> data,
+        string? name = null)
     {
         name ??= $"Sheet{actions.Count + 1}";
 

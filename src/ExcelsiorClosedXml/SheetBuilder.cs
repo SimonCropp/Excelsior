@@ -79,7 +79,7 @@ public class SheetBuilder<TModel>(
         cell.Value = XLCellValue.FromObject(value);
 
     protected override void SetCellHtml(Cell cell, string value) =>
-        throw new ("ClosedXml does not support html");
+        throw new("ClosedXml does not support html");
 
     protected override void WriteEnumerable(Cell cell, IEnumerable<string> enumerable)
     {

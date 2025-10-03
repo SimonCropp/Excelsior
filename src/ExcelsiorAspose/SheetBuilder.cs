@@ -62,7 +62,7 @@ public class SheetBuilder<TModel>(
                 style.HorizontalAlignment = TextAlignmentType.Left;
                 style.IsTextWrapped = true;
                 var value = column.GetValue(item);
-                base.SetCellValue(cell,style,value,column,item, trimWhitespace);
+                base.SetCellValue(cell, style, value, column, item, trimWhitespace);
                 ApplyCellStyle(rowIndex, value, style, column, item);
                 cell.SetStyle(style);
             }

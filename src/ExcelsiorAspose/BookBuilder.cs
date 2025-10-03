@@ -1,7 +1,6 @@
 namespace ExcelsiorAspose;
 
-public class BookBuilder : BookBuilderBase<Book, Sheet,Style, Cell>,
-IBookBuilder
+public class BookBuilder : BookBuilderBase<Book, Sheet,Style, Cell>
 {
     bool useAlternatingRowColors;
     Color? alternateRowColor;

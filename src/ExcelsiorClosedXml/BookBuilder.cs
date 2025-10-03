@@ -1,8 +1,7 @@
 namespace ExcelsiorClosedXml;
 
 public class BookBuilder :
-    BookBuilderBase<Book, Sheet,Style, Cell>,
-    IBookBuilder
+    BookBuilderBase<Book, Sheet,Style, Cell>
 {
     bool useAlternatingRowColors;
     XLColor? alternateRowColor;

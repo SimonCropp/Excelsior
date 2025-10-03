@@ -16,8 +16,7 @@ public interface ISheetBuilder<TModel, TStyle, TCell>
 
     public void Width<TProperty>(
         Expression<Func<TModel, TProperty>> property,
-        double? value) =>
-        Column(property, _ => _.Width = value);
+        double? value);
 
     public void HeadingStyle<TProperty>(
         Expression<Func<TModel, TProperty>> property,

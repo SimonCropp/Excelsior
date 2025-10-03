@@ -6,7 +6,7 @@ public abstract class BookBuilderBase<TBook, TSheet, TStyle, TCell>
     protected abstract TBook BuildBook();
     List<Func<TBook, Cancel, Task>> actions = [];
 
-    public ISheetBuilder<TModel, TStyle> AddSheet<TModel>(
+    public SheetBuilderBase<TModel, TStyle, TCell, TBook> AddSheet<TModel>(
         IEnumerable<TModel> data,
         string? name = null) =>
         AddSheet(data.ToAsyncEnumerable(), name);
@@ -15,7 +15,7 @@ public abstract class BookBuilderBase<TBook, TSheet, TStyle, TCell>
         IAsyncEnumerable<TModel> data,
         string name);
 
-    public ISheetBuilder<TModel, TStyle> AddSheet<TModel>(
+    public SheetBuilderBase<TModel, TStyle, TCell, TBook> AddSheet<TModel>(
         IAsyncEnumerable<TModel> data,
         string? name = null)
     {

@@ -1,8 +1,6 @@
 namespace ExcelsiorAspose;
 
-public class BookBuilder : BookBuilderBase,
-
-
+public class BookBuilder : BookBuilderBase<Book, Sheet,Style,Cell>,
 IBookBuilder
 {
     List<Func<Book, Cancel, Task>> actions = [];

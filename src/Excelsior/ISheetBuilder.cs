@@ -2,7 +2,7 @@ namespace Excelsior;
 
 public interface ISheetBuilder<TModel, TStyle, TCell>
 {
-    internal void Column<TProperty>(
+    public ISheetBuilder<TModel, TStyle, TCell> Column<TProperty>(
         Expression<Func<TModel, TProperty>> property,
         Action<Column<TStyle, TModel, TProperty>> configuration);
 

@@ -17,18 +17,13 @@ public class SheetBuilder<TModel>(
     /// Configure a column using property expression (type-safe)
     /// </summary>
     /// <returns>The converter instance for fluent chaining</returns>
-    public SheetBuilder<TModel> Column<TProperty>(
+    public ISheetBuilder<TModel, Style, Cell> Column<TProperty>(
         Expression<Func<TModel, TProperty>> property,
         Action<Column<Style, TModel, TProperty>> configuration)
     {
         columns.Add(property, configuration);
         return this;
     }
-
-    void ISheetBuilder<TModel, Style, Cell>.Column<TProperty>(
-        Expression<Func<TModel, TProperty>> property,
-        Action<Column<Style, TModel, TProperty>> configuration) =>
-        Column(property, configuration);
 
     internal async Task AddSheet(Book book, Cancel cancel)
     {

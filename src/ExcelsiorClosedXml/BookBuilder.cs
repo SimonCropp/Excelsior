@@ -1,6 +1,6 @@
 namespace ExcelsiorClosedXml;
 
-public class BookBuilder :
+public class BookBuilder : BookBuilderBase<Book, Sheet,Style,Cell>,
     IBookBuilder
 {
     List<Func<Book, Cancel, Task>> actions = [];

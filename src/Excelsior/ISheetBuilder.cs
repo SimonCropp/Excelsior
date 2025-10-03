@@ -1,7 +1,6 @@
 namespace Excelsior;
 
 public interface ISheetBuilder<TModel, TStyle, TCell>
-    where TModel : class
 {
     internal void Column<TProperty>(
         Expression<Func<TModel, TProperty>> property,

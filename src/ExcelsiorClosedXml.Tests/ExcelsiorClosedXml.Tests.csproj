@@ -18,6 +18,7 @@
     
     <Compile Include="..\ExcelsiorAspose.Tests\Enums.cs" />
     <Compile Include="..\ExcelsiorAspose.Tests\ColumnWidths.cs" />
+    <Compile Include="..\ExcelsiorAspose.Tests\StructTests.cs" />
     <Compile Include="..\ExcelsiorAspose.Tests\WorksheetName.cs" />
     <Compile Include="..\ExcelsiorAspose.Tests\Render.cs" />
     <Compile Include="..\ExcelsiorAspose.Tests\Saving.cs" />

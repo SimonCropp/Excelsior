@@ -9,7 +9,6 @@ public class SheetBuilder<TModel>(
     Action<Style>? globalStyle,
     bool trimWhitespace) :
     ISheetBuilder<TModel, Style, Cell>
-    where TModel : class
 {
     int rowIndex;
     Columns<TModel, Style> columns = new();

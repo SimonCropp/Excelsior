@@ -24,7 +24,7 @@ public class BookBuilder :
         this.trimWhitespace = trimWhitespace;
     }
 
-    protected override SheetBuilderBase<TModel, Style, Cell, Book> ConstructSheetBuilder<TModel>(IAsyncEnumerable<TModel> data, string name) =>
+    internal override SheetBuilderBase<TModel, Style, Cell, Book> ConstructSheetBuilder<TModel>(IAsyncEnumerable<TModel> data, string name) =>
         new SheetBuilder<TModel>(
             name,
             data,

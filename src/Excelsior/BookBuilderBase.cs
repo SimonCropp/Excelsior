@@ -11,7 +11,7 @@ public abstract class BookBuilderBase<TBook, TSheet, TStyle, TCell>
         string? name = null) =>
         AddSheet(data.ToAsyncEnumerable(), name);
 
-    protected abstract SheetBuilderBase<TModel, TStyle, TCell, TBook> ConstructSheetBuilder<TModel>(
+    internal abstract SheetBuilderBase<TModel, TStyle, TCell, TBook> ConstructSheetBuilder<TModel>(
         IAsyncEnumerable<TModel> data,
         string name);
 

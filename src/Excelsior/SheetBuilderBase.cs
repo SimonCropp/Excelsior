@@ -1,6 +1,4 @@
-﻿namespace Excelsior;
-
-public abstract partial class SheetBuilderBase<TModel, TStyle, TCell, TBook>:
+﻿abstract partial class SheetBuilderBase<TModel, TStyle, TCell, TBook>:
     ISheetBuilder<TModel, TStyle>
 {
     internal Columns<TModel, TStyle> Columns = new();

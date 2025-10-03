@@ -1,6 +1,4 @@
-﻿namespace ExcelsiorAspose;
-
-public class SheetBuilder<TModel>(
+﻿class SheetBuilder<TModel>(
     string name,
     IAsyncEnumerable<TModel> data,
     bool useAlternatingRowColors,

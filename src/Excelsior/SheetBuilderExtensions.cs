@@ -1,6 +1,4 @@
-namespace Excelsior;
-
-public abstract partial class SheetBuilderBase<TModel, TStyle, TCell, TBook>
+abstract partial class SheetBuilderBase<TModel, TStyle, TCell, TBook>
 {
     public void HeadingText<TProperty>(
         Expression<Func<TModel, TProperty>> property,

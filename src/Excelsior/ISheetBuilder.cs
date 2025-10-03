@@ -1,17 +1,13 @@
 namespace Excelsior;
 
-public interface ISheetBuilder<TModel, TStyle, TCell>
+public abstract class SheetBuilderBase<TModel, TStyle, TCell>:ISheetBuilder<TModel, TStyle, TCell>
 {
-    public ISheetBuilder<TModel, TStyle, TCell> Column<TProperty>(
-        Expression<Func<TModel, TProperty>> property,
-        Action<Column<TStyle, TModel, TProperty>> configuration);
-
-    internal void SetDateFormat(TStyle style, string format);
-    internal void SetNumberFormat(TStyle style, string format);
-    internal void SetCellValue(TCell cell, object value);
-    internal void SetCellHtml(TCell cell, string value);
-    internal void WriteEnumerable(TCell cell, IEnumerable<string> enumerable);
-
+    public abstract ISheetBuilder<TModel, TStyle, TCell> Column<TProperty>(Expression<Func<TModel, TProperty>> property, Action<Column<TStyle, TModel, TProperty>> configuration);
+    protected abstract void SetDateFormat(TStyle style, string format);
+    protected abstract void SetNumberFormat(TStyle style, string format);
+    protected abstract void SetCellValue(TCell cell, object value);
+    protected abstract void SetCellHtml(TCell cell, string value);
+    protected abstract void WriteEnumerable(TCell cell, IEnumerable<string> enumerable);
     internal void SetCellValue(TCell cell, TStyle style, object? value, Column<TStyle, TModel> column, TModel item, bool trimWhitespace)
     {
         void SetStringOrHtml(string content)
@@ -118,4 +114,10 @@ public interface ISheetBuilder<TModel, TStyle, TCell>
             SetStringOrHtml(valueAsString);
         }
     }
+}
+public interface ISheetBuilder<TModel, TStyle, TCell>
+{
+    public ISheetBuilder<TModel, TStyle, TCell> Column<TProperty>(
+        Expression<Func<TModel, TProperty>> property,
+        Action<Column<TStyle, TModel, TProperty>> configuration);
 }

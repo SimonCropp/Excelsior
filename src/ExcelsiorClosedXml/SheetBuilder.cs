@@ -8,6 +8,7 @@ public class SheetBuilder<TModel>(
     Action<Style>? headingStyle,
     Action<Style>? globalStyle,
     bool trimWhitespace) :
+    SheetBuilderBase<TModel, Style, Cell>,
     ISheetBuilder<TModel, Style, Cell>
 {
     int rowIndex;
@@ -17,7 +18,7 @@ public class SheetBuilder<TModel>(
     /// Configure a column using property expression (type-safe)
     /// </summary>
     /// <returns>The converter instance for fluent chaining</returns>
-    public ISheetBuilder<TModel, Style, Cell> Column<TProperty>(
+    public override ISheetBuilder<TModel, Style, Cell> Column<TProperty>(
         Expression<Func<TModel, TProperty>> property,
         Action<Column<Style, TModel, TProperty>> configuration)
     {
@@ -74,7 +75,7 @@ public class SheetBuilder<TModel>(
                 style.Alignment.WrapText = true;
 
                 var value = column.GetValue(item);
-                ((ISheetBuilder<TModel, Style, Cell>) this).SetCellValue(cell, style, value, column, item, trimWhitespace);
+                base.SetCellValue(cell, style, value, column, item, trimWhitespace);
                 ApplyCellStyle(cell, rowIndex, value, column, item);
             }
 
@@ -82,19 +83,19 @@ public class SheetBuilder<TModel>(
         }
     }
 
-    void ISheetBuilder<TModel, Style, Cell>.SetDateFormat(Style style, string format) =>
+    protected override void SetDateFormat(Style style, string format) =>
         style.DateFormat.Format = format;
 
-    void ISheetBuilder<TModel, Style, Cell>.SetNumberFormat(Style style, string format) =>
+    protected override void SetNumberFormat(Style style, string format) =>
         style.NumberFormat.Format = format;
 
-    void ISheetBuilder<TModel, Style, Cell>.SetCellValue(Cell cell, object value) =>
+    protected override void SetCellValue(Cell cell, object value) =>
         cell.Value = XLCellValue.FromObject(value);
 
-    void ISheetBuilder<TModel, Style, Cell>.SetCellHtml(Cell cell, string value) =>
+    protected override void SetCellHtml(Cell cell, string value) =>
         throw new ("ClosedXml does not support html");
 
-    void ISheetBuilder<TModel, Style, Cell>.WriteEnumerable(Cell cell, IEnumerable<string> enumerable)
+    protected override void WriteEnumerable(Cell cell, IEnumerable<string> enumerable)
     {
         var rich = cell.CreateRichText();
         var list = enumerable.ToList();

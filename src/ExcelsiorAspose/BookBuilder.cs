@@ -1,7 +1,9 @@
 namespace ExcelsiorAspose;
 
-public class BookBuilder :
-    IBookBuilder
+public class BookBuilder : BookBuilderBase,
+
+
+IBookBuilder
 {
     List<Func<Book, Cancel, Task>> actions = [];
     bool useAlternatingRowColors;

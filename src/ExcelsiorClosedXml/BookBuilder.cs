@@ -1,7 +1,7 @@
 namespace ExcelsiorClosedXml;
 
 public class BookBuilder :
-    BookBuilderBase<Book, Sheet,Style,Cell>,
+    BookBuilderBase<Book, Sheet,Style>,
     IBookBuilder
 {
     bool useAlternatingRowColors;
@@ -25,7 +25,7 @@ public class BookBuilder :
         this.trimWhitespace = trimWhitespace;
     }
 
-    public override ISheetBuilder<TModel, Style, Cell> AddSheet<TModel>(IAsyncEnumerable<TModel> data, string? name = null)
+    public override ISheetBuilder<TModel, Style> AddSheet<TModel>(IAsyncEnumerable<TModel> data, string? name = null)
     {
         name ??= $"Sheet{actions.Count + 1}";
 

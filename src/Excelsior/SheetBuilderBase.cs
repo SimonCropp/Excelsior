@@ -1,9 +1,9 @@
 ﻿namespace Excelsior;
 
 public abstract partial class SheetBuilderBase<TModel, TStyle, TCell>:
-    ISheetBuilder<TModel, TStyle, TCell>
+    ISheetBuilder<TModel, TStyle>
 {
-    public abstract ISheetBuilder<TModel, TStyle, TCell> Column<TProperty>(Expression<Func<TModel, TProperty>> property, Action<Column<TStyle, TModel, TProperty>> configuration);
+    public abstract ISheetBuilder<TModel, TStyle> Column<TProperty>(Expression<Func<TModel, TProperty>> property, Action<Column<TStyle, TModel, TProperty>> configuration);
     protected abstract void SetDateFormat(TStyle style, string format);
     protected abstract void SetNumberFormat(TStyle style, string format);
     protected abstract void SetCellValue(TCell cell, object value);

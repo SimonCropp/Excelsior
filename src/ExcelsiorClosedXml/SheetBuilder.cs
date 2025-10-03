@@ -9,7 +9,7 @@ public class SheetBuilder<TModel>(
     Action<Style>? globalStyle,
     bool trimWhitespace) :
     SheetBuilderBase<TModel, Style, Cell>,
-    ISheetBuilder<TModel, Style, Cell>
+    ISheetBuilder<TModel, Style>
 {
     int rowIndex;
     Columns<TModel, Style> columns = new();
@@ -18,7 +18,7 @@ public class SheetBuilder<TModel>(
     /// Configure a column using property expression (type-safe)
     /// </summary>
     /// <returns>The converter instance for fluent chaining</returns>
-    public override ISheetBuilder<TModel, Style, Cell> Column<TProperty>(
+    public override ISheetBuilder<TModel, Style> Column<TProperty>(
         Expression<Func<TModel, TProperty>> property,
         Action<Column<Style, TModel, TProperty>> configuration)
     {

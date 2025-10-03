@@ -1,8 +1,8 @@
 namespace Excelsior;
 
-public interface ISheetBuilder<TModel, TStyle, TCell>
+public interface ISheetBuilder<TModel, TStyle>
 {
-    public ISheetBuilder<TModel, TStyle, TCell> Column<TProperty>(
+    public ISheetBuilder<TModel, TStyle> Column<TProperty>(
         Expression<Func<TModel, TProperty>> property,
         Action<Column<TStyle, TModel, TProperty>> configuration);
 

@@ -8,8 +8,7 @@ public class SheetBuilder<TModel>(
     Action<Style>? headingStyle,
     Action<Style>? globalStyle,
     bool trimWhitespace) :
-    SheetBuilderBase<TModel, Style, Cell>,
-    ISheetBuilder<TModel, Style>
+    SheetBuilderBase<TModel, Style, Cell>
 {
     int rowIndex;
     Columns<TModel, Style> columns = new();

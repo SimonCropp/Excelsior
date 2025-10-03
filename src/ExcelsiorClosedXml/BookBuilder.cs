@@ -25,15 +25,6 @@ public class BookBuilder :
         this.trimWhitespace = trimWhitespace;
     }
 
-    public override ISheetBuilder<TModel, Style> AddSheet<TModel>(IAsyncEnumerable<TModel> data, string? name = null)
-    {
-        name ??= $"Sheet{actions.Count + 1}";
-
-        var converter = ConstructSheetBuilder(data, name);
-        actions.Add((book, cancel) => converter.AddSheet(book, cancel));
-        return converter;
-    }
-
     protected override SheetBuilderBase<TModel, Style, Cell, Book> ConstructSheetBuilder<TModel>(IAsyncEnumerable<TModel> data, string name) =>
         new SheetBuilder<TModel>(
             name,

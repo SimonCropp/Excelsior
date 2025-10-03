@@ -9,7 +9,15 @@ public abstract class BookBuilderBase<TBook, TSheet, TStyle, TCell>
         AddSheet(data.ToAsyncEnumerable(), name);
 
     protected abstract SheetBuilderBase<TModel, TStyle, TCell, TBook> ConstructSheetBuilder<TModel>(IAsyncEnumerable<TModel> data, string name);
-    public abstract ISheetBuilder<TModel, TStyle> AddSheet<TModel>(IAsyncEnumerable<TModel> data, string? name = null);
+
+    public ISheetBuilder<TModel, TStyle> AddSheet<TModel>(IAsyncEnumerable<TModel> data, string? name = null)
+    {
+        name ??= $"Sheet{actions.Count + 1}";
+
+        var converter = ConstructSheetBuilder(data, name);
+        actions.Add((book, cancel) => converter.AddSheet(book, cancel));
+        return converter;
+    }
 
     public async Task<TBook> Build(Cancel cancel = default)
     {

@@ -6,8 +6,8 @@
     Action<Style>? headingStyle,
     Action<Style>? globalStyle,
     bool trimWhitespace,
-    List<Column<Style, TModel>> orderedColumns) :
-    SheetRendererBase<TModel, Style, Cell, Book>
+    List<Column<Style, TModel>> columns) :
+    SheetRendererBase<TModel, Sheet, Style, Cell, Book>(data, columns)
 {
     internal override async Task AddSheet(Book book, Cancel cancel)
     {
@@ -25,9 +25,9 @@
 
     void CreateHeadings(Sheet sheet)
     {
-        for (var i = 0; i < orderedColumns.Count; i++)
+        for (var i = 0; i < Columns.Count; i++)
         {
-            var column = orderedColumns[i];
+            var column = Columns[i];
             var cell = sheet.Cells[0, i];
 
             cell.Value = column.Heading;
@@ -38,34 +38,17 @@
         sheet.FreezePanes(1, 0, 1, 0);
     }
 
-    async Task PopulateData(Sheet sheet, Cancel cancel)
+    protected override void RenderCell(Sheet sheet, int xlRow, int index, object? value, Column<Style, TModel> column, TModel item, int rowIndex)
     {
-        //Skip heading
-        var startRow = 1;
-        var rowIndex = 0;
+        var cell = sheet.Cells[xlRow, index];
 
-        await foreach (var item in data.WithCancellation(cancel))
-        {
-            var xlRow = startRow + rowIndex;
-
-            for (var index = 0; index < orderedColumns.Count; index++)
-            {
-                var column = orderedColumns[index];
-
-                var cell = sheet.Cells[xlRow, index];
-
-                var style = cell.GetStyle();
-                style.VerticalAlignment = TextAlignmentType.Top;
-                style.HorizontalAlignment = TextAlignmentType.Left;
-                style.IsTextWrapped = true;
-                var value = column.GetValue(item);
-                base.SetCellValue(cell, style, value, column, item, trimWhitespace);
-                ApplyCellStyle(rowIndex, value, style, column, item);
-                cell.SetStyle(style);
-            }
-
-            rowIndex++;
-        }
+        var style = cell.GetStyle();
+        style.VerticalAlignment = TextAlignmentType.Top;
+        style.HorizontalAlignment = TextAlignmentType.Left;
+        style.IsTextWrapped = true;
+        base.SetCellValue(cell, style, value, column, item, trimWhitespace);
+        ApplyCellStyle(rowIndex, value, style, column, item);
+        cell.SetStyle(style);
     }
 
     protected override void SetDateFormat(Style style, string format) =>
@@ -131,9 +114,9 @@
     {
         sheet.AutoSizeColumns();
 
-        for (var index = 0; index < orderedColumns.Count; index++)
+        for (var index = 0; index < Columns.Count; index++)
         {
-            var column = orderedColumns[index];
+            var column = Columns[index];
             if (column.Width != null)
             {
                 sheet.Cells.Columns[index].Width = column.Width.Value;

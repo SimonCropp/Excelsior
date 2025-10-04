@@ -1,6 +1,6 @@
 ﻿namespace Excelsior;
 
-public abstract class BookBuilderBase<TBook, TStyle, TCell>
+public abstract class BookBuilderBase<TBook, TSheet, TStyle, TCell>
 {
     protected abstract TBook BuildBook();
 
@@ -11,7 +11,7 @@ public abstract class BookBuilderBase<TBook, TStyle, TCell>
         string? name = null) =>
         AddSheet(data.ToAsyncEnumerable(), name);
 
-    internal abstract SheetRendererBase<TModel, TStyle, TCell, TBook> ConstructSheetRenderer<TModel>(
+    internal abstract SheetRendererBase<TModel, TSheet, TStyle, TCell, TBook> ConstructSheetRenderer<TModel>(
         IAsyncEnumerable<TModel> data,
         string name,
         List<Column<TStyle, TModel>> orderedColumns);

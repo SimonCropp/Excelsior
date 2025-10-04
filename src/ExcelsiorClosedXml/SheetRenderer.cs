@@ -6,8 +6,8 @@
     Action<Style>? headingStyle,
     Action<Style>? globalStyle,
     bool trimWhitespace,
-    List<Column<Style, TModel>> orderedColumns) :
-    SheetRendererBase<TModel, Style, Cell, Book>
+    List<Column<Style, TModel>> columns) :
+    SheetRendererBase<TModel, Sheet, Style, Cell, Book>(data, columns)
 {
     internal override async Task AddSheet(Book book, Cancel cancel)
     {
@@ -24,9 +24,9 @@
 
     void CreateHeadings(Sheet sheet)
     {
-        for (var i = 0; i < orderedColumns.Count; i++)
+        for (var i = 0; i < Columns.Count; i++)
         {
-            var column = orderedColumns[i];
+            var column = Columns[i];
             var cell = sheet.Cell(1, i + 1);
 
             cell.Value = column.Heading;
@@ -37,33 +37,24 @@
         sheet.SheetView.FreezeRows(1);
     }
 
-    async Task PopulateData(Sheet sheet, Cancel cancel)
+    protected override void RenderCell(
+        Sheet sheet,
+        int xlRow,
+        int index,
+        object? value,
+        Column<Style, TModel> column,
+        TModel item,
+        int rowIndex)
     {
-        //Skip heading
-        var startRow = 2;
+        var cell = sheet.Cell(xlRow + 1, index + 1);
 
-        var rowIndex = 0;
-        await foreach (var item in data.WithCancellation(cancel))
-        {
-            var xlRow = startRow + rowIndex;
+        var style = cell.Style;
+        style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+        style.Alignment.Vertical = XLAlignmentVerticalValues.Top;
+        style.Alignment.WrapText = true;
 
-            for (var index = 0; index < orderedColumns.Count; index++)
-            {
-                var column = orderedColumns[index];
-                var cell = sheet.Cell(xlRow, index + 1);
-
-                var style = cell.Style;
-                style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
-                style.Alignment.Vertical = XLAlignmentVerticalValues.Top;
-                style.Alignment.WrapText = true;
-
-                var value = column.GetValue(item);
-                base.SetCellValue(cell, style, value, column, item, trimWhitespace);
-                ApplyCellStyle(cell, rowIndex, value, column, item);
-            }
-
-            rowIndex++;
-        }
+        base.SetCellValue(cell, style, value, column, item, trimWhitespace);
+        ApplyCellStyle(cell, rowIndex, value, column, item);
     }
 
     protected override void SetDateFormat(Style style, string format) =>
@@ -150,7 +141,7 @@
 
         var lastRow = sheet.LastRowUsed();
         var lastRowNumber = lastRow!.RowNumber();
-        var range = sheet.Range(1, 1, lastRowNumber, orderedColumns.Count);
+        var range = sheet.Range(1, 1, lastRowNumber, Columns.Count);
         globalStyle(range.Style);
     }
 
@@ -159,9 +150,9 @@
         var xlColumns = sheet.Columns().ToList();
 
         // Apply specific column widths
-        for (var i = 0; i < orderedColumns.Count; i++)
+        for (var i = 0; i < Columns.Count; i++)
         {
-            var column = orderedColumns[i];
+            var column = Columns[i];
             if (column.Width != null)
             {
                 var xlColumn = sheet.Column(i + 1);

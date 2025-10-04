@@ -1,5 +1,8 @@
-﻿abstract class SheetRendererBase<TModel, TStyle, TCell, TBook>
+﻿abstract class SheetRendererBase<TModel, TSheet, TStyle, TCell, TBook>(
+    IAsyncEnumerable<TModel> data,
+    List<Column<TStyle, TModel>> columns)
 {
+    public List<Column<TStyle, TModel>> Columns => columns;
     protected abstract void SetDateFormat(TStyle style, string format);
     protected abstract void SetNumberFormat(TStyle style, string format);
     protected abstract void SetCellValue(TCell cell, object value);
@@ -7,7 +10,36 @@
     internal abstract Task AddSheet(TBook book, Cancel cancel);
     protected abstract void WriteEnumerable(TCell cell, IEnumerable<string> enumerable);
 
-    internal void SetCellValue(TCell cell, TStyle style, object? value, Column<TStyle, TModel> column, TModel item, bool trimWhitespace)
+    protected async Task PopulateData(TSheet sheet, Cancel cancel)
+    {
+        //Skip heading
+        var startRow = 1;
+
+        var rowIndex = 0;
+        await foreach (var item in data.WithCancellation(cancel))
+        {
+            var xlRow = startRow + rowIndex;
+
+            for (var index = 0; index < columns.Count; index++)
+            {
+                var column = columns[index];
+                var value = column.GetValue(item);
+
+                RenderCell(sheet, xlRow, index, value, column, item, rowIndex);
+            }
+
+            rowIndex++;
+        }
+    }
+
+    protected abstract void RenderCell(TSheet sheet, int xlRow, int index, object? value, Column<TStyle, TModel> column, TModel item, int rowIndex);
+    internal void SetCellValue(
+        TCell cell,
+        TStyle style,
+        object? value,
+        Column<TStyle, TModel> column,
+        TModel item,
+        bool trimWhitespace)
     {
         void SetStringOrHtml(string content)
         {

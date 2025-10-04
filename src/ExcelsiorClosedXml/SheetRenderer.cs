@@ -37,17 +37,16 @@
         sheet.SheetView.FreezeRows(1);
     }
 
-    protected override void RenderCell(
-        Sheet sheet,
-        int xlRow,
-        int index,
-        object? value,
+
+    protected override Cell GetCell(Sheet sheet, int row, int column) =>
+        sheet.Cell(row + 1, column + 1);
+
+    protected override void RenderCell(object? value,
         Column<Style, TModel> column,
         TModel item,
-        int rowIndex)
+        int rowIndex,
+        Cell cell)
     {
-        var cell = sheet.Cell(xlRow + 1, index + 1);
-
         var style = cell.Style;
         style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
         style.Alignment.Vertical = XLAlignmentVerticalValues.Top;

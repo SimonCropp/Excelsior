@@ -38,10 +38,11 @@
         sheet.FreezePanes(1, 0, 1, 0);
     }
 
-    protected override void RenderCell(Sheet sheet, int xlRow, int index, object? value, Column<Style, TModel> column, TModel item, int rowIndex)
-    {
-        var cell = sheet.Cells[xlRow, index];
+    protected override Cell GetCell(Sheet sheet, int row, int column) =>
+        sheet.Cells[row, column];
 
+    protected override void RenderCell(object? value, Column<Style, TModel> column, TModel item, int rowIndex, Cell cell)
+    {
         var style = cell.GetStyle();
         style.VerticalAlignment = TextAlignmentType.Top;
         style.HorizontalAlignment = TextAlignmentType.Left;

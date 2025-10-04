@@ -15,24 +15,26 @@
         //Skip heading
         var startRow = 1;
 
-        var rowIndex = 0;
+        var itemIndex = 0;
         await foreach (var item in data.WithCancellation(cancel))
         {
-            var xlRow = startRow + rowIndex;
+            var rowIndex = startRow + itemIndex;
 
-            for (var index = 0; index < columns.Count; index++)
+            for (var columnIndex = 0; columnIndex < columns.Count; columnIndex++)
             {
-                var column = columns[index];
+                var column = columns[columnIndex];
                 var value = column.GetValue(item);
-
-                RenderCell(sheet, xlRow, index, value, column, item, rowIndex);
+                var cell = GetCell(sheet, rowIndex, columnIndex);
+                RenderCell(value, column, item, itemIndex, cell);
             }
 
-            rowIndex++;
+            itemIndex++;
         }
     }
 
-    protected abstract void RenderCell(TSheet sheet, int xlRow, int index, object? value, Column<TStyle, TModel> column, TModel item, int rowIndex);
+    protected abstract TCell GetCell(TSheet sheet, int row, int column);
+
+    protected abstract void RenderCell(object? value, Column<TStyle, TModel> column, TModel item, int rowIndex, TCell cell);
     internal void SetCellValue(
         TCell cell,
         TStyle style,

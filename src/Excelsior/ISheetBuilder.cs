@@ -2,6 +2,10 @@ namespace Excelsior;
 
 public interface ISheetBuilder<TModel, TStyle>
 {
+    /// <summary>
+    /// Configure a column using property expression (type-safe)
+    /// </summary>
+    /// <returns>The converter instance for fluent chaining</returns>
     public ISheetBuilder<TModel, TStyle> Column<TProperty>(
         Expression<Func<TModel, TProperty>> property,
         Action<Column<TStyle, TModel, TProperty>> configuration);

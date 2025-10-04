@@ -9,10 +9,6 @@
     internal abstract Task AddSheet(TBook book, Cancel cancel);
     protected abstract void WriteEnumerable(TCell cell, IEnumerable<string> enumerable);
 
-    /// <summary>
-    /// Configure a column using property expression (type-safe)
-    /// </summary>
-    /// <returns>The converter instance for fluent chaining</returns>
     public ISheetBuilder<TModel, TStyle> Column<TProperty>(
         Expression<Func<TModel, TProperty>> property,
         Action<Column<TStyle, TModel, TProperty>> configuration)

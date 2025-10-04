@@ -1,9 +1,7 @@
 namespace ExcelsiorAspose;
 
-public class BookBuilder :
-    IBookBuilder
+public class BookBuilder : BookBuilderBase<Book, Sheet, Style, Cell>
 {
-    List<Func<Book, Cancel, Task>> actions = [];
     bool useAlternatingRowColors;
     Color? alternateRowColor;
     Action<Style>? headingStyle;
@@ -25,42 +23,30 @@ public class BookBuilder :
         this.trimWhitespace = trimWhitespace;
     }
 
-    public SheetBuilder<TModel> AddSheet<TModel>(IEnumerable<TModel> data, string? name = null) =>
-        AddSheet(data.ToAsyncEnumerable(), name);
-
-    public SheetBuilder<TModel> AddSheet<TModel>(IAsyncEnumerable<TModel> data, string? name = null)
-    {
-        name ??= $"Sheet{actions.Count + 1}";
-
-        var converter = new SheetBuilder<TModel>(
+    internal override RendererBase<TModel, Sheet, Style, Cell, Book> ConstructSheetRenderer<TModel>(
+        IAsyncEnumerable<TModel> data,
+        string name,
+        List<Column<Style, TModel>> orderedColumns) =>
+        new Renderer<TModel>(
             name,
             data,
             useAlternatingRowColors,
             alternateRowColor,
             headingStyle,
             globalStyle,
-            trimWhitespace);
-        actions.Add((book, cancel) => converter.AddSheet(book, cancel));
-        return converter;
-    }
+            trimWhitespace,
+            orderedColumns);
 
-    public async Task ToStream(Stream stream, Cancel cancel = default)
+    public override async Task ToStream(Stream stream, Cancel cancel = default)
     {
         using var book = await Build(cancel);
         await book.SaveAsync(stream, saveFormat: SaveFormat.Xlsx);
     }
 
-    public async Task<Book> Build(Cancel cancel = default)
+    protected override Book BuildBook()
     {
         var book = new Book();
         book.Worksheets.Clear();
-        foreach (var action in actions)
-        {
-            cancel.ThrowIfCancellationRequested();
-            await action(book, cancel);
-        }
-
         return book;
     }
-
 }

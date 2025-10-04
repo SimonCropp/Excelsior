@@ -1,6 +1,5 @@
 ﻿global using System.Drawing;
 global using Aspose.Cells;
-global using System.Linq.Expressions;
 global using System.Net;
 global using Excelsior;
 global using Sheet = Aspose.Cells.Worksheet;

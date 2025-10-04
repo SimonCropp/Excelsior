@@ -1,118 +1,55 @@
 namespace Excelsior;
 
-public interface ISheetBuilder<TModel, TStyle, TCell>
+public interface ISheetBuilder<TModel, TStyle>
 {
-    internal void Column<TProperty>(
+    /// <summary>
+    /// Configure a column using property expression (type-safe)
+    /// </summary>
+    /// <returns>The converter instance for fluent chaining</returns>
+    public ISheetBuilder<TModel, TStyle> Column<TProperty>(
         Expression<Func<TModel, TProperty>> property,
         Action<Column<TStyle, TModel, TProperty>> configuration);
 
-    internal void SetDateFormat(TStyle style, string format);
-    internal void SetNumberFormat(TStyle style, string format);
-    internal void SetCellValue(TCell cell, object value);
-    internal void SetCellHtml(TCell cell, string value);
-    internal void WriteEnumerable(TCell cell, IEnumerable<string> enumerable);
+    public void HeadingText<TProperty>(
+        Expression<Func<TModel, TProperty>> property,
+        string value);
 
-    internal void SetCellValue(TCell cell, TStyle style, object? value, Column<TStyle, TModel> column, TModel item, bool trimWhitespace)
-    {
-        void SetStringOrHtml(string content)
-        {
-            if (column.IsHtml)
-            {
-                SetCellHtml(cell,content);
-            }
-            else
-            {
-                SetCellValue(cell,content);
-            }
-        }
-        void ThrowIfHtml()
-        {
-            if (column.IsHtml)
-            {
-                throw new("TreatAsHtml is not compatible with this type");
-            }
-        }
-        if (value == null)
-        {
-            if (column.NullDisplay != null)
-            {
-                SetCellValue(cell, column.NullDisplay);
-            }
+    public void Order<TProperty>(
+        Expression<Func<TModel, TProperty>> property,
+        int? value);
 
-            return;
-        }
+    public void Width<TProperty>(
+        Expression<Func<TModel, TProperty>> property,
+        double? value);
 
-        if (column.Render != null)
-        {
-            var render = column.Render(item, value);
-            if (render != null)
-            {
-                SetStringOrHtml(render);
-            }
-            return;
-        }
+    public void HeadingStyle<TProperty>(
+        Expression<Func<TModel, TProperty>> property,
+        Action<TStyle> value);
 
-        if (value is DateTime dateTime)
-        {
-            ThrowIfHtml();
-            SetCellValue(cell, dateTime);
-            SetDateFormat(style, column.Format ?? ValueRenderer.DefaultDateTimeFormat);
+    public void CellStyle<TProperty>(
+        Expression<Func<TModel, TProperty>> property,
+        Action<TStyle, TModel, TProperty> value);
 
-            return;
-        }
+    public void CellStyle<TProperty>(
+        Expression<Func<TModel, TProperty>> property,
+        Action<TStyle, TProperty> value);
 
-        if (value is Date date)
-        {
-            ThrowIfHtml();
-            SetCellValue(cell, date.ToDateTime(new(0, 0)));
-            SetDateFormat(style, column.Format ?? ValueRenderer.DefaultDateFormat);
+    public void Format<TProperty>(
+        Expression<Func<TModel, TProperty>> property,
+        string value);
 
-            return;
-        }
+    public void NullDisplay<TProperty>(
+        Expression<Func<TModel, TProperty>> property,
+        string value);
 
-        if (value is bool boolean)
-        {
-            ThrowIfHtml();
-            SetCellValue(cell, boolean);
-            return;
-        }
+    public void IsHtml<TProperty>(
+        Expression<Func<TModel, TProperty>> property);
 
-        if (value is Enum enumValue)
-        {
-            ThrowIfHtml();
-            SetCellValue(cell, enumValue.DisplayName());
-            return;
-        }
+    public void Render<TProperty>(
+        Expression<Func<TModel, TProperty>> property,
+        Func<TModel, TProperty, string?> value);
 
-        if (column.IsNumber)
-        {
-            ThrowIfHtml();
-            SetCellValue(cell, Convert.ToDouble(value));
-            if (column.Format != null)
-            {
-                SetNumberFormat(style, column.Format);
-            }
-
-            return;
-        }
-
-        if (value is IEnumerable<string> enumerable)
-        {
-            ThrowIfHtml();
-            WriteEnumerable(cell, enumerable);
-            return;
-        }
-
-        var valueAsString = value.ToString();
-        // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
-        if (valueAsString != null && trimWhitespace)
-        {
-            valueAsString = valueAsString.Trim();
-        }
-
-        if (valueAsString != null)
-        {
-            SetStringOrHtml(valueAsString);
-        }
-    }
+    public void Render<TProperty>(
+        Expression<Func<TModel, TProperty>> property,
+        Func<TProperty, string?> value);
 }

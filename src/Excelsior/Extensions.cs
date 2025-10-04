@@ -1,19 +1,27 @@
 ﻿static class Extensions
 {
-    public static string PropertyName<T, TProperty>(this Expression<Func<T, TProperty>> propertyExpression)
+    public static T? Attribute<T>(this MemberInfo? element)
+        where T : Attribute =>
+        element?.GetCustomAttribute<T>();
+
+    public static T? Attribute<T>(this ParameterInfo? element)
+        where T : Attribute =>
+        element?.GetCustomAttribute<T>();
+
+    public static string PropertyName<T, TProperty>(this Expression<Func<T, TProperty>> expression)
     {
-        if (propertyExpression.Body is MemberExpression member)
+        if (expression.Body is MemberExpression member)
         {
             return member.Member.Name;
         }
 
-        throw new ArgumentException("Expression must be a property access", nameof(propertyExpression));
+        throw new ArgumentException("Expression must be a property access", nameof(expression));
     }
 
     public static string DisplayName(this Enum enumValue)
     {
         var field = enumValue.GetType().GetField(enumValue.ToString());
-        var attribute = field?.GetCustomAttribute<DisplayAttribute>();
+        var attribute = field?.Attribute<DisplayAttribute>();
         return attribute?.Name ?? enumValue.ToString();
     }
 

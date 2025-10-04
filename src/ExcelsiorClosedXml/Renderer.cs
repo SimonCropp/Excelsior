@@ -1,4 +1,4 @@
-﻿class SheetRenderer<TModel>(
+﻿class Renderer<TModel>(
     string name,
     IAsyncEnumerable<TModel> data,
     bool useAlternatingRowColors,
@@ -7,7 +7,7 @@
     Action<Style>? globalStyle,
     bool trimWhitespace,
     List<Column<Style, TModel>> columns) :
-    SheetRendererBase<TModel, Sheet, Style, Cell, Book>(data, columns)
+    RendererBase<TModel, Sheet, Style, Cell, Book>(data, columns)
 {
     internal override async Task AddSheet(Book book, Cancel cancel)
     {

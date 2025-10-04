@@ -3,9 +3,9 @@
     public Property(PropertyInfo info, ParameterInfo? constructorParameter)
     {
         Get = CreateGet(info);
-        var column = info.GetCustomAttribute<ColumnAttribute>() ?? constructorParameter?.GetCustomAttribute<ColumnAttribute>();
-        var display = info.GetCustomAttribute<DisplayAttribute>() ?? constructorParameter?.GetCustomAttribute<DisplayAttribute>();
-        var displayName = info.GetCustomAttribute<DisplayNameAttribute>() ?? constructorParameter?.GetCustomAttribute<DisplayNameAttribute>();
+        var column = info.Attribute<ColumnAttribute>() ?? constructorParameter?.Attribute<ColumnAttribute>();
+        var display = info.Attribute<DisplayAttribute>() ?? constructorParameter?.Attribute<DisplayAttribute>();
+        var displayName = info.Attribute<DisplayNameAttribute>() ?? constructorParameter?.Attribute<DisplayNameAttribute>();
         DisplayName = GetHeading(info, display, column,displayName);
         Name = info.Name;
         Order = GetOrder(column, display);

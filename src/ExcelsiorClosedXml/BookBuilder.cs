@@ -24,11 +24,11 @@ public class BookBuilder :
         this.trimWhitespace = trimWhitespace;
     }
 
-    internal override SheetRendererBase<TModel, Sheet, Style, Cell, Book> ConstructSheetRenderer<TModel>(
+    internal override RendererBase<TModel, Sheet, Style, Cell, Book> ConstructSheetRenderer<TModel>(
         IAsyncEnumerable<TModel> data,
         string name,
         List<Column<Style, TModel>> orderedColumns) =>
-        new SheetRenderer<TModel>(
+        new Renderer<TModel>(
             name,
             data,
             useAlternatingRowColors,

@@ -18,18 +18,18 @@
                 continue;
             }
 
-            if (property.GetCustomAttribute<IgnoreAttribute>() != null)
+            if (property.Attribute<IgnoreAttribute>() != null)
             {
                 continue;
             }
 
-            var constructorParameter = defaultConstructor?.SingleOrDefault(_ => _.Name == property.Name);
-            if (constructorParameter?.GetCustomAttribute<IgnoreAttribute>() != null)
+            var parameter = defaultConstructor?.SingleOrDefault(_ => _.Name == property.Name);
+            if (parameter.Attribute<IgnoreAttribute>() != null)
             {
                 continue;
             }
 
-            yield return new(property, constructorParameter);
+            yield return new(property, parameter);
         }
     }
 

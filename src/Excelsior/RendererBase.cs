@@ -1,4 +1,4 @@
-﻿abstract class SheetRendererBase<TModel, TSheet, TStyle, TCell, TBook>(
+﻿abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook>(
     IAsyncEnumerable<TModel> data,
     List<Column<TStyle, TModel>> columns)
 {
@@ -12,13 +12,10 @@
 
     protected async Task PopulateData(TSheet sheet, Cancel cancel)
     {
-        //Skip heading
-        var startRow = 1;
-
         var itemIndex = 0;
         await foreach (var item in data.WithCancellation(cancel))
         {
-            var rowIndex = startRow + itemIndex;
+            var rowIndex = itemIndex + 1; // +1 to skip heading;
 
             for (var columnIndex = 0; columnIndex < columns.Count; columnIndex++)
             {
@@ -35,6 +32,7 @@
     protected abstract TCell GetCell(TSheet sheet, int row, int column);
 
     protected abstract void RenderCell(object? value, Column<TStyle, TModel> column, TModel item, int rowIndex, TCell cell);
+
     internal void SetCellValue(
         TCell cell,
         TStyle style,

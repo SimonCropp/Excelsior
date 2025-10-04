@@ -9,8 +9,6 @@
     List<Column<Style, TModel>> orderedColumns) :
     SheetRendererBase<TModel, Style, Cell, Book>
 {
-    int rowIndex;
-
     internal override async Task AddSheet(Book book, Cancel cancel)
     {
         var sheet = book.Worksheets.Add(name);
@@ -44,6 +42,7 @@
     {
         //Skip heading
         var startRow = 1;
+        var rowIndex = 0;
 
         await foreach (var item in data.WithCancellation(cancel))
         {

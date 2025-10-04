@@ -1,7 +1,7 @@
 namespace ExcelsiorClosedXml;
 
 public class BookBuilder :
-    BookBuilderBase<Book, Sheet,Style, Cell>
+    BookBuilderBase<Book, Style, Cell>
 {
     bool useAlternatingRowColors;
     XLColor? alternateRowColor;
@@ -24,7 +24,10 @@ public class BookBuilder :
         this.trimWhitespace = trimWhitespace;
     }
 
-    internal override SheetBuilderBase<TModel, Style, Cell, Book> ConstructSheetBuilder<TModel>(IAsyncEnumerable<TModel> data, string name) =>
+    internal override SheetBuilderBase<TModel, Style, Cell, Book> ConstructSheetBuilder<TModel>(
+        IAsyncEnumerable<TModel> data,
+        string name,
+        List<Column<Style, TModel>> orderedColumns) =>
         new SheetBuilder<TModel>(
             name,
             data,
@@ -32,7 +35,8 @@ public class BookBuilder :
             alternateRowColor,
             headingStyle,
             globalStyle,
-            trimWhitespace);
+            trimWhitespace,
+            orderedColumns);
 
     public override async Task ToStream(Stream stream, Cancel cancel = default)
     {

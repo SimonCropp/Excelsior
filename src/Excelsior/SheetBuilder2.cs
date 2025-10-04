@@ -1,5 +1,17 @@
-abstract partial class SheetBuilderBase<TModel, TStyle, TCell, TBook>
+﻿class SheetBuilder2<TModel, TStyle>(string name) :
+    ISheetBuilder<TModel, TStyle>
 {
+    public Columns<TModel, TStyle> Columns = new();
+
+    public string Name => name;
+
+    public ISheetBuilder<TModel, TStyle> Column<TProperty>(
+        Expression<Func<TModel, TProperty>> property,
+        Action<Column<TStyle, TModel, TProperty>> configuration)
+    {
+        Columns.Add(property, configuration);
+        return this;
+    }
     public void HeadingText<TProperty>(
         Expression<Func<TModel, TProperty>> property,
         string value) =>

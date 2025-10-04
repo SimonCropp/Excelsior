@@ -5,14 +5,14 @@
     XLColor? alternateRowColor,
     Action<Style>? headingStyle,
     Action<Style>? globalStyle,
-    bool trimWhitespace) :
+    bool trimWhitespace,
+    List<Column<Style, TModel>> orderedColumns) :
     SheetBuilderBase<TModel, Style, Cell, Book>
 {
     internal override async Task AddSheet(Book book, Cancel cancel)
     {
         var sheet = book.Worksheets.Add(name);
 
-        var orderedColumns = Columns.OrderedColumns();
         CreateHeadings(sheet, orderedColumns);
 
         await PopulateData(sheet, orderedColumns, cancel);

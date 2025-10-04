@@ -1,9 +1,9 @@
-﻿// ReSharper disable UnusedTypeParameter
-namespace Excelsior;
+﻿namespace Excelsior;
 
-public abstract class BookBuilderBase<TBook, TSheet, TStyle, TCell>
+public abstract class BookBuilderBase<TBook, TStyle, TCell>
 {
     protected abstract TBook BuildBook();
+
     List<Func<TBook, Cancel, Task>> actions = [];
 
     public ISheetBuilder<TModel, TStyle> AddSheet<TModel>(
@@ -13,7 +13,8 @@ public abstract class BookBuilderBase<TBook, TSheet, TStyle, TCell>
 
     internal abstract SheetBuilderBase<TModel, TStyle, TCell, TBook> ConstructSheetBuilder<TModel>(
         IAsyncEnumerable<TModel> data,
-        string name);
+        string name,
+        List<Column<TStyle, TModel>> orderedColumns);
 
     public ISheetBuilder<TModel, TStyle> AddSheet<TModel>(
         IAsyncEnumerable<TModel> data,
@@ -21,9 +22,14 @@ public abstract class BookBuilderBase<TBook, TSheet, TStyle, TCell>
     {
         name ??= $"Sheet{actions.Count + 1}";
 
-        var converter = ConstructSheetBuilder(data, name);
+        var converter = new SheetBuilder2<TModel, TStyle>(name);
 
-        actions.Add((book, cancel) => converter.AddSheet(book, cancel));
+        actions.Add((book, cancel) =>
+        {
+            var columns = converter.Columns.OrderedColumns();
+            var builder = ConstructSheetBuilder(data, name,columns);
+            return builder.AddSheet(book, cancel);
+        });
         return converter;
     }
 

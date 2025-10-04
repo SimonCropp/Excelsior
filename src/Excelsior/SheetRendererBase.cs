@@ -1,4 +1,4 @@
-﻿abstract class SheetBuilderBase<TModel, TStyle, TCell, TBook>
+﻿abstract class SheetRendererBase<TModel, TStyle, TCell, TBook>
 {
     protected abstract void SetDateFormat(TStyle style, string format);
     protected abstract void SetNumberFormat(TStyle style, string format);

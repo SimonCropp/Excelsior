@@ -1,4 +1,4 @@
-﻿class SheetBuilder<TModel>(
+﻿class SheetRenderer<TModel>(
     string name,
     IAsyncEnumerable<TModel> data,
     bool useAlternatingRowColors,
@@ -7,7 +7,7 @@
     Action<Style>? globalStyle,
     bool trimWhitespace,
     List<Column<Style, TModel>> orderedColumns) :
-    SheetBuilderBase<TModel, Style, Cell, Book>
+    SheetRendererBase<TModel, Style, Cell, Book>
 {
     int rowIndex;
 
@@ -15,17 +15,17 @@
     {
         var sheet = book.Worksheets.Add(name);
 
-        CreateHeadings(sheet, orderedColumns);
+        CreateHeadings(sheet);
 
-        await PopulateData(sheet, orderedColumns, cancel);
+        await PopulateData(sheet, cancel);
 
         ApplyGlobalStyling(sheet);
         sheet.AutoFilterAll();
-        AutoSizeColumns(sheet, orderedColumns);
+        AutoSizeColumns(sheet);
         sheet.AutoSizeRows();
     }
 
-    void CreateHeadings(Sheet sheet, List<Column<Style, TModel>> orderedColumns)
+    void CreateHeadings(Sheet sheet)
     {
         for (var i = 0; i < orderedColumns.Count; i++)
         {
@@ -40,7 +40,7 @@
         sheet.FreezePanes(1, 0, 1, 0);
     }
 
-    async Task PopulateData(Sheet sheet, List<Column<Style, TModel>> orderedColumns, Cancel cancel)
+    async Task PopulateData(Sheet sheet, Cancel cancel)
     {
         //Skip heading
         var startRow = 1;
@@ -128,7 +128,7 @@
         sheet.Cells.ApplyStyle(style, flag);
     }
 
-    static void AutoSizeColumns(Sheet sheet, List<Column<Style, TModel>> orderedColumns)
+    void AutoSizeColumns(Sheet sheet)
     {
         sheet.AutoSizeColumns();
 

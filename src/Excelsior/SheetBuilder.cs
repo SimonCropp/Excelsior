@@ -1,17 +1,14 @@
-﻿class SheetBuilder2<TModel, TStyle>(string name) :
+﻿class SheetBuilder<TModel, TStyle>(Columns<TModel, TStyle> columns) :
     ISheetBuilder<TModel, TStyle>
 {
-    public Columns<TModel, TStyle> Columns = new();
-
-    public string Name => name;
-
     public ISheetBuilder<TModel, TStyle> Column<TProperty>(
         Expression<Func<TModel, TProperty>> property,
         Action<Column<TStyle, TModel, TProperty>> configuration)
     {
-        Columns.Add(property, configuration);
+        columns.Add(property, configuration);
         return this;
     }
+
     public void HeadingText<TProperty>(
         Expression<Func<TModel, TProperty>> property,
         string value) =>

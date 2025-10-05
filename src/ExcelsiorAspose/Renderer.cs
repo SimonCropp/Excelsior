@@ -7,8 +7,8 @@
     Action<Style>? globalStyle,
     bool trimWhitespace,
     List<Column<Style, TModel>> columns,
-    int defaultMaxCoumnWidth) :
-    RendererBase<TModel, Sheet, Style, Cell, Book>(data, columns, defaultMaxCoumnWidth)
+    int maxCoumnWidth) :
+    RendererBase<TModel, Sheet, Style, Cell, Book>(data, columns, maxCoumnWidth)
 {
     internal override async Task AddSheet(Book book, Cancel cancel)
     {
@@ -112,18 +112,22 @@
         sheet.Cells.ApplyStyle(style, flag);
     }
 
-    protected override void ResizeColumn(Sheet sheet, int index, int? columnWidth, int? width)
+    protected override void ResizeColumn(Sheet sheet, int index, int? columnWidth, int maxCoumnWidth)
     {
         var column = sheet.Cells.Columns[index];
-        if (width == null)
+        if (columnWidth == null)
         {
             sheet.AutoFitColumns(index, index);
             //Round widths since aspose AutoFitColumns is not deterministic
             column.Width = Math.Round(column.Width) + 1;
+            if (column.Width > maxCoumnWidth)
+            {
+                column.Width = maxCoumnWidth;
+            }
         }
         else
         {
-            column.Width = width.Value;
+            column.Width = columnWidth.Value;
         }
     }
 }

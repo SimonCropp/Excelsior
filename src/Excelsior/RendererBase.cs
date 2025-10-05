@@ -10,7 +10,7 @@
     protected abstract void SetCellHtml(TCell cell, string value);
     internal abstract Task AddSheet(TBook book, Cancel cancel);
     protected abstract void WriteEnumerable(TCell cell, IEnumerable<string> enumerable);
-    protected abstract void ResizeColumn(TSheet sheet, int index, int? columnWidth, int? defaultMaxCoumnWidth);
+    protected abstract void ResizeColumn(TSheet sheet, int index, int? columnWidth, int defaultMaxCoumnWidth);
 
     protected void AutoSizeColumns(TSheet sheet)
     {

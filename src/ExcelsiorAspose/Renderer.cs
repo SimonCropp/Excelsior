@@ -112,17 +112,18 @@
         sheet.Cells.ApplyStyle(style, flag);
     }
 
-    void AutoSizeColumns(Sheet sheet)
+    protected override void ResizeColumn(Sheet sheet, int index, int? width)
     {
-        sheet.AutoSizeColumns();
-
-        for (var index = 0; index < Columns.Count; index++)
+        var column = sheet.Cells.Columns[index];
+        if (width == null)
         {
-            var column = Columns[index];
-            if (column.Width != null)
-            {
-                sheet.Cells.Columns[index].Width = column.Width.Value;
-            }
+            sheet.AutoFitColumns(index, index);
+            //Round widths since aspose AutoFitColumns is not deterministic
+            column.Width = Math.Round(column.Width) + 1;
+        }
+        else
+        {
+            column.Width = width.Value;
         }
     }
 }

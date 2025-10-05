@@ -9,6 +9,16 @@
     protected abstract void SetCellHtml(TCell cell, string value);
     internal abstract Task AddSheet(TBook book, Cancel cancel);
     protected abstract void WriteEnumerable(TCell cell, IEnumerable<string> enumerable);
+    protected abstract void ResizeColumn(TSheet sheet, int index, int? width);
+
+    protected void AutoSizeColumns(TSheet sheet)
+    {
+        for (var index = 0; index < Columns.Count; index++)
+        {
+            var column = Columns[index];
+            ResizeColumn(sheet, index, column.Width);
+        }
+    }
 
     protected async Task PopulateData(TSheet sheet, Cancel cancel)
     {

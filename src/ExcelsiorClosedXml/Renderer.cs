@@ -106,27 +106,17 @@
         globalStyle(range.Style);
     }
 
-    void AutoSizeColumns(Sheet sheet)
+    protected override void ResizeColumn(Sheet sheet, int index, int? width)
     {
-        var xlColumns = sheet.Columns().ToList();
-
-        // Apply specific column widths
-        for (var i = 0; i < Columns.Count; i++)
+        var column = sheet.Column(index + 1);
+        if (width == null)
         {
-            var column = Columns[i];
-            if (column.Width != null)
-            {
-                var xlColumn = sheet.Column(i + 1);
-                xlColumns.Remove(xlColumn);
-                xlColumn.Width = column.Width.Value;
-            }
-        }
-
-        var endRow = sheet.RowsUsed().Count();
-        foreach (var column in xlColumns)
-        {
-            column.AdjustToContents(1, endRow);
+            column.AdjustToContents();
             column.Width += 2;
+        }
+        else
+        {
+            column.Width = width.Value;
         }
     }
 }

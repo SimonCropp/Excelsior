@@ -26,9 +26,11 @@ public class BookBuilder : BookBuilderBase<Book, Sheet, Style, Cell>
         this.defaultMaxCoumnWidth = defaultMaxCoumnWidth;
     }
 
-    internal override RendererBase<TModel, Sheet, Style, Cell, Book> ConstructSheetRenderer<TModel>(IAsyncEnumerable<TModel> data,
+    internal override RendererBase<TModel, Sheet, Style, Cell, Book> ConstructSheetRenderer<TModel>(
+        IAsyncEnumerable<TModel> data,
         string name,
-        List<Column<Style, TModel>> columns, int? defaultMaxCoumnWidth) =>
+        List<Column<Style, TModel>> columns,
+        int? defaultMaxCoumnWidth) =>
         new Renderer<TModel>(
             name,
             data,

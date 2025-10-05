@@ -6,7 +6,8 @@
     Action<Style>? headingStyle,
     Action<Style>? globalStyle,
     bool trimWhitespace,
-    List<Column<Style, TModel>> columns) :
+    List<Column<Style, TModel>> columns,
+    int defaultMaxCoumnWidth) :
     RendererBase<TModel, Sheet, Style, Cell, Book>(data, columns)
 {
     internal override async Task AddSheet(Book book, Cancel cancel)

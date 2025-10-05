@@ -145,4 +145,9 @@
             SetStringOrHtml(valueAsString);
         }
     }
+
+    protected bool TryGetWidth<TModel>(Column<TStyle,TModel> columnConfig, out int width)
+    {
+        throw new NotImplementedException();
+    }
 }

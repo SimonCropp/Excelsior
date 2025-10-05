@@ -7,8 +7,8 @@
     Action<Style>? globalStyle,
     bool trimWhitespace,
     List<Column<Style, TModel>> columns,
-    int? defaultMaxCoumnWidth) :
-    RendererBase<TModel, Sheet, Style, Cell, Book>(data, columns)
+    int defaultMaxCoumnWidth) :
+    RendererBase<TModel, Sheet, Style, Cell, Book>(data, columns, defaultMaxCoumnWidth)
 {
     internal override async Task AddSheet(Book book, Cancel cancel)
     {
@@ -106,7 +106,7 @@
         globalStyle(range.Style);
     }
 
-    protected override void ResizeColumn(Sheet sheet, int index, int? width)
+    protected override void ResizeColumn(Sheet sheet, int index, int? columnWidth, int? width)
     {
         var column = sheet.Column(index + 1);
         if (width == null)

@@ -5,4 +5,3 @@ global using Excelsior;
 global using Sheet = Aspose.Cells.Worksheet;
 global using Book = Aspose.Cells.Workbook;
 global using Cell = Aspose.Cells.Cell;
-

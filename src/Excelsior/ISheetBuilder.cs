@@ -20,7 +20,7 @@ public interface ISheetBuilder<TModel, TStyle>
 
     public void Width<TProperty>(
         Expression<Func<TModel, TProperty>> property,
-        double? value);
+        int? value);
 
     public void HeadingStyle<TProperty>(
         Expression<Func<TModel, TProperty>> property,

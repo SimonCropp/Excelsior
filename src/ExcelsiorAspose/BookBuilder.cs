@@ -26,7 +26,7 @@ public class BookBuilder : BookBuilderBase<Book, Sheet, Style, Cell>
     internal override RendererBase<TModel, Sheet, Style, Cell, Book> ConstructSheetRenderer<TModel>(
         IAsyncEnumerable<TModel> data,
         string name,
-        List<Column<Style, TModel>> orderedColumns) =>
+        List<Column<Style, TModel>> columns) =>
         new Renderer<TModel>(
             name,
             data,
@@ -35,7 +35,7 @@ public class BookBuilder : BookBuilderBase<Book, Sheet, Style, Cell>
             headingStyle,
             globalStyle,
             trimWhitespace,
-            orderedColumns);
+            columns);
 
     public override async Task ToStream(Stream stream, Cancel cancel = default)
     {

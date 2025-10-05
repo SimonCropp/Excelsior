@@ -27,7 +27,7 @@
         return display?.Order;
     }
 
-    static double? GetWidth(ColumnAttribute? column)
+    static int? GetWidth(ColumnAttribute? column)
     {
         if (column is { Width: > -1 })
         {
@@ -43,7 +43,7 @@
     public int? Order { get; }
     public Type Type { get; }
     public bool IsNumber { get; }
-    public double? Width { get; }
+    public int? Width { get; }
     public string? Format { get; }
     public string? NullDisplay { get; }
     public bool IsHtml { get; }

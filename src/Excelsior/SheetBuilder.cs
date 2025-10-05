@@ -21,7 +21,7 @@
 
     public void Width<TProperty>(
         Expression<Func<TModel, TProperty>> property,
-        double? value) =>
+        int? value) =>
         Column(property, _ => _.Width = value);
 
     public void HeadingStyle<TProperty>(

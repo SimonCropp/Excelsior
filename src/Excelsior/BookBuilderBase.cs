@@ -14,7 +14,7 @@ public abstract class BookBuilderBase<TBook, TSheet, TStyle, TCell>
     internal abstract RendererBase<TModel, TSheet, TStyle, TCell, TBook> ConstructSheetRenderer<TModel>(
         IAsyncEnumerable<TModel> data,
         string name,
-        List<Column<TStyle, TModel>> orderedColumns);
+        List<Column<TStyle, TModel>> columns);
 
     public ISheetBuilder<TModel, TStyle> AddSheet<TModel>(
         IAsyncEnumerable<TModel> data,

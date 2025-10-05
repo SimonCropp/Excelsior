@@ -113,14 +113,19 @@
 
     void AutoSizeColumns(Sheet sheet)
     {
-        sheet.AutoSizeColumns();
-
         for (var index = 0; index < Columns.Count; index++)
         {
-            var column = Columns[index];
-            if (column.Width != null)
+            var columnConfig = Columns[index];
+            var column = sheet.Cells.Columns[index];
+            if (columnConfig.Width == null)
             {
-                sheet.Cells.Columns[index].Width = column.Width.Value;
+                sheet.AutoFitColumns(index, index);
+                //Round widths since aspose AutoFitColumns is not deterministic
+                column.Width = Math.Round(column.Width) + 1;
+            }
+            else
+            {
+                column.Width = columnConfig.Width.Value;
             }
         }
     }

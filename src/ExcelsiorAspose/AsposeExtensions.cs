@@ -16,17 +16,6 @@
             }
         }
 
-        public void AutoSizeColumns()
-        {
-            sheet.AutoFitColumns();
-
-            //Round widths since aspose AutoFitColumns is not deterministic
-            foreach (var column in sheet.Cells.Columns)
-            {
-                column.Width = Math.Round(column.Width) + 1;
-            }
-        }
-
         public void AutoFilterAll()
         {
             var cells = sheet.Cells;

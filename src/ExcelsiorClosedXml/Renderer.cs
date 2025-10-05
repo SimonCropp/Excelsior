@@ -107,25 +107,20 @@
 
     void AutoSizeColumns(Sheet sheet)
     {
-        var xlColumns = sheet.Columns().ToList();
-
-        // Apply specific column widths
-        for (var i = 0; i < Columns.Count; i++)
-        {
-            var column = Columns[i];
-            if (column.Width != null)
-            {
-                var xlColumn = sheet.Column(i + 1);
-                xlColumns.Remove(xlColumn);
-                xlColumn.Width = column.Width.Value;
-            }
-        }
-
         var endRow = sheet.RowsUsed().Count();
-        foreach (var column in xlColumns)
+        for (var index = 0; index < Columns.Count; index++)
         {
-            column.AdjustToContents(1, endRow);
-            column.Width += 2;
+            var columnConfig = Columns[index];
+            var column = sheet.Column(index + 1);
+            if (columnConfig.Width == null)
+            {
+                column.AdjustToContents(1, endRow);
+                column.Width += 2;
+            }
+            else
+            {
+                column.Width = columnConfig.Width.Value;
+            }
         }
     }
 }

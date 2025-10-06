@@ -236,18 +236,6 @@ var builder = new BookBuilder(
 builder.AddSheet(data);
 ```
 <sup><a href='/src/ExcelsiorClosedXml.Tests/StyleTests.cs#L10-L21' title='Snippet source file'>snippet source</a> | <a href='#snippet-HeadingStyle' title='Start of snippet'>anchor</a></sup>
-<a id='snippet-HeadingStyle-1'></a>
-```cs
-var builder = new BookBuilder(
-    headingStyle: style =>
-    {
-        style.Font.Bold = true;
-        style.Font.FontColor = XLColor.White;
-        style.Fill.BackgroundColor = XLColor.DarkBlue;
-    });
-builder.AddSheet(data);
-```
-<sup><a href='/src/ExcelsiorSyncfusion.Tests/StyleTests.cs#L10-L21' title='Snippet source file'>snippet source</a> | <a href='#snippet-HeadingStyle-1' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -271,18 +259,6 @@ var builder = new BookBuilder(
 builder.AddSheet(data);
 ```
 <sup><a href='/src/ExcelsiorClosedXml.Tests/StyleTests.cs#L33-L44' title='Snippet source file'>snippet source</a> | <a href='#snippet-GlobalStyle' title='Start of snippet'>anchor</a></sup>
-<a id='snippet-GlobalStyle-1'></a>
-```cs
-var builder = new BookBuilder(
-    globalStyle: style =>
-    {
-        style.Font.Bold = true;
-        style.Font.FontColor = XLColor.White;
-        style.Fill.BackgroundColor = XLColor.DarkBlue;
-    });
-builder.AddSheet(data);
-```
-<sup><a href='/src/ExcelsiorSyncfusion.Tests/StyleTests.cs#L33-L44' title='Snippet source file'>snippet source</a> | <a href='#snippet-GlobalStyle-1' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -330,42 +306,6 @@ builder.AddSheet(employees)
         });
 ```
 <sup><a href='/src/ExcelsiorClosedXml.Tests/StyleTests.cs#L56-L91' title='Snippet source file'>snippet source</a> | <a href='#snippet-CellStyle' title='Start of snippet'>anchor</a></sup>
-<a id='snippet-CellStyle-1'></a>
-```cs
-var builder = new BookBuilder();
-builder.AddSheet(employees)
-    .Column(
-        _ => _.Salary,
-        config =>
-        {
-            config.CellStyle = (style, employee, salary) =>
-            {
-                if (salary > 100000)
-                {
-                    style.Font.FontColor = XLColor.DarkGreen;
-                    style.Font.Bold = true;
-                }
-            };
-        })
-    .Column(
-        _ => _.IsActive,
-        config =>
-        {
-            config.CellStyle = (style, employee, isActive) =>
-            {
-                var fill = style.Fill;
-                if (isActive)
-                {
-                    fill.BackgroundColor = XLColor.LightGreen;
-                }
-                else
-                {
-                    fill.BackgroundColor = XLColor.LightPink;
-                }
-            };
-        });
-```
-<sup><a href='/src/ExcelsiorSyncfusion.Tests/StyleTests.cs#L56-L91' title='Snippet source file'>snippet source</a> | <a href='#snippet-CellStyle-1' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 

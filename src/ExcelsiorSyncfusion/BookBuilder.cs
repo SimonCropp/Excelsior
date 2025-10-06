@@ -1,13 +1,11 @@
-using Syncfusion.XlsIO;
-
 namespace ExcelsiorSyncfusion;
 
 public class BookBuilder :
-    BookBuilderBase<Book, Sheet, Style, Cell>,
+    BookBuilderBase<Book, Sheet, Style, Range>,
     IDisposable
 {
     bool useAlternatingRowColors;
-    XLColor? alternateRowColor;
+    Color? alternateRowColor;
     Action<Style>? headingStyle;
     Action<Style>? globalStyle;
     bool trimWhitespace;
@@ -16,7 +14,7 @@ public class BookBuilder :
 
     public BookBuilder(
         bool useAlternatingRowColors = false,
-        XLColor? alternateRowColor = null,
+        Color? alternateRowColor = null,
         Action<Style>? headingStyle = null,
         Action<Style>? globalStyle = null,
         bool trimWhitespace = true,
@@ -32,7 +30,7 @@ public class BookBuilder :
         engine = new ExcelEngine();
     }
 
-    internal override RendererBase<TModel, Sheet, Style, Cell, Book> ConstructSheetRenderer<TModel>(
+    internal override RendererBase<TModel, Sheet, Style, Range, Book> ConstructSheetRenderer<TModel>(
         IAsyncEnumerable<TModel> data,
         string name,
         List<Column<Style, TModel>> columns,

@@ -1,6 +1,8 @@
-﻿global using Syncfusion.XlsIO;
+﻿global using System.Net;
+global using Syncfusion.XlsIO;
 global using Excelsior;
+global using Syncfusion.Drawing;
 global using Sheet = Syncfusion.XlsIO.IWorksheet;
 global using Book = Syncfusion.XlsIO.IWorkbook;
-global using Cell = Syncfusion.XlsIO.Cell;
 global using Style = Syncfusion.XlsIO.IStyle;
+global using Range = Syncfusion.XlsIO.IRange;

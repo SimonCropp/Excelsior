@@ -2,24 +2,24 @@
     string name,
     IAsyncEnumerable<TModel> data,
     bool useAlternatingRowColors,
-    XLColor? alternateRowColor,
+    Color? alternateRowColor,
     Action<Style>? headingStyle,
     Action<Style>? globalStyle,
     bool trimWhitespace,
     List<Column<Style, TModel>> columns,
     int maxCoumnWidth) :
-    RendererBase<TModel, Sheet, Style, Cell, Book>(data, columns, maxCoumnWidth)
+    RendererBase<TModel, Sheet, Style, Range, Book>(data, columns, maxCoumnWidth)
 {
     internal override async Task AddSheet(Book book, Cancel cancel)
     {
-        var sheet = book.Worksheets.Add(name);
+        var sheet = book.Worksheets.Create(name);
 
         CreateHeadings(sheet);
 
         await PopulateData(sheet, cancel);
 
         ApplyGlobalStyling(sheet);
-        sheet.RangeUsed()!.SetAutoFilter();
+        sheet.AutoFilters.FilterRange = sheet.UsedRange;
         AutoSizeColumns(sheet);
     }
 
@@ -28,99 +28,89 @@
         for (var i = 0; i < Columns.Count; i++)
         {
             var column = Columns[i];
-            var cell = sheet.Cell(1, i + 1);
+            var cell = sheet.Range[1, i + 1];
 
             cell.Value = column.Heading;
 
             ApplyHeadingStyling(cell, column);
         }
 
-        sheet.SheetView.FreezeRows(1);
+        sheet.Rows[0].FreezePanes();
     }
 
 
-    protected override Cell GetCell(Sheet sheet, int row, int column) =>
-        sheet.Cell(row + 1, column + 1);
+    protected override Range GetCell(Sheet sheet, int row, int column) =>
+        sheet.Range[row + 1, column + 1];
 
     protected override void RenderCell(object? value,
         Column<Style, TModel> column,
         TModel item,
         int rowIndex,
-        Cell cell)
+        Range cell)
     {
-        var style = cell.Style;
-        style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
-        style.Alignment.Vertical = XLAlignmentVerticalValues.Top;
-        style.Alignment.WrapText = true;
+        var style = cell.CellStyle;
+        style.HorizontalAlignment = ExcelHAlign.HAlignLeft;
+        style.VerticalAlignment= ExcelVAlign.VAlignTop;
+        style.WrapText = true;
 
         base.SetCellValue(cell, style, value, column, item, trimWhitespace);
         ApplyCellStyle(cell, rowIndex, value, column, item);
     }
 
     protected override void SetDateFormat(Style style, string format) =>
-        style.DateFormat.Format = format;
+        style.NumberFormat = format;
 
     protected override void SetNumberFormat(Style style, string format) =>
-        style.NumberFormat.Format = format;
+        style.NumberFormat = format;
 
-    protected override void SetCellValue(Cell cell, object value) =>
-        cell.Value = XLCellValue.FromObject(value);
+    protected override void SetCellValue(Range cell, object value) =>
+        cell.Value2 = value;
 
-    protected override void SetCellHtml(Cell cell, string value) =>
-        throw new("ClosedXml does not support html");
+    protected override void SetCellHtml(Range cell, string value) =>
+        cell.HtmlString = value;
 
-    protected override void WriteEnumerable(Cell cell, IEnumerable<string> enumerable) =>
-        RichText.Enumerable(cell, enumerable, trimWhitespace);
+    protected override void WriteEnumerable(Range cell, IEnumerable<string> enumerable) =>
+        cell.HtmlString = Html.Enumerable(enumerable, trimWhitespace);
 
-    void ApplyHeadingStyling(Cell cell, Column<Style, TModel> column)
+    void ApplyHeadingStyling(Range cell, Column<Style, TModel> column)
     {
-        headingStyle?.Invoke(cell.Style);
+        headingStyle?.Invoke(cell.CellStyle);
 
-        column.HeadingStyle?.Invoke(cell.Style);
+        column.HeadingStyle?.Invoke(cell.CellStyle);
     }
 
-    void ApplyCellStyle(Cell cell, int index, object? value, Column<Style, TModel> column, TModel item)
+    void ApplyCellStyle(Range cell, int index, object? value, Column<Style, TModel> column, TModel item)
     {
-        var style = cell.Style;
+        var style = cell.CellStyle;
 
         // Apply alternating row colors
         if (useAlternatingRowColors &&
             index % 2 == 1)
         {
-            style.Fill.BackgroundColor = alternateRowColor;
+            style.Color = alternateRowColor!.Value;
         }
 
         column.CellStyle?.Invoke(style, item, value);
     }
 
-    void ApplyGlobalStyling(Sheet sheet)
-    {
-        if (globalStyle == null)
-        {
-            return;
-        }
-
-        var lastRow = sheet.LastRowUsed();
-        var lastRowNumber = lastRow!.RowNumber();
-        var range = sheet.Range(1, 1, lastRowNumber, Columns.Count);
-        globalStyle(range.Style);
-    }
+    void ApplyGlobalStyling(Sheet sheet) =>
+        globalStyle?.Invoke(sheet.UsedRange.CellStyle);
 
     protected override void ResizeColumn(Sheet sheet, int index, int? columnWidth, int maxCoumnWidth)
     {
-        var column = sheet.Column(index + 1);
+        var column = sheet.Columns[index + 1];;
         if (columnWidth == null)
         {
-            column.AdjustToContents();
-            column.Width += 2;
-            if (column.Width > maxCoumnWidth)
+            sheet.AutofitColumn(index + 1);
+            column.ColumnWidth += 2;
+            if (column.ColumnWidth > maxCoumnWidth)
             {
-                column.Width = maxCoumnWidth;
+                column.ColumnWidth = maxCoumnWidth;
             }
         }
         else
         {
-            column.Width = columnWidth.Value;
+            column.ColumnWidth = columnWidth.Value;
         }
     }
 }

@@ -7,7 +7,7 @@ public class StyleTests
     {
         var data = SampleData.Employees();
 
-        #region HeadingStyle
+        #region SyncfusionHeadingStyle
 
         var builder = new BookBuilder(
             headingStyle: style =>
@@ -30,7 +30,7 @@ public class StyleTests
     {
         var data = SampleData.Employees();
 
-        #region GlobalStyle
+        #region SyncfusionGlobalStyle
 
         var builder = new BookBuilder(
             globalStyle: style =>
@@ -53,7 +53,7 @@ public class StyleTests
     {
         var employees = SampleData.Employees();
 
-        #region CellStyle
+        #region SyncfusionCellStyle
 
         var builder = new BookBuilder();
         builder.AddSheet(employees)

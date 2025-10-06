@@ -1,5 +1,5 @@
-﻿public interface IDisposableBook: Book, IDisposable;
-class DisposableBook( ExcelEngine engine,Book book) : IDisposableBook
+﻿class DisposableBook(ExcelEngine engine, Book book) :
+    IDisposableBook
 {
     public void Dispose() =>
         engine.Dispose();
@@ -17,8 +17,8 @@ class DisposableBook( ExcelEngine engine,Book book) : IDisposableBook
     public IFont AddFont(IFont fontToAdd) =>
         book.AddFont(fontToAdd);
 
-    public void Close(bool SaveChanges, string Filename) =>
-        book.Close(SaveChanges, Filename);
+    public void Close(bool saveChanges, string filename) =>
+        book.Close(saveChanges, filename);
 
     public void Close(bool saveChanges) =>
         book.Close(saveChanges);
@@ -26,11 +26,11 @@ class DisposableBook( ExcelEngine engine,Book book) : IDisposableBook
     public void Close() =>
         book.Close();
 
-    public void SaveAs(string Filename) =>
-        book.SaveAs(Filename);
+    public void SaveAs(string filename) =>
+        book.SaveAs(filename);
 
-    public void SaveAsXml(string strFileName, ExcelXmlSaveType saveType) =>
-        book.SaveAsXml(strFileName, saveType);
+    public void SaveAsXml(string filename, ExcelXmlSaveType type) =>
+        book.SaveAsXml(filename, type);
 
     public void SaveAs(string fileName, string separator) =>
         book.SaveAs(fileName, separator);
@@ -116,8 +116,8 @@ class DisposableBook( ExcelEngine engine,Book book) : IDisposableBook
     public void SaveAsJson(Stream stream, Range range) =>
         book.SaveAsJson(stream, range);
 
-    public void SaveAsJson(Stream stream, Range range, bool IsSchema) =>
-        book.SaveAsJson(stream, range, IsSchema);
+    public void SaveAsJson(Stream stream, Range range, bool isSchema) =>
+        book.SaveAsJson(stream, range, isSchema);
 
     public void SetPaletteColor(int index, Color color) =>
         book.SetPaletteColor(index, color);

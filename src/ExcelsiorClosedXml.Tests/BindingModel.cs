@@ -1,6 +1,3 @@
-using ExcelsiorClosedXml;
-using Microsoft.EntityFrameworkCore;
-
 public class BindingModel
 {
     #region DataModel

@@ -592,7 +592,7 @@ public class Employee
     public required string Email { get; init; }
 }
 ```
-<sup><a href='/src/Model/BindingModel.cs#L6-L29' title='Snippet source file'>snippet source</a> | <a href='#snippet-DataModel' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/ExcelsiorClosedXml.Tests/BindingModel.cs#L6-L29' title='Snippet source file'>snippet source</a> | <a href='#snippet-DataModel' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 Then a custom binding type can be used.
@@ -608,7 +608,7 @@ public class EmployeeBindingModel
     public required string Address { get; init; }
 }
 ```
-<sup><a href='/src/Model/BindingModel.cs#L31-L41' title='Snippet source file'>snippet source</a> | <a href='#snippet-EmployeeBindingModel' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/ExcelsiorClosedXml.Tests/BindingModel.cs#L31-L41' title='Snippet source file'>snippet source</a> | <a href='#snippet-EmployeeBindingModel' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 The custom binding type can be queried and  rendered into a sheet.
@@ -629,7 +629,7 @@ var employees = dbContext
 var builder = new BookBuilder();
 builder.AddSheet(employees);
 ```
-<sup><a href='/src/Model/BindingModel.cs#L53-L68' title='Snippet source file'>snippet source</a> | <a href='#snippet-ModelProjection' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/ExcelsiorClosedXml.Tests/BindingModel.cs#L53-L68' title='Snippet source file'>snippet source</a> | <a href='#snippet-ModelProjection' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 

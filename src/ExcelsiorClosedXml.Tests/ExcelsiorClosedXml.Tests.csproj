@@ -11,6 +11,7 @@
     <PackageReference Include="Verify.NUnit" />
     <PackageReference Include="NUnit" />
     <PackageReference Include="NUnit3TestAdapter" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
     <ProjectReference Include="..\ExcelsiorClosedXml\ExcelsiorClosedXml.csproj" />
     <ProjectReference Include="..\Model\Model.csproj" />
     <Using Include="NUnit.Framework.Legacy.ClassicAssert" Static="True" />

@@ -1,6 +1,6 @@
-﻿global using ClosedXML.Excel;
+﻿global using Syncfusion.XlsIO;
 global using Excelsior;
-global using Sheet = ClosedXML.Excel.IXLWorksheet;
-global using Book = ClosedXML.Excel.IXLWorkbook;
-global using Cell = ClosedXML.Excel.IXLCell;
-global using Style = ClosedXML.Excel.IXLStyle;
+global using Sheet = Syncfusion.XlsIO.IWorksheet;
+global using Book = Syncfusion.XlsIO.IWorkbook;
+global using Cell = Syncfusion.XlsIO.Cell;
+global using Style = Syncfusion.XlsIO.IStyle;

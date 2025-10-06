@@ -50,14 +50,11 @@ public class BookBuilder :
 
     public override async Task ToStream(Stream stream, Cancel cancel = default)
     {
-        using var book = await Build(cancel);
+        var book = await Build(cancel);
         book.SaveAs(stream);
-        ExcelEngine engine = new ExcelEngine();
     }
 
-    protected override Book BuildBook() => new SynfWorkbook();
-    public void Dispose()
-    {
-        
-    }
+    protected override Book BuildBook() => engine.Excel.Workbooks.Create();
+
+    public void Dispose() => engine.Dispose();
 }

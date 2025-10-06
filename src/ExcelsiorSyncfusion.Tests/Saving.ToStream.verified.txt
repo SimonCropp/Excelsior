@@ -8,7 +8,7 @@
   DisplayWorkbookTabs: true,
   IsRightToLeft: false,
   IsWindowProtection: false,
-  Version: Excel2007,
+  Version: Xlsx,
   IsCellProtection: false,
   ReadOnly: false,
   ReadOnlyRecommended: false,

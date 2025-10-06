@@ -51,7 +51,13 @@ public class BookBuilder :
 
     protected override IDisposableBook BuildBook()
     {
-        var engine = new ExcelEngine();
+        var engine = new ExcelEngine
+        {
+            Excel =
+            {
+                DefaultVersion = ExcelVersion.Excel2016
+            }
+        };
         var book = engine.Excel.Workbooks.Create(0);
         return new DisposableBook(engine, book);
     }

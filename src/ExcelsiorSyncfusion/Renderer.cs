@@ -38,7 +38,6 @@
         sheet.Rows[0].FreezePanes();
     }
 
-
     protected override Range GetCell(Sheet sheet, int row, int column) =>
         sheet.Range[row + 1, column + 1];
 

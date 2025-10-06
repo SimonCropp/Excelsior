@@ -38,7 +38,6 @@
         sheet.SheetView.FreezeRows(1);
     }
 
-
     protected override Cell GetCell(Sheet sheet, int row, int column) =>
         sheet.Cell(row + 1, column + 1);
 

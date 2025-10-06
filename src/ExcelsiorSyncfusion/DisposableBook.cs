@@ -1,4 +1,4 @@
-﻿class DisposableBook(ExcelEngine engine, Book book) :
+﻿class DisposableBook(ExcelEngine engine, IWorkbook book) :
     IDisposableBook
 {
     public void Dispose() =>
@@ -230,7 +230,7 @@
     public void Unprotect(string password) =>
         book.Unprotect(password);
 
-    public Book Clone() =>
+    public IWorkbook Clone() =>
         book.Clone();
 
     public void SetWriteProtectionPassword(string password) =>

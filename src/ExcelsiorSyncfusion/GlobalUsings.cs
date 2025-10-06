@@ -7,6 +7,5 @@ global using Syncfusion.Office;
 global using Syncfusion.XlsIO.Implementation;
 global using Syncfusion.XlsIO.Implementation.Collections;
 global using Sheet = Syncfusion.XlsIO.IWorksheet;
-global using Book = Syncfusion.XlsIO.IWorkbook;
 global using Style = Syncfusion.XlsIO.IStyle;
 global using Range = Syncfusion.XlsIO.IRange;

@@ -1,3 +1,3 @@
 ﻿public interface IDisposableBook :
-    Book,
+    IWorkbook,
     IDisposable;

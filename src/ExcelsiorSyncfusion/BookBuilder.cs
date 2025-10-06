@@ -52,7 +52,7 @@ public class BookBuilder :
     protected override IDisposableBook BuildBook()
     {
         var engine = new ExcelEngine();
-        var book = engine.Excel.Workbooks.Create();
+        var book = engine.Excel.Workbooks.Create(0);
         return new DisposableBook(engine, book);
     }
 }

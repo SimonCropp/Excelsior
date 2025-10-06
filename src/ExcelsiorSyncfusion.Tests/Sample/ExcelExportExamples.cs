@@ -1,4 +1,7 @@
-﻿public static class ExcelExportExamples
+﻿using Syncfusion.Drawing;
+using Syncfusion.XlsIO;
+
+public static class ExcelExportExamples
 {
     public static async Task BasicExport()
     {
@@ -17,13 +20,13 @@
 
         var builder = new BookBuilder(
             useAlternatingRowColors: true,
-            alternateRowColor: XLColor.AliceBlue,
+            alternateRowColor: Color.AliceBlue,
             headingStyle: style =>
             {
                 style.Font.Bold = true;
-                style.Font.FontColor = XLColor.White;
-                style.Fill.BackgroundColor = XLColor.DarkBlue;
-                style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                style.Font.Color = ExcelKnownColors.White;
+                style.Color =Color.DarkBlue;
+                style.HorizontalAlignment = ExcelHAlign.HAlignCenter;
             });
         builder.AddSheet(employees, "Employee Report")
             .Column(_ => _.Salary,
@@ -32,13 +35,13 @@
                     config.Format = "#,##0.00";
                     config.HeadingStyle = style =>
                     {
-                        style.Fill.BackgroundColor = XLColor.Green;
+                        style.Color = Color.Green;
                     };
                     config.CellStyle = (style, _, value) =>
                     {
                         if (value > 100000)
                         {
-                            style.Font.FontColor = XLColor.DarkGreen;
+                            style.Font.Color = ExcelKnownColors.Dark_green;
                             style.Font.Bold = true;
                         }
                     };
@@ -57,7 +60,7 @@
                     config.Render = (_, active) => active ? "Yes" : "No";
                     config.CellStyle = (style, _, _) =>
                     {
-                        style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                        style.HorizontalAlignment = ExcelHAlign.HAlignCenter;
                     };
                 })
             .Column(
@@ -69,16 +72,16 @@
                         switch (status)
                         {
                             case EmployeeStatus.FullTime:
-                                style.Fill.BackgroundColor = XLColor.LightGreen;
+                                style.Color = Color.LightGreen;
                                 break;
                             case EmployeeStatus.PartTime:
-                                style.Fill.BackgroundColor = XLColor.LightYellow;
+                                style.Color = Color.LightYellow;
                                 break;
                             case EmployeeStatus.Contract:
-                                style.Fill.BackgroundColor = XLColor.LightBlue;
+                                style.Color = Color.LightBlue;
                                 break;
                             case EmployeeStatus.Terminated:
-                                style.Fill.BackgroundColor = XLColor.LightPink;
+                                style.Color = Color.LightPink;
                                 break;
                         }
                     };

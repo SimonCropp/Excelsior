@@ -8,9 +8,9 @@
     bool trimWhitespace,
     List<Column<Style, TModel>> columns,
     int maxCoumnWidth) :
-    RendererBase<TModel, Sheet, Style, Range, Book>(data, columns, maxCoumnWidth)
+    RendererBase<TModel, Sheet, Style, Range, IDisposableBook>(data, columns, maxCoumnWidth)
 {
-    internal override async Task AddSheet(Book book, Cancel cancel)
+    internal override async Task AddSheet(IDisposableBook book, Cancel cancel)
     {
         var sheet = book.Worksheets.Create(name);
 

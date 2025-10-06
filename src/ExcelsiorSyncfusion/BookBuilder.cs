@@ -1,8 +1,7 @@
 namespace ExcelsiorSyncfusion;
 
 public class BookBuilder :
-    BookBuilderBase<Book, Sheet, Style, Range>,
-    IDisposable
+    BookBuilderBase<IDisposableBook, Sheet, Style, Range>
 {
     bool useAlternatingRowColors;
     Color? alternateRowColor;
@@ -10,7 +9,6 @@ public class BookBuilder :
     Action<Style>? globalStyle;
     bool trimWhitespace;
     int defaultMaxCoumnWidth;
-    private readonly ExcelEngine engine;
 
     public BookBuilder(
         bool useAlternatingRowColors = false,
@@ -27,10 +25,9 @@ public class BookBuilder :
         this.globalStyle = globalStyle;
         this.trimWhitespace = trimWhitespace;
         this.defaultMaxCoumnWidth = defaultMaxCoumnWidth;
-        engine = new();
     }
 
-    internal override RendererBase<TModel, Sheet, Style, Range, Book> ConstructSheetRenderer<TModel>(
+    internal override RendererBase<TModel, Sheet, Style, Range, IDisposableBook> ConstructSheetRenderer<TModel>(
         IAsyncEnumerable<TModel> data,
         string name,
         List<Column<Style, TModel>> columns,
@@ -52,7 +49,10 @@ public class BookBuilder :
         book.SaveAs(stream);
     }
 
-    protected override Book BuildBook() => engine.Excel.Workbooks.Create();
-
-    public void Dispose() => engine.Dispose();
+    protected override IDisposableBook BuildBook()
+    {
+        var engine = new ExcelEngine();
+        var book = engine.Excel.Workbooks.Create();
+        return new DisposableBook(engine, book);
+    }
 }

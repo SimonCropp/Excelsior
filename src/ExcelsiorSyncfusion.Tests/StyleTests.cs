@@ -1,4 +1,8 @@
 ﻿// ReSharper disable UnusedParameter.Local
+
+using Syncfusion.Drawing;
+using Syncfusion.XlsIO;
+
 [TestFixture]
 public class StyleTests
 {
@@ -13,8 +17,8 @@ public class StyleTests
             headingStyle: style =>
             {
                 style.Font.Bold = true;
-                style.Font.FontColor = XLColor.White;
-                style.Fill.BackgroundColor = XLColor.DarkBlue;
+                style.Font.Color = ExcelKnownColors.White;
+                style.Color = Color.DarkBlue;
             });
         builder.AddSheet(data);
 
@@ -36,8 +40,8 @@ public class StyleTests
             globalStyle: style =>
             {
                 style.Font.Bold = true;
-                style.Font.FontColor = XLColor.White;
-                style.Fill.BackgroundColor = XLColor.DarkBlue;
+                style.Font.Color = ExcelKnownColors.White;
+                style.Color = Color.DarkBlue;
             });
         builder.AddSheet(data);
 
@@ -65,7 +69,7 @@ public class StyleTests
                     {
                         if (salary > 100000)
                         {
-                            style.Font.FontColor = XLColor.DarkGreen;
+                            style.Font.Color = ExcelKnownColors.Dark_green;
                             style.Font.Bold = true;
                         }
                     };
@@ -76,14 +80,13 @@ public class StyleTests
                 {
                     config.CellStyle = (style, employee, isActive) =>
                     {
-                        var fill = style.Fill;
                         if (isActive)
                         {
-                            fill.BackgroundColor = XLColor.LightGreen;
+                            style.Color = Color.LightGreen;
                         }
                         else
                         {
-                            fill.BackgroundColor = XLColor.LightPink;
+                            style.Color = Color.LightPink;
                         }
                     };
                 });

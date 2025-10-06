@@ -98,7 +98,7 @@ List<Employee> data =
 ];
 builder.AddSheet(data);
 
-var book = await builder.Build();
+using var book = await builder.Build();
 ```
 <sup><a href='/src/ExcelsiorAspose.Tests/UsageTests.cs#L7-L38' title='Snippet source file'>snippet source</a> | <a href='#snippet-Usage' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
@@ -476,7 +476,7 @@ List<Employee> data =
 ];
 builder.AddSheet(data);
 
-var book = await builder.Build();
+using var book = await builder.Build();
 ```
 <sup><a href='/src/ExcelsiorAspose.Tests/WhitespaceTests.cs#L7-L24' title='Snippet source file'>snippet source</a> | <a href='#snippet-Whitespace' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
@@ -505,7 +505,7 @@ List<Employee> data =
 var builder = new BookBuilder(trimWhitespace: false);
 builder.AddSheet(data);
 
-var book = await builder.Build();
+using var book = await builder.Build();
 ```
 <sup><a href='/src/ExcelsiorAspose.Tests/WhitespaceTests.cs#L32-L49' title='Snippet source file'>snippet source</a> | <a href='#snippet-DisableWhitespaceTrim' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->

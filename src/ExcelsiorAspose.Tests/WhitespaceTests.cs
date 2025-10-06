@@ -19,7 +19,7 @@ public class WhitespaceTests
         ];
         builder.AddSheet(data);
 
-        var book = await builder.Build();
+        using var book = await builder.Build();
 
         #endregion
 
@@ -44,7 +44,7 @@ public class WhitespaceTests
         var builder = new BookBuilder(trimWhitespace: false);
         builder.AddSheet(data);
 
-        var book = await builder.Build();
+        using var book = await builder.Build();
 
         #endregion
 

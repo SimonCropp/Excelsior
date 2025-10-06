@@ -33,7 +33,7 @@ public class DataAnnotationsTests
         ];
         builder.AddSheet(data);
 
-        var book = await builder.Build();
+        using var book = await builder.Build();
 
         #endregion
 

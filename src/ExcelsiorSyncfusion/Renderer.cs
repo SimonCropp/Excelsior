@@ -7,8 +7,8 @@
     Action<Style>? globalStyle,
     bool trimWhitespace,
     List<Column<Style, TModel>> columns,
-    int maxCoumnWidth) :
-    RendererBase<TModel, Sheet, Style, Range, IDisposableBook>(data, columns, maxCoumnWidth)
+    int maxColumnWidth) :
+    RendererBase<TModel, Sheet, Style, Range, IDisposableBook>(data, columns, maxColumnWidth)
 {
     internal override async Task AddSheet(IDisposableBook book, Cancel cancel)
     {
@@ -95,16 +95,16 @@
     void ApplyGlobalStyling(Sheet sheet) =>
         globalStyle?.Invoke(sheet.UsedRange.CellStyle);
 
-    protected override void ResizeColumn(Sheet sheet, int index, int? columnWidth, int maxCoumnWidth)
+    protected override void ResizeColumn(Sheet sheet, int index, int? columnWidth, int maxColumnWidth)
     {
         var column = sheet.Columns[index];
         if (columnWidth == null)
         {
             sheet.AutofitColumn(index + 1);
             column.ColumnWidth += 4;
-            if (column.ColumnWidth > maxCoumnWidth)
+            if (column.ColumnWidth > maxColumnWidth)
             {
-                column.ColumnWidth = maxCoumnWidth;
+                column.ColumnWidth = maxColumnWidth;
             }
         }
         else

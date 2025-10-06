@@ -4,7 +4,7 @@ public class BookBuilder :
     BookBuilderBase<Book, Sheet, Style, Cell>
 {
     bool useAlternatingRowColors;
-    XLColor? alternateRowColor;
+    Color? alternateRowColor;
     Action<Style>? headingStyle;
     Action<Style>? globalStyle;
     bool trimWhitespace;
@@ -12,7 +12,7 @@ public class BookBuilder :
 
     public BookBuilder(
         bool useAlternatingRowColors = false,
-        XLColor? alternateRowColor = null,
+        Color? alternateRowColor = null,
         Action<Style>? headingStyle = null,
         Action<Style>? globalStyle = null,
         bool trimWhitespace = true,

@@ -2,7 +2,7 @@
     string name,
     IAsyncEnumerable<TModel> data,
     bool useAlternatingRowColors,
-    XLColor? alternateRowColor,
+    Color? alternateRowColor,
     Action<Style>? headingStyle,
     Action<Style>? globalStyle,
     bool trimWhitespace,

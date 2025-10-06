@@ -27,7 +27,7 @@ public class BookBuilder :
         this.globalStyle = globalStyle;
         this.trimWhitespace = trimWhitespace;
         this.defaultMaxCoumnWidth = defaultMaxCoumnWidth;
-        engine = new ExcelEngine();
+        engine = new();
     }
 
     internal override RendererBase<TModel, Sheet, Style, Range, Book> ConstructSheetRenderer<TModel>(

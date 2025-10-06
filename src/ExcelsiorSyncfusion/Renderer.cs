@@ -98,7 +98,7 @@
 
     protected override void ResizeColumn(Sheet sheet, int index, int? columnWidth, int maxCoumnWidth)
     {
-        var column = sheet.Columns[index + 1];;
+        var column = sheet.Columns[index + 1];
         if (columnWidth == null)
         {
             sheet.AutofitColumn(index + 1);

@@ -7,7 +7,7 @@ public class BookBuilder : BookBuilderBase<Book, Sheet, Style, Cell>
     Action<Style>? headingStyle;
     Action<Style>? globalStyle;
     bool trimWhitespace;
-    int defaultMaxCoumnWidth;
+    int defaultMaxColumnWidth;
 
     public BookBuilder(
         bool useAlternatingRowColors = false,
@@ -15,7 +15,7 @@ public class BookBuilder : BookBuilderBase<Book, Sheet, Style, Cell>
         Action<Style>? headingStyle = null,
         Action<Style>? globalStyle = null,
         bool trimWhitespace = true,
-        int defaultMaxCoumnWidth = 50)
+        int defaultMaxColumnWidth = 50)
     {
         ValueRenderer.SetBookBuilderUsed();
         this.useAlternatingRowColors = useAlternatingRowColors;
@@ -23,14 +23,14 @@ public class BookBuilder : BookBuilderBase<Book, Sheet, Style, Cell>
         this.headingStyle = headingStyle;
         this.globalStyle = globalStyle;
         this.trimWhitespace = trimWhitespace;
-        this.defaultMaxCoumnWidth = defaultMaxCoumnWidth;
+        this.defaultMaxColumnWidth = defaultMaxColumnWidth;
     }
 
     internal override RendererBase<TModel, Sheet, Style, Cell, Book> ConstructSheetRenderer<TModel>(
         IAsyncEnumerable<TModel> data,
         string name,
         List<Column<Style, TModel>> columns,
-        int? defaultMaxCoumnWidth) =>
+        int? defaultMaxColumnWidth) =>
         new Renderer<TModel>(
             name,
             data,
@@ -40,7 +40,7 @@ public class BookBuilder : BookBuilderBase<Book, Sheet, Style, Cell>
             globalStyle,
             trimWhitespace,
             columns,
-            defaultMaxCoumnWidth ?? this.defaultMaxCoumnWidth);
+            defaultMaxColumnWidth ?? this.defaultMaxColumnWidth);
 
     public override async Task ToStream(Stream stream, Cancel cancel = default)
     {

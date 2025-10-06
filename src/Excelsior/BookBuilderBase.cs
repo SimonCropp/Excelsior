@@ -9,18 +9,18 @@ public abstract class BookBuilderBase<TBook, TSheet, TStyle, TCell>
     public ISheetBuilder<TModel, TStyle> AddSheet<TModel>(
         IEnumerable<TModel> data,
         string? name = null,
-        int? defaultMaxCoumnWidth = null) =>
-        AddSheet(data.ToAsyncEnumerable(), name, defaultMaxCoumnWidth);
+        int? defaultMaxColumnWidth = null) =>
+        AddSheet(data.ToAsyncEnumerable(), name, defaultMaxColumnWidth);
 
     internal abstract RendererBase<TModel, TSheet, TStyle, TCell, TBook> ConstructSheetRenderer<TModel>(IAsyncEnumerable<TModel> data,
         string name,
         List<Column<TStyle, TModel>> columns,
-        int? defaultMaxCoumnWidth);
+        int? defaultMaxColumnWidth);
 
     public ISheetBuilder<TModel, TStyle> AddSheet<TModel>(
         IAsyncEnumerable<TModel> data,
         string? name = null,
-        int? defaultMaxCoumnWidth = null)
+        int? defaultMaxColumnWidth = null)
     {
         name ??= $"Sheet{actions.Count + 1}";
         var columns = new Columns<TModel, TStyle>();
@@ -28,7 +28,7 @@ public abstract class BookBuilderBase<TBook, TSheet, TStyle, TCell>
 
         actions.Add((book, cancel) =>
         {
-            var renderer = ConstructSheetRenderer(data, name, columns.OrderedColumns(),defaultMaxCoumnWidth);
+            var renderer = ConstructSheetRenderer(data, name, columns.OrderedColumns(), defaultMaxColumnWidth);
             return renderer.AddSheet(book, cancel);
         });
 

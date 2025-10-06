@@ -102,7 +102,7 @@
         if (columnWidth == null)
         {
             sheet.AutofitColumn(index + 1);
-            column.ColumnWidth += 2;
+            column.ColumnWidth += 4;
             if (column.ColumnWidth > maxCoumnWidth)
             {
                 column.ColumnWidth = maxCoumnWidth;

@@ -33,7 +33,7 @@ public class UsageTests
         ];
         builder.AddSheet(data);
 
-        var book = await builder.Build();
+        using var book = await builder.Build();
 
         #endregion
 

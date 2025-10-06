@@ -24,6 +24,6 @@
     <PackageVersion Include="NUnit" Version="4.4.0" />
     <PackageVersion Include="NUnit3TestAdapter" Version="5.1.0" />
     <PackageVersion Include="Microsoft.Sbom.Targets" Version="4.1.2" />
-    <PackageVersion Include="Verify.Syncfusion" Version="2.4.0" />
+    <PackageVersion Include="Verify.Syncfusion" Version="2.4.1" />
   </ItemGroup>
 </Project>

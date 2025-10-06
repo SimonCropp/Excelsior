@@ -1,14 +1,17 @@
 ﻿{
-  SheetNames: [
-    Sheet1
-  ],
-  Properties: {},
-  WorksheetCount: 1,
-  DefaultFont: Calibri,
-  CalculateMode: Default,
-  Style: {
-    Font: {
-      Name: Calibri
-    }
-  }
+  CodeName: ThisWorkbook,
+  Date1904: false,
+  HasMacros: false,
+  DisableMacrosStart: false,
+  DetectDateTimeInValue: true,
+  ArgumentsSeparator: ,,
+  DisplayWorkbookTabs: true,
+  IsRightToLeft: false,
+  IsWindowProtection: false,
+  Version: Excel2007,
+  IsCellProtection: false,
+  ReadOnly: false,
+  ReadOnlyRecommended: false,
+  StandardFont: Calibri,
+  StandardFontSize: 11.0
 }

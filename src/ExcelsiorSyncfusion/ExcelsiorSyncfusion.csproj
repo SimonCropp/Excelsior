@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <PackageTags>Excel, ClosedXML</PackageTags>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="ProjectDefaults" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.Sbom.Targets" PrivateAssets="all" />
+    <PackageReference Include="Syncfusion.XlsIO.Net.Core" />
+    <PackageReference Include="System.ComponentModel.Annotations" />
+    <PackageReference Include="System.Linq.Async" />
+    <ProjectReference Include="..\Excelsior\Excelsior.csproj" />
+  </ItemGroup>
+</Project>

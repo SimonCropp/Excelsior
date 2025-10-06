@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Verify.DiffPlex" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Verify.ImageMagick" />
+    <PackageReference Include="Verify.NUnit" />
+    <PackageReference Include="NUnit" />
+    <PackageReference Include="NUnit3TestAdapter" />
+    <PackageReference Include="Verify.Syncfusion" />
+    <ProjectReference Include="..\ExcelsiorSyncfusion\ExcelsiorSyncfusion.csproj" />
+    <ProjectReference Include="..\Model\Model.csproj" />
+    <Using Include="NUnit.Framework.Legacy.ClassicAssert" Static="True" />
+    <PackageReference Include="ProjectDefaults" PrivateAssets="all" />
+    
+    <Compile Include="..\ExcelsiorAspose.Tests\Enums.cs" />
+    <Compile Include="..\ExcelsiorAspose.Tests\ColumnWidths.cs" />
+    <Compile Include="..\ExcelsiorAspose.Tests\StructTests.cs" />
+    <Compile Include="..\ExcelsiorAspose.Tests\WorksheetName.cs" />
+    <Compile Include="..\ExcelsiorAspose.Tests\Render.cs" />
+    <Compile Include="..\ExcelsiorAspose.Tests\Saving.cs" />
+    <Compile Include="..\ExcelsiorAspose.Tests\Headings.cs" />
+    <Compile Include="..\ExcelsiorAspose.Tests\UsageTests.cs" />
+    <Compile Include="..\ExcelsiorAspose.Tests\ColumnOrdering.cs" />
+    <Compile Include="..\ExcelsiorAspose.Tests\ColumnAttributeTests.cs" />
+    <Compile Include="..\ExcelsiorAspose.Tests\DataAnnotationsTests.cs" />
+    <Compile Include="..\ExcelsiorAspose.Tests\NullableTests.cs" />
+    <Compile Include="..\ExcelsiorAspose.Tests\EnumerableStringTests.cs" />
+    <Compile Include="..\ExcelsiorAspose.Tests\ComplexTypeWithCustomRender.cs" />
+    <Compile Include="..\ExcelsiorAspose.Tests\ComplexTypeWithInheritedCustomRender.cs" />
+    <Compile Include="..\ExcelsiorAspose.Tests\ComplexTypeWithToString.cs" />
+    <Compile Include="..\ExcelsiorAspose.Tests\WhitespaceTests.cs" />
+  </ItemGroup>
+</Project>

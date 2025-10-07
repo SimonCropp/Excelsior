@@ -69,7 +69,7 @@
         cell.HtmlString = value;
 
     protected override void WriteEnumerable(Range cell, IEnumerable<string> enumerable) =>
-        cell.HtmlString = Html.Enumerable(enumerable, trimWhitespace);
+        RichText.Enumerable(cell, enumerable, trimWhitespace);
 
     void ApplyHeadingStyling(Range cell, Column<Style, TModel> column)
     {

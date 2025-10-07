@@ -17,7 +17,7 @@
                 HeadingStyle = null,
                 CellStyle = null,
                 Format = property.Format,
-                NullDisplay = property.NullDisplay,
+                NullDisplay = property.NullDisplay ?? ValueRenderer.GetNullDisplay(property.Type),
                 Render = render == null ? null : (_, value) => render(value),
                 IsHtml = property.IsHtml,
                 IsNumber = property.IsNumber,

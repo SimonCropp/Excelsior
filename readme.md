@@ -17,6 +17,7 @@ Currently supported libraries include:
 
  * [ClosedXML](https://github.com/ClosedXML/ClosedXML) via the [ExcelsiorClosedXml](https://nuget.org/packages/ExcelsiorClosedXml/) nuget
  * [Aspose.Cells](https://docs.aspose.com/cells/net/) via the [ExcelsiorAspose](https://nuget.org/packages/ExcelsiorAspose/) nuget
+ * [Syncfusion XlsIO](https://help.syncfusion.com/document-processing/excel/excel-library/net/overview) via the [ExcelsiorSyncfusion](https://nuget.org/packages/ExcelsiorSyncfusion/) nuget
 
 
 ## Usage

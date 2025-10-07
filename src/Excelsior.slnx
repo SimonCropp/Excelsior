@@ -1,0 +1,21 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="../.gitattributes" />
+    <File Path="../readme.md" />
+    <File Path=".editorconfig" />
+    <File Path="appveyor.yml" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+    <File Path="global.json" />
+    <File Path="mdsnippets.json" />
+  </Folder>
+  <Project Path="Excelsior.Tests/Excelsior.Tests.csproj" />
+  <Project Path="Excelsior/Excelsior.csproj" />
+  <Project Path="ExcelsiorAspose.Tests/ExcelsiorAspose.Tests.csproj" />
+  <Project Path="ExcelsiorAspose/ExcelsiorAspose.csproj" />
+  <Project Path="ExcelsiorClosedXml.Tests/ExcelsiorClosedXml.Tests.csproj" />
+  <Project Path="ExcelsiorClosedXml/ExcelsiorClosedXml.csproj" />
+  <Project Path="Model/Model.csproj" />
+  <Project Path="SheetRender/SheetRender.csproj" />
+  <Project Path="StaticSettingsTests/StaticSettingsTests.csproj" />
+</Solution>

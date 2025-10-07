@@ -17,7 +17,7 @@
                 HeadingStyle = null,
                 CellStyle = null,
                 Format = property.Format,
-                NullDisplay = property.NullDisplay,
+                NullDisplay = property.NullDisplay ?? ValueRenderer.GetNullDisplay(property.Type),
                 Render = render == null ? null : (_, value) => render(value),
                 IsHtml = property.IsHtml,
                 IsNumber = property.IsNumber,
@@ -75,7 +75,7 @@
 
         if (config.Render != null)
         {
-            column.Render = (model, value) => config.Render.Invoke(model, (TProperty)value!);
+            column.Render = (model, value) => config.Render.Invoke(model, (TProperty)value);
         }
 
         if (config.IsHtml != null)

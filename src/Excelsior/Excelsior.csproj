@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
+    <PolyNullability>true</PolyNullability>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Polyfill" PrivateAssets="all" />

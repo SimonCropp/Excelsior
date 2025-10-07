@@ -22,9 +22,9 @@ public class ValueRenderedTests
     [ModuleInitializer]
     public static void Init()
     {
-        ValueRenderer.For<Nested?>(_ => $"Rendered Nullable {_?.Value}");
+        ValueRenderer.NullDisplayFor<Nested>("Rendered Nullable Nested");
         ValueRenderer.For<Nested>(_ => $"Rendered {_.Value}");
-        ValueRenderer.For<AnEnum?>(_ => $"Rendered Nullable {_}");
+        ValueRenderer.NullDisplayFor<AnEnum>("Rendered Nullable AnEnum");
         ValueRenderer.For<AnEnum>(_ => $"Rendered {_}");
     }
 

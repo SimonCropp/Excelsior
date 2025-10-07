@@ -11,13 +11,13 @@ class Column<TStyle, TModel>
     public required Action<TStyle, TModel, object?>? CellStyle { get; set; }
     public required string? Format { get; set; }
     public required string? NullDisplay { get; set; }
-    public required Func<TModel, object?, string?>? Render { get; set; }
+    public required Func<TModel, object, string?>? Render { get; set; }
     public required bool IsHtml { get; set; }
     public required bool IsNumber { get; init; }
     public required string Name { get; set; }
     public required Func<TModel, object?> GetValue { get; init; }
 
-    public bool TryRender(TModel item, object? value, [NotNullWhen(true)] out string? result)
+    public bool TryRender(TModel item, object value, [NotNullWhen(true)] out string? result)
     {
         if (Render != null)
         {

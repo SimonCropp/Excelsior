@@ -23,13 +23,23 @@ public static class ValueRenderer
     } = "yyyy-MM-dd HH:mm:ss";
 
     static bool bookBuilderUsed;
-    static Dictionary<Type, Func<object?, string>> renders = [];
+    static Dictionary<Type, Func<object, string>> renders = [];
+    static Dictionary<Type, string> nullDisplay = [];
 
     public static void For<T>(Func<T, string> func)
+        where T : notnull
     {
         ThrowIfBookBuilderUsed();
 
-        renders[typeof(T)] = _ => func((T) _!);
+        renders[typeof(T)] = _ => func((T)_);
+    }
+
+    public static void NullDisplayFor<T>(string value)
+        where T : notnull
+    {
+        ThrowIfBookBuilderUsed();
+
+        nullDisplay[typeof(T)] = value;
     }
 
     static void ThrowIfBookBuilderUsed()
@@ -40,9 +50,22 @@ public static class ValueRenderer
         }
     }
 
-    internal static Func<object?, string>? GetRender(Type memberType)
+    internal static Func<object, string>? GetRender(Type memberType)
     {
         foreach (var (key, value) in renders)
+        {
+            if (key.IsAssignableTo(memberType))
+            {
+                return value;
+            }
+        }
+
+        return null;
+    }
+
+    internal static string? GetNullDisplay(Type memberType)
+    {
+        foreach (var (key, value) in nullDisplay)
         {
             if (key.IsAssignableTo(memberType))
             {

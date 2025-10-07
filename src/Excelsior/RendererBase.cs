@@ -79,11 +79,6 @@
                 SetCellValue(cell, column.NullDisplay);
             }
 
-            if (column.TryRender(item, value, out var nullRendered))
-            {
-                SetStringOrHtml(nullRendered);
-            }
-
             return;
         }
 

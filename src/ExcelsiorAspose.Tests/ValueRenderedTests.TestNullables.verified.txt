@@ -8,6 +8,12 @@
       Columns: [
         {
           Name: String
+        },
+        {
+          Name: Enum
+        },
+        {
+          Name: Nested
         }
       ]
     }

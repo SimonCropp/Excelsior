@@ -79,16 +79,17 @@
                 SetCellValue(cell, column.NullDisplay);
             }
 
+            if (column.TryRender(item, value, out var nullRendered))
+            {
+                SetStringOrHtml(nullRendered);
+            }
+
             return;
         }
 
-        if (column.Render != null)
+        if (column.TryRender(item, value, out var render))
         {
-            var render = column.Render(item, value);
-            if (render != null)
-            {
-                SetStringOrHtml(render);
-            }
+            SetStringOrHtml(render);
 
             return;
         }

@@ -23,13 +23,13 @@ public static class ValueRenderer
     } = "yyyy-MM-dd HH:mm:ss";
 
     static bool bookBuilderUsed;
-    static Dictionary<Type, Func<object, string>> renders = [];
+    static Dictionary<Type, Func<object?, string>> renders = [];
 
     public static void For<T>(Func<T, string> func)
     {
         ThrowIfBookBuilderUsed();
 
-        renders[typeof(T)] = _ => func((T) _);
+        renders[typeof(T)] = _ => func((T) _!);
     }
 
     static void ThrowIfBookBuilderUsed()
@@ -40,7 +40,7 @@ public static class ValueRenderer
         }
     }
 
-    internal static Func<object, string>? GetRender(Type memberType)
+    internal static Func<object?, string>? GetRender(Type memberType)
     {
         foreach (var (key, value) in renders)
         {

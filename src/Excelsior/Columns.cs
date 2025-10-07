@@ -75,7 +75,7 @@
 
         if (config.Render != null)
         {
-            column.Render = (model, value) => config.Render.Invoke(model, (TProperty)value);
+            column.Render = (model, value) => config.Render.Invoke(model, (TProperty)value!);
         }
 
         if (config.IsHtml != null)

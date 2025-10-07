@@ -73,6 +73,7 @@ public static class ValueRenderer
 
         if (type.IsEnum)
         {
+            //TODO: should cache this
             return _ => enumRender((Enum)_);
         }
 

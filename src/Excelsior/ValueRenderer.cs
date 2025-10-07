@@ -24,7 +24,18 @@ public static class ValueRenderer
 
     static bool bookBuilderUsed;
     static Dictionary<Type, Func<object, string>> renders = [];
+    static Func<Enum, string> enumRender = Extensions.DisplayName;
     static Dictionary<Type, string> nullDisplay = [];
+
+    public static void ForEnums(Func<Enum, string> func)
+    {
+        ThrowIfBookBuilderUsed();
+
+        enumRender = func;
+    }
+
+    internal static string RenderEnum(Enum value) =>
+        enumRender(value);
 
     public static void For<T>(Func<T, string> func)
         where T : notnull
@@ -50,24 +61,29 @@ public static class ValueRenderer
         }
     }
 
-    internal static Func<object, string>? GetRender(Type memberType)
+    internal static Func<object, string>? GetRender(Type type)
     {
         foreach (var (key, value) in renders)
         {
-            if (key.IsAssignableTo(memberType))
+            if (key.IsAssignableTo(type))
             {
                 return value;
             }
         }
 
+        if (type.IsEnum)
+        {
+            return _ => enumRender((Enum)_);
+        }
+
         return null;
     }
 
-    internal static string? GetNullDisplay(Type memberType)
+    internal static string? GetNullDisplay(Type type)
     {
         foreach (var (key, value) in nullDisplay)
         {
-            if (key.IsAssignableTo(memberType))
+            if (key.IsAssignableTo(type))
             {
                 return value;
             }

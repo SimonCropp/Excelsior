@@ -101,6 +101,38 @@ builder.AddSheet(data);
 using var book = await builder.Build();
 ```
 <sup><a href='/src/ExcelsiorAspose.Tests/UsageTests.cs#L7-L38' title='Snippet source file'>snippet source</a> | <a href='#snippet-Usage' title='Start of snippet'>anchor</a></sup>
+<a id='snippet-Usage-1'></a>
+```cs
+var builder = new BookBuilder();
+
+List<Employee> data =
+[
+    new()
+    {
+        Id = 1,
+        Name = "John Doe",
+        Email = "john@company.com",
+        HireDate = new(2020, 1, 15),
+        Salary = 75000,
+        IsActive = true,
+        Status = EmployeeStatus.FullTime
+    },
+    new()
+    {
+        Id = 2,
+        Name = "Jane Smith",
+        Email = "jane@company.com",
+        HireDate = new(2019, 3, 22),
+        Salary = 120000,
+        IsActive = true,
+        Status = EmployeeStatus.FullTime
+    },
+];
+builder.AddSheet(data);
+
+using var book = await builder.Build();
+```
+<sup><a href='/src/StaticSettingsTests/Tests.cs#L7-L38' title='Snippet source file'>snippet source</a> | <a href='#snippet-Usage-1' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 

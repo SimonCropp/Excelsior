@@ -3,7 +3,7 @@
     List<Column<TStyle, TModel>> columns,
     int defaultMaxColumnWidth)
 {
-    public List<Column<TStyle, TModel>> Columns => columns;
+    protected List<Column<TStyle, TModel>> Columns => columns;
     protected abstract void SetDateFormat(TStyle style, string format);
     protected abstract void SetNumberFormat(TStyle style, string format);
     protected abstract void SetCellValue(TCell cell, object value);
@@ -111,13 +111,6 @@
         {
             ThrowIfHtml();
             SetCellValue(cell, boolean);
-            return;
-        }
-
-        if (value is Enum enumValue)
-        {
-            ThrowIfHtml();
-            SetCellValue(cell, enumValue.DisplayName());
             return;
         }
 

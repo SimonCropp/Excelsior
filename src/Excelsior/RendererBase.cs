@@ -92,8 +92,8 @@
         if (value is DateTime dateTime)
         {
             ThrowIfHtml();
-            SetCellValue(cell, dateTime);
             SetDateFormat(style, column.Format ?? ValueRenderer.DefaultDateTimeFormat);
+            SetCellValue(cell, dateTime);
 
             return;
         }
@@ -101,8 +101,8 @@
         if (value is Date date)
         {
             ThrowIfHtml();
-            SetCellValue(cell, date.ToDateTime(new(0, 0)));
             SetDateFormat(style, column.Format ?? ValueRenderer.DefaultDateFormat);
+            SetCellValue(cell, date.ToDateTime(new(0, 0)));
 
             return;
         }
@@ -117,12 +117,12 @@
         if (column.IsNumber)
         {
             ThrowIfHtml();
-            SetCellValue(cell, Convert.ToDouble(value));
             if (column.Format != null)
             {
                 SetNumberFormat(style, column.Format);
             }
 
+            SetCellValue(cell, Convert.ToDouble(value));
             return;
         }
 

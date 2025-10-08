@@ -49,7 +49,7 @@
     {
         var style = cell.CellStyle;
         style.HorizontalAlignment = ExcelHAlign.HAlignLeft;
-        style.VerticalAlignment= ExcelVAlign.VAlignTop;
+        style.VerticalAlignment = ExcelVAlign.VAlignTop;
         style.WrapText = true;
 
         base.SetCellValue(cell, style, value, column, item, trimWhitespace);
@@ -95,21 +95,28 @@
     void ApplyGlobalStyling(Sheet sheet) =>
         globalStyle?.Invoke(sheet.UsedRange.CellStyle);
 
-    protected override void ResizeColumn(Sheet sheet, int index, int? columnWidth, int maxColumnWidth)
+    protected override void ResizeColumn(Sheet sheet, int index, Column<Style, TModel> columnConfig, int maxColumnWidth)
     {
-        var column = sheet.Columns[index];
-        if (columnWidth == null)
+        var sheetColumn = sheet.Columns[index];
+        if (columnConfig.Width == null)
         {
             sheet.AutofitColumn(index + 1);
-            column.ColumnWidth += 4;
-            if (column.ColumnWidth > maxColumnWidth)
+            sheetColumn.ColumnWidth += 4;
+
+            // does not seem to respect the html dot points
+            if (columnConfig.IsEnumerableString)
             {
-                column.ColumnWidth = maxColumnWidth;
+                sheetColumn.ColumnWidth += 5;
+            }
+
+            if (sheetColumn.ColumnWidth > maxColumnWidth)
+            {
+                sheetColumn.ColumnWidth = maxColumnWidth;
             }
         }
         else
         {
-            column.ColumnWidth = columnWidth.Value;
+            sheetColumn.ColumnWidth = columnConfig.Width.Value;
         }
     }
 }

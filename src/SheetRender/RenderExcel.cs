@@ -104,7 +104,7 @@ public class RenderExcel
             Clipboard.Clear();
             Thread.Sleep(100);
             range.Copy();
-            for (var i = 0; i < 5; i++)
+            for (var i = 0; i < 10; i++)
             {
                 try
                 {

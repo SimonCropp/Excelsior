@@ -3,7 +3,7 @@
   Date1904: false,
   HasMacros: false,
   DisableMacrosStart: false,
-  DetectDateTimeInValue: true,
+  DetectDateTimeInValue: false,
   ArgumentsSeparator: ,,
   DisplayWorkbookTabs: true,
   IsRightToLeft: false,

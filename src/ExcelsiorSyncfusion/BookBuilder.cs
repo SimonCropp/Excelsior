@@ -59,6 +59,7 @@ public class BookBuilder :
             }
         };
         var book = engine.Excel.Workbooks.Create(0);
+        book.DetectDateTimeInValue = false;
         return new DisposableBook(engine, book);
     }
 }

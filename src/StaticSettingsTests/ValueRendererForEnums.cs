@@ -1,7 +1,7 @@
 ﻿[TestFixture]
-public class UsageTests
+public class ValueRendererForEnums
 {
-    #region ValueRendererForEnums
+    #region ValueRendererForEnumsInit
 
     [ModuleInitializer]
     public static void UseHumanizerForEnums() =>

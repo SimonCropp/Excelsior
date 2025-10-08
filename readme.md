@@ -256,6 +256,11 @@ public class Employee
 
 <img src="/src/ExcelsiorClosedXml.Tests/Headings.Fluent_Sheet1.png">
 
+ * FLuent
+ * `ColumnAttribute`
+ * `DisplayAttribute`
+ * `DisplayNameAttribute`
+
 
 ### Column Ordering
 
@@ -429,6 +434,12 @@ public class Employee
 #### Result:
 
 <img src="/src/ExcelsiorClosedXml.Tests/ColumnWidths.Fluent_Sheet1.png">
+
+
+#### Order of precedence
+
+ * FLuent
+ * `ColumnAttribute`
 
 
 ### Complex Types
@@ -779,6 +790,26 @@ builder.AddSheet(data);
 #### Result
 
 <img src="/src/ExcelsiorClosedXml.Tests/ColumnAttributeTests.Test_Sheet1.png">
+
+
+### ValueRenderer.ForEnums
+
+`ValueRenderer.ForEnums` can be use to control the rendering for all enums
+
+
+#### Config in a MOduleInitializer
+
+snippet: ValueRendererForEnumsInit
+
+
+#### Example use
+
+snippet: ValueRendererForEnums
+
+
+#### Result
+
+<img src="/src/StaticSettingsTests/ValueRendererForEnums.Test#Sheet1.verified.png">
 
 
 ## Icon

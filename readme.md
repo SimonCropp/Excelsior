@@ -799,12 +799,38 @@ builder.AddSheet(data);
 
 #### Config in a MOduleInitializer
 
-snippet: ValueRendererForEnumsInit
+<!-- snippet: ValueRendererForEnumsInit -->
+<a id='snippet-ValueRendererForEnumsInit'></a>
+```cs
+[ModuleInitializer]
+public static void UseHumanizerForEnums() =>
+    ValueRenderer.ForEnums(_ => _.Humanize());
+```
+<sup><a href='/src/StaticSettingsTests/ValueRendererForEnums.cs#L4-L10' title='Snippet source file'>snippet source</a> | <a href='#snippet-ValueRendererForEnumsInit' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
 
 
 #### Example use
 
-snippet: ValueRendererForEnums
+<!-- snippet: ValueRendererForEnums -->
+<a id='snippet-ValueRendererForEnums'></a>
+```cs
+var builder = new BookBuilder();
+
+List<Car> data =
+[
+    new()
+    {
+        Manufacturer = Manufacturer.BuildYouDream,
+        Color = Color.AntiqueWhite,
+    }
+];
+builder.AddSheet(data);
+
+using var book = await builder.Build();
+```
+<sup><a href='/src/StaticSettingsTests/ValueRendererForEnums.cs#L15-L31' title='Snippet source file'>snippet source</a> | <a href='#snippet-ValueRendererForEnums' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
 
 
 #### Result

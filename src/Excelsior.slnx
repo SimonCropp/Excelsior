@@ -15,6 +15,8 @@
   <Project Path="ExcelsiorAspose/ExcelsiorAspose.csproj" />
   <Project Path="ExcelsiorClosedXml.Tests/ExcelsiorClosedXml.Tests.csproj" />
   <Project Path="ExcelsiorClosedXml/ExcelsiorClosedXml.csproj" />
+  <Project Path="ExcelsiorSyncfusion.Tests\ExcelsiorSyncfusion.Tests.csproj" Type="Classic C#" />
+  <Project Path="ExcelsiorSyncfusion\ExcelsiorSyncfusion.csproj" Type="Classic C#" />
   <Project Path="Model/Model.csproj" />
   <Project Path="SheetRender/SheetRender.csproj" />
   <Project Path="StaticSettingsTests/StaticSettingsTests.csproj" />

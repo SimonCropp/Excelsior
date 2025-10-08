@@ -38,7 +38,6 @@
         sheet.SheetView.FreezeRows(1);
     }
 
-
     protected override Cell GetCell(Sheet sheet, int row, int column) =>
         sheet.Cell(row + 1, column + 1);
 
@@ -68,9 +67,6 @@
 
     protected override void SetCellHtml(Cell cell, string value) =>
         throw new("ClosedXml does not support html");
-
-    protected override void WriteEnumerable(Cell cell, IEnumerable<string> enumerable) =>
-        RichText.Enumerable(cell, enumerable, trimWhitespace);
 
     void ApplyHeadingStyling(Cell cell, Column<Style, TModel> column)
     {
@@ -106,21 +102,21 @@
         globalStyle(range.Style);
     }
 
-    protected override void ResizeColumn(Sheet sheet, int index, int? columnWidth, int maxColumnWidth)
+    protected override void ResizeColumn(Sheet sheet, int index, Column<Style, TModel> columnConfig, int maxColumnWidth)
     {
-        var column = sheet.Column(index + 1);
-        if (columnWidth == null)
+        var sheetColumn = sheet.Column(index + 1);
+        if (columnConfig.Width == null)
         {
-            column.AdjustToContents();
-            column.Width += 2;
-            if (column.Width > maxColumnWidth)
+            sheetColumn.AdjustToContents();
+            sheetColumn.Width += 2;
+            if (sheetColumn.Width > maxColumnWidth)
             {
-                column.Width = maxColumnWidth;
+                sheetColumn.Width = maxColumnWidth;
             }
         }
         else
         {
-            column.Width = columnWidth.Value;
+            sheetColumn.Width = columnConfig.Width.Value;
         }
     }
 }

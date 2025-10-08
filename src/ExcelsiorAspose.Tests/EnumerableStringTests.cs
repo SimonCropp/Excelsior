@@ -150,4 +150,25 @@ public class EnumerableStringTests
 
         await Verify(book);
     }
+
+    [Test]
+    public async Task Wrapping()
+    {
+        List<Target> data =
+        [
+            new("Value1",
+                Value2:
+                [
+                    "aaaaa",
+                    "aaaaaaaaaaaaa"
+                ]),
+        ];
+
+        var builder = new BookBuilder();
+        builder.AddSheet(data);
+
+        var book = await builder.Build();
+
+        await Verify(book);
+    }
 }

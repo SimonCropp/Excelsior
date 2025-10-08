@@ -9,15 +9,14 @@
     protected abstract void SetCellValue(TCell cell, object value);
     protected abstract void SetCellHtml(TCell cell, string value);
     internal abstract Task AddSheet(TBook book, Cancel cancel);
-    protected abstract void WriteEnumerable(TCell cell, IEnumerable<string> enumerable);
-    protected abstract void ResizeColumn(TSheet sheet, int index, int? columnWidth, int defaultMaxColumnWidth);
+    protected abstract void ResizeColumn(TSheet sheet, int index, Column<TStyle, TModel> column, int defaultMaxColumnWidth);
 
     protected void AutoSizeColumns(TSheet sheet)
     {
         for (var index = 0; index < Columns.Count; index++)
         {
             var column = Columns[index];
-            ResizeColumn(sheet, index, column.Width, defaultMaxColumnWidth);
+            ResizeColumn(sheet, index, column, defaultMaxColumnWidth);
         }
     }
 
@@ -92,8 +91,8 @@
         if (value is DateTime dateTime)
         {
             ThrowIfHtml();
-            SetCellValue(cell, dateTime);
             SetDateFormat(style, column.Format ?? ValueRenderer.DefaultDateTimeFormat);
+            SetCellValue(cell, dateTime);
 
             return;
         }
@@ -101,8 +100,8 @@
         if (value is Date date)
         {
             ThrowIfHtml();
-            SetCellValue(cell, date.ToDateTime(new(0, 0)));
             SetDateFormat(style, column.Format ?? ValueRenderer.DefaultDateFormat);
+            SetCellValue(cell, date.ToDateTime(new(0, 0)));
 
             return;
         }
@@ -117,19 +116,19 @@
         if (column.IsNumber)
         {
             ThrowIfHtml();
-            SetCellValue(cell, Convert.ToDouble(value));
             if (column.Format != null)
             {
                 SetNumberFormat(style, column.Format);
             }
 
+            SetCellValue(cell, Convert.ToDouble(value));
             return;
         }
 
         if (value is IEnumerable<string> enumerable)
         {
             ThrowIfHtml();
-            WriteEnumerable(cell, enumerable);
+            SetCellValue(cell, ListBuilder.Build(enumerable, trimWhitespace));
             return;
         }
 

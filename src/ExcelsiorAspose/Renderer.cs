@@ -112,22 +112,29 @@
         sheet.Cells.ApplyStyle(style, flag);
     }
 
-    protected override void ResizeColumn(Sheet sheet, int index, int? columnWidth, int maxColumnWidth)
+    protected override void ResizeColumn(Sheet sheet, int index, Column<Style, TModel> columnConfig, int maxColumnWidth)
     {
-        var column = sheet.Cells.Columns[index];
-        if (columnWidth == null)
+        var sheetColumn = sheet.Cells.Columns[index];
+        if (columnConfig.Width == null)
         {
             sheet.AutoFitColumns(index, index);
-            //Round widths since aspose AutoFitColumns is not deterministic
-            column.Width = Math.Round(column.Width) + 1;
-            if (column.Width > maxColumnWidth)
+            // Round widths since Aspose AutoFitColumns is not deterministic
+            sheetColumn.Width = Math.Round(sheetColumn.Width) + 1;
+
+            // Aspose does not seem to respect the html dot points
+            if (columnConfig.IsEnumerableString)
             {
-                column.Width = maxColumnWidth;
+                sheetColumn.Width += 10;
+            }
+
+            if (sheetColumn.Width > maxColumnWidth)
+            {
+                sheetColumn.Width = maxColumnWidth;
             }
         }
         else
         {
-            column.Width = columnWidth.Value;
+            sheetColumn.Width = columnConfig.Width.Value;
         }
     }
 }

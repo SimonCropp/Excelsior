@@ -6,7 +6,8 @@
     {
         foreach (var property in Properties<TModel>.Items)
         {
-            var render = ValueRenderer.GetRender(property.Type);
+            var type = property.Type;
+            var render = ValueRenderer.GetRender(type);
 
             columns[property.Name] = new()
             {
@@ -17,10 +18,11 @@
                 HeadingStyle = null,
                 CellStyle = null,
                 Format = property.Format,
-                NullDisplay = property.NullDisplay ?? ValueRenderer.GetNullDisplay(property.Type),
+                NullDisplay = property.NullDisplay ?? ValueRenderer.GetNullDisplay(type),
                 Render = render == null ? null : (_, value) => render(value),
                 IsHtml = property.IsHtml,
                 IsNumber = property.IsNumber,
+                IsEnumerableString = type.IsAssignableTo(typeof(IEnumerable<string>)),
                 GetValue = property.Get
             };
         }

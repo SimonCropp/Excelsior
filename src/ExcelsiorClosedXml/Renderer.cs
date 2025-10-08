@@ -105,21 +105,21 @@
         globalStyle(range.Style);
     }
 
-    protected override void ResizeColumn(Sheet sheet, int index, int? columnWidth, int maxColumnWidth)
+    protected override void ResizeColumn(Sheet sheet, int index, Column<Style, TModel> columnConfig, int maxColumnWidth)
     {
-        var column = sheet.Column(index + 1);
-        if (columnWidth == null)
+        var sheetColumn = sheet.Column(index + 1);
+        if (columnConfig.Width == null)
         {
-            column.AdjustToContents();
-            column.Width += 2;
-            if (column.Width > maxColumnWidth)
+            sheetColumn.AdjustToContents();
+            sheetColumn.Width += 2;
+            if (sheetColumn.Width > maxColumnWidth)
             {
-                column.Width = maxColumnWidth;
+                sheetColumn.Width = maxColumnWidth;
             }
         }
         else
         {
-            column.Width = columnWidth.Value;
+            sheetColumn.Width = columnConfig.Width.Value;
         }
     }
 }

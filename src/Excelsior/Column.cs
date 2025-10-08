@@ -14,6 +14,7 @@ class Column<TStyle, TModel>
     public required Func<TModel, object, string?>? Render { get; set; }
     public required bool IsHtml { get; set; }
     public required bool IsNumber { get; init; }
+    public required bool IsEnumerableString { get; init; }
     public required string Name { get; set; }
     public required Func<TModel, object?> GetValue { get; init; }
 

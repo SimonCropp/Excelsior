@@ -3,6 +3,7 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/fo33wu7ud6es1t2o/branch/main?svg=true)](https://ci.appveyor.com/project/SimonCropp/Excelsior)
 [![NuGet Status](https://img.shields.io/nuget/v/ExcelsiorClosedXml.svg?label=ExcelsiorClosedXml)](https://www.nuget.org/packages/ExcelsiorClosedXml/)
 [![NuGet Status](https://img.shields.io/nuget/v/ExcelsiorClosedXml.svg?label=ExcelsiorAspose)](https://www.nuget.org/packages/ExcelsiorAspose/)
+[![NuGet Status](https://img.shields.io/nuget/v/ExcelsiorClosedXml.svg?label=ExcelsiorSyncfusion)](https://www.nuget.org/packages/ExcelsiorSyncfusion/)
 
 Excelsior is a Excel spreadsheet generation library with a distinctive data-driven approach.
 

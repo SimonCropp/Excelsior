@@ -105,7 +105,6 @@ using var book = await builder.Build();
 <sup><a href='/src/ExcelsiorAspose.Tests/UsageTests.cs#L7-L38' title='Snippet source file'>snippet source</a> | <a href='#snippet-Usage' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
-
 The above sample builds an instance of the Workbook for the target library:
 
  * `Aspose.Cells.Workbook` for Aspose
@@ -123,7 +122,7 @@ The above sample builds an instance of the Workbook for the target library:
 
 Worksheet defaults to `SheetN`, when `N` is a counter. So the first sheet is `Sheet1`, the second is `Sheet2`, etc.
 
-The name can be controlled by passing an explicit name.
+The name can be controlled by passing an explicit value.
 
 <!-- snippet: WorksheetName -->
 <a id='snippet-WorksheetName'></a>
@@ -208,6 +207,8 @@ await builder.ToStream(stream);
 
 The heading text for a column can be overridden:
 
+#### Fluent
+
 <!-- snippet: CustomHeadings -->
 <a id='snippet-CustomHeadings'></a>
 ```cs
@@ -219,6 +220,36 @@ builder.AddSheet(employees)
 ```
 <sup><a href='/src/ExcelsiorAspose.Tests/Headings.cs#L9-L17' title='Snippet source file'>snippet source</a> | <a href='#snippet-CustomHeadings' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
+
+
+#### ColumnAttribute
+
+```
+public class Employee
+{
+    [Column(Heading = "Employee Name")]
+    public required string Name { get; init; }
+```
+
+
+#### DisplayNameAttribute
+
+```
+public class Employee
+{
+    [DisplayName("Employee Name")]
+    public required string Name { get; init; }
+```
+
+
+#### DisplayAttribute
+
+```
+public class Employee
+{
+    [Display(Name = "Employee Name")]
+    public required string Name { get; init; }
+```
 
 
 #### Result:
@@ -369,6 +400,9 @@ builder.AddSheet(employees)
 
 ### Column Widths
 
+
+#### Fluent
+
 <!-- snippet: ColumnWidths -->
 <a id='snippet-ColumnWidths'></a>
 ```cs
@@ -380,6 +414,16 @@ builder.AddSheet(employees)
 ```
 <sup><a href='/src/ExcelsiorAspose.Tests/ColumnWidths.cs#L9-L17' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnWidths' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
+
+
+#### ColumnAttribute
+
+```
+public class Employee
+{
+    [Column(Width = 25)]
+    public required string Name { get; init; }
+```
 
 
 #### Result:
@@ -536,7 +580,7 @@ using var book = await builder.Build();
 Properties that are castable to an `IEnumerable<string>` will automatically be rendered as a point form list.
 
 
-#### Module
+#### Model
 
 <!-- snippet: EnumerableModel -->
 <a id='snippet-EnumerableModel'></a>

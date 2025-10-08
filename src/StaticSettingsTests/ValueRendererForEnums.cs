@@ -20,7 +20,7 @@ public class ValueRendererForEnums
         [
             new()
             {
-                Manufacturer = Manufacturer.BuildYouDream,
+                Manufacturer = Manufacturer.BuildYourDream,
                 Color = Color.AntiqueWhite,
             }
         ];
@@ -46,6 +46,6 @@ public class ValueRendererForEnums
 
     enum Manufacturer
     {
-        BuildYouDream
+        BuildYourDream
     }
 }

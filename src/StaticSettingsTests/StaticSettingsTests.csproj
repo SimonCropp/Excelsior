@@ -16,4 +16,9 @@
     <Using Include="NUnit.Framework.Legacy.ClassicAssert" Static="True" />
     <PackageReference Include="ProjectDefaults" PrivateAssets="all" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\ExcelsiorAspose.Tests\AsposeLicense.cs">
+      <Link>AsposeLicense.cs</Link>
+    </Compile>
+  </ItemGroup>
 </Project>

@@ -256,10 +256,13 @@ public class Employee
 
 <img src="/src/ExcelsiorClosedXml.Tests/Headings.Fluent_Sheet1.png">
 
- * FLuent
- * `ColumnAttribute`
- * `DisplayAttribute`
- * `DisplayNameAttribute`
+
+#### Order of precedence
+
+ 1. Fluent
+ 1. `ColumnAttribute`
+ 1. `DisplayAttribute`
+ 1. `DisplayNameAttribute`
 
 
 ### Column Ordering
@@ -438,8 +441,8 @@ public class Employee
 
 #### Order of precedence
 
- * FLuent
- * `ColumnAttribute`
+ 1. Fluent
+ 1. `ColumnAttribute`
 
 
 ### Complex Types

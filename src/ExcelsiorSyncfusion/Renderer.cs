@@ -100,7 +100,7 @@
             sheet.AutofitColumn(index + 1);
             sheetColumn.ColumnWidth += 4;
 
-            // does not seem to respect the html dot points
+            // does not seem to respect the dot points
             if (columnConfig.IsEnumerableString)
             {
                 sheetColumn.ColumnWidth += 5;

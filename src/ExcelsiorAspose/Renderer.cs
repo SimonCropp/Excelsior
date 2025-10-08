@@ -115,10 +115,10 @@
             // Round widths since Aspose AutoFitColumns is not deterministic
             sheetColumn.Width = Math.Round(sheetColumn.Width) + 1;
 
-            // Aspose does not seem to respect the html dot points
+            // Aspose does not seem to respect the dot points
             if (columnConfig.IsEnumerableString)
             {
-                sheetColumn.Width += 10;
+                sheetColumn.Width += 5;
             }
 
             if (sheetColumn.Width > maxColumnWidth)

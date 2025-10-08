@@ -106,6 +106,14 @@ using var book = await builder.Build();
 <!-- endSnippet -->
 
 
+The above sample builds an instance of the Workbook for the target library:
+
+ * `Aspose.Cells.Workbook` for Aspose
+ * `ClosedXML.Excel.IXLWorkbook` for ClosedXml.
+ * `ExcelsiorSyncfusion.IDisposableBook` for Syncfusion. Which implements both `Syncfusion.XlsIO.IWorkbook`, and `System.IDisposable`
+
+
+
 ### Result:
 
 <img src="/src/ExcelsiorClosedXml.Tests/UsageTests.Test_Sheet1.png">
@@ -180,9 +188,8 @@ public enum EmployeeStatus
 
 ### Saving to a stream
 
-The above sample builds a instance of the Workbook for the target library. `Aspose.Cells.Workbook` for Aspose, and `ClosedXML.Excel.IXLWorkbook` for ClosedXml.
 
-To instead save to a stream use `ToStream()`.
+To save to a stream use `ToStream()`.
 
 <!-- snippet: ToStream -->
 <a id='snippet-ToStream'></a>

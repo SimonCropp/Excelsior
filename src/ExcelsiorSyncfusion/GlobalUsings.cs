@@ -2,6 +2,7 @@
 global using System.Net;
 global using Syncfusion.XlsIO;
 global using Excelsior;
+global using ExcelsiorSyncfusion;
 global using Syncfusion.Drawing;
 global using Syncfusion.Office;
 global using Syncfusion.XlsIO.Implementation;

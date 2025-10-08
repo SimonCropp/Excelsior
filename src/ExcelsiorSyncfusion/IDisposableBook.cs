@@ -1,3 +1,5 @@
-﻿public interface IDisposableBook :
+﻿namespace ExcelsiorSyncfusion;
+
+public interface IDisposableBook :
     IWorkbook,
     IDisposable;

@@ -794,10 +794,10 @@ builder.AddSheet(data);
 
 ### ValueRenderer.ForEnums
 
-`ValueRenderer.ForEnums` can be use to control the rendering for all enums
+`ValueRenderer.ForEnums` can be used to control the rendering for all enums
 
 
-#### Config in a MOduleInitializer
+#### Config in a ModuleInitializer
 
 <!-- snippet: ValueRendererForEnumsInit -->
 <a id='snippet-ValueRendererForEnumsInit'></a>

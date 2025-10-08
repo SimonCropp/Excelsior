@@ -9,7 +9,6 @@
     protected abstract void SetCellValue(TCell cell, object value);
     protected abstract void SetCellHtml(TCell cell, string value);
     internal abstract Task AddSheet(TBook book, Cancel cancel);
-    protected abstract void WriteEnumerable(TCell cell, IEnumerable<string> enumerable);
     protected abstract void ResizeColumn(TSheet sheet, int index, Column<TStyle, TModel> column, int defaultMaxColumnWidth);
 
     protected void AutoSizeColumns(TSheet sheet)
@@ -129,7 +128,7 @@
         if (value is IEnumerable<string> enumerable)
         {
             ThrowIfHtml();
-            WriteEnumerable(cell, enumerable);
+            SetCellValue(cell, ListBuilder.Build(enumerable, trimWhitespace));
             return;
         }
 

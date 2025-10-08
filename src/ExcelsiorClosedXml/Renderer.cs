@@ -68,9 +68,6 @@
     protected override void SetCellHtml(Cell cell, string value) =>
         throw new("ClosedXml does not support html");
 
-    protected override void WriteEnumerable(Cell cell, IEnumerable<string> enumerable) =>
-        RichText.Enumerable(cell, enumerable, trimWhitespace);
-
     void ApplyHeadingStyling(Cell cell, Column<Style, TModel> column)
     {
         headingStyle?.Invoke(cell.Style);

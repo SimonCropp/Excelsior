@@ -65,12 +65,6 @@
     protected override void SetCellHtml(Cell cell, string value) =>
         cell.SafeSetHtml(value);
 
-    protected override void WriteEnumerable(Cell cell, IEnumerable<string> enumerable)
-    {
-        var value = Html.Enumerable(enumerable, trimWhitespace);
-        cell.SafeSetHtml(value);
-    }
-
     void ApplyHeadingStyling(Cell cell, Column<Style, TModel> column)
     {
         var style = cell.GetStyle();

@@ -809,7 +809,7 @@ snippet: ValueRendererForEnums
 
 #### Result
 
-<img src="/src/StaticSettingsTests/ValueRendererForEnums.Test#Sheet1.verified.png">
+<img src="/src/StaticSettingsTests/ValueRendererForEnums.Test%23Sheet1.verified.png">
 
 
 ## Icon

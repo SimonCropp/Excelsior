@@ -66,7 +66,7 @@ public class Employee
 
 `BookBuilder` is the root entry point.
 
-Once instantiated the data for multiple sheets can be added.
+Once instantiated, the data for multiple sheets can be added.
 
 <!-- snippet: Usage -->
 <a id='snippet-Usage'></a>
@@ -109,9 +109,27 @@ using var book = await builder.Build();
 <img src="/src/ExcelsiorClosedXml.Tests/UsageTests.Test_Sheet1.png">
 
 
+### Worksheet Name
+
+Worksheet defaults to `SheetN`, when `N` is a counter. So the first sheet is `Sheet1`, the second is `Sheet2`, etc.
+
+The name can be controlled by passing an explicit name.
+
+<!-- snippet: WorksheetName -->
+<a id='snippet-WorksheetName'></a>
+```cs
+var builder = new BookBuilder();
+builder.AddSheet(employees, "Employee Report");
+```
+<sup><a href='/src/ExcelsiorAspose.Tests/WorksheetName.cs#L9-L14' title='Snippet source file'>snippet source</a> | <a href='#snippet-WorksheetName' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+
 ### DataAnnotations Attributes
 
-`DisplayAttribute` and `DisplayNameAttribute` from System.ComponentModel.DataAnnotations are supported.
+`DisplayAttribute` and `DisplayNameAttribute` from [System.ComponentModel.DataAnnotations](https://www.nuget.org/packages/system.componentmodel.annotations/) are supported.
+
+`DisplayAttribute` and `DisplayNameAttribute` are support for scenarios where it is not convenient to reference Excelsior from that assembly.<!-- singleLineInclude: DisplayAttributeScenario. path: /docs/DisplayAttributeScenario.include.md -->
 
 <!-- snippet: DataAnnotationsModel -->
 <a id='snippet-DataAnnotationsModel'></a>
@@ -338,18 +356,6 @@ builder.AddSheet(employees)
 #### Result:
 
 <img src="/src/ExcelsiorClosedXml.Tests/Render.Fluent_Sheet1.png">
-
-
-### Worksheet Name
-
-<!-- snippet: WorksheetName -->
-<a id='snippet-WorksheetName'></a>
-```cs
-var builder = new BookBuilder();
-builder.AddSheet(employees, "Employee Report");
-```
-<sup><a href='/src/ExcelsiorAspose.Tests/WorksheetName.cs#L9-L14' title='Snippet source file'>snippet source</a> | <a href='#snippet-WorksheetName' title='Start of snippet'>anchor</a></sup>
-<!-- endSnippet -->
 
 
 ### Column Widths
@@ -637,8 +643,9 @@ builder.AddSheet(employees);
 
 `ColumnAttribute` allows customization of rendering at the model level.
 
-It is intended as an alternative to the usage of `DisplayAttribute` and `DisplayNameAttribute`.
-`DisplayAttribute` and `DisplayNameAttribute` are support for scenarios where it is not convenient to reference Excelsior from that assembly.
+It is intended as the preferred approach over usage of `DisplayAttribute` and `DisplayNameAttribute`.
+
+`DisplayAttribute` and `DisplayNameAttribute` are support for scenarios where it is not convenient to reference Excelsior from that assembly.<!-- singleLineInclude: DisplayAttributeScenario. path: /docs/DisplayAttributeScenario.include.md -->
 
 
 #### ColumnAttribute definition

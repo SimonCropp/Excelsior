@@ -62,6 +62,9 @@
     protected override void SetCellValue(Cell cell, object value) =>
         cell.Value = value;
 
+    protected override void SetCellValue(Cell cell, string value) =>
+        cell.PutValue(value, false);
+
     protected override void SetCellHtml(Cell cell, string value) =>
         cell.SafeSetHtml(value);
 

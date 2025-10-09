@@ -65,6 +65,9 @@
     protected override void SetCellValue(Cell cell, object value) =>
         cell.Value = XLCellValue.FromObject(value);
 
+    protected override void SetCellValue(Cell cell, string value) =>
+        cell.SetValue(value);
+
     protected override void SetCellHtml(Cell cell, string value) =>
         throw new("ClosedXml does not support html");
 

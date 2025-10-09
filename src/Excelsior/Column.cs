@@ -1,7 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
-
-namespace Excelsior;
-
 class Column<TStyle, TModel>
 {
     public required string Heading { get; set; }

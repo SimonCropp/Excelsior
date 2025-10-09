@@ -16,7 +16,9 @@
     <ProjectReference Include="..\Model\Model.csproj" />
     <Using Include="NUnit.Framework.Legacy.ClassicAssert" Static="True" />
     <PackageReference Include="ProjectDefaults" PrivateAssets="all" />
-    
+
+    <Compile Include="..\ExcelsiorAspose.Tests\FormatGuessingTests.cs" />
+    <Compile Include="..\ExcelsiorAspose.Tests\DateFormats.cs" />
     <Compile Include="..\ExcelsiorAspose.Tests\ValueRenderedTests.cs" />
     <Compile Include="..\ExcelsiorAspose.Tests\Enums.cs" />
     <Compile Include="..\ExcelsiorAspose.Tests\ColumnWidths.cs" />

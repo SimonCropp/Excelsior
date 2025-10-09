@@ -1,0 +1,21 @@
+﻿{
+  HasMacro: False,
+  HasRevisions: False,
+  IsDigitallySigned: False,
+  Sheets: [
+    {
+      Name: Sheet1,
+      Columns: [
+        {
+          Name: Date Property
+        },
+        {
+          Name: Date Time Property
+        },
+        {
+          Name: Date Time Offset Property
+        }
+      ]
+    }
+  ]
+}

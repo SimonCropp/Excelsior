@@ -1,4 +1,6 @@
-﻿abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook>(
+﻿using System.Globalization;
+
+abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook>(
     IAsyncEnumerable<TModel> data,
     List<Column<TStyle, TModel>> columns,
     int defaultMaxColumnWidth)
@@ -94,6 +96,17 @@
             ThrowIfHtml();
             SetDateFormat(style, column.Format ?? ValueRenderer.DefaultDateTimeFormat);
             SetCellValue(cell, dateTime);
+
+            return;
+        }
+
+        if (value is DateTimeOffset dateTimeOffset)
+        {
+            ThrowIfHtml();
+
+            SetDateFormat(style, column.Format ?? ValueRenderer.DefaultDateFormat);
+            var format = column.Format ?? ValueRenderer.DefaultDateTimeOffsetFormat;
+            SetCellValue(cell, dateTimeOffset.ToString(format, CultureInfo.InvariantCulture));
 
             return;
         }

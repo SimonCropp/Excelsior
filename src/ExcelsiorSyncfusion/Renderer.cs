@@ -66,7 +66,7 @@
         cell.Value2 = value;
 
     protected override void SetCellValue(Range cell, string value) =>
-        cell.Value2 = value;
+        cell.Text = value;
 
     protected override void SetCellHtml(Range cell, string value) =>
         cell.HtmlString = value;

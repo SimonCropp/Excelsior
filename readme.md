@@ -841,6 +841,42 @@ using var book = await builder.Build();
 <img src="/src/StaticSettingsTests/ValueRendererForEnums.Test%23Sheet1.verified.png">
 
 
+### Date formats
+
+`DateTime` and `DateOnly` are passed directly in to the respective library.
+
+Excel is directed (using a format string) to render the value using the following:
+
+ * `yyyy-MM-dd HH:mm:ss` for `DateTime`s
+ * `yyyy-MM-dd` for `DateOnly`s
+
+Excel has no direct support for `DateTimeOffset`. So `DateTimeOffset`s are stored as strings using the `yyyy-MM-dd HH:mm:ss z` format and `CultureInfo.InvariantCulture`
+
+
+### Custom Date formats
+
+Date formats can be customized:
+
+<!-- snippet: DateFormatsInit -->
+<a id='snippet-DateFormatsInit'></a>
+```cs
+[ModuleInitializer]
+public static void UseHumanizerForEnums()
+{
+    ValueRenderer.DefaultDateFormat = "yyyy/MM/dd" ;
+    ValueRenderer.DefaultDateTimeFormat = "yyyy/MM/dd HH:mm:ss" ;
+    ValueRenderer.DefaultDateTimeOffsetFormat = "yyyy/MM/dd HH:mm:ss z" ;
+}
+```
+<sup><a href='/src/StaticSettingsTests/DateFormats.cs#L5-L15' title='Snippet source file'>snippet source</a> | <a href='#snippet-DateFormatsInit' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+
+#### Result
+
+<img src="/src/StaticSettingsTests\DateFormats.Test%23Sheet1.verified.png">
+
+
 ## Icon
 
 [Grim Fandango](https://github.com/PapirusDevelopmentTeam/papirus-icon-theme/blob/master/Papirus/64x64/apps/grim-fandango-remastered.svg) from [Papirus Icons](https://github.com/PapirusDevelopmentTeam/papirus-icon-theme).

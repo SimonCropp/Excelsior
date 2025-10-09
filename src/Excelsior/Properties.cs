@@ -29,7 +29,12 @@
                 continue;
             }
 
-            yield return new(property, parameter);
+            var split = property.Attribute<SplitAttribute>() ?? parameter?.Attribute<SplitAttribute>();
+            if (split == null)
+            {
+                yield return new(property, parameter, null);
+            }
+
         }
     }
 

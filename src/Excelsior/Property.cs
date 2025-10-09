@@ -1,12 +1,12 @@
 ﻿class Property<T>
 {
-    public Property(PropertyInfo info, ParameterInfo? constructorParameter)
+    public Property(PropertyInfo info, ParameterInfo? constructorParameter, string? declaringPropertyName)
     {
         Get = CreateGet(info);
         var column = info.Attribute<ColumnAttribute>() ?? constructorParameter?.Attribute<ColumnAttribute>();
         var display = info.Attribute<DisplayAttribute>() ?? constructorParameter?.Attribute<DisplayAttribute>();
         var displayName = info.Attribute<DisplayNameAttribute>() ?? constructorParameter?.Attribute<DisplayNameAttribute>();
-        DisplayName = GetHeading(info, display, column,displayName);
+        DisplayName = GetHeading(info, display, column, displayName);
         Name = info.Name;
         Order = GetOrder(column, display);
         Width = GetWidth(column);

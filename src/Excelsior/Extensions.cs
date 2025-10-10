@@ -10,12 +10,22 @@
 
     public static string PropertyName<T, TProperty>(this Expression<Func<T, TProperty>> expression)
     {
-        if (expression.Body is MemberExpression member)
+        var parts = new List<string>();
+        var current = expression.Body;
+
+        while (current is MemberExpression member)
         {
-            return member.Member.Name;
+            parts.Add(member.Member.Name);
+            current = member.Expression;
         }
 
-        throw new ArgumentException("Expression must be a property access", nameof(expression));
+        if (parts.Count == 0)
+        {
+            throw new ArgumentException("Expression must be a property access", nameof(expression));
+        }
+
+        parts.Reverse();
+        return string.Join('.', parts);
     }
 
     public static string DisplayName(this Enum enumValue)

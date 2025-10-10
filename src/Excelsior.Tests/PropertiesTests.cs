@@ -348,6 +348,25 @@ public class PropertiesTests
     public Task RecordPrimaryConstructorIgnore() =>
         Verify(Properties<RecordPrimaryConstructorWithIgnore>.Items);
 
+    [Test]
+    public Task SplitOverlapping() =>
+        Verify(Properties<ModelWithOverlappingSplit>.Items);
+
+    class ModelWithOverlappingSplit
+    {
+        public string? Prop1 { get; set; }
+
+        [Split]
+        public Child? Child1 { get; set; }
+        [Split]
+        public Child? Child2 { get; set; }
+
+        public class Child
+        {
+            public string? Level2 { get; set; }
+        }
+    }
+
     class ModelWithSplit
     {
         public string? Prop1 { get; set; }

@@ -10,7 +10,15 @@
   {
     Get: {Scrubbed},
     DisplayName: Level2,
-    Name: Level1.Level2,
+    Name: Child1.Level2,
+    Type: string,
+    IsNumber: false,
+    IsHtml: false
+  },
+  {
+    Get: {Scrubbed},
+    DisplayName: Level2,
+    Name: Child2.Level2,
     Type: string,
     IsNumber: false,
     IsHtml: false

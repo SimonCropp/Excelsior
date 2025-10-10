@@ -1,13 +1,13 @@
 ﻿class Property<T>
 {
-    public Property(PropertyInfo info, ParameterInfo? constructorParameter, Func<T, object?> get)
+    public Property(PropertyInfo info, ParameterInfo? constructorParameter, Func<T, object?> get, IReadOnlyList<PropertyInfo> infos)
     {
         Get = get;
         var column = info.Attribute<ColumnAttribute>() ?? constructorParameter?.Attribute<ColumnAttribute>();
         var display = info.Attribute<DisplayAttribute>() ?? constructorParameter?.Attribute<DisplayAttribute>();
         var displayName = info.Attribute<DisplayNameAttribute>() ?? constructorParameter?.Attribute<DisplayNameAttribute>();
         DisplayName = GetHeading(info, display, column, displayName);
-        Name = info.Name;
+        Name = string.Join('.', infos.Select(_ => _.Name));
         Order = GetOrder(column, display);
         Width = GetWidth(column);
         Format = column?.Format;

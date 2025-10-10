@@ -30,10 +30,11 @@
 
             stack.Push(property);
 
-            var func = CreateGet(stack);
+            var infos = stack.Reverse().ToList();
+            var func = CreateGet(infos);
             if (ShouldSplit(property, parameter))
             {
-                yield return new(property, parameter, func);
+                yield return new(property, parameter, func, infos);
             }
             else
             {
@@ -57,11 +58,10 @@
 
     static ParameterExpression targetParam = Expression.Parameter(typeof(T));
 
-    static Func<T, object?> CreateGet(IEnumerable<PropertyInfo> path)
+    static Func<T, object?> CreateGet(IReadOnlyList<PropertyInfo> path)
     {
         Expression current = targetParam;
-
-        foreach (var property in path.Reverse())
+        foreach (var property in path)
         {
             current = Expression.Property(current, property);
         }

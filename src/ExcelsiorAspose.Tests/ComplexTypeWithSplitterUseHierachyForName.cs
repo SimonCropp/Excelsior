@@ -17,7 +17,7 @@ public class ComplexTypeWithSplitterUseHierachyForName
     [Test]
     public async Task Test()
     {
-        #region ComplexTypeWithSplitter
+        #region ComplexTypeWithSplitterUseHierachyForName
 
         var builder = new BookBuilder();
 

@@ -26,9 +26,9 @@ public class ValueRendererForEnums
         ];
         builder.AddSheet(data);
 
-        using var book = await builder.Build();
-
         #endregion
+
+        using var book = await builder.Build();
 
         await Verify(book);
     }

@@ -829,10 +829,8 @@ List<Car> data =
     }
 ];
 builder.AddSheet(data);
-
-using var book = await builder.Build();
 ```
-<sup><a href='/src/StaticSettingsTests/ValueRendererForEnums.cs#L15-L31' title='Snippet source file'>snippet source</a> | <a href='#snippet-ValueRendererForEnums' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/StaticSettingsTests/ValueRendererForEnums.cs#L15-L29' title='Snippet source file'>snippet source</a> | <a href='#snippet-ValueRendererForEnums' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 

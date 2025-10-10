@@ -29,13 +29,22 @@
                 continue;
             }
 
+            var func = CreateGet(property);
             var split = property.Attribute<SplitAttribute>() ?? parameter?.Attribute<SplitAttribute>();
             if (split == null)
             {
-                yield return new(property, parameter, null);
+                yield return new(func);
             }
 
         }
+    }
+    static ParameterExpression targetParam = Expression.Parameter(typeof(T));
+
+    static Func<T, object?> CreateGet(PropertyInfo info)
+    {
+        var property = Expression.Property(targetParam, info);
+        var box = Expression.Convert(property, typeof(object));
+        return Expression.Lambda<Func<T, object?>>(box, targetParam).Compile();
     }
 
     public static IReadOnlyList<Property<T>> Items { get; }

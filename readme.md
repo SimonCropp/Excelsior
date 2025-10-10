@@ -734,7 +734,7 @@ public sealed class ColumnAttribute :
     public bool IsHtml { get; set; }
 }
 ```
-<sup><a href='/src/Excelsior/ColumnAttribute.cs#L1-L13' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnAttribute.cs' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior/Attributes/ColumnAttribute.cs#L1-L13' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnAttribute.cs' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 

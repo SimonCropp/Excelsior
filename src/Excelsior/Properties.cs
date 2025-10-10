@@ -3,7 +3,7 @@
     static Properties() =>
         Items = GetPropertiesRecursive(typeof(T), []).ToList();
 
-    static IEnumerable<Property<T>> GetPropertiesRecursive(Type type, Stack<string> stack)
+    static IEnumerable<Property<T>> GetPropertiesRecursive(Type type, Stack<PropertyInfo> stack)
     {
         var defaultConstructor = type.GetConstructors(BindingFlags.Public | BindingFlags.Instance)
             .Select(_ => _.GetParameters())
@@ -28,11 +28,10 @@
                 continue;
             }
 
-            stack.Push(property.Name);
+            stack.Push(property);
 
             var func = CreateGet(stack);
-            var split = property.Attribute<SplitAttribute>() ?? parameter?.Attribute<SplitAttribute>();
-            if (split == null)
+            if (ShouldSplit(property, parameter))
             {
                 yield return new(property, parameter, func);
             }
@@ -48,22 +47,22 @@
         }
     }
 
-    static ParameterExpression targetParam = Expression.Parameter(typeof(T));
-
-    static Func<T, object?> CreateGet(PropertyInfo info)
+    static bool ShouldSplit(PropertyInfo property, ParameterInfo? parameter)
     {
-        var property = Expression.Property(targetParam, info);
-        var box = Expression.Convert(property, typeof(object));
-        return Expression.Lambda<Func<T, object?>>(box, targetParam).Compile();
+        var split = property.Attribute<SplitAttribute>() ??
+                    parameter?.Attribute<SplitAttribute>() ??
+                    property.PropertyType.Attribute<SplitAttribute>();
+        return split == null;
     }
 
-    static Func<T, object?> CreateGet(IEnumerable<string> path)
+    static ParameterExpression targetParam = Expression.Parameter(typeof(T));
+
+    static Func<T, object?> CreateGet(IEnumerable<PropertyInfo> path)
     {
         Expression current = targetParam;
 
-        foreach (var name in path.Reverse())
+        foreach (var property in path.Reverse())
         {
-            var property = current.Type.GetProperty(name)!;
             current = Expression.Property(current, property);
         }
 

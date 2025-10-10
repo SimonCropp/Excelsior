@@ -10,6 +10,9 @@
     int maxColumnWidth) :
     RendererBase<TModel, Sheet, Style, Cell, Book>(data, columns, maxColumnWidth)
 {
+    protected override void ApplyFilter(Sheet sheet) =>
+        sheet.RangeUsed()!.SetAutoFilter();
+
     protected override async Task<Sheet> AddSheet(Book book, Cancel cancel)
     {
         var sheet = book.Worksheets.Add(name);
@@ -19,7 +22,6 @@
         await PopulateData(sheet, cancel);
 
         ApplyGlobalStyling(sheet);
-        sheet.RangeUsed()!.SetAutoFilter();
         return sheet;
     }
 

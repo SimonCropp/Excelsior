@@ -15,9 +15,12 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook>(
     internal async Task AddSheetOuter(TBook book, Cancel cancel)
     {
         var sheet = await AddSheet(book, cancel);
+        ApplyFilter(sheet);
         AutoSizeColumns(sheet);
         ResizeRows(sheet);
     }
+
+    protected abstract void ApplyFilter(TSheet sheet);
     protected abstract Task<TSheet> AddSheet(TBook book, Cancel cancel);
     protected abstract void ResizeColumn(TSheet sheet, int index, Column<TStyle, TModel> column, int defaultMaxColumnWidth);
     protected abstract void ResizeRows(TSheet sheet);

@@ -33,7 +33,7 @@
             var split = property.Attribute<SplitAttribute>() ?? parameter?.Attribute<SplitAttribute>();
             if (split == null)
             {
-                yield return new(func);
+                yield return new(property, parameter, null);
             }
 
         }

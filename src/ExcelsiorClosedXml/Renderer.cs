@@ -13,14 +13,7 @@
     protected override void ApplyFilter(Sheet sheet) =>
         sheet.RangeUsed()!.SetAutoFilter();
 
-    protected override Task AddSheet(Sheet sheet, Cancel cancel)
-    {
-        CreateHeadings(sheet);
-
-        return PopulateData(sheet, cancel);
-    }
-
-    void CreateHeadings(Sheet sheet)
+    protected override void CreateHeadings(Sheet sheet)
     {
         for (var i = 0; i < Columns.Count; i++)
         {

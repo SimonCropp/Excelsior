@@ -1,11 +1,10 @@
 ﻿static class Properties<T>
 {
     static Properties() =>
-        Items = GetProperties().ToList();
+        Items = GetPropertiesRecursive(typeof(T), [], false).ToList();
 
-    static IEnumerable<Property<T>> GetProperties()
+    static IEnumerable<Property<T>> GetPropertiesRecursive(Type type, Stack<(PropertyInfo property, ParameterInfo? parameter)> stack, bool useHierachyForName)
     {
-        var type = typeof(T);
         var defaultConstructor = type.GetConstructors(BindingFlags.Public | BindingFlags.Instance)
             .Select(_ => _.GetParameters())
             .OrderByDescending(_ => _.Length)
@@ -29,8 +28,53 @@
                 continue;
             }
 
-            yield return new(property, parameter);
+            stack.Push((property,parameter));
+
+            var infos = stack.Reverse().ToList();
+            var func = CreateGet(infos);
+            if (ShouldSplit(property, parameter, out var nestedUseHierachyForName))
+            {
+                foreach (var nested in GetPropertiesRecursive(property.PropertyType, stack, nestedUseHierachyForName))
+                {
+                    yield return nested;
+                }
+            }
+            else
+            {
+                yield return new(property, parameter, func, infos, useHierachyForName);
+            }
+
+            stack.Pop();
         }
+    }
+
+    static bool ShouldSplit(PropertyInfo property, ParameterInfo? parameter, out bool useHierachyForName)
+    {
+        var split = property.Attribute<SplitAttribute>() ??
+                    parameter?.Attribute<SplitAttribute>() ??
+                    property.PropertyType.Attribute<SplitAttribute>();
+        if (split == null)
+        {
+            useHierachyForName = false;
+            return false;
+        }
+
+        useHierachyForName = split.UseHierachyForName;
+        return true;
+    }
+
+    static ParameterExpression targetParam = Expression.Parameter(typeof(T));
+
+    static Func<T, object?> CreateGet(IReadOnlyList<(PropertyInfo property, ParameterInfo? parameter)> path)
+    {
+        Expression current = targetParam;
+        foreach (var node in path)
+        {
+            current = Expression.Property(current, node.property);
+        }
+
+        var box = Expression.Convert(current, typeof(object));
+        return Expression.Lambda<Func<T, object?>>(box, targetParam).Compile();
     }
 
     public static IReadOnlyList<Property<T>> Items { get; }

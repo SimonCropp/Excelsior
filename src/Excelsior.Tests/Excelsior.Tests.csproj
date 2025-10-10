@@ -13,4 +13,10 @@
     <Using Include="NUnit.Framework.Legacy.ClassicAssert" Static="True" />
     <PackageReference Include="ProjectDefaults" PrivateAssets="all" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="**\*.png">
+      <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0])</ParentFile>
+      <DependentUpon>%(ParentFile).cs</DependentUpon>
+    </None>
+  </ItemGroup>
 </Project>

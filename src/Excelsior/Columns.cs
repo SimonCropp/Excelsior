@@ -9,22 +9,24 @@
             var type = property.Type;
             var render = ValueRenderer.GetRender(type);
 
-            columns[property.Name] = new()
-            {
-                Name = property.Name,
-                Order = property.Order,
-                Heading = property.DisplayName,
-                Width = property.Width,
-                HeadingStyle = null,
-                CellStyle = null,
-                Format = property.Format,
-                NullDisplay = property.NullDisplay ?? ValueRenderer.GetNullDisplay(type),
-                Render = render == null ? null : (_, value) => render(value),
-                IsHtml = property.IsHtml,
-                IsNumber = property.IsNumber,
-                IsEnumerableString = type.IsAssignableTo(typeof(IEnumerable<string>)),
-                GetValue = property.Get
-            };
+            columns.Add(
+                property.Name,
+                new()
+                {
+                    Name = property.Name,
+                    Order = property.Order,
+                    Heading = property.DisplayName,
+                    Width = property.Width,
+                    HeadingStyle = null,
+                    CellStyle = null,
+                    Format = property.Format,
+                    NullDisplay = property.NullDisplay ?? ValueRenderer.GetNullDisplay(type),
+                    Render = render == null ? null : (_, value) => render(value),
+                    IsHtml = property.IsHtml,
+                    IsNumber = property.IsNumber,
+                    IsEnumerableString = type.IsAssignableTo(typeof(IEnumerable<string>)),
+                    GetValue = property.Get
+                });
         }
     }
 

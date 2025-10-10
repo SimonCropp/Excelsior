@@ -734,7 +734,7 @@ public sealed class ColumnAttribute :
     public bool IsHtml { get; set; }
 }
 ```
-<sup><a href='/src/Excelsior/ColumnAttribute.cs#L1-L13' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnAttribute.cs' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior/Attributes/ColumnAttribute.cs#L1-L13' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnAttribute.cs' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -875,6 +875,52 @@ public static void UseHumanizerForEnums()
 #### Result
 
 <img src="/src/StaticSettingsTests\DateFormats.Test%23Sheet1.verified.png">
+
+
+### Splitting
+
+
+`SplitAttribute` can be used push properties up.
+
+<!-- snippet: ComplexTypeWithSplitter -->
+<a id='snippet-ComplexTypeWithSplitter'></a>
+```cs
+public record Person(
+    string Name,
+    [Split] Address Address);
+
+public record Address(int StreetNumber, string Street, string City, State State, ushort PostCode);
+```
+<sup><a href='/src/ExcelsiorAspose.Tests/ComplexTypeWithSplitter.cs#L10-L18' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeWithSplitter' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+
+#### Result
+
+<img src="/src/ExcelsiorAspose.Tests/ComplexTypeWithSplitter.Test%23Sheet1.verified.png">
+
+
+#### UseHierachyForName
+
+`SplitAttribute.UseHierachyForName` can be used to prefix members with the parent property name.
+
+<!-- snippet: ComplexTypeWithSplitterUseHierachyForName -->
+<a id='snippet-ComplexTypeWithSplitterUseHierachyForName'></a>
+```cs
+public record Person(
+    string Name,
+    [Split(UseHierachyForName = true)]
+    Address Address);
+
+public record Address(int Number, string Street, string City, State State, ushort PostCode);
+```
+<sup><a href='/src/ExcelsiorAspose.Tests/ComplexTypeWithSplitterUseHierachyForName.cs#L10-L19' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeWithSplitterUseHierachyForName' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+
+#### Result
+
+<img src="/src/ExcelsiorAspose.Tests/ComplexTypeWithSplitterUseHierachyForName.Test%23Sheet1.verified.png">
 
 
 ## Icon

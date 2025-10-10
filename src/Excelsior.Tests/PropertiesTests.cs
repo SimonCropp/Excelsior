@@ -7,6 +7,10 @@
 [TestFixture]
 public class PropertiesTests
 {
+    [ModuleInitializer]
+    public static void Init() =>
+        VerifierSettings.ScrubMember("Get");
+
     class SimpleModel
     {
         public int Id { get; set; }
@@ -303,7 +307,8 @@ public class PropertiesTests
     {
         // ReSharper disable once IntroduceOptionalParameters.Local
         // constructor with fewer paramters
-        public RecordPrimaryConstructorModel() :
+        public RecordPrimaryConstructorModel()
+            :
             this("a", "b")
         {
         }
@@ -311,20 +316,19 @@ public class PropertiesTests
 
     [Test]
     public Task RecordPrimaryConstructor() =>
-        Verify(Properties<RecordPrimaryConstructorModel>.Items)
-            .ScrubMember("Get");
+        Verify(Properties<RecordPrimaryConstructorModel>.Items);
 
     class ModelWithIgnore
     {
         public string? Include { get; set; }
+
         [Excelsior.Ignore]
         public string? Ignore { get; set; }
     }
 
     [Test]
     public Task WithIgnore() =>
-        Verify(Properties<ModelWithIgnore>.Items)
-            .ScrubMember("Get");
+        Verify(Properties<ModelWithIgnore>.Items);
 
     record RecordPrimaryConstructorWithIgnore(
         string? Include,
@@ -333,7 +337,8 @@ public class PropertiesTests
     {
         // ReSharper disable once IntroduceOptionalParameters.Local
         // constructor with fewer paramters
-        public RecordPrimaryConstructorWithIgnore() :
+        public RecordPrimaryConstructorWithIgnore()
+            :
             this("a", "b")
         {
         }
@@ -341,6 +346,91 @@ public class PropertiesTests
 
     [Test]
     public Task RecordPrimaryConstructorIgnore() =>
-        Verify(Properties<RecordPrimaryConstructorWithIgnore>.Items)
-            .ScrubMember("Get");
+        Verify(Properties<RecordPrimaryConstructorWithIgnore>.Items);
+
+    [Test]
+    public Task SplitOverlapping() =>
+        Verify(Properties<ModelWithOverlappingSplit>.Items);
+
+    class ModelWithOverlappingSplit
+    {
+        public string? Prop1 { get; set; }
+
+        [Split]
+        public Child? Child1 { get; set; }
+
+        [Split]
+        public Child? Child2 { get; set; }
+
+        public class Child
+        {
+            public string? Level2 { get; set; }
+        }
+    }
+
+    class ModelWithSplit
+    {
+        public string? Prop1 { get; set; }
+
+        [Split]
+        public Child? Level1 { get; set; }
+
+        public class Child
+        {
+            public string? Level2 { get; set; }
+        }
+    }
+
+    [Test]
+    public Task Split() =>
+        Verify(Properties<ModelWithSplit>.Items);
+
+    class ModelWithSplitUseHierachyForName
+    {
+        public string? Prop1 { get; set; }
+
+        [Split(UseHierachyForName = true)]
+        public Child? Level1 { get; set; }
+
+        public class Child
+        {
+            public string? Level2 { get; set; }
+        }
+    }
+
+    [Test]
+    public Task SplitUseHierachyForName() =>
+        Verify(Properties<ModelWithSplitUseHierachyForName>.Items);
+
+    class ModelWithSplitType
+    {
+        public string? Prop1 { get; set; }
+
+        public Child? Level1 { get; set; }
+
+        [Split]
+        public class Child
+        {
+            public string? Level2 { get; set; }
+        }
+    }
+
+    [Test]
+    public Task SplitType() =>
+        Verify(Properties<ModelWithSplitType>.Items);
+
+    record ModelWithSplitParameter(
+        string? Prop1,
+        [Split]
+        ModelWithSplitParameter.Child? Level1)
+    {
+        public class Child
+        {
+            public string? Level2 { get; set; }
+        }
+    }
+
+    [Test]
+    public Task SplitParameter() =>
+        Verify(Properties<ModelWithSplitParameter>.Items);
 }

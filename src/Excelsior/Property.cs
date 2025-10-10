@@ -1,13 +1,17 @@
 ﻿class Property<T>
 {
-    public Property(PropertyInfo info, ParameterInfo? constructorParameter)
+    public Property(
+        PropertyInfo info,
+        ParameterInfo? constructorParameter,
+        Func<T, object?> get,
+        IReadOnlyList<(PropertyInfo property, ParameterInfo? parameter)> infos,
+        bool useHierachyForName)
     {
-        Get = CreateGet(info);
+        Get = get;
         var column = info.Attribute<ColumnAttribute>() ?? constructorParameter?.Attribute<ColumnAttribute>();
         var display = info.Attribute<DisplayAttribute>() ?? constructorParameter?.Attribute<DisplayAttribute>();
-        var displayName = info.Attribute<DisplayNameAttribute>() ?? constructorParameter?.Attribute<DisplayNameAttribute>();
-        DisplayName = GetHeading(info, display, column,displayName);
-        Name = info.Name;
+        DisplayName = GetHeading(infos, useHierachyForName);
+        Name = string.Join('.', infos.Select(_ => _.property.Name));
         Order = GetOrder(column, display);
         Width = GetWidth(column);
         Format = column?.Format;
@@ -48,32 +52,45 @@
     public string? NullDisplay { get; }
     public bool IsHtml { get; }
 
-    static string GetHeading(PropertyInfo info, DisplayAttribute? display, ColumnAttribute? column, DisplayNameAttribute? displayName)
+    static string GetHeading(IReadOnlyList<(PropertyInfo property, ParameterInfo? parameter)> infos, bool useHierachyForName)
     {
-        if (column?.Heading != null)
+        var names = new List<string>();
+        foreach (var (property, parameter) in infos)
         {
-            return column.Heading;
+            Add(property, parameter);
         }
 
-        if (display?.Name != null)
+        if (!useHierachyForName)
         {
-            return display.Name;
+            return names.Last();
         }
 
-        if (displayName != null)
+        return string.Join(' ', names);
+
+        void Add(PropertyInfo property, ParameterInfo? parameter)
         {
-            return displayName.DisplayName;
+            var column = property.Attribute<ColumnAttribute>() ?? parameter?.Attribute<ColumnAttribute>();
+            if (column?.Heading != null)
+            {
+                names.Add(column.Heading);
+                return;
+            }
+
+            var display = property.Attribute<DisplayAttribute>() ?? parameter?.Attribute<DisplayAttribute>();
+            if (display?.Name != null)
+            {
+                names.Add(display.Name);
+                return;
+            }
+
+            var displayName = property.Attribute<DisplayNameAttribute>() ?? parameter?.Attribute<DisplayNameAttribute>();
+            if (displayName != null)
+            {
+                names.Add(displayName.DisplayName);
+                return;
+            }
+
+            names.Add(CamelCase.Split(property.Name));
         }
-
-        return CamelCase.Split(info.Name);
-    }
-
-    static ParameterExpression targetParam = Expression.Parameter(typeof(T));
-
-    static Func<T, object?> CreateGet(PropertyInfo info)
-    {
-        var property = Expression.Property(targetParam, info);
-        var box = Expression.Convert(property, typeof(object));
-        return Expression.Lambda<Func<T, object?>>(box, targetParam).Compile();
     }
 }

@@ -15,6 +15,9 @@
     <Using Include="NUnit.Framework.Legacy.ClassicAssert" Static="True" />
     <PackageReference Include="ProjectDefaults" PrivateAssets="all" />
 
+    <Compile Include="..\ExcelsiorAspose.Tests\ComplexTypeWithSplitter.cs" />
+    <Compile Include="..\ExcelsiorAspose.Tests\SplitterTests.cs" />
+    <Compile Include="..\ExcelsiorAspose.Tests\ComplexTypeWithSplitterUseHierachyForName.cs" />
     <Compile Include="..\ExcelsiorAspose.Tests\FormatGuessingTests.cs" />
     <Compile Include="..\ExcelsiorAspose.Tests\DateFormats.cs" />
     <Compile Include="..\ExcelsiorAspose.Tests\ValueRenderedTests.cs" />
@@ -35,5 +38,9 @@
     <Compile Include="..\ExcelsiorAspose.Tests\ComplexTypeWithInheritedCustomRender.cs" />
     <Compile Include="..\ExcelsiorAspose.Tests\ComplexTypeWithToString.cs" />
     <Compile Include="..\ExcelsiorAspose.Tests\WhitespaceTests.cs" />
+    <None Include="**\*.png">
+      <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0])</ParentFile>
+      <DependentUpon>%(ParentFile).cs</DependentUpon>
+    </None>
   </ItemGroup>
 </Project>

@@ -5,8 +5,8 @@
     AttributeTargets.Parameter |
     AttributeTargets.Class |
     AttributeTargets.Struct)]
-public sealed class SplitAttribute(bool useHierachyForName = false) :
+public sealed class SplitAttribute :
     Attribute
 {
-    public bool UseHierachyForName { get; } = useHierachyForName;
+    public bool UseHierachyForName { get; init; }
 }

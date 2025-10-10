@@ -3,7 +3,7 @@
     static Properties() =>
         Items = GetPropertiesRecursive(typeof(T), [], false).ToList();
 
-    static IEnumerable<Property<T>> GetPropertiesRecursive(Type type, Stack<PropertyInfo> stack, bool useHierachyForName)
+    static IEnumerable<Property<T>> GetPropertiesRecursive(Type type, Stack<(PropertyInfo property, ParameterInfo? parameter)> stack, bool useHierachyForName)
     {
         var defaultConstructor = type.GetConstructors(BindingFlags.Public | BindingFlags.Instance)
             .Select(_ => _.GetParameters())
@@ -28,7 +28,7 @@
                 continue;
             }
 
-            stack.Push(property);
+            stack.Push((property,parameter));
 
             var infos = stack.Reverse().ToList();
             var func = CreateGet(infos);
@@ -65,12 +65,12 @@
 
     static ParameterExpression targetParam = Expression.Parameter(typeof(T));
 
-    static Func<T, object?> CreateGet(IReadOnlyList<PropertyInfo> path)
+    static Func<T, object?> CreateGet(IReadOnlyList<(PropertyInfo property, ParameterInfo? parameter)> path)
     {
         Expression current = targetParam;
-        foreach (var property in path)
+        foreach (var node in path)
         {
-            current = Expression.Property(current, property);
+            current = Expression.Property(current, node.property);
         }
 
         var box = Expression.Convert(current, typeof(object));

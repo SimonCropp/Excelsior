@@ -1,6 +1,6 @@
 ﻿// ReSharper disable ArrangeObjectCreationWhenTypeNotEvident
 [TestFixture]
-public class ComplexTypeWithSplitter
+public class SplitterTests
 {
     public record Target(
         string Property,

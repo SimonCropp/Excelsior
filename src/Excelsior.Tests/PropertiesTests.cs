@@ -358,6 +358,7 @@ public class PropertiesTests
 
         [Split]
         public Child? Child1 { get; set; }
+
         [Split]
         public Child? Child2 { get; set; }
 
@@ -383,6 +384,23 @@ public class PropertiesTests
     [Test]
     public Task Split() =>
         Verify(Properties<ModelWithSplit>.Items);
+
+    class ModelWithSplitUseHierachyForName
+    {
+        public string? Prop1 { get; set; }
+
+        [Split(UseHierachyForName = true)]
+        public Child? Level1 { get; set; }
+
+        public class Child
+        {
+            public string? Level2 { get; set; }
+        }
+    }
+
+    [Test]
+    public Task SplitUseHierachyForName() =>
+        Verify(Properties<ModelWithSplitUseHierachyForName>.Items);
 
     class ModelWithSplitType
     {

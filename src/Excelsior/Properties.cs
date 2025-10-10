@@ -1,9 +1,9 @@
 ﻿static class Properties<T>
 {
     static Properties() =>
-        Items = GetPropertiesRecursive(typeof(T), "").ToList();
+        Items = GetPropertiesRecursive(typeof(T), []).ToList();
 
-    static IEnumerable<Property<T>> GetPropertiesRecursive(Type type, string prefix)
+    static IEnumerable<Property<T>> GetPropertiesRecursive(Type type, Stack<string> stack)
     {
         var defaultConstructor = type.GetConstructors(BindingFlags.Public | BindingFlags.Instance)
             .Select(_ => _.GetParameters())
@@ -27,8 +27,10 @@
             {
                 continue;
             }
-            var path = string.IsNullOrEmpty(prefix) ? property.Name : $"{prefix}.{property.Name}";
-            var func = CreateGet(path);
+
+            stack.Push(property.Name);
+
+            var func = CreateGet(stack);
             var split = property.Attribute<SplitAttribute>() ?? parameter?.Attribute<SplitAttribute>();
             if (split == null)
             {
@@ -36,14 +38,16 @@
             }
             else
             {
-                foreach (var nested in GetPropertiesRecursive(property.PropertyType, path))
+                foreach (var nested in GetPropertiesRecursive(property.PropertyType, stack))
                 {
                     yield return nested;
                 }
             }
 
+            stack.Pop();
         }
     }
+
     static ParameterExpression targetParam = Expression.Parameter(typeof(T));
 
     static Func<T, object?> CreateGet(PropertyInfo info)
@@ -53,16 +57,13 @@
         return Expression.Lambda<Func<T, object?>>(box, targetParam).Compile();
     }
 
-    static Func<T, object?> CreateGet(string propertyPath)
+    static Func<T, object?> CreateGet(IEnumerable<string> path)
     {
         Expression current = targetParam;
 
-        foreach (var propName in propertyPath.Split('.'))
+        foreach (var name in path.Reverse())
         {
-            var property = current.Type.GetProperty(propName);
-            if (property == null)
-                throw new ArgumentException($"Property '{propName}' not found");
-
+            var property = current.Type.GetProperty(name)!;
             current = Expression.Property(current, property);
         }
 

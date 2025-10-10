@@ -10,7 +10,7 @@
     int maxColumnWidth) :
     RendererBase<TModel, Sheet, Style, Range, IDisposableBook>(data, columns, maxColumnWidth)
 {
-    internal override async Task AddSheet(IDisposableBook book, Cancel cancel)
+    protected override async Task<Sheet> AddSheet(IDisposableBook book, Cancel cancel)
     {
         var sheet = book.Worksheets.Create(name);
 
@@ -20,7 +20,7 @@
 
         ApplyGlobalStyling(sheet);
         sheet.AutoFilters.FilterRange = sheet.UsedRange;
-        AutoSizeColumns(sheet);
+        return sheet;
     }
 
     void CreateHeadings(Sheet sheet)
@@ -118,5 +118,9 @@
         {
             sheetColumn.ColumnWidth = columnConfig.Width.Value;
         }
+    }
+
+    protected override void ResizeRows(Sheet sheet)
+    {
     }
 }

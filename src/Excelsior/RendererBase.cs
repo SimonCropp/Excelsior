@@ -11,10 +11,18 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook>(
     protected abstract void SetCellValue(TCell cell, object value);
     protected abstract void SetCellValue(TCell cell, string value);
     protected abstract void SetCellHtml(TCell cell, string value);
-    internal abstract Task AddSheet(TBook book, Cancel cancel);
-    protected abstract void ResizeColumn(TSheet sheet, int index, Column<TStyle, TModel> column, int defaultMaxColumnWidth);
 
-    protected void AutoSizeColumns(TSheet sheet)
+    internal async Task AddSheetOuter(TBook book, Cancel cancel)
+    {
+        var sheet = await AddSheet(book, cancel);
+        AutoSizeColumns(sheet);
+        ResizeRows(sheet);
+    }
+    protected abstract Task<TSheet> AddSheet(TBook book, Cancel cancel);
+    protected abstract void ResizeColumn(TSheet sheet, int index, Column<TStyle, TModel> column, int defaultMaxColumnWidth);
+    protected abstract void ResizeRows(TSheet sheet);
+
+    void AutoSizeColumns(TSheet sheet)
     {
         for (var index = 0; index < Columns.Count; index++)
         {

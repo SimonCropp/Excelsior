@@ -38,5 +38,9 @@
     <Compile Include="..\ExcelsiorAspose.Tests\ComplexTypeWithInheritedCustomRender.cs" />
     <Compile Include="..\ExcelsiorAspose.Tests\ComplexTypeWithToString.cs" />
     <Compile Include="..\ExcelsiorAspose.Tests\WhitespaceTests.cs" />
+    <None Include="**\*.png">
+      <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0])</ParentFile>
+      <DependentUpon>%(ParentFile).cs</DependentUpon>
+    </None>
   </ItemGroup>
 </Project>

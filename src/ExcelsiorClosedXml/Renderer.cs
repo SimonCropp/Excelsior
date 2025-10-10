@@ -20,7 +20,7 @@
             var column = Columns[i];
             var cell = sheet.Cell(1, i + 1);
 
-            cell.Value = column.Heading;
+            SetCellValue(cell, column.Heading);
 
             ApplyHeadingStyling(cell, column);
         }

@@ -18,9 +18,10 @@
         for (var i = 0; i < Columns.Count; i++)
         {
             var column = Columns[i];
-            var cell = sheet.Range[1, i + 1];
 
-            cell.Value = column.Heading;
+            var cell = GetCell(sheet, 0, i);
+
+            SetCellValue(cell, column.Heading);
 
             ApplyHeadingStyling(cell, column);
         }

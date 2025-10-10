@@ -1,9 +1,9 @@
 ﻿static class Properties<T>
 {
     static Properties() =>
-        Items = GetPropertiesRecursive(typeof(T), []).ToList();
+        Items = GetPropertiesRecursive(typeof(T), [], false).ToList();
 
-    static IEnumerable<Property<T>> GetPropertiesRecursive(Type type, Stack<PropertyInfo> stack)
+    static IEnumerable<Property<T>> GetPropertiesRecursive(Type type, Stack<PropertyInfo> stack, bool useHierachyForName)
     {
         var defaultConstructor = type.GetConstructors(BindingFlags.Public | BindingFlags.Instance)
             .Select(_ => _.GetParameters())
@@ -32,28 +32,35 @@
 
             var infos = stack.Reverse().ToList();
             var func = CreateGet(infos);
-            if (ShouldSplit(property, parameter))
+            if (ShouldSplit(property, parameter, out var nestedUseHierachyForName))
             {
-                yield return new(property, parameter, func, infos);
-            }
-            else
-            {
-                foreach (var nested in GetPropertiesRecursive(property.PropertyType, stack))
+                foreach (var nested in GetPropertiesRecursive(property.PropertyType, stack, nestedUseHierachyForName))
                 {
                     yield return nested;
                 }
+            }
+            else
+            {
+                yield return new(property, parameter, func, infos, useHierachyForName);
             }
 
             stack.Pop();
         }
     }
 
-    static bool ShouldSplit(PropertyInfo property, ParameterInfo? parameter)
+    static bool ShouldSplit(PropertyInfo property, ParameterInfo? parameter, out bool useHierachyForName)
     {
         var split = property.Attribute<SplitAttribute>() ??
                     parameter?.Attribute<SplitAttribute>() ??
                     property.PropertyType.Attribute<SplitAttribute>();
-        return split == null;
+        if (split == null)
+        {
+            useHierachyForName = false;
+            return false;
+        }
+
+        useHierachyForName = split.UseHierachyForName;
+        return true;
     }
 
     static ParameterExpression targetParam = Expression.Parameter(typeof(T));

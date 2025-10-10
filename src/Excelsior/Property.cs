@@ -1,6 +1,11 @@
 ﻿class Property<T>
 {
-    public Property(PropertyInfo info, ParameterInfo? constructorParameter, Func<T, object?> get, IReadOnlyList<PropertyInfo> infos)
+    public Property(
+        PropertyInfo info,
+        ParameterInfo? constructorParameter,
+        Func<T, object?> get,
+        IReadOnlyList<PropertyInfo> infos,
+        bool useHierachyForName)
     {
         Get = get;
         var column = info.Attribute<ColumnAttribute>() ?? constructorParameter?.Attribute<ColumnAttribute>();

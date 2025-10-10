@@ -10,10 +10,10 @@
           Name: Property
         },
         {
-          Name: Nested Property
+          Name: Custom1
         },
         {
-          Name: Nested Property
+          Name: Custom2
         }
       ]
     }

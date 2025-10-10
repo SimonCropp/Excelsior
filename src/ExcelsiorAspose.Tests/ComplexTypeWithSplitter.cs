@@ -89,6 +89,25 @@ public class ComplexTypeWithSplitter
                 new TargetMultipleOverlappingNested.NestedTarget(
                     NestedProperty: "the NestedProperty 2")),
         ];
+        builder.AddSheet(data);
+        var book = await builder.Build();
+
+        await Verify(book);
+    }
+
+    [Test]
+    public async Task MultipleOverlappingNestedAndColumnConfig()
+    {
+        var builder = new BookBuilder();
+
+        List<TargetMultipleOverlappingNested> data =
+        [
+            new("the Property",
+                new TargetMultipleOverlappingNested.NestedTarget(
+                    NestedProperty: "the NestedProperty 1"),
+                new TargetMultipleOverlappingNested.NestedTarget(
+                    NestedProperty: "the NestedProperty 2")),
+        ];
         var sheet = builder.AddSheet(data);
         sheet.Column(_ => _.Nested1.NestedProperty, _ => _.Heading = "Custom1");
         sheet.Column(_ => _.Nested2.NestedProperty, _ => _.Heading = "Custom2");

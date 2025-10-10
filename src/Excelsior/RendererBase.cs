@@ -11,10 +11,12 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook>(
     protected abstract void SetCellValue(TCell cell, object value);
     protected abstract void SetCellValue(TCell cell, string value);
     protected abstract void SetCellHtml(TCell cell, string value);
+    protected abstract TSheet BuildSheet(TBook book);
 
     internal async Task AddSheetOuter(TBook book, Cancel cancel)
     {
-        var sheet = await AddSheet(book, cancel);
+        var sheet = BuildSheet(book);
+        await AddSheet(sheet, cancel);
         ApplyGlobalStyling(sheet);
         ApplyFilter(sheet);
         AutoSizeColumns(sheet);
@@ -24,7 +26,7 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook>(
     protected abstract void ApplyGlobalStyling(TSheet sheet);
 
     protected abstract void ApplyFilter(TSheet sheet);
-    protected abstract Task<TSheet> AddSheet(TBook book, Cancel cancel);
+    protected abstract Task AddSheet(TSheet sheet, Cancel cancel);
     protected abstract void ResizeColumn(TSheet sheet, int index, Column<TStyle, TModel> column, int defaultMaxColumnWidth);
     protected abstract void ResizeRows(TSheet sheet);
 

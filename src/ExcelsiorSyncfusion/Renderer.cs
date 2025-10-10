@@ -13,15 +13,11 @@
     protected override void ApplyFilter(Sheet sheet) =>
         sheet.AutoFilters.FilterRange = sheet.UsedRange;
 
-    protected override async Task<Sheet> AddSheet(IDisposableBook book, Cancel cancel)
+    protected override Task AddSheet(Sheet sheet, Cancel cancel)
     {
-        var sheet = book.Worksheets.Create(name);
-
         CreateHeadings(sheet);
 
-        await PopulateData(sheet, cancel);
-
-        return sheet;
+        return PopulateData(sheet, cancel);
     }
 
     void CreateHeadings(Sheet sheet)
@@ -71,6 +67,9 @@
 
     protected override void SetCellHtml(Range cell, string value) =>
         cell.HtmlString = value;
+
+    protected override Sheet BuildSheet(IDisposableBook book) =>
+        book.Worksheets.Create(name);
 
     void ApplyHeadingStyling(Range cell, Column<Style, TModel> column)
     {

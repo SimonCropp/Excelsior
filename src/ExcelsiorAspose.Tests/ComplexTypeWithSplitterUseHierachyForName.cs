@@ -7,6 +7,8 @@ public class ComplexTypeWithSplitterUseHierachyForName
         SA
     }
 
+    #region ComplexTypeWithSplitterUseHierachyForName
+
     public record Person(
         string Name,
         [Split(UseHierachyForName = true)]
@@ -14,10 +16,11 @@ public class ComplexTypeWithSplitterUseHierachyForName
 
     public record Address(int Number, string Street, string City, State State, ushort PostCode);
 
+    #endregion
+
     [Test]
     public async Task Test()
     {
-        #region ComplexTypeWithSplitterUseHierachyForName
 
         var builder = new BookBuilder();
 
@@ -32,8 +35,6 @@ public class ComplexTypeWithSplitterUseHierachyForName
                     PostCode: 5000)),
         ];
         builder.AddSheet(data);
-
-        #endregion
 
         var book = await builder.Build();
 

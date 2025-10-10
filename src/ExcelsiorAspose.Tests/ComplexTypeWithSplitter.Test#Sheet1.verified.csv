@@ -1,2 +1,2 @@
-﻿Name,Address
-John Doe,"Address { Number = 900, Street = Victoria Square, City = Adelaide, State = SA, PostCode = 5000 }"
+﻿Name,Street Number,Street,City,State,Post Code
+John Doe,900,Victoria Square,Adelaide,SA,5000

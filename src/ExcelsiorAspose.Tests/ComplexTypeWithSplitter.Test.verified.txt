@@ -10,7 +10,19 @@
           Name: Name
         },
         {
-          Name: Address
+          Name: Street Number
+        },
+        {
+          Name: Street
+        },
+        {
+          Name: City
+        },
+        {
+          Name: State
+        },
+        {
+          Name: Post Code
         }
       ]
     }

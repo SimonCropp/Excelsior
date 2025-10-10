@@ -21,7 +21,6 @@
 
         await PopulateData(sheet, cancel);
 
-        ApplyGlobalStyling(sheet);
         return sheet;
     }
 
@@ -91,7 +90,7 @@
         column.CellStyle?.Invoke(style, model, value);
     }
 
-    void ApplyGlobalStyling(Sheet sheet)
+    protected override void ApplyGlobalStyling(Sheet sheet)
     {
         if (globalStyle == null)
         {

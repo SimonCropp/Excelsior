@@ -15,10 +15,13 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook>(
     internal async Task AddSheetOuter(TBook book, Cancel cancel)
     {
         var sheet = await AddSheet(book, cancel);
+        ApplyGlobalStyling(sheet);
         ApplyFilter(sheet);
         AutoSizeColumns(sheet);
         ResizeRows(sheet);
     }
+
+    protected abstract void ApplyGlobalStyling(TSheet sheet);
 
     protected abstract void ApplyFilter(TSheet sheet);
     protected abstract Task<TSheet> AddSheet(TBook book, Cancel cancel);

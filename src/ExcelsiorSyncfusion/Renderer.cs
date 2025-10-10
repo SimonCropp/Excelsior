@@ -21,7 +21,6 @@
 
         await PopulateData(sheet, cancel);
 
-        ApplyGlobalStyling(sheet);
         return sheet;
     }
 
@@ -94,7 +93,7 @@
         column.CellStyle?.Invoke(style, item, value);
     }
 
-    void ApplyGlobalStyling(Sheet sheet) =>
+    protected override void ApplyGlobalStyling(Sheet sheet) =>
         globalStyle?.Invoke(sheet.UsedRange.CellStyle);
 
     protected override void ResizeColumn(Sheet sheet, int index, Column<Style, TModel> columnConfig, int maxColumnWidth)

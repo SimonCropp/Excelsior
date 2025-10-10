@@ -29,7 +29,7 @@ public abstract class BookBuilderBase<TBook, TSheet, TStyle, TCell>
         actions.Add((book, cancel) =>
         {
             var renderer = ConstructSheetRenderer(data, name, columns.OrderedColumns(), defaultMaxColumnWidth);
-            return renderer.AddSheet(book, cancel);
+            return renderer.AddSheetOuter(book, cancel);
         });
 
         return builder;

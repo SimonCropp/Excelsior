@@ -10,42 +10,16 @@
     int maxColumnWidth) :
     RendererBase<TModel, Sheet, Style, Cell, Book>(data, columns, maxColumnWidth)
 {
-    internal override async Task AddSheet(Book book, Cancel cancel)
-    {
-        var sheet = book.Worksheets.Add(name);
-
-        CreateHeadings(sheet);
-
-        await PopulateData(sheet, cancel);
-
-        ApplyGlobalStyling(sheet);
+    protected override void ApplyFilter(Sheet sheet) =>
         sheet.RangeUsed()!.SetAutoFilter();
-        AutoSizeColumns(sheet);
-    }
 
-    void CreateHeadings(Sheet sheet)
-    {
-        for (var i = 0; i < Columns.Count; i++)
-        {
-            var column = Columns[i];
-            var cell = sheet.Cell(1, i + 1);
-
-            cell.Value = column.Heading;
-
-            ApplyHeadingStyling(cell, column);
-        }
-
+    protected override void FreezeHeader(Sheet sheet) =>
         sheet.SheetView.FreezeRows(1);
-    }
 
     protected override Cell GetCell(Sheet sheet, int row, int column) =>
         sheet.Cell(row + 1, column + 1);
 
-    protected override void RenderCell(object? value,
-        Column<Style, TModel> column,
-        TModel item,
-        int rowIndex,
-        Cell cell)
+    protected override void RenderCell(object? value, Column<Style, TModel> column, TModel item, int rowIndex, Cell cell)
     {
         var style = cell.Style;
         style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
@@ -71,7 +45,10 @@
     protected override void SetCellHtml(Cell cell, string value) =>
         throw new("ClosedXml does not support html");
 
-    void ApplyHeadingStyling(Cell cell, Column<Style, TModel> column)
+    protected override Sheet BuildSheet(Book book) =>
+        book.Worksheets.Add(name);
+
+    protected override void ApplyHeadingStyling(Cell cell, Column<Style, TModel> column)
     {
         headingStyle?.Invoke(cell.Style);
 
@@ -92,7 +69,7 @@
         column.CellStyle?.Invoke(style, item, value);
     }
 
-    void ApplyGlobalStyling(Sheet sheet)
+    protected override void ApplyGlobalStyling(Sheet sheet)
     {
         if (globalStyle == null)
         {
@@ -121,5 +98,9 @@
         {
             sheetColumn.Width = columnConfig.Width.Value;
         }
+    }
+
+    protected override void ResizeRows(Sheet sheet)
+    {
     }
 }

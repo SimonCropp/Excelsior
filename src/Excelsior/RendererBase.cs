@@ -11,10 +11,44 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook>(
     protected abstract void SetCellValue(TCell cell, object value);
     protected abstract void SetCellValue(TCell cell, string value);
     protected abstract void SetCellHtml(TCell cell, string value);
-    internal abstract Task AddSheet(TBook book, Cancel cancel);
-    protected abstract void ResizeColumn(TSheet sheet, int index, Column<TStyle, TModel> column, int defaultMaxColumnWidth);
+    protected abstract TSheet BuildSheet(TBook book);
 
-    protected void AutoSizeColumns(TSheet sheet)
+    internal async Task AddSheetOuter(TBook book, Cancel cancel)
+    {
+        var sheet = BuildSheet(book);
+        CreateHeadings(sheet);
+        FreezeHeader(sheet);
+        await PopulateData(sheet, cancel);
+        ApplyGlobalStyling(sheet);
+        ApplyFilter(sheet);
+        AutoSizeColumns(sheet);
+        ResizeRows(sheet);
+    }
+
+    protected abstract void FreezeHeader(TSheet sheet);
+
+    void CreateHeadings(TSheet sheet)
+    {
+        for (var i = 0; i < Columns.Count; i++)
+        {
+            var column = Columns[i];
+
+            var cell = GetCell(sheet, 0, i);
+
+            SetCellValue(cell, column.Heading);
+
+            ApplyHeadingStyling(cell, column);
+        }
+    }
+
+    protected abstract void ApplyHeadingStyling(TCell cell, Column<TStyle, TModel> column);
+    protected abstract void ApplyGlobalStyling(TSheet sheet);
+
+    protected abstract void ApplyFilter(TSheet sheet);
+    protected abstract void ResizeColumn(TSheet sheet, int index, Column<TStyle, TModel> column, int defaultMaxColumnWidth);
+    protected abstract void ResizeRows(TSheet sheet);
+
+    void AutoSizeColumns(TSheet sheet)
     {
         for (var index = 0; index < Columns.Count; index++)
         {

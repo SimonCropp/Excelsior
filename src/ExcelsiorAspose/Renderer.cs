@@ -10,34 +10,11 @@
     int maxColumnWidth) :
     RendererBase<TModel, Sheet, Style, Cell, Book>(data, columns, maxColumnWidth)
 {
-    internal override async Task AddSheet(Book book, Cancel cancel)
-    {
-        var sheet = book.Worksheets.Add(name);
-
-        CreateHeadings(sheet);
-
-        await PopulateData(sheet, cancel);
-
-        ApplyGlobalStyling(sheet);
+    protected override void ApplyFilter(Sheet sheet) =>
         sheet.AutoFilterAll();
-        AutoSizeColumns(sheet);
-        sheet.AutoSizeRows();
-    }
 
-    void CreateHeadings(Sheet sheet)
-    {
-        for (var i = 0; i < Columns.Count; i++)
-        {
-            var column = Columns[i];
-            var cell = sheet.Cells[0, i];
-
-            cell.Value = column.Heading;
-
-            ApplyHeadingStyling(cell, column);
-        }
-
+    protected override void FreezeHeader(Sheet sheet) =>
         sheet.FreezePanes(1, 0, 1, 0);
-    }
 
     protected override Cell GetCell(Sheet sheet, int row, int column) =>
         sheet.Cells[row, column];
@@ -68,7 +45,10 @@
     protected override void SetCellHtml(Cell cell, string value) =>
         cell.SafeSetHtml(value);
 
-    void ApplyHeadingStyling(Cell cell, Column<Style, TModel> column)
+    protected override Sheet BuildSheet(Book book) =>
+        book.Worksheets.Add(name);
+
+    protected override void ApplyHeadingStyling(Cell cell, Column<Style, TModel> column)
     {
         var style = cell.GetStyle();
         headingStyle?.Invoke(style);
@@ -90,7 +70,7 @@
         column.CellStyle?.Invoke(style, model, value);
     }
 
-    void ApplyGlobalStyling(Sheet sheet)
+    protected override void ApplyGlobalStyling(Sheet sheet)
     {
         if (globalStyle == null)
         {
@@ -134,4 +114,7 @@
             sheetColumn.Width = columnConfig.Width.Value;
         }
     }
+
+    protected override void ResizeRows(Sheet sheet) =>
+        sheet.AutoSizeRows();
 }

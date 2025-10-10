@@ -17,6 +17,7 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook>(
     {
         var sheet = BuildSheet(book);
         CreateHeadings(sheet);
+        FreezeHeader(sheet);
         await PopulateData(sheet, cancel);
         ApplyGlobalStyling(sheet);
         ApplyFilter(sheet);
@@ -24,8 +25,23 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook>(
         ResizeRows(sheet);
     }
 
-    protected abstract void CreateHeadings(TSheet sheet);
+    protected abstract void FreezeHeader(TSheet sheet);
 
+    void CreateHeadings(TSheet sheet)
+    {
+        for (var i = 0; i < Columns.Count; i++)
+        {
+            var column = Columns[i];
+
+            var cell = GetCell(sheet, 0, i);
+
+            SetCellValue(cell, column.Heading);
+
+            ApplyHeadingStyling(cell, column);
+        }
+    }
+
+    protected abstract void ApplyHeadingStyling(TCell cell, Column<TStyle, TModel> column);
     protected abstract void ApplyGlobalStyling(TSheet sheet);
 
     protected abstract void ApplyFilter(TSheet sheet);

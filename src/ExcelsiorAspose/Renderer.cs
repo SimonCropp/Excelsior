@@ -13,20 +13,8 @@
     protected override void ApplyFilter(Sheet sheet) =>
         sheet.AutoFilterAll();
 
-    protected override void CreateHeadings(Sheet sheet)
-    {
-        for (var i = 0; i < Columns.Count; i++)
-        {
-            var column = Columns[i];
-            var cell = sheet.Cells[0, i];
-
-            SetCellValue(cell, column.Heading);
-
-            ApplyHeadingStyling(cell, column);
-        }
-
+    protected override void FreezeHeader(Sheet sheet) =>
         sheet.FreezePanes(1, 0, 1, 0);
-    }
 
     protected override Cell GetCell(Sheet sheet, int row, int column) =>
         sheet.Cells[row, column];
@@ -60,7 +48,7 @@
     protected override Sheet BuildSheet(Book book) =>
         book.Worksheets.Add(name);
 
-    void ApplyHeadingStyling(Cell cell, Column<Style, TModel> column)
+    protected override void ApplyHeadingStyling(Cell cell, Column<Style, TModel> column)
     {
         var style = cell.GetStyle();
         headingStyle?.Invoke(style);

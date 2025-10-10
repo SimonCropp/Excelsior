@@ -13,30 +13,13 @@
     protected override void ApplyFilter(Sheet sheet) =>
         sheet.AutoFilters.FilterRange = sheet.UsedRange;
 
-    protected override void CreateHeadings(Sheet sheet)
-    {
-        for (var i = 0; i < Columns.Count; i++)
-        {
-            var column = Columns[i];
-
-            var cell = GetCell(sheet, 0, i);
-
-            SetCellValue(cell, column.Heading);
-
-            ApplyHeadingStyling(cell, column);
-        }
-
+    protected override void FreezeHeader(Sheet sheet) =>
         sheet.Rows[0].FreezePanes();
-    }
 
     protected override Range GetCell(Sheet sheet, int row, int column) =>
         sheet.Range[row + 1, column + 1];
 
-    protected override void RenderCell(object? value,
-        Column<Style, TModel> column,
-        TModel item,
-        int rowIndex,
-        Range cell)
+    protected override void RenderCell(object? value, Column<Style, TModel> column, TModel item, int rowIndex, Range cell)
     {
         var style = cell.CellStyle;
         style.HorizontalAlignment = ExcelHAlign.HAlignLeft;
@@ -65,7 +48,7 @@
     protected override Sheet BuildSheet(IDisposableBook book) =>
         book.Worksheets.Create(name);
 
-    void ApplyHeadingStyling(Range cell, Column<Style, TModel> column)
+    protected override void ApplyHeadingStyling(Range cell, Column<Style, TModel> column)
     {
         headingStyle?.Invoke(cell.CellStyle);
 

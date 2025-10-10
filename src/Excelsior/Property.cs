@@ -1,8 +1,8 @@
 ﻿class Property<T>
 {
-    public Property(PropertyInfo info, ParameterInfo? constructorParameter, string? declaringPropertyName)
+    public Property(PropertyInfo info, ParameterInfo? constructorParameter, Func<T, object?> get)
     {
-        Get = CreateGet(info);
+        Get = get;
         var column = info.Attribute<ColumnAttribute>() ?? constructorParameter?.Attribute<ColumnAttribute>();
         var display = info.Attribute<DisplayAttribute>() ?? constructorParameter?.Attribute<DisplayAttribute>();
         var displayName = info.Attribute<DisplayNameAttribute>() ?? constructorParameter?.Attribute<DisplayNameAttribute>();
@@ -66,14 +66,5 @@
         }
 
         return CamelCase.Split(info.Name);
-    }
-
-    static ParameterExpression targetParam = Expression.Parameter(typeof(T));
-
-    static Func<T, object?> CreateGet(PropertyInfo info)
-    {
-        var property = Expression.Property(targetParam, info);
-        var box = Expression.Convert(property, typeof(object));
-        return Expression.Lambda<Func<T, object?>>(box, targetParam).Compile();
     }
 }

@@ -100,7 +100,6 @@
         }
     }
 
-    protected override void ResizeRows(Sheet sheet)
-    {
-    }
+    protected override void ResizeRows(Sheet sheet) =>
+        sheet.Rows().AdjustToContents();
 }

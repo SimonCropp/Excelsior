@@ -1,5 +1,4 @@
 ﻿global using System.Data;
-global using System.Net;
 global using Syncfusion.XlsIO;
 global using Excelsior;
 global using ExcelsiorSyncfusion;

@@ -78,6 +78,7 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook>(
 
     protected abstract TCell GetCell(TSheet sheet, int row, int column);
 
+    protected abstract void ApplyDefaultStyles(TStyle style);
     protected abstract void RenderCell(object? value, Column<TStyle, TModel> column, TModel item, int rowIndex, TCell cell);
 
     internal void SetCellValue(

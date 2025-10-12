@@ -19,12 +19,17 @@
     protected override Cell GetCell(Sheet sheet, int row, int column) =>
         sheet.Cell(row + 1, column + 1);
 
-    protected override void RenderCell(object? value, Column<Style, TModel> column, TModel item, int rowIndex, Cell cell)
+    protected override void ApplyDefaultStyles(Style style)
     {
-        var style = cell.Style;
         style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
         style.Alignment.Vertical = XLAlignmentVerticalValues.Top;
         style.Alignment.WrapText = true;
+    }
+
+    protected override void RenderCell(object? value, Column<Style, TModel> column, TModel item, int rowIndex, Cell cell)
+    {
+        var style = cell.Style;
+        ApplyDefaultStyles(style);
 
         base.SetCellValue(cell, style, value, column, item, trimWhitespace);
         ApplyCellStyle(cell, rowIndex, value, column, item);

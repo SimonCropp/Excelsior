@@ -17,7 +17,7 @@
     <PackageReference Include="ProjectDefaults" PrivateAssets="all" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="**\*.png">
+    <None Include="**\*.png" Exclude="bin\**">
       <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0])</ParentFile>
       <DependentUpon>%(ParentFile).cs</DependentUpon>
     </None>

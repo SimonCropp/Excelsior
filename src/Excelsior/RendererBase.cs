@@ -15,7 +15,7 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor>(
     protected abstract void SetCellHtml(TCell cell, string value);
     protected abstract TSheet BuildSheet(TBook book);
 
-    internal async Task AddSheetOuter(TBook book, Cancel cancel)
+    internal async Task AddSheet(TBook book, Cancel cancel)
     {
         var sheet = BuildSheet(book);
         CreateHeadings(sheet);

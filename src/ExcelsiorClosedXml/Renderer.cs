@@ -33,9 +33,8 @@
     {
     }
 
-    protected override void RenderCell(object? value, Column<Style, TModel> column, TModel item, int rowIndex, Cell cell)
+    protected override void RenderCell(object? value, Column<Style, TModel> column, TModel item, int rowIndex, Cell cell, Style style)
     {
-        var style = cell.Style;
         ApplyDefaultStyles(style);
 
         base.SetCellValue(cell, style, value, column, item, trimWhitespace);

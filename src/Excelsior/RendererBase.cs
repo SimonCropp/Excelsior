@@ -69,7 +69,9 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook>(
                 var column = columns[columnIndex];
                 var value = column.GetValue(item);
                 var cell = GetCell(sheet, rowIndex, columnIndex);
-                RenderCell(value, column, item, itemIndex, cell);
+                var style = GetStyle(cell);
+                RenderCell(value, column, item, itemIndex, cell, style);
+                ApplyStyle(cell, style);
             }
 
             itemIndex++;
@@ -81,7 +83,7 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook>(
     protected abstract void ApplyDefaultStyles(TStyle style);
     protected abstract TStyle GetStyle(TCell cell);
     protected abstract void ApplyStyle(TCell cell, TStyle style);
-    protected abstract void RenderCell(object? value, Column<TStyle, TModel> column, TModel item, int rowIndex, TCell cell);
+    protected abstract void RenderCell(object? value, Column<TStyle, TModel> column, TModel item, int rowIndex, TCell cell, TStyle style);
 
     internal void SetCellValue(
         TCell cell,

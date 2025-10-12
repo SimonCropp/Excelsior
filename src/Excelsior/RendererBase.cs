@@ -3,7 +3,8 @@
 abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook>(
     IAsyncEnumerable<TModel> data,
     List<Column<TStyle, TModel>> columns,
-    int defaultMaxColumnWidth)
+    int defaultMaxColumnWidth,
+    Action<TStyle>? headingStyle)
 {
     protected List<Column<TStyle, TModel>> Columns => columns;
     protected abstract void SetDateFormat(TStyle style, string format);
@@ -42,7 +43,12 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook>(
         }
     }
 
-    protected abstract void ApplyHeadingStyling(Column<TStyle, TModel> column, TStyle style);
+    void ApplyHeadingStyling(Column<TStyle, TModel> column, TStyle style)
+    {
+        headingStyle?.Invoke(style);
+
+        column.HeadingStyle?.Invoke(style);
+    }
     protected abstract void ApplyGlobalStyling(TSheet sheet);
 
     protected abstract void ApplyFilter(TSheet sheet);

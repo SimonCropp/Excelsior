@@ -8,7 +8,7 @@
     bool trimWhitespace,
     List<Column<Style, TModel>> columns,
     int maxColumnWidth) :
-    RendererBase<TModel, Sheet, Style, Cell, Book>(data, columns, maxColumnWidth)
+    RendererBase<TModel, Sheet, Style, Cell, Book>(data, columns, maxColumnWidth, headingStyle)
 {
     protected override void ApplyFilter(Sheet sheet) =>
         sheet.RangeUsed()!.SetAutoFilter();
@@ -56,13 +56,6 @@
 
     protected override Sheet BuildSheet(Book book) =>
         book.Worksheets.Add(name);
-
-    protected override void ApplyHeadingStyling(Column<Style, TModel> column, Style style)
-    {
-        headingStyle?.Invoke(style);
-
-        column.HeadingStyle?.Invoke(style);
-    }
 
     void ApplyCellStyle(int index, object? value, Column<Style, TModel> column, TModel item, Style style)
     {

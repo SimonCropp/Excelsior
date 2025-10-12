@@ -72,7 +72,7 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook>(
                 var style = GetStyle(cell);
                 ApplyDefaultStyles(style);
                 RenderCell(value, column, item, itemIndex, cell, style);
-                ApplyStyle(cell, style);
+                CommitStyle(cell, style);
             }
 
             itemIndex++;
@@ -83,7 +83,7 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook>(
 
     protected abstract void ApplyDefaultStyles(TStyle style);
     protected abstract TStyle GetStyle(TCell cell);
-    protected abstract void ApplyStyle(TCell cell, TStyle style);
+    protected abstract void CommitStyle(TCell cell, TStyle style);
     protected abstract void RenderCell(object? value, Column<TStyle, TModel> column, TModel item, int rowIndex, TCell cell, TStyle style);
 
     internal void SetCellValue(

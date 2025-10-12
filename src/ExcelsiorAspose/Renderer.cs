@@ -29,7 +29,7 @@
     protected override Style GetStyle(Cell cell) =>
         cell.GetStyle();
 
-    protected override void ApplyStyle(Cell cell, Style style) =>
+    protected override void CommitStyle(Cell cell, Style style) =>
         cell.SetStyle(style);
 
     protected override void RenderCell(object? value, Column<Style, TModel> column, TModel item, int rowIndex, Cell cell, Style style)

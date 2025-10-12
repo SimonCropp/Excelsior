@@ -29,14 +29,14 @@
     protected override Style GetStyle(Cell cell) =>
         cell.Style;
 
-    protected override void ApplyStyle(Cell cell, Style style)
+    protected override void CommitStyle(Cell cell, Style style)
     {
     }
 
     protected override void RenderCell(object? value, Column<Style, TModel> column, TModel item, int rowIndex, Cell cell, Style style)
     {
         base.SetCellValue(cell, style, value, column, item, trimWhitespace);
-        ApplyCellStyle(cell, rowIndex, value, column, item);
+        ApplyCellStyle(rowIndex, value, column, item, style);
     }
 
     protected override void SetDateFormat(Style style, string format) =>
@@ -64,10 +64,8 @@
         column.HeadingStyle?.Invoke(cell.Style);
     }
 
-    void ApplyCellStyle(Cell cell, int index, object? value, Column<Style, TModel> column, TModel item)
+    void ApplyCellStyle(int index, object? value, Column<Style, TModel> column, TModel item, Style style)
     {
-        var style = cell.Style;
-
         // Apply alternating row colors
         if (useAlternatingRowColors &&
             index % 2 == 1)

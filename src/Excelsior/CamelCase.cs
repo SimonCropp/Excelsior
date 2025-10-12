@@ -2,11 +2,6 @@
 {
     public static string Split(string text)
     {
-        if (string.IsNullOrEmpty(text))
-        {
-            return text;
-        }
-
         var result = new StringBuilder();
         for (var i = 0; i < text.Length; i++)
         {

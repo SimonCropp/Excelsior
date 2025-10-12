@@ -1,32 +1,20 @@
 namespace ExcelsiorSyncfusion;
 
-public class BookBuilder :
-    BookBuilderBase<IDisposableBook, Sheet, Style, Range, Color?>
+public class BookBuilder(
+    bool useAlternatingRowColors = false,
+    Color? alternateRowColor = null,
+    Action<Style>? headingStyle = null,
+    Action<Style>? globalStyle = null,
+    bool trimWhitespace = true,
+    int defaultMaxColumnWidth = 50) :
+        BookBuilderBase<IDisposableBook, Sheet, Style, Range, Color?>(
+            useAlternatingRowColors,
+            alternateRowColor,
+            headingStyle,
+            globalStyle,
+            trimWhitespace,
+            defaultMaxColumnWidth)
 {
-    bool useAlternatingRowColors;
-    Color? alternateRowColor;
-    Action<Style>? headingStyle;
-    Action<Style>? globalStyle;
-    bool trimWhitespace;
-    int defaultMaxColumnWidth;
-
-    public BookBuilder(
-        bool useAlternatingRowColors = false,
-        Color? alternateRowColor = null,
-        Action<Style>? headingStyle = null,
-        Action<Style>? globalStyle = null,
-        bool trimWhitespace = true,
-        int defaultMaxColumnWidth = 50)
-    {
-        ValueRenderer.SetBookBuilderUsed();
-        this.useAlternatingRowColors = useAlternatingRowColors;
-        this.alternateRowColor = alternateRowColor;
-        this.headingStyle = headingStyle;
-        this.globalStyle = globalStyle;
-        this.trimWhitespace = trimWhitespace;
-        this.defaultMaxColumnWidth = defaultMaxColumnWidth;
-    }
-
     internal override RendererBase<TModel, Sheet, Style, Range, IDisposableBook, Color?> ConstructSheetRenderer<TModel>(
         IAsyncEnumerable<TModel> data,
         string name,
@@ -35,13 +23,9 @@ public class BookBuilder :
         new Renderer<TModel>(
             name,
             data,
-            useAlternatingRowColors,
-            alternateRowColor,
-            headingStyle,
-            globalStyle,
-            trimWhitespace,
             columns,
-            defaultMaxColumnWidth ?? this.defaultMaxColumnWidth);
+            defaultMaxColumnWidth,
+            this);
 
     public override async Task ToStream(Stream stream, Cancel cancel = default)
     {

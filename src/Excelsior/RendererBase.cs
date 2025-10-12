@@ -3,11 +3,8 @@
 abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor>(
     IAsyncEnumerable<TModel> data,
     List<Column<TStyle, TModel>> columns,
-    int defaultMaxColumnWidth,
-    Action<TStyle>? headingStyle,
-    bool trimWhitespace,
-    bool useAlternatingRowColors,
-    TColor? alternateRowColor)
+    int? maxColumnWidth,
+    BookBuilderBase<TBook, TSheet, TStyle, TCell, TColor> bookBuilder)
 {
     protected List<Column<TStyle, TModel>> Columns => columns;
     protected abstract void SetDateFormat(TStyle style, string format);
@@ -24,7 +21,11 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor>(
         CreateHeadings(sheet);
         FreezeHeader(sheet);
         await PopulateData(sheet, cancel);
-        ApplyGlobalStyling(sheet);
+        if (bookBuilder.GlobalStyle != null)
+        {
+            ApplyGlobalStyling(sheet, bookBuilder.GlobalStyle);
+        }
+
         ApplyFilter(sheet);
         AutoSizeColumns(sheet);
         ResizeRows(sheet);
@@ -49,12 +50,12 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor>(
 
     void ApplyHeadingStyling(Column<TStyle, TModel> column, TStyle style)
     {
-        headingStyle?.Invoke(style);
+        bookBuilder.HeadingStyle?.Invoke(style);
 
         column.HeadingStyle?.Invoke(style);
     }
 
-    protected abstract void ApplyGlobalStyling(TSheet sheet);
+    protected abstract void ApplyGlobalStyling(TSheet sheet, Action<TStyle> bookBuilderGlobalStyle);
 
     protected abstract void ApplyFilter(TSheet sheet);
     protected abstract void ResizeColumn(TSheet sheet, int index, Column<TStyle, TModel> column, int defaultMaxColumnWidth);
@@ -62,10 +63,11 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor>(
 
     void AutoSizeColumns(TSheet sheet)
     {
+        var resultMaxColumnWidth = maxColumnWidth ?? bookBuilder.DefaultMaxColumnWidth;
         for (var index = 0; index < Columns.Count; index++)
         {
             var column = Columns[index];
-            ResizeColumn(sheet, index, column, defaultMaxColumnWidth);
+            ResizeColumn(sheet, index, column, resultMaxColumnWidth);
         }
     }
 
@@ -85,10 +87,10 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor>(
                 ApplyDefaultStyles(style);
                 SetCellValue(cell, style, value, column, item);
 
-                if (useAlternatingRowColors &&
+                if (bookBuilder.UseAlternatingRowColors &&
                     rowIndex % 2 == 1)
                 {
-                   SetStyleColor(style, alternateRowColor!);
+                   SetStyleColor(style, bookBuilder.AlternateRowColor!);
                 }
 
                 column.CellStyle?.Invoke(style, item, value);
@@ -200,13 +202,13 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor>(
         if (value is IEnumerable<string> enumerable)
         {
             ThrowIfHtml();
-            SetCellValue(cell, ListBuilder.Build(enumerable, trimWhitespace));
+            SetCellValue(cell, ListBuilder.Build(enumerable, bookBuilder.TrimWhitespace));
             return;
         }
 
         var valueAsString = value.ToString();
         // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
-        if (valueAsString != null && trimWhitespace)
+        if (valueAsString != null && bookBuilder.TrimWhitespace)
         {
             valueAsString = valueAsString.Trim();
         }

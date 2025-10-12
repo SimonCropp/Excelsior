@@ -1,14 +1,12 @@
-﻿class Renderer<TModel>(
+﻿using ExcelsiorAspose;
+
+class Renderer<TModel>(
     string name,
     IAsyncEnumerable<TModel> data,
-    bool useAlternatingRowColors,
-    Color? alternateRowColor,
-    Action<Style>? headingStyle,
-    Action<Style>? globalStyle,
-    bool trimWhitespace,
     List<Column<Style, TModel>> columns,
-    int maxColumnWidth) :
-    RendererBase<TModel, Sheet, Style, Cell, Book, Color?>(data, columns, maxColumnWidth, headingStyle, trimWhitespace, useAlternatingRowColors, alternateRowColor)
+    int? maxColumnWidth,
+    BookBuilder bookBuilder) :
+    RendererBase<TModel, Sheet, Style, Cell, Book, Color?>(data, columns, maxColumnWidth, bookBuilder)
 {
     protected override void ApplyFilter(Sheet sheet) =>
         sheet.AutoFilterAll();
@@ -53,13 +51,8 @@
     protected override Sheet BuildSheet(Book book) =>
         book.Worksheets.Add(name);
 
-    protected override void ApplyGlobalStyling(Sheet sheet)
+    protected override void ApplyGlobalStyling(Sheet sheet, Action<Style> globalStyle)
     {
-        if (globalStyle == null)
-        {
-            return;
-        }
-
         var style = sheet.Workbook.CreateStyle();
         globalStyle(style);
         var flag = new StyleFlag

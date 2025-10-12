@@ -56,7 +56,7 @@ class Renderer<TModel>(
     {
         var lastRow = sheet.LastRowUsed();
         var lastRowNumber = lastRow!.RowNumber();
-        var range = sheet.Range(1, 1, lastRowNumber, Columns.Count);
+        var range = sheet.Range(1, 1, lastRowNumber, sheet.LastColumnUsed()!.ColumnNumber());
         globalStyle(range.Style);
     }
 

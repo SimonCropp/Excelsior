@@ -6,7 +6,6 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor>(
     int? maxColumnWidth,
     BookBuilderBase<TBook, TSheet, TStyle, TCell, TColor> bookBuilder)
 {
-    protected List<Column<TStyle, TModel>> Columns => columns;
     protected abstract void SetDateFormat(TStyle style, string format);
     protected abstract void SetStyleColor(TStyle style, TColor color);
     protected abstract void SetNumberFormat(TStyle style, string format);
@@ -35,9 +34,9 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor>(
 
     void CreateHeadings(TSheet sheet)
     {
-        for (var i = 0; i < Columns.Count; i++)
+        for (var i = 0; i < columns.Count; i++)
         {
-            var column = Columns[i];
+            var column = columns[i];
 
             var cell = GetCell(sheet, 0, i);
 
@@ -64,9 +63,9 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor>(
     void AutoSizeColumns(TSheet sheet)
     {
         var resultMaxColumnWidth = maxColumnWidth ?? bookBuilder.DefaultMaxColumnWidth;
-        for (var index = 0; index < Columns.Count; index++)
+        for (var index = 0; index < columns.Count; index++)
         {
-            var column = Columns[index];
+            var column = columns[index];
             ResizeColumn(sheet, index, column, resultMaxColumnWidth);
         }
     }

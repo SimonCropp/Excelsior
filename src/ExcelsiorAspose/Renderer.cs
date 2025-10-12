@@ -3,7 +3,7 @@
 class Renderer<TModel>(
     string name,
     IAsyncEnumerable<TModel> data,
-    List<Column<Style, TModel>> columns,
+    List<ColumnConfig<Style, TModel>> columns,
     int? maxColumnWidth,
     BookBuilder bookBuilder) :
     RendererBase<TModel, Sheet, Style, Cell, Book, Color?>(data, columns, maxColumnWidth, bookBuilder)
@@ -65,7 +65,7 @@ class Renderer<TModel>(
         sheet.Cells.ApplyStyle(style, flag);
     }
 
-    protected override void ResizeColumn(Sheet sheet, int index, Column<Style, TModel> columnConfig, int maxColumnWidth)
+    protected override void ResizeColumn(Sheet sheet, int index, ColumnConfig<Style, TModel> columnConfig, int maxColumnWidth)
     {
         var sheetColumn = sheet.Cells.Columns[index];
         if (columnConfig.Width == null)

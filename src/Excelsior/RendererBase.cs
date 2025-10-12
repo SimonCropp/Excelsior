@@ -2,7 +2,7 @@
 
 abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor>(
     IAsyncEnumerable<TModel> data,
-    List<Column<TStyle, TModel>> columns,
+    List<ColumnConfig<TStyle, TModel>> columns,
     int? maxColumnWidth,
     BookBuilderBase<TBook, TSheet, TStyle, TCell, TColor> bookBuilder)
 {
@@ -47,7 +47,7 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor>(
         }
     }
 
-    void ApplyHeadingStyling(Column<TStyle, TModel> column, TStyle style)
+    void ApplyHeadingStyling(ColumnConfig<TStyle, TModel> column, TStyle style)
     {
         bookBuilder.HeadingStyle?.Invoke(style);
 
@@ -57,7 +57,7 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor>(
     protected abstract void ApplyGlobalStyling(TSheet sheet, Action<TStyle> bookBuilderGlobalStyle);
 
     protected abstract void ApplyFilter(TSheet sheet);
-    protected abstract void ResizeColumn(TSheet sheet, int index, Column<TStyle, TModel> column, int defaultMaxColumnWidth);
+    protected abstract void ResizeColumn(TSheet sheet, int index, ColumnConfig<TStyle, TModel> column, int defaultMaxColumnWidth);
     protected abstract void ResizeRows(TSheet sheet);
 
     void AutoSizeColumns(TSheet sheet)
@@ -110,7 +110,7 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor>(
         TCell cell,
         TStyle style,
         object? value,
-        Column<TStyle, TModel> column,
+        ColumnConfig<TStyle, TModel> column,
         TModel item)
     {
         void SetStringOrHtml(string content)

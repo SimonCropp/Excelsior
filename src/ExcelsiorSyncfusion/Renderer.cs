@@ -1,7 +1,7 @@
 ﻿class Renderer<TModel>(
     string name,
     IAsyncEnumerable<TModel> data,
-    List<Column<Style, TModel>> columns,
+    List<ColumnConfig<Style, TModel>> columns,
     int? maxColumnWidth,
     BookBuilder bookBuilder) :
     RendererBase<TModel, Sheet, Style, Range, IDisposableBook, Color?>(data, columns, maxColumnWidth, bookBuilder)
@@ -53,7 +53,7 @@
     protected override void ApplyGlobalStyling(Sheet sheet, Action<Style> globalStyle) =>
         globalStyle.Invoke(sheet.UsedRange.CellStyle);
 
-    protected override void ResizeColumn(Sheet sheet, int index, Column<Style, TModel> columnConfig, int maxColumnWidth)
+    protected override void ResizeColumn(Sheet sheet, int index, ColumnConfig<Style, TModel> columnConfig, int maxColumnWidth)
     {
         var sheetColumn = sheet.Columns[index];
         if (columnConfig.Width == null)

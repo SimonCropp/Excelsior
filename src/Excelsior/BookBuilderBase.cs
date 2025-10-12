@@ -39,7 +39,7 @@ public abstract class BookBuilderBase<TBook, TSheet, TStyle, TCell, TColor>
     internal abstract RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor> ConstructSheetRenderer<TModel>(
         IAsyncEnumerable<TModel> data,
         string name,
-        List<Column<TStyle, TModel>> columns,
+        List<ColumnConfig<TStyle, TModel>> columns,
         int? maxColumnWidth);
 
     public ISheetBuilder<TModel, TStyle> AddSheet<TModel>(

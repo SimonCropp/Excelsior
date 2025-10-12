@@ -3,7 +3,7 @@
 {
     public ISheetBuilder<TModel, TStyle> Column<TProperty>(
         Expression<Func<TModel, TProperty>> property,
-        Action<Column<TStyle, TModel, TProperty>> configuration)
+        Action<ColumnConfig<TStyle, TModel, TProperty>> configuration)
     {
         columns.Add(property, configuration);
         return this;

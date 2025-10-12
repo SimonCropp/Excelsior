@@ -18,7 +18,7 @@ public class BookBuilder(
     internal override RendererBase<TModel, Sheet, Style, Range, IDisposableBook, Color?> ConstructSheetRenderer<TModel>(
         IAsyncEnumerable<TModel> data,
         string name,
-        List<Column<Style, TModel>> columns,
+        List<ColumnConfig<Style, TModel>> columns,
         int? maxColumnWidth) =>
         new Renderer<TModel>(
             name,

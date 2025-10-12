@@ -1,4 +1,4 @@
-class Column<TStyle, TModel>
+class ColumnConfig<TStyle, TModel>
 {
     public required string Heading { get; set; }
     public required int? Order { get; set; }
@@ -27,7 +27,7 @@ class Column<TStyle, TModel>
     }
 }
 
-public class Column<TStyle, TModel, TProperty>
+public class ColumnConfig<TStyle, TModel, TProperty>
 {
     public string? Heading { get; set; }
     public int? Order { get; set; }

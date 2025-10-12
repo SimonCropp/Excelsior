@@ -8,7 +8,7 @@ public interface ISheetBuilder<TModel, TStyle>
     /// <returns>The converter instance for fluent chaining</returns>
     public ISheetBuilder<TModel, TStyle> Column<TProperty>(
         Expression<Func<TModel, TProperty>> property,
-        Action<Column<TStyle, TModel, TProperty>> configuration);
+        Action<ColumnConfig<TStyle, TModel, TProperty>> configuration);
 
     public void HeadingText<TProperty>(
         Expression<Func<TModel, TProperty>> property,

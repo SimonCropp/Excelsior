@@ -1,14 +1,10 @@
 ﻿class Renderer<TModel>(
     string name,
     IAsyncEnumerable<TModel> data,
-    bool useAlternatingRowColors,
-    Color? alternateRowColor,
-    Action<Style>? headingStyle,
-    Action<Style>? globalStyle,
-    bool trimWhitespace,
     List<Column<Style, TModel>> columns,
-    int maxColumnWidth) :
-    RendererBase<TModel, Sheet, Style, Range, IDisposableBook>(data, columns, maxColumnWidth)
+    int? maxColumnWidth,
+    BookBuilder bookBuilder) :
+    RendererBase<TModel, Sheet, Style, Range, IDisposableBook, Color?>(data, columns, maxColumnWidth, bookBuilder)
 {
     protected override void ApplyFilter(Sheet sheet) =>
         sheet.AutoFilters.FilterRange = sheet.UsedRange;
@@ -19,16 +15,22 @@
     protected override Range GetCell(Sheet sheet, int row, int column) =>
         sheet.Range[row + 1, column + 1];
 
-    protected override void RenderCell(object? value, Column<Style, TModel> column, TModel item, int rowIndex, Range cell)
+    protected override void ApplyDefaultStyles(Style style)
     {
-        var style = cell.CellStyle;
         style.HorizontalAlignment = ExcelHAlign.HAlignLeft;
         style.VerticalAlignment = ExcelVAlign.VAlignTop;
         style.WrapText = true;
-
-        base.SetCellValue(cell, style, value, column, item, trimWhitespace);
-        ApplyCellStyle(cell, rowIndex, value, column, item);
     }
+
+    protected override Style GetStyle(Range cell) =>
+        cell.CellStyle;
+
+    protected override void CommitStyle(Range cell, Style style)
+    {
+    }
+
+    protected override void SetStyleColor(Style style, Color? color) =>
+        style.Color = color!.Value;
 
     protected override void SetDateFormat(Style style, string format) =>
         style.NumberFormat = format;
@@ -48,29 +50,8 @@
     protected override Sheet BuildSheet(IDisposableBook book) =>
         book.Worksheets.Create(name);
 
-    protected override void ApplyHeadingStyling(Range cell, Column<Style, TModel> column)
-    {
-        headingStyle?.Invoke(cell.CellStyle);
-
-        column.HeadingStyle?.Invoke(cell.CellStyle);
-    }
-
-    void ApplyCellStyle(Range cell, int index, object? value, Column<Style, TModel> column, TModel item)
-    {
-        var style = cell.CellStyle;
-
-        // Apply alternating row colors
-        if (useAlternatingRowColors &&
-            index % 2 == 1)
-        {
-            style.Color = alternateRowColor!.Value;
-        }
-
-        column.CellStyle?.Invoke(style, item, value);
-    }
-
-    protected override void ApplyGlobalStyling(Sheet sheet) =>
-        globalStyle?.Invoke(sheet.UsedRange.CellStyle);
+    protected override void ApplyGlobalStyling(Sheet sheet, Action<Style> globalStyle) =>
+        globalStyle.Invoke(sheet.UsedRange.CellStyle);
 
     protected override void ResizeColumn(Sheet sheet, int index, Column<Style, TModel> columnConfig, int maxColumnWidth)
     {

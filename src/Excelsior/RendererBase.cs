@@ -1,25 +1,31 @@
 ﻿using System.Globalization;
 
-abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook>(
+abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor>(
     IAsyncEnumerable<TModel> data,
     List<Column<TStyle, TModel>> columns,
-    int defaultMaxColumnWidth)
+    int? maxColumnWidth,
+    BookBuilderBase<TBook, TSheet, TStyle, TCell, TColor> bookBuilder)
 {
     protected List<Column<TStyle, TModel>> Columns => columns;
     protected abstract void SetDateFormat(TStyle style, string format);
+    protected abstract void SetStyleColor(TStyle style, TColor color);
     protected abstract void SetNumberFormat(TStyle style, string format);
     protected abstract void SetCellValue(TCell cell, object value);
     protected abstract void SetCellValue(TCell cell, string value);
     protected abstract void SetCellHtml(TCell cell, string value);
     protected abstract TSheet BuildSheet(TBook book);
 
-    internal async Task AddSheetOuter(TBook book, Cancel cancel)
+    internal async Task AddSheet(TBook book, Cancel cancel)
     {
         var sheet = BuildSheet(book);
         CreateHeadings(sheet);
         FreezeHeader(sheet);
         await PopulateData(sheet, cancel);
-        ApplyGlobalStyling(sheet);
+        if (bookBuilder.GlobalStyle != null)
+        {
+            ApplyGlobalStyling(sheet, bookBuilder.GlobalStyle);
+        }
+
         ApplyFilter(sheet);
         AutoSizeColumns(sheet);
         ResizeRows(sheet);
@@ -36,13 +42,20 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook>(
             var cell = GetCell(sheet, 0, i);
 
             SetCellValue(cell, column.Heading);
-
-            ApplyHeadingStyling(cell, column);
+            var style = GetStyle(cell);
+            ApplyHeadingStyling(column, style);
+            CommitStyle(cell, style);
         }
     }
 
-    protected abstract void ApplyHeadingStyling(TCell cell, Column<TStyle, TModel> column);
-    protected abstract void ApplyGlobalStyling(TSheet sheet);
+    void ApplyHeadingStyling(Column<TStyle, TModel> column, TStyle style)
+    {
+        bookBuilder.HeadingStyle?.Invoke(style);
+
+        column.HeadingStyle?.Invoke(style);
+    }
+
+    protected abstract void ApplyGlobalStyling(TSheet sheet, Action<TStyle> bookBuilderGlobalStyle);
 
     protected abstract void ApplyFilter(TSheet sheet);
     protected abstract void ResizeColumn(TSheet sheet, int index, Column<TStyle, TModel> column, int defaultMaxColumnWidth);
@@ -50,10 +63,11 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook>(
 
     void AutoSizeColumns(TSheet sheet)
     {
+        var resultMaxColumnWidth = maxColumnWidth ?? bookBuilder.DefaultMaxColumnWidth;
         for (var index = 0; index < Columns.Count; index++)
         {
             var column = Columns[index];
-            ResizeColumn(sheet, index, column, defaultMaxColumnWidth);
+            ResizeColumn(sheet, index, column, resultMaxColumnWidth);
         }
     }
 
@@ -69,7 +83,18 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook>(
                 var column = columns[columnIndex];
                 var value = column.GetValue(item);
                 var cell = GetCell(sheet, rowIndex, columnIndex);
-                RenderCell(value, column, item, itemIndex, cell);
+                var style = GetStyle(cell);
+                ApplyDefaultStyles(style);
+                SetCellValue(cell, style, value, column, item);
+
+                if (bookBuilder.UseAlternatingRowColors &&
+                    rowIndex % 2 == 1)
+                {
+                   SetStyleColor(style, bookBuilder.AlternateRowColor!);
+                }
+
+                column.CellStyle?.Invoke(style, item, value);
+                CommitStyle(cell, style);
             }
 
             itemIndex++;
@@ -78,15 +103,16 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook>(
 
     protected abstract TCell GetCell(TSheet sheet, int row, int column);
 
-    protected abstract void RenderCell(object? value, Column<TStyle, TModel> column, TModel item, int rowIndex, TCell cell);
+    protected abstract void ApplyDefaultStyles(TStyle style);
+    protected abstract TStyle GetStyle(TCell cell);
+    protected abstract void CommitStyle(TCell cell, TStyle style);
 
-    internal void SetCellValue(
+    void SetCellValue(
         TCell cell,
         TStyle style,
         object? value,
         Column<TStyle, TModel> column,
-        TModel item,
-        bool trimWhitespace)
+        TModel item)
     {
         void SetStringOrHtml(string content)
         {
@@ -176,13 +202,13 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook>(
         if (value is IEnumerable<string> enumerable)
         {
             ThrowIfHtml();
-            SetCellValue(cell, ListBuilder.Build(enumerable, trimWhitespace));
+            SetCellValue(cell, ListBuilder.Build(enumerable, bookBuilder.TrimWhitespace));
             return;
         }
 
         var valueAsString = value.ToString();
         // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
-        if (valueAsString != null && trimWhitespace)
+        if (valueAsString != null && bookBuilder.TrimWhitespace)
         {
             valueAsString = valueAsString.Trim();
         }

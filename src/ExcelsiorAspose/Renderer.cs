@@ -32,8 +32,17 @@
     protected override void CommitStyle(Cell cell, Style style) =>
         cell.SetStyle(style);
 
-    protected override void RenderCell(object? value, Column<Style, TModel> column, TModel item, int rowIndex, Cell cell, Style style) =>
-        ApplyCellStyle(rowIndex, value, style, column, item);
+    protected override void RenderCell(object? value, Column<Style, TModel> column, TModel item, int rowIndex, Cell cell, Style style)
+    {
+        // Apply alternating row colors
+        if (useAlternatingRowColors &&
+            rowIndex % 2 == 1)
+        {
+            style.BackgroundColor = alternateRowColor!.Value;
+        }
+
+        column.CellStyle?.Invoke(style, item, value);
+    }
 
     protected override void SetDateFormat(Style style, string format) =>
         style.Custom = format;
@@ -52,18 +61,6 @@
 
     protected override Sheet BuildSheet(Book book) =>
         book.Worksheets.Add(name);
-
-    void ApplyCellStyle(int index, object? value, Style style, Column<Style, TModel> column, TModel model)
-    {
-        // Apply alternating row colors
-        if (useAlternatingRowColors &&
-            index % 2 == 1)
-        {
-            style.BackgroundColor = alternateRowColor!.Value;
-        }
-
-        column.CellStyle?.Invoke(style, model, value);
-    }
 
     protected override void ApplyGlobalStyling(Sheet sheet)
     {

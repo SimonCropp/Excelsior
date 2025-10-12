@@ -33,8 +33,16 @@
     {
     }
 
-    protected override void RenderCell(object? value, Column<Style, TModel> column, TModel item, int rowIndex, Range cell, Style style) =>
-        ApplyCellStyle(rowIndex, value, column, item, style);
+    protected override void RenderCell(object? value, Column<Style, TModel> column, TModel item, int rowIndex, Range cell, Style style)
+    {
+        if (useAlternatingRowColors &&
+            rowIndex % 2 == 1)
+        {
+            style.Color = alternateRowColor!.Value;
+        }
+
+        column.CellStyle?.Invoke(style, item, value);
+    }
 
     protected override void SetDateFormat(Style style, string format) =>
         style.NumberFormat = format;
@@ -53,18 +61,6 @@
 
     protected override Sheet BuildSheet(IDisposableBook book) =>
         book.Worksheets.Create(name);
-
-    void ApplyCellStyle(int index, object? value, Column<Style, TModel> column, TModel item, Style style)
-    {
-        // Apply alternating row colors
-        if (useAlternatingRowColors &&
-            index % 2 == 1)
-        {
-            style.Color = alternateRowColor!.Value;
-        }
-
-        column.CellStyle?.Invoke(style, item, value);
-    }
 
     protected override void ApplyGlobalStyling(Sheet sheet) =>
         globalStyle?.Invoke(sheet.UsedRange.CellStyle);

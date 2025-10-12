@@ -8,7 +8,8 @@
     bool trimWhitespace,
     List<Column<Style, TModel>> columns,
     int maxColumnWidth) :
-    RendererBase<TModel, Sheet, Style, Range, IDisposableBook, Color>(data, columns, maxColumnWidth, headingStyle, trimWhitespace)
+    RendererBase<TModel, Sheet, Style, Range, IDisposableBook, Color?>(
+        data, columns, maxColumnWidth, headingStyle, trimWhitespace, useAlternatingRowColors, alternateRowColor)
 {
     protected override void ApplyFilter(Sheet sheet) =>
         sheet.AutoFilters.FilterRange = sheet.UsedRange;
@@ -33,17 +34,8 @@
     {
     }
 
-    protected override void SetStyleColor(Style style, Color color) =>
-        style.Color = color;
-
-    protected override void RenderCell(int rowIndex, Style style)
-    {
-        if (useAlternatingRowColors &&
-            rowIndex % 2 == 1)
-        {
-            style.Color = alternateRowColor!.Value;
-        }
-    }
+    protected override void SetStyleColor(Style style, Color? color) =>
+        style.Color = color!.Value;
 
     protected override void SetDateFormat(Style style, string format) =>
         style.NumberFormat = format;

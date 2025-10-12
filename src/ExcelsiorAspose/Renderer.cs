@@ -8,7 +8,7 @@
     bool trimWhitespace,
     List<Column<Style, TModel>> columns,
     int maxColumnWidth) :
-    RendererBase<TModel, Sheet, Style, Cell, Book, Color>(data, columns, maxColumnWidth, headingStyle, trimWhitespace)
+    RendererBase<TModel, Sheet, Style, Cell, Book, Color?>(data, columns, maxColumnWidth, headingStyle, trimWhitespace, useAlternatingRowColors, alternateRowColor)
 {
     protected override void ApplyFilter(Sheet sheet) =>
         sheet.AutoFilterAll();
@@ -32,22 +32,11 @@
     protected override void CommitStyle(Cell cell, Style style) =>
         cell.SetStyle(style);
 
-    protected override void SetStyleColor(Style style, Color color) =>
-        style.BackgroundColor = color;
-
-    protected override void RenderCell(int rowIndex, Style style)
-    {
-        // Apply alternating row colors
-        if (useAlternatingRowColors &&
-            rowIndex % 2 == 1)
-        {
-            style.BackgroundColor = alternateRowColor!.Value;
-        }
-    }
+    protected override void SetStyleColor(Style style, Color? color) =>
+        style.BackgroundColor = color!.Value;
 
     protected override void SetDateFormat(Style style, string format) =>
         style.Custom = format;
-
 
     protected override void SetNumberFormat(Style style, string format) =>
         style.Custom = format;

@@ -5,7 +5,9 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor>(
     List<Column<TStyle, TModel>> columns,
     int defaultMaxColumnWidth,
     Action<TStyle>? headingStyle,
-    bool trimWhitespace)
+    bool trimWhitespace,
+    bool useAlternatingRowColors,
+    TColor? alternateRowColor)
 {
     protected List<Column<TStyle, TModel>> Columns => columns;
     protected abstract void SetDateFormat(TStyle style, string format);
@@ -82,7 +84,13 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor>(
                 var style = GetStyle(cell);
                 ApplyDefaultStyles(style);
                 SetCellValue(cell, style, value, column, item);
-                RenderCell(itemIndex, style);
+
+                if (useAlternatingRowColors &&
+                    rowIndex % 2 == 1)
+                {
+                   SetStyleColor(style, alternateRowColor!);
+                }
+
                 column.CellStyle?.Invoke(style, item, value);
                 CommitStyle(cell, style);
             }
@@ -96,7 +104,6 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor>(
     protected abstract void ApplyDefaultStyles(TStyle style);
     protected abstract TStyle GetStyle(TCell cell);
     protected abstract void CommitStyle(TCell cell, TStyle style);
-    protected abstract void RenderCell(int rowIndex, TStyle style);
 
     void SetCellValue(
         TCell cell,

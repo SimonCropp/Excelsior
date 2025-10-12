@@ -1,10 +1,10 @@
 ﻿using System.Globalization;
 
-abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor>(
+abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor, TColumn>(
     IAsyncEnumerable<TModel> data,
     List<ColumnConfig<TStyle, TModel>> columns,
     int? maxColumnWidth,
-    BookBuilderBase<TBook, TSheet, TStyle, TCell, TColor> bookBuilder)
+    BookBuilderBase<TBook, TSheet, TStyle, TCell, TColor, TColumn> bookBuilder)
 {
     protected abstract void SetDateFormat(TStyle style, string format);
     protected abstract void SetStyleColor(TStyle style, TColor color);

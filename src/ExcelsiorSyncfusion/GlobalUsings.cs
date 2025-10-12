@@ -8,4 +8,5 @@ global using Syncfusion.XlsIO.Implementation;
 global using Syncfusion.XlsIO.Implementation.Collections;
 global using Sheet = Syncfusion.XlsIO.IWorksheet;
 global using Style = Syncfusion.XlsIO.IStyle;
-global using Range = Syncfusion.XlsIO.IRange;
+global using Cell = Syncfusion.XlsIO.IRange;
+global using Column = Syncfusion.XlsIO.IRange;

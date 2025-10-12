@@ -95,10 +95,10 @@
     public void SaveAsJson(string filename, Sheet worksheet, bool isSchema) =>
         book.SaveAsJson(filename, worksheet, isSchema);
 
-    public void SaveAsJson(string filename, Range range) =>
+    public void SaveAsJson(string filename, IRange range) =>
         book.SaveAsJson(filename, range);
 
-    public void SaveAsJson(string filename, Range range, bool isSchema) =>
+    public void SaveAsJson(string filename, IRange range, bool isSchema) =>
         book.SaveAsJson(filename, range, isSchema);
 
     public void SaveAsJson(Stream stream) =>
@@ -113,10 +113,10 @@
     public void SaveAsJson(Stream stream, Sheet worksheet, bool isSchema) =>
         book.SaveAsJson(stream, worksheet, isSchema);
 
-    public void SaveAsJson(Stream stream, Range range) =>
+    public void SaveAsJson(Stream stream, IRange range) =>
         book.SaveAsJson(stream, range);
 
-    public void SaveAsJson(Stream stream, Range range, bool isSchema) =>
+    public void SaveAsJson(Stream stream, IRange range, bool isSchema) =>
         book.SaveAsJson(stream, range, isSchema);
 
     public void SetPaletteColor(int index, Color color) =>
@@ -167,52 +167,52 @@
     public void Replace(string oldValue, double[] newValues, bool isVertical) =>
         book.Replace(oldValue, newValues, isVertical);
 
-    public Range FindFirst(string findValue, ExcelFindType flags) =>
+    public IRange FindFirst(string findValue, ExcelFindType flags) =>
         book.FindFirst(findValue, flags);
 
-    public Range FindFirst(string findValue, ExcelFindType flags, ExcelFindOptions findOptions) =>
+    public IRange FindFirst(string findValue, ExcelFindType flags, ExcelFindOptions findOptions) =>
         book.FindFirst(findValue, flags, findOptions);
 
-    public Range FindStringStartsWith(string findValue, ExcelFindType flags) =>
+    public IRange FindStringStartsWith(string findValue, ExcelFindType flags) =>
         book.FindStringStartsWith(findValue, flags);
 
-    public Range FindStringStartsWith(string findValue, ExcelFindType flags, bool ignoreCase) =>
+    public IRange FindStringStartsWith(string findValue, ExcelFindType flags, bool ignoreCase) =>
         book.FindStringStartsWith(findValue, flags, ignoreCase);
 
-    public Range FindStringEndsWith(string findValue, ExcelFindType flags) =>
+    public IRange FindStringEndsWith(string findValue, ExcelFindType flags) =>
         book.FindStringEndsWith(findValue, flags);
 
-    public Range FindStringEndsWith(string findValue, ExcelFindType flags, bool ignoreCase) =>
+    public IRange FindStringEndsWith(string findValue, ExcelFindType flags, bool ignoreCase) =>
         book.FindStringEndsWith(findValue, flags, ignoreCase);
 
-    public Range FindFirst(double findValue, ExcelFindType flags) =>
+    public IRange FindFirst(double findValue, ExcelFindType flags) =>
         book.FindFirst(findValue, flags);
 
-    public Range FindFirst(bool findValue) =>
+    public IRange FindFirst(bool findValue) =>
         book.FindFirst(findValue);
 
-    public Range FindFirst(DateTime findValue) =>
+    public IRange FindFirst(DateTime findValue) =>
         book.FindFirst(findValue);
 
-    public Range FindFirst(TimeSpan findValue) =>
+    public IRange FindFirst(TimeSpan findValue) =>
         book.FindFirst(findValue);
 
-    public Range[] FindAll(string findValue, ExcelFindType flags) =>
+    public IRange[] FindAll(string findValue, ExcelFindType flags) =>
         book.FindAll(findValue, flags);
 
-    public Range[] FindAll(string findValue, ExcelFindType flags, ExcelFindOptions findOptions) =>
+    public IRange[] FindAll(string findValue, ExcelFindType flags, ExcelFindOptions findOptions) =>
         book.FindAll(findValue, flags, findOptions);
 
-    public Range[] FindAll(double findValue, ExcelFindType flags) =>
+    public IRange[] FindAll(double findValue, ExcelFindType flags) =>
         book.FindAll(findValue, flags);
 
-    public Range[] FindAll(bool findValue) =>
+    public IRange[] FindAll(bool findValue) =>
         book.FindAll(findValue);
 
-    public Range[] FindAll(DateTime findValue) =>
+    public IRange[] FindAll(DateTime findValue) =>
         book.FindAll(findValue);
 
-    public Range[] FindAll(TimeSpan findValue) =>
+    public IRange[] FindAll(TimeSpan findValue) =>
         book.FindAll(findValue);
 
     public void SetSeparators(char argumentsSeparator, char arrayRowsSeparator) =>

@@ -26,6 +26,13 @@
         style.WrapText = true;
     }
 
+    protected override Style GetStyle(Range cell) =>
+        cell.CellStyle;
+
+    protected override void ApplyStyle(Range cell, Style style)
+    {
+    }
+
     protected override void RenderCell(object? value, Column<Style, TModel> column, TModel item, int rowIndex, Range cell)
     {
         var style = cell.CellStyle;

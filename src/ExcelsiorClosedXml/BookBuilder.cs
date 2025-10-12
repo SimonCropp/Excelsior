@@ -19,12 +19,12 @@ public class BookBuilder(
         IAsyncEnumerable<TModel> data,
         string name,
         List<Column<Style, TModel>> columns,
-        int? defaultMaxColumnWidth) =>
+        int? maxColumnWidth) =>
         new Renderer<TModel>(
             name,
             data,
             columns,
-            defaultMaxColumnWidth,
+            maxColumnWidth,
             this);
 
     public override async Task ToStream(Stream stream, Cancel cancel = default)

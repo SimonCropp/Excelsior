@@ -40,7 +40,7 @@ public abstract class BookBuilderBase<TBook, TSheet, TStyle, TCell, TColor>
         IAsyncEnumerable<TModel> data,
         string name,
         List<Column<TStyle, TModel>> columns,
-        int? defaultMaxColumnWidth);
+        int? maxColumnWidth);
 
     public ISheetBuilder<TModel, TStyle> AddSheet<TModel>(
         IAsyncEnumerable<TModel> data,

@@ -33,15 +33,13 @@
     {
     }
 
-    protected override void RenderCell(object? value, Column<Style, TModel> column, TModel item, int rowIndex, Range cell, Style style)
+    protected override void RenderCell(int rowIndex, Style style)
     {
         if (useAlternatingRowColors &&
             rowIndex % 2 == 1)
         {
             style.Color = alternateRowColor!.Value;
         }
-
-        column.CellStyle?.Invoke(style, item, value);
     }
 
     protected override void SetDateFormat(Style style, string format) =>

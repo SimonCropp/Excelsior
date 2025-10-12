@@ -32,7 +32,7 @@
     protected override void CommitStyle(Cell cell, Style style) =>
         cell.SetStyle(style);
 
-    protected override void RenderCell(object? value, Column<Style, TModel> column, TModel item, int rowIndex, Cell cell, Style style)
+    protected override void RenderCell(int rowIndex, Style style)
     {
         // Apply alternating row colors
         if (useAlternatingRowColors &&
@@ -40,8 +40,6 @@
         {
             style.BackgroundColor = alternateRowColor!.Value;
         }
-
-        column.CellStyle?.Invoke(style, item, value);
     }
 
     protected override void SetDateFormat(Style style, string format) =>

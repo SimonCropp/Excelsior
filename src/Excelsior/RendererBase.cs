@@ -79,8 +79,9 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook>(
                 var cell = GetCell(sheet, rowIndex, columnIndex);
                 var style = GetStyle(cell);
                 ApplyDefaultStyles(style);
-                SetCellValue(cell, style, value, column, item, trimWhitespace);
-                RenderCell(value, column, item, itemIndex, cell, style);
+                SetCellValue(cell, style, value, column, item);
+                RenderCell(itemIndex, style);
+                column.CellStyle?.Invoke(style, item, value);
                 CommitStyle(cell, style);
             }
 
@@ -93,15 +94,14 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook>(
     protected abstract void ApplyDefaultStyles(TStyle style);
     protected abstract TStyle GetStyle(TCell cell);
     protected abstract void CommitStyle(TCell cell, TStyle style);
-    protected abstract void RenderCell(object? value, Column<TStyle, TModel> column, TModel item, int rowIndex, TCell cell, TStyle style);
+    protected abstract void RenderCell(int rowIndex, TStyle style);
 
     internal void SetCellValue(
         TCell cell,
         TStyle style,
         object? value,
         Column<TStyle, TModel> column,
-        TModel item,
-        bool trimWhitespace)
+        TModel item)
     {
         void SetStringOrHtml(string content)
         {

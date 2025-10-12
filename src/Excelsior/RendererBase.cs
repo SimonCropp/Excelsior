@@ -36,12 +36,13 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook>(
             var cell = GetCell(sheet, 0, i);
 
             SetCellValue(cell, column.Heading);
-
-            ApplyHeadingStyling(cell, column);
+            var style = GetStyle(cell);
+            ApplyHeadingStyling(column, style);
+            CommitStyle(cell, style);
         }
     }
 
-    protected abstract void ApplyHeadingStyling(TCell cell, Column<TStyle, TModel> column);
+    protected abstract void ApplyHeadingStyling(Column<TStyle, TModel> column, TStyle style);
     protected abstract void ApplyGlobalStyling(TSheet sheet);
 
     protected abstract void ApplyFilter(TSheet sheet);

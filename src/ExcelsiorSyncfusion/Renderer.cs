@@ -57,11 +57,11 @@
     protected override Sheet BuildSheet(IDisposableBook book) =>
         book.Worksheets.Create(name);
 
-    protected override void ApplyHeadingStyling(Range cell, Column<Style, TModel> column)
+    protected override void ApplyHeadingStyling(Column<Style, TModel> column, Style style)
     {
-        headingStyle?.Invoke(cell.CellStyle);
+        headingStyle?.Invoke(style);
 
-        column.HeadingStyle?.Invoke(cell.CellStyle);
+        column.HeadingStyle?.Invoke(style);
     }
 
     void ApplyCellStyle(int index, object? value, Column<Style, TModel> column, TModel item, Style style)

@@ -56,14 +56,11 @@
     protected override Sheet BuildSheet(Book book) =>
         book.Worksheets.Add(name);
 
-    protected override void ApplyHeadingStyling(Cell cell, Column<Style, TModel> column)
+    protected override void ApplyHeadingStyling(Column<Style, TModel> column, Style style)
     {
-        var style = cell.GetStyle();
         headingStyle?.Invoke(style);
 
         column.HeadingStyle?.Invoke(style);
-
-        cell.SetStyle(style);
     }
 
     void ApplyCellStyle(int index, object? value, Style style, Column<Style, TModel> column, TModel model)

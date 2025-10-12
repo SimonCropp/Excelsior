@@ -1,6 +1,4 @@
-﻿using ExcelsiorClosedXml;
-
-class Renderer<TModel>(
+﻿class Renderer<TModel>(
     string name,
     IAsyncEnumerable<TModel> data,
     List<ColumnConfig<Style, TModel>> columns,

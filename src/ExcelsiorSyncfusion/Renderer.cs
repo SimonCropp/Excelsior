@@ -8,7 +8,7 @@
     bool trimWhitespace,
     List<Column<Style, TModel>> columns,
     int maxColumnWidth) :
-    RendererBase<TModel, Sheet, Style, Range, IDisposableBook>(data, columns, maxColumnWidth, headingStyle)
+    RendererBase<TModel, Sheet, Style, Range, IDisposableBook>(data, columns, maxColumnWidth, headingStyle, trimWhitespace)
 {
     protected override void ApplyFilter(Sheet sheet) =>
         sheet.AutoFilters.FilterRange = sheet.UsedRange;
@@ -33,11 +33,8 @@
     {
     }
 
-    protected override void RenderCell(object? value, Column<Style, TModel> column, TModel item, int rowIndex, Range cell, Style style)
-    {
-        base.SetCellValue(cell, style, value, column, item, trimWhitespace);
+    protected override void RenderCell(object? value, Column<Style, TModel> column, TModel item, int rowIndex, Range cell, Style style) =>
         ApplyCellStyle(rowIndex, value, column, item, style);
-    }
 
     protected override void SetDateFormat(Style style, string format) =>
         style.NumberFormat = format;

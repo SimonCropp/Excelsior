@@ -4,7 +4,8 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook>(
     IAsyncEnumerable<TModel> data,
     List<Column<TStyle, TModel>> columns,
     int defaultMaxColumnWidth,
-    Action<TStyle>? headingStyle)
+    Action<TStyle>? headingStyle,
+    bool trimWhitespace)
 {
     protected List<Column<TStyle, TModel>> Columns => columns;
     protected abstract void SetDateFormat(TStyle style, string format);
@@ -78,6 +79,7 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook>(
                 var cell = GetCell(sheet, rowIndex, columnIndex);
                 var style = GetStyle(cell);
                 ApplyDefaultStyles(style);
+                SetCellValue(cell, style, value, column, item, trimWhitespace);
                 RenderCell(value, column, item, itemIndex, cell, style);
                 CommitStyle(cell, style);
             }

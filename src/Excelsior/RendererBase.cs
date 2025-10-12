@@ -57,7 +57,7 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook>(
         }
     }
 
-    protected async Task PopulateData(TSheet sheet, Cancel cancel)
+    async Task PopulateData(TSheet sheet, Cancel cancel)
     {
         var itemIndex = 0;
         await foreach (var item in data.WithCancellation(cancel))

@@ -8,7 +8,7 @@
     bool trimWhitespace,
     List<Column<Style, TModel>> columns,
     int maxColumnWidth) :
-    RendererBase<TModel, Sheet, Style, Range, IDisposableBook>(data, columns, maxColumnWidth, headingStyle, trimWhitespace)
+    RendererBase<TModel, Sheet, Style, Range, IDisposableBook, Color>(data, columns, maxColumnWidth, headingStyle, trimWhitespace)
 {
     protected override void ApplyFilter(Sheet sheet) =>
         sheet.AutoFilters.FilterRange = sheet.UsedRange;
@@ -32,6 +32,9 @@
     protected override void CommitStyle(Range cell, Style style)
     {
     }
+
+    protected override void SetStyleColor(Style style, Color color) =>
+        style.Color = color;
 
     protected override void RenderCell(int rowIndex, Style style)
     {

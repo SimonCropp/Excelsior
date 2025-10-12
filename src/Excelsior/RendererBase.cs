@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook>(
+abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor>(
     IAsyncEnumerable<TModel> data,
     List<Column<TStyle, TModel>> columns,
     int defaultMaxColumnWidth,
@@ -9,6 +9,7 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook>(
 {
     protected List<Column<TStyle, TModel>> Columns => columns;
     protected abstract void SetDateFormat(TStyle style, string format);
+    protected abstract void SetStyleColor(TStyle style, TColor color);
     protected abstract void SetNumberFormat(TStyle style, string format);
     protected abstract void SetCellValue(TCell cell, object value);
     protected abstract void SetCellValue(TCell cell, string value);

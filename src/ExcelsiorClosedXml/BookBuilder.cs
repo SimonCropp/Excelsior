@@ -1,7 +1,7 @@
 namespace ExcelsiorClosedXml;
 
 public class BookBuilder :
-    BookBuilderBase<Book, Sheet, Style, Cell>
+    BookBuilderBase<Book, Sheet, Style, Cell, Color>
 {
     bool useAlternatingRowColors;
     Color? alternateRowColor;
@@ -27,7 +27,7 @@ public class BookBuilder :
         this.defaultMaxColumnWidth = defaultMaxColumnWidth;
     }
 
-    internal override RendererBase<TModel, Sheet, Style, Cell, Book> ConstructSheetRenderer<TModel>(
+    internal override RendererBase<TModel, Sheet, Style, Cell, Book, Color> ConstructSheetRenderer<TModel>(
         IAsyncEnumerable<TModel> data,
         string name,
         List<Column<Style, TModel>> columns,

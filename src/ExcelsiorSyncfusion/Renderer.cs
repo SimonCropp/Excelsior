@@ -53,6 +53,15 @@
     protected override void ApplyGlobalStyling(Sheet sheet, Action<Style> globalStyle) =>
         globalStyle.Invoke(sheet.UsedRange.CellStyle);
 
+    protected override Range GetColumn(Sheet sheet, int index) =>
+        sheet.Columns[index];
+
+    protected override void SetColumnWidth(Range column, int width) =>
+        column.ColumnWidth = width;
+
+    protected override double GetColumnWidth(Range column) =>
+         column.ColumnWidth;
+
     protected override void ResizeColumn(Sheet sheet, int index, ColumnConfig<Style, TModel> columnConfig, int maxColumnWidth)
     {
         var sheetColumn = sheet.Columns[index];

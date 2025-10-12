@@ -14,6 +14,10 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor, TColum
     protected abstract void SetCellHtml(TCell cell, string value);
     protected abstract TSheet BuildSheet(TBook book);
 
+    protected abstract TColumn GetColumn(TSheet sheet, int index);
+    protected abstract void SetColumnWidth(TColumn column, int width);
+    protected abstract double GetColumnWidth(TColumn column);
+
     internal async Task AddSheet(TBook book, Cancel cancel)
     {
         var sheet = BuildSheet(book);

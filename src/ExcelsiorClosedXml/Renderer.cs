@@ -60,6 +60,15 @@ class Renderer<TModel>(
         globalStyle(range.Style);
     }
 
+    protected override Column GetColumn(Sheet sheet, int index) =>
+        sheet.Column(index + 1);
+
+    protected override void SetColumnWidth(Column column, int width) =>
+        column.Width = width;
+
+    protected override double GetColumnWidth(Column column) =>
+        column.Width;
+
     protected override void ResizeColumn(Sheet sheet, int index, ColumnConfig<Style, TModel> columnConfig, int maxColumnWidth)
     {
         var sheetColumn = sheet.Column(index + 1);

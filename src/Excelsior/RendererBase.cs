@@ -50,6 +50,7 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook>(
 
         column.HeadingStyle?.Invoke(style);
     }
+
     protected abstract void ApplyGlobalStyling(TSheet sheet);
 
     protected abstract void ApplyFilter(TSheet sheet);
@@ -96,7 +97,7 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook>(
     protected abstract void CommitStyle(TCell cell, TStyle style);
     protected abstract void RenderCell(int rowIndex, TStyle style);
 
-    internal void SetCellValue(
+    void SetCellValue(
         TCell cell,
         TStyle style,
         object? value,

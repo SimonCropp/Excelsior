@@ -16,7 +16,7 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor, TColum
 
     protected abstract TColumn GetColumn(TSheet sheet, int index);
     protected abstract void SetColumnWidth(TColumn column, int width);
-    protected abstract double GetColumnWidth(TColumn column);
+    protected abstract double AdjustColumnWidth(TSheet sheet, TColumn column);
 
     internal async Task AddSheet(TBook book, Cancel cancel)
     {
@@ -61,16 +61,44 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor, TColum
     protected abstract void ApplyGlobalStyling(TSheet sheet, Action<TStyle> bookBuilderGlobalStyle);
 
     protected abstract void ApplyFilter(TSheet sheet);
-    protected abstract void ResizeColumn(TSheet sheet, int index, ColumnConfig<TStyle, TModel> column, int defaultMaxColumnWidth);
+
+    void ResizeColumn(TSheet sheet, int index, ColumnConfig<TStyle, TModel> columnConfig)
+    {
+        var resultMaxColumnWidth = maxColumnWidth ?? bookBuilder.DefaultMaxColumnWidth;
+        var column = GetColumn(sheet, index);
+        int width;
+        if (columnConfig.Width == null)
+        {
+            var doubleWidth = AdjustColumnWidth(sheet, column);
+            width = (int) Math.Round(doubleWidth);
+            width += 1;
+
+            if (columnConfig.IsEnumerableString)
+            {
+                width += 5;
+            }
+
+            if (width > resultMaxColumnWidth)
+            {
+                width = resultMaxColumnWidth;
+            }
+        }
+        else
+        {
+            width = columnConfig.Width.Value;
+        }
+
+        SetColumnWidth(column, width);
+    }
+
     protected abstract void ResizeRows(TSheet sheet);
 
     void AutoSizeColumns(TSheet sheet)
     {
-        var resultMaxColumnWidth = maxColumnWidth ?? bookBuilder.DefaultMaxColumnWidth;
         for (var index = 0; index < columns.Count; index++)
         {
             var column = columns[index];
-            ResizeColumn(sheet, index, column, resultMaxColumnWidth);
+            ResizeColumn(sheet, index, column);
         }
     }
 

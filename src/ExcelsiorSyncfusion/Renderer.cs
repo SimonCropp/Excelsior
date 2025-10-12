@@ -59,32 +59,10 @@
     protected override void SetColumnWidth(Range column, int width) =>
         column.ColumnWidth = width;
 
-    protected override double GetColumnWidth(Range column) =>
-         column.ColumnWidth;
-
-    protected override void ResizeColumn(Sheet sheet, int index, ColumnConfig<Style, TModel> columnConfig, int maxColumnWidth)
+    protected override double AdjustColumnWidth(Sheet sheet, Range column)
     {
-        var sheetColumn = sheet.Columns[index];
-        if (columnConfig.Width == null)
-        {
-            sheet.AutofitColumn(index + 1);
-            sheetColumn.ColumnWidth += 4;
-
-            // does not seem to respect the dot points
-            if (columnConfig.IsEnumerableString)
-            {
-                sheetColumn.ColumnWidth += 5;
-            }
-
-            if (sheetColumn.ColumnWidth > maxColumnWidth)
-            {
-                sheetColumn.ColumnWidth = maxColumnWidth;
-            }
-        }
-        else
-        {
-            sheetColumn.ColumnWidth = columnConfig.Width.Value;
-        }
+        column.AutofitColumns();
+        return column.ColumnWidth;
     }
 
     protected override void ResizeRows(Sheet sheet) =>

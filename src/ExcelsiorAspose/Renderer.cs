@@ -71,33 +71,10 @@ class Renderer<TModel>(
     protected override void SetColumnWidth(Column column, int width) =>
         column.Width = width;
 
-    protected override double GetColumnWidth(Column column) =>
-        column.Width;
-
-    protected override void ResizeColumn(Sheet sheet, int index, ColumnConfig<Style, TModel> columnConfig, int maxColumnWidth)
+    protected override double AdjustColumnWidth(Sheet sheet,Column column)
     {
-        var sheetColumn = sheet.Cells.Columns[index];
-        if (columnConfig.Width == null)
-        {
-            sheet.AutoFitColumns(index, index);
-            // Round widths since Aspose AutoFitColumns is not deterministic
-            sheetColumn.Width = Math.Round(sheetColumn.Width) + 1;
-
-            // Aspose does not seem to respect the dot points
-            if (columnConfig.IsEnumerableString)
-            {
-                sheetColumn.Width += 5;
-            }
-
-            if (sheetColumn.Width > maxColumnWidth)
-            {
-                sheetColumn.Width = maxColumnWidth;
-            }
-        }
-        else
-        {
-            sheetColumn.Width = columnConfig.Width.Value;
-        }
+        sheet.AutoFitColumns(column.Index, column.Index);
+        return column.Width;
     }
 
     protected override void ResizeRows(Sheet sheet) =>

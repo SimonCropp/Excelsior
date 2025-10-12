@@ -66,25 +66,10 @@ class Renderer<TModel>(
     protected override void SetColumnWidth(Column column, int width) =>
         column.Width = width;
 
-    protected override double GetColumnWidth(Column column) =>
-        column.Width;
-
-    protected override void ResizeColumn(Sheet sheet, int index, ColumnConfig<Style, TModel> columnConfig, int maxColumnWidth)
+    protected override double AdjustColumnWidth(Sheet sheet, Column column)
     {
-        var sheetColumn = sheet.Column(index + 1);
-        if (columnConfig.Width == null)
-        {
-            sheetColumn.AdjustToContents();
-            sheetColumn.Width += 2;
-            if (sheetColumn.Width > maxColumnWidth)
-            {
-                sheetColumn.Width = maxColumnWidth;
-            }
-        }
-        else
-        {
-            sheetColumn.Width = columnConfig.Width.Value;
-        }
+        column.AdjustToContents();
+        return column.Width;
     }
 
     protected override void ResizeRows(Sheet sheet) =>

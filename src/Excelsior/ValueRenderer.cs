@@ -1,44 +1,10 @@
 ﻿namespace Excelsior;
 
-public static class ValueRenderer
+public static partial class ValueRenderer
 {
-    [StringSyntax(StringSyntaxAttribute.DateOnlyFormat)]
-    public static string DefaultDateFormat
-    {
-        set
-        {
-            ThrowIfBookBuilderUsed();
-            field = value;
-        }
-        internal get;
-    } = "yyyy-MM-dd";
-
-    [StringSyntax(StringSyntaxAttribute.DateTimeFormat)]
-    public static string DefaultDateTimeFormat
-    {
-        set
-        {
-            ThrowIfBookBuilderUsed();
-            field = value;
-        }
-        internal get;
-    } = "yyyy-MM-dd HH:mm:ss";
-
-    [StringSyntax(StringSyntaxAttribute.DateTimeFormat)]
-    public static string DefaultDateTimeOffsetFormat
-    {
-        set
-        {
-            ThrowIfBookBuilderUsed();
-            field = value;
-        }
-        internal get;
-    } = "yyyy-MM-dd HH:mm:ss z";
-
     static bool bookBuilderUsed;
     static Dictionary<Type, Func<object, string>> renders = [];
     static Func<Enum, string> enumRender = Extensions.DisplayName;
-    static Dictionary<Type, string> nullDisplay = [];
 
     public static void ForEnums(Func<Enum, string> func)
     {
@@ -56,14 +22,6 @@ public static class ValueRenderer
         ThrowIfBookBuilderUsed();
 
         renders[typeof(T)] = _ => func((T)_);
-    }
-
-    public static void NullDisplayFor<T>(string value)
-        where T : notnull
-    {
-        ThrowIfBookBuilderUsed();
-
-        nullDisplay[typeof(T)] = value;
     }
 
     static void ThrowIfBookBuilderUsed()
@@ -88,19 +46,6 @@ public static class ValueRenderer
         {
             //TODO: should cache this
             return _ => enumRender((Enum)_);
-        }
-
-        return null;
-    }
-
-    internal static string? GetNullDisplay(Type type)
-    {
-        foreach (var (key, value) in nullDisplay)
-        {
-            if (key.IsAssignableTo(type))
-            {
-                return value;
-            }
         }
 
         return null;

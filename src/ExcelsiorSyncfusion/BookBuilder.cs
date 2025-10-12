@@ -7,7 +7,7 @@ public class BookBuilder(
     Action<Style>? globalStyle = null,
     bool trimWhitespace = true,
     int defaultMaxColumnWidth = 50) :
-        BookBuilderBase<IDisposableBook, Sheet, Style, Range, Color?>(
+        BookBuilderBase<IDisposableBook, Sheet, Style, Range, Color?, Range>(
             useAlternatingRowColors,
             alternateRowColor,
             headingStyle,
@@ -15,10 +15,10 @@ public class BookBuilder(
             trimWhitespace,
             defaultMaxColumnWidth)
 {
-    internal override RendererBase<TModel, Sheet, Style, Range, IDisposableBook, Color?> ConstructSheetRenderer<TModel>(
+    internal override RendererBase<TModel, Sheet, Style, Range, IDisposableBook, Color?, Range> ConstructSheetRenderer<TModel>(
         IAsyncEnumerable<TModel> data,
         string name,
-        List<Column<Style, TModel>> columns,
+        List<ColumnConfig<Style, TModel>> columns,
         int? maxColumnWidth) =>
         new Renderer<TModel>(
             name,

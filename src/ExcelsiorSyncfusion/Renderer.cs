@@ -1,10 +1,10 @@
 ﻿class Renderer<TModel>(
     string name,
     IAsyncEnumerable<TModel> data,
-    List<Column<Style, TModel>> columns,
+    List<ColumnConfig<Style, TModel>> columns,
     int? maxColumnWidth,
     BookBuilder bookBuilder) :
-    RendererBase<TModel, Sheet, Style, Range, IDisposableBook, Color?>(data, columns, maxColumnWidth, bookBuilder)
+    RendererBase<TModel, Sheet, Style, Range, IDisposableBook, Color?, Range>(data, columns, maxColumnWidth, bookBuilder)
 {
     protected override void ApplyFilter(Sheet sheet) =>
         sheet.AutoFilters.FilterRange = sheet.UsedRange;
@@ -53,29 +53,16 @@
     protected override void ApplyGlobalStyling(Sheet sheet, Action<Style> globalStyle) =>
         globalStyle.Invoke(sheet.UsedRange.CellStyle);
 
-    protected override void ResizeColumn(Sheet sheet, int index, Column<Style, TModel> columnConfig, int maxColumnWidth)
+    protected override Range GetColumn(Sheet sheet, int index) =>
+        sheet.Columns[index];
+
+    protected override void SetColumnWidth(Range column, int width) =>
+        column.ColumnWidth = width;
+
+    protected override double AdjustColumnWidth(Sheet sheet, Range column)
     {
-        var sheetColumn = sheet.Columns[index];
-        if (columnConfig.Width == null)
-        {
-            sheet.AutofitColumn(index + 1);
-            sheetColumn.ColumnWidth += 4;
-
-            // does not seem to respect the dot points
-            if (columnConfig.IsEnumerableString)
-            {
-                sheetColumn.ColumnWidth += 5;
-            }
-
-            if (sheetColumn.ColumnWidth > maxColumnWidth)
-            {
-                sheetColumn.ColumnWidth = maxColumnWidth;
-            }
-        }
-        else
-        {
-            sheetColumn.ColumnWidth = columnConfig.Width.Value;
-        }
+        column.AutofitColumns();
+        return column.ColumnWidth;
     }
 
     protected override void ResizeRows(Sheet sheet) =>

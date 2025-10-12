@@ -1,10 +1,10 @@
 ﻿using System.Globalization;
 
-abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor>(
+abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor, TColumn>(
     IAsyncEnumerable<TModel> data,
-    List<Column<TStyle, TModel>> columns,
+    List<ColumnConfig<TStyle, TModel>> columns,
     int? maxColumnWidth,
-    BookBuilderBase<TBook, TSheet, TStyle, TCell, TColor> bookBuilder)
+    BookBuilderBase<TBook, TSheet, TStyle, TCell, TColor, TColumn> bookBuilder)
 {
     protected abstract void SetDateFormat(TStyle style, string format);
     protected abstract void SetStyleColor(TStyle style, TColor color);
@@ -13,6 +13,10 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor>(
     protected abstract void SetCellValue(TCell cell, string value);
     protected abstract void SetCellHtml(TCell cell, string value);
     protected abstract TSheet BuildSheet(TBook book);
+
+    protected abstract TColumn GetColumn(TSheet sheet, int index);
+    protected abstract void SetColumnWidth(TColumn column, int width);
+    protected abstract double AdjustColumnWidth(TSheet sheet, TColumn column);
 
     internal async Task AddSheet(TBook book, Cancel cancel)
     {
@@ -47,7 +51,7 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor>(
         }
     }
 
-    void ApplyHeadingStyling(Column<TStyle, TModel> column, TStyle style)
+    void ApplyHeadingStyling(ColumnConfig<TStyle, TModel> column, TStyle style)
     {
         bookBuilder.HeadingStyle?.Invoke(style);
 
@@ -57,16 +61,44 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor>(
     protected abstract void ApplyGlobalStyling(TSheet sheet, Action<TStyle> bookBuilderGlobalStyle);
 
     protected abstract void ApplyFilter(TSheet sheet);
-    protected abstract void ResizeColumn(TSheet sheet, int index, Column<TStyle, TModel> column, int defaultMaxColumnWidth);
+
+    void ResizeColumn(TSheet sheet, int index, ColumnConfig<TStyle, TModel> columnConfig)
+    {
+        var resultMaxColumnWidth = maxColumnWidth ?? bookBuilder.DefaultMaxColumnWidth;
+        var column = GetColumn(sheet, index);
+        int width;
+        if (columnConfig.Width == null)
+        {
+            var doubleWidth = AdjustColumnWidth(sheet, column);
+            width = (int) Math.Round(doubleWidth);
+            width += 1;
+
+            if (columnConfig.IsEnumerableString)
+            {
+                width += 5;
+            }
+
+            if (width > resultMaxColumnWidth)
+            {
+                width = resultMaxColumnWidth;
+            }
+        }
+        else
+        {
+            width = columnConfig.Width.Value;
+        }
+
+        SetColumnWidth(column, width);
+    }
+
     protected abstract void ResizeRows(TSheet sheet);
 
     void AutoSizeColumns(TSheet sheet)
     {
-        var resultMaxColumnWidth = maxColumnWidth ?? bookBuilder.DefaultMaxColumnWidth;
         for (var index = 0; index < columns.Count; index++)
         {
             var column = columns[index];
-            ResizeColumn(sheet, index, column, resultMaxColumnWidth);
+            ResizeColumn(sheet, index, column);
         }
     }
 
@@ -110,7 +142,7 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor>(
         TCell cell,
         TStyle style,
         object? value,
-        Column<TStyle, TModel> column,
+        ColumnConfig<TStyle, TModel> column,
         TModel item)
     {
         void SetStringOrHtml(string content)

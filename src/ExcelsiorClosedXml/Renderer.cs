@@ -3,10 +3,10 @@
 class Renderer<TModel>(
     string name,
     IAsyncEnumerable<TModel> data,
-    List<Column<Style, TModel>> columns,
+    List<ColumnConfig<Style, TModel>> columns,
     int? maxColumnWidth,
     BookBuilder bookBuilder) :
-    RendererBase<TModel, Sheet, Style, Cell, Book, Color>(data, columns, maxColumnWidth, bookBuilder)
+    RendererBase<TModel, Sheet, Style, Cell, Book, Color, Column>(data, columns, maxColumnWidth, bookBuilder)
 {
     protected override void ApplyFilter(Sheet sheet) =>
         sheet.RangeUsed()!.SetAutoFilter();
@@ -60,22 +60,16 @@ class Renderer<TModel>(
         globalStyle(range.Style);
     }
 
-    protected override void ResizeColumn(Sheet sheet, int index, Column<Style, TModel> columnConfig, int maxColumnWidth)
+    protected override Column GetColumn(Sheet sheet, int index) =>
+        sheet.Column(index + 1);
+
+    protected override void SetColumnWidth(Column column, int width) =>
+        column.Width = width;
+
+    protected override double AdjustColumnWidth(Sheet sheet, Column column)
     {
-        var sheetColumn = sheet.Column(index + 1);
-        if (columnConfig.Width == null)
-        {
-            sheetColumn.AdjustToContents();
-            sheetColumn.Width += 2;
-            if (sheetColumn.Width > maxColumnWidth)
-            {
-                sheetColumn.Width = maxColumnWidth;
-            }
-        }
-        else
-        {
-            sheetColumn.Width = columnConfig.Width.Value;
-        }
+        column.AdjustToContents();
+        return column.Width;
     }
 
     protected override void ResizeRows(Sheet sheet) =>

@@ -3,10 +3,10 @@
 class Renderer<TModel>(
     string name,
     IAsyncEnumerable<TModel> data,
-    List<Column<Style, TModel>> columns,
+    List<ColumnConfig<Style, TModel>> columns,
     int? maxColumnWidth,
     BookBuilder bookBuilder) :
-    RendererBase<TModel, Sheet, Style, Cell, Book, Color?>(data, columns, maxColumnWidth, bookBuilder)
+    RendererBase<TModel, Sheet, Style, Cell, Book, Color?, Column>(data, columns, maxColumnWidth, bookBuilder)
 {
     protected override void ApplyFilter(Sheet sheet) =>
         sheet.AutoFilterAll();
@@ -65,30 +65,16 @@ class Renderer<TModel>(
         sheet.Cells.ApplyStyle(style, flag);
     }
 
-    protected override void ResizeColumn(Sheet sheet, int index, Column<Style, TModel> columnConfig, int maxColumnWidth)
+    protected override Column GetColumn(Sheet sheet, int index) =>
+        sheet.Cells.Columns[index];
+
+    protected override void SetColumnWidth(Column column, int width) =>
+        column.Width = width;
+
+    protected override double AdjustColumnWidth(Sheet sheet,Column column)
     {
-        var sheetColumn = sheet.Cells.Columns[index];
-        if (columnConfig.Width == null)
-        {
-            sheet.AutoFitColumns(index, index);
-            // Round widths since Aspose AutoFitColumns is not deterministic
-            sheetColumn.Width = Math.Round(sheetColumn.Width) + 1;
-
-            // Aspose does not seem to respect the dot points
-            if (columnConfig.IsEnumerableString)
-            {
-                sheetColumn.Width += 5;
-            }
-
-            if (sheetColumn.Width > maxColumnWidth)
-            {
-                sheetColumn.Width = maxColumnWidth;
-            }
-        }
-        else
-        {
-            sheetColumn.Width = columnConfig.Width.Value;
-        }
+        sheet.AutoFitColumns(column.Index, column.Index);
+        return column.Width;
     }
 
     protected override void ResizeRows(Sheet sheet) =>

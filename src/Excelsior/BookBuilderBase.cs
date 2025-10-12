@@ -1,6 +1,6 @@
 ﻿namespace Excelsior;
 
-public abstract class BookBuilderBase<TBook, TSheet, TStyle, TCell, TColor>
+public abstract class BookBuilderBase<TBook, TSheet, TStyle, TCell, TColor, TColumn>
 {
     protected BookBuilderBase(
         bool useAlternatingRowColors,
@@ -36,10 +36,10 @@ public abstract class BookBuilderBase<TBook, TSheet, TStyle, TCell, TColor>
         int? defaultMaxColumnWidth = null) =>
         AddSheet(data.ToAsyncEnumerable(), name, defaultMaxColumnWidth);
 
-    internal abstract RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor> ConstructSheetRenderer<TModel>(
+    internal abstract RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor, TColumn> ConstructSheetRenderer<TModel>(
         IAsyncEnumerable<TModel> data,
         string name,
-        List<Column<TStyle, TModel>> columns,
+        List<ColumnConfig<TStyle, TModel>> columns,
         int? maxColumnWidth);
 
     public ISheetBuilder<TModel, TStyle> AddSheet<TModel>(

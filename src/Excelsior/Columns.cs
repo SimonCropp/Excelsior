@@ -1,6 +1,6 @@
 ﻿class Columns<TModel, TStyle>
 {
-    Dictionary<string, Column<TStyle, TModel>> columns = [];
+    Dictionary<string, ColumnConfig<TStyle, TModel>> columns = [];
 
     public Columns()
     {
@@ -32,7 +32,7 @@
 
     public void Add<TProperty>(
         Expression<Func<TModel, TProperty>> property,
-        Action<Column<TStyle, TModel, TProperty>> configuration)
+        Action<ColumnConfig<TStyle, TModel, TProperty>> configuration)
     {
         var name = property.PropertyName();
         if (!columns.TryGetValue(name, out var column))
@@ -40,7 +40,7 @@
             throw new($"Could not find property: {name}");
         }
 
-        var config = new Column<TStyle, TModel, TProperty>();
+        var config = new ColumnConfig<TStyle, TModel, TProperty>();
         configuration(config);
         if (config.Heading != null)
         {
@@ -88,6 +88,6 @@
         }
     }
 
-    public List<Column<TStyle, TModel>> OrderedColumns() =>
+    public List<ColumnConfig<TStyle, TModel>> OrderedColumns() =>
         columns.Values.OrderBy(_ => _.Order ?? int.MaxValue).ToList();
 }

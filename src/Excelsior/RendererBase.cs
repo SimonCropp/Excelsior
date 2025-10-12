@@ -70,6 +70,7 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook>(
                 var value = column.GetValue(item);
                 var cell = GetCell(sheet, rowIndex, columnIndex);
                 var style = GetStyle(cell);
+                ApplyDefaultStyles(style);
                 RenderCell(value, column, item, itemIndex, cell, style);
                 ApplyStyle(cell, style);
             }

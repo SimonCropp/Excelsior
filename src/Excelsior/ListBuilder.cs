@@ -1,8 +1,8 @@
 ﻿static class ListBuilder
 {
-    public static string Build(IEnumerable<string> enumerable, bool trimWhitespace)
+    public static string Build(IEnumerable<string> enumerable)
     {
-        if (trimWhitespace)
+        if (ValueRenderer.TrimWhitespace)
         {
             enumerable = enumerable.Select(_ => _.Trim());
         }

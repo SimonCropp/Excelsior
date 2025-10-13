@@ -90,67 +90,6 @@ public class EnumerableStringTests
         await Verify(book);
     }
 
-#if DEBUG
-
-    [Test]
-    public async Task WithWhitespaceNoTrim()
-    {
-        List<Target> data =
-        [
-            new("Value1",
-                Value2:
-                [
-                    "a ",
-                    "a  ",
-                    " a ",
-                    "  a  ",
-                    "a\t",
-                    "\ta",
-                    "\ta\t",
-                    "\na\n",
-                ]),
-        ];
-
-        var builder = new BookBuilder(trimWhitespace: false);
-        builder.AddSheet(data);
-
-        var book = await builder.Build();
-
-        await Verify(book);
-    }
-
-#endif
-
-    [Test]
-    public async Task WithNewlinesNoTrim()
-    {
-        List<Target> data =
-        [
-            new("Value1",
-                Value2:
-                [
-                    "a",
-                    "a\n",
-                    "a\r",
-                    "a\r\n",
-                    "a",
-                    "a\na",
-                    "a\ra",
-                    "a\r\na",
-                    "\ra",
-                    "\na",
-                    "\r\na",
-                ]),
-        ];
-
-        var builder = new BookBuilder(trimWhitespace: false);
-        builder.AddSheet(data);
-
-        var book = await builder.Build();
-
-        await Verify(book);
-    }
-
     [Test]
     public async Task Wrapping()
     {

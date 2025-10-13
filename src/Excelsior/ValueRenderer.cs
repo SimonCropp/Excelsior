@@ -2,9 +2,17 @@
 
 public static partial class ValueRenderer
 {
+    internal static bool TrimWhitespace { get; private set; } = true;
     static bool bookBuilderUsed;
     static Dictionary<Type, Func<object, string>> renders = [];
     static Func<Enum, string> enumRender = Extensions.DisplayName;
+
+    public static void DisableWhitespaceTrimming()
+    {
+        ThrowIfBookBuilderUsed();
+
+        TrimWhitespace = false;
+    }
 
     public static void ForEnums(Func<Enum, string> func)
     {

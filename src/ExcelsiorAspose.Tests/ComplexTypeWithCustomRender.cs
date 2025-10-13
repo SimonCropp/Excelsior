@@ -44,4 +44,20 @@ public class ComplexTypeWithCustomRender
 
         await Verify(book);
     }
+
+    [Test]
+    public async Task Null()
+    {
+        var builder = new BookBuilder();
+
+        List<Person> data =
+        [
+            new("John Doe", null!),
+        ];
+        builder.AddSheet(data);
+
+        var book = await builder.Build();
+
+        await Verify(book);
+    }
 }

@@ -28,10 +28,10 @@
                 continue;
             }
 
-            stack.Push((property,parameter));
+            stack.Push((property, parameter));
 
             var infos = stack.Reverse().ToList();
-            var func = CreateGet(infos);
+            var func = CreateGet(infos.Select(_ => _.property));
             if (ShouldSplit(property, parameter, out var nestedUseHierachyForName))
             {
                 foreach (var nested in GetPropertiesRecursive(property.PropertyType, stack, nestedUseHierachyForName))
@@ -65,12 +65,29 @@
 
     static ParameterExpression targetParam = Expression.Parameter(typeof(T));
 
-    static Func<T, object?> CreateGet(IReadOnlyList<(PropertyInfo property, ParameterInfo? parameter)> path)
+    static Func<T, object?> CreateGet(IEnumerable<PropertyInfo> path)
     {
         Expression current = targetParam;
-        foreach (var node in path)
+
+        foreach (var property in path)
         {
-            current = Expression.Property(current, node.property);
+            var propertyAccess = Expression.Property(current, property);
+
+            if (current.Type.IsValueType &&
+                Nullable.GetUnderlyingType(current.Type) == null)
+            {
+                current = propertyAccess;
+                continue;
+            }
+
+            // Add null check if the current type is nullable (reference type or Nullable<T>)
+            // current != null ? current.Property : default(PropertyType)
+            current = Expression.Condition(
+                Expression.NotEqual(current, Expression.Constant(null, current.Type)),
+                propertyAccess,
+                Expression.Default(property.PropertyType),
+                property.PropertyType
+            );
         }
 
         var box = Expression.Convert(current, typeof(object));

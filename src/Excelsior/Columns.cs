@@ -30,7 +30,7 @@
                 Render = render == null ? null : (_, value) => render(value),
                 IsHtml = property.IsHtml,
                 IsNumber = property.IsNumber,
-                IsEnumerableString = isEnumerable,
+                IsEnumerable = isEnumerable,
                 GetValue = property.Get
             });
     }

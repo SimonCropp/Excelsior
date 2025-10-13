@@ -16,7 +16,10 @@ public class ComplexTypeWithCustomEnumerableRender
 
     [ModuleInitializer]
     public static void Init() =>
-        ValueRenderer.For<Address>(_ => $"{_.Number}, {_.Street}, {_.City}, {_.State}, {_.PostCode}");
+        ValueRenderer.For<Address>(_ =>
+        {
+            return $"{_.Number}, {_.Street}, {_.City}, {_.State}, {_.PostCode}";
+        });
 
     #endregion
 
@@ -48,6 +51,22 @@ public class ComplexTypeWithCustomEnumerableRender
         builder.AddSheet(data);
 
         #endregion
+
+        var book = await builder.Build();
+
+        await Verify(book);
+    }
+
+    [Test]
+    public async Task Null()
+    {
+        var builder = new BookBuilder();
+
+        List<Person> data =
+        [
+            new("John Doe", [null!]),
+        ];
+        builder.AddSheet(data);
 
         var book = await builder.Build();
 

@@ -73,7 +73,7 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor, TColum
             width = (int) Math.Round(doubleWidth);
             width += 1;
 
-            if (columnConfig.IsEnumerableString)
+            if (columnConfig.IsEnumerable)
             {
                 width += 5;
             }

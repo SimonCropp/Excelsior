@@ -36,11 +36,11 @@ public static partial class ValueRenderer
     {
         ThrowIfBookBuilderUsed();
 
-        renders[typeof(T)] = _ => func((T)_);
+        renders[typeof(T)] = _ => func((T) _);
         enumerableRenders[typeof(T)] = _ =>
         {
-            var enumerable = (IEnumerable<T>)_;
-            return ListBuilder.Build(enumerable.Select(func));
+            var enumerable = (IEnumerable<T?>) _;
+            return ListBuilder.Build(enumerable.Select(_ => _ == null ? null : func(_)));
         };
     }
 

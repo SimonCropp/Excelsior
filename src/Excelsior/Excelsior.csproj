@@ -9,5 +9,7 @@
     <PackageReference Include="Microsoft.Sbom.Targets" PrivateAssets="all" />
     <PackageReference Include="System.ComponentModel.Annotations" />
     <PackageReference Include="System.Linq.Async" />
+    <None Include="buildTransitive\Excelsior.props" Pack="true" PackagePath="buildTransitive\" />
+    <None Include="buildTransitive\Excelsior.props" Pack="true" PackagePath="build\" />
   </ItemGroup>
 </Project>

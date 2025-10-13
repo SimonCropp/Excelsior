@@ -18,6 +18,7 @@
     <PackageReference Include="ProjectDefaults" PrivateAssets="all" />
     <Compile Include="..\ExcelsiorAspose.Tests\ComplexTypeWithSplitter.cs" />
     <Compile Include="..\ExcelsiorAspose.Tests\SplitterTests.cs" />
+    <Compile Include="..\ExcelsiorAspose.Tests\ComplexTypeWithCustomEnumerableRender.cs" />
     <Compile Include="..\ExcelsiorAspose.Tests\ComplexTypeWithSplitterUseHierachyForName.cs" />
     <Compile Include="..\ExcelsiorAspose.Tests\FormatGuessingTests.cs" />
     <Compile Include="..\ExcelsiorAspose.Tests\DateFormats.cs" />

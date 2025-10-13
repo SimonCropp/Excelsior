@@ -565,28 +565,17 @@ using var book = await builder.Build();
 <!-- snippet: DisableWhitespaceTrim -->
 <a id='snippet-DisableWhitespaceTrim'></a>
 ```cs
-List<Employee> data =
-[
-    new()
-    {
-        Id = 1,
-        Name = "    John Doe   ",
-        Email = "    john@company.com    ",
-    }
-];
-
-var builder = new BookBuilder(trimWhitespace: false);
-builder.AddSheet(data);
-
-using var book = await builder.Build();
+[ModuleInitializer]
+public static void DisableTrimWhitespace() =>
+    ValueRenderer.DisableWhitespaceTrimming();
 ```
-<sup><a href='/src/ExcelsiorAspose.Tests/WhitespaceTests.cs#L32-L49' title='Snippet source file'>snippet source</a> | <a href='#snippet-DisableWhitespaceTrim' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/StaticSettingsTests/TrimWhitespaceTests.cs#L4-L10' title='Snippet source file'>snippet source</a> | <a href='#snippet-DisableWhitespaceTrim' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
 #### Result
 
-<img src="/src/ExcelsiorClosedXml.Tests/WhitespaceTests.Disable_Sheet1.png">
+<img src="/src/StaticSettingsTests/DisableWhitespaceTrimmingTests.Whitespace_Sheet1.png">
 
 
 ### Enumerable string properties

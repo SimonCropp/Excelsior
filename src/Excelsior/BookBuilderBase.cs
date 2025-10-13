@@ -7,7 +7,6 @@ public abstract class BookBuilderBase<TBook, TSheet, TStyle, TCell, TColor, TCol
         TColor? alternateRowColor,
         Action<TStyle>? headingStyle,
         Action<TStyle>? globalStyle,
-        bool trimWhitespace,
         int defaultMaxColumnWidth)
     {
         ValueRenderer.SetBookBuilderUsed();
@@ -15,7 +14,6 @@ public abstract class BookBuilderBase<TBook, TSheet, TStyle, TCell, TColor, TCol
         AlternateRowColor = alternateRowColor;
         HeadingStyle = headingStyle;
         GlobalStyle = globalStyle;
-        TrimWhitespace = trimWhitespace;
         DefaultMaxColumnWidth = defaultMaxColumnWidth;
     }
 
@@ -28,7 +26,6 @@ public abstract class BookBuilderBase<TBook, TSheet, TStyle, TCell, TColor, TCol
     public TColor? AlternateRowColor{ get; }
     public Action<TStyle>? HeadingStyle{ get; }
     public Action<TStyle>? GlobalStyle{ get; }
-    public bool TrimWhitespace{ get; }
 
     public ISheetBuilder<TModel, TStyle> AddSheet<TModel>(
         IEnumerable<TModel> data,

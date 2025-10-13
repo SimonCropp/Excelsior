@@ -233,13 +233,13 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor, TColum
         if (value is IEnumerable<string> enumerable)
         {
             ThrowIfHtml();
-            SetCellValue(cell, ListBuilder.Build(enumerable, bookBuilder.TrimWhitespace));
+            SetCellValue(cell, ListBuilder.Build(enumerable));
             return;
         }
 
         var valueAsString = value.ToString();
         // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
-        if (valueAsString != null && bookBuilder.TrimWhitespace)
+        if (valueAsString != null && ValueRenderer.TrimWhitespace)
         {
             valueAsString = valueAsString.Trim();
         }

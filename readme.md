@@ -569,7 +569,7 @@ using var book = await builder.Build();
 public static void DisableTrimWhitespace() =>
     ValueRenderer.DisableWhitespaceTrimming();
 ```
-<sup><a href='/src/StaticSettingsTests/TrimWhitespaceTests.cs#L4-L10' title='Snippet source file'>snippet source</a> | <a href='#snippet-DisableWhitespaceTrim' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/StaticSettingsTests/DisableWhitespaceTrimmingTests.cs#L4-L10' title='Snippet source file'>snippet source</a> | <a href='#snippet-DisableWhitespaceTrim' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 

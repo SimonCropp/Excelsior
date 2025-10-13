@@ -40,23 +40,28 @@ public static partial class ValueRenderer
         }
     }
 
-    internal static Func<object, string>? GetRender(Type type)
+    internal static (bool isEnumerable, Func<object, string>? render) GetRender(Type type)
     {
+        if (type.IsAssignableTo(typeof(IEnumerable<string>)))
+        {
+            return (true, _ => ListBuilder.Build((IEnumerable<string>)_));
+        }
+
         foreach (var (key, value) in renders)
         {
             if (key.IsAssignableTo(type))
             {
-                return value;
+                return (false, value);
             }
         }
 
         if (type.IsEnum)
         {
             //TODO: should cache this
-            return _ => enumRender((Enum)_);
+            return (false, _ => enumRender((Enum)_));
         }
 
-        return null;
+        return (false, null);
     }
 
     internal static void SetBookBuilderUsed() => bookBuilderUsed = true;

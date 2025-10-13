@@ -13,7 +13,7 @@
     void AddColumn(Property<TModel> property)
     {
         var type = property.Type;
-        var render = ValueRenderer.GetRender(type);
+        var (isEnumerable, render) = ValueRenderer.GetRender(type);
 
         columns.Add(
             property.Name,
@@ -30,7 +30,7 @@
                 Render = render == null ? null : (_, value) => render(value),
                 IsHtml = property.IsHtml,
                 IsNumber = property.IsNumber,
-                IsEnumerableString = type.IsAssignableTo(typeof(IEnumerable<string>)),
+                IsEnumerableString = isEnumerable,
                 GetValue = property.Get
             });
     }

@@ -8,6 +8,10 @@
         where T : Attribute =>
         element?.GetCustomAttribute<T>();
 
+    public static bool HasAttribute<T>(this ParameterInfo? element)
+        where T : Attribute =>
+        element?.GetCustomAttribute<T>() != null;
+
     public static string PropertyName<T, TProperty>(this Expression<Func<T, TProperty>> expression)
     {
         var parts = new List<string>();

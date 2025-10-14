@@ -2,16 +2,10 @@
 
 public static partial class ValueRenderer
 {
-    static ValueRenderer()
-    {
-        enumerableRenders = [];
-        enumerableRenders[typeof(string)] = _ => ListBuilder.Build((IEnumerable<string>)_);
-    }
-
     internal static bool TrimWhitespace { get; private set; } = true;
     static bool bookBuilderUsed;
     static Dictionary<Type, Func<object, string>> renders =[];
-    static Dictionary<Type, Func<object, string>> enumerableRenders;
+    static Dictionary<Type, Func<object, string>> enumerableRenders = [];
     static Func<Enum, string> enumRender = Extensions.DisplayName;
 
     public static void DisableWhitespaceTrimming()
@@ -62,7 +56,13 @@ public static partial class ValueRenderer
             }
         }
 
-        foreach (var enumerableType in GetEnumerableTypes(type))
+        if (type.IsAssignableTo<IEnumerable<string>>())
+        {
+            return (true, _ => ListBuilder.Build((IEnumerable<string>)_));
+        }
+
+        var enumerableTypes = GetEnumerableTypes(type).ToList();
+        foreach (var enumerableType in enumerableTypes)
         {
             foreach (var (key, value) in enumerableRenders)
             {
@@ -86,14 +86,34 @@ public static partial class ValueRenderer
     {
         if (type == typeof(string))
         {
-            return [];
+            yield break;
         }
 
-        return type
-            .GetInterfaces()
-            .Where(i => i.IsGenericType &&
-                        i.GetGenericTypeDefinition() == typeof(IEnumerable<>))
-            .Select(i => i.GetGenericArguments()[0]);
+        if (TryGetEnumerableType(type, out var enumerableType))
+        {
+            yield return enumerableType;
+        }
+
+        foreach (var @interface in type.GetInterfaces())
+        {
+            if (TryGetEnumerableType(@interface, out enumerableType))
+            {
+                yield return enumerableType;
+            }
+        }
+    }
+
+    static bool TryGetEnumerableType(Type interfacteType, [NotNullWhen(true)] out Type? enumerableType)
+    {
+        if (interfacteType.IsGenericType &&
+            interfacteType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+        {
+            enumerableType = interfacteType.GetGenericArguments()[0];
+            return true;
+        }
+
+        enumerableType = null;
+        return false;
     }
 
     internal static void SetBookBuilderUsed() => bookBuilderUsed = true;

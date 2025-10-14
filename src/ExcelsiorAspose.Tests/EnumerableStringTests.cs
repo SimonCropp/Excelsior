@@ -3,7 +3,7 @@ public class EnumerableStringTests
 {
     #region EnumerableModel
 
-    public record Person(string Name, string[] PhoneNumbers);
+    public record Person(string Name, IEnumerable<string> PhoneNumbers);
 
     #endregion
 
@@ -33,7 +33,29 @@ public class EnumerableStringTests
         await Verify(book);
     }
 
-    public record Target(string Value1, string[] Value2);
+    public record TargetWithArray(string Value1, string[] Value2);
+
+    [Test]
+    public async Task WithArray()
+    {
+        var builder = new BookBuilder();
+        List<Target> data =
+        [
+            new("Value1",
+                Value2:
+                [
+                    "a",
+                    "b",
+                ]),
+        ];
+        builder.AddSheet(data);
+
+        var book = await builder.Build();
+
+        await Verify(book);
+    }
+
+    public record Target(string Value1, IEnumerable<string> Value2);
 
     [Test]
     public async Task WithNewlines()

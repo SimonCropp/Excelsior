@@ -22,10 +22,10 @@ public abstract class BookBuilderBase<TBook, TSheet, TStyle, TCell, TColor, TCol
     protected abstract TBook BuildBook();
 
     List<Func<TBook, Cancel, Task>> actions = [];
-    public int DefaultMaxColumnWidth{ get; }
-    public TColor? AlternateRowColor{ get; }
-    public Action<TStyle>? HeadingStyle{ get; }
-    public Action<TStyle>? GlobalStyle{ get; }
+    public int DefaultMaxColumnWidth { get; }
+    public TColor? AlternateRowColor { get; }
+    public Action<TStyle>? HeadingStyle { get; }
+    public Action<TStyle>? GlobalStyle { get; }
 
     public ISheetBuilder<TModel, TStyle> AddSheet<TModel>(
         IEnumerable<TModel> data,

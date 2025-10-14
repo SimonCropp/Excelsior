@@ -23,7 +23,7 @@
             }
 
             var parameter = defaultConstructor?.SingleOrDefault(_ => _.Name == property.Name);
-            if (parameter.Attribute<IgnoreAttribute>() != null)
+            if (parameter.HasAttribute<IgnoreAttribute>())
             {
                 continue;
             }

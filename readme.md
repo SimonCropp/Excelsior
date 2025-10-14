@@ -588,7 +588,7 @@ Properties that are castable to an `IEnumerable<string>` will automatically be r
 <!-- snippet: EnumerableModel -->
 <a id='snippet-EnumerableModel'></a>
 ```cs
-public record Person(string Name, string[] PhoneNumbers);
+public record Person(string Name, IEnumerable<string> PhoneNumbers);
 ```
 <sup><a href='/src/ExcelsiorAspose.Tests/EnumerableStringTests.cs#L4-L8' title='Snippet source file'>snippet source</a> | <a href='#snippet-EnumerableModel' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->

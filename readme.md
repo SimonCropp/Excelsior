@@ -624,7 +624,7 @@ builder.AddSheet(data);
 
 ## Binding Model
 
-The recommended approach is to use are specific type for binding.
+The recommended approach is to use a specific type for binding.
 
 This will make configuration and rendering simpler. It will often also result in better performance. The reason being that the projection into the binding type can be done by the database via an ORM. This will result in a faster query response and less data being transferred from the database.
 

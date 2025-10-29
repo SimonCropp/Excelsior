@@ -16,12 +16,12 @@
     <PackageVersion Include="System.ComponentModel.Annotations" Version="5.0.0" />
     <PackageVersion Include="System.Linq.Async" Version="6.0.3" />
     <PackageVersion Include="Aspose.Cells" Version="25.10.0" />
-    <PackageVersion Include="Verify" Version="31.1.0" />
+    <PackageVersion Include="Verify" Version="31.2.0" />
     <PackageVersion Include="Verify.ClosedXml" Version="0.6.0" />
     <PackageVersion Include="Verify.Aspose" Version="5.15.6" />
     <PackageVersion Include="Verify.DiffPlex" Version="3.1.2" />
-    <PackageVersion Include="Verify.ImageMagick" Version="3.7.5" />
-    <PackageVersion Include="Verify.NUnit" Version="31.1.0" />
+    <PackageVersion Include="Verify.ImageMagick" Version="3.7.6" />
+    <PackageVersion Include="Verify.NUnit" Version="31.2.0" />
     <PackageVersion Include="NUnit" Version="4.4.0" />
     <PackageVersion Include="NUnit3TestAdapter" Version="5.2.0" />
     <PackageVersion Include="Microsoft.Sbom.Targets" Version="4.1.2" />

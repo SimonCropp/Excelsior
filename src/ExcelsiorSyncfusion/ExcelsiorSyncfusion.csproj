@@ -8,7 +8,6 @@
     <PackageReference Include="Microsoft.Sbom.Targets" PrivateAssets="all" />
     <PackageReference Include="Syncfusion.XlsIO.Net.Core" />
     <PackageReference Include="System.ComponentModel.Annotations" />
-    <PackageReference Include="System.Linq.Async" />
     <ProjectReference Include="..\Excelsior\Excelsior.csproj" />
   </ItemGroup>
 </Project>

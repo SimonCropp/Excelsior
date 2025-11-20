@@ -32,13 +32,6 @@
         return string.Join('.', parts);
     }
 
-    public static string DisplayName(this Enum enumValue)
-    {
-        var field = enumValue.GetType().GetField(enumValue.ToString());
-        var attribute = field?.Attribute<DisplayAttribute>();
-        return attribute?.Name ?? enumValue.ToString();
-    }
-
     public static bool IsNumericType(this Type type)
     {
         if (type.IsEnum)

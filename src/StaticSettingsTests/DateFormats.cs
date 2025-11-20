@@ -5,7 +5,7 @@ public class DateFormats
     #region DateFormatsInit
 
     [ModuleInitializer]
-    public static void UseHumanizerForEnums()
+    public static void CustomDateFormats()
     {
         ValueRenderer.DefaultDateFormat = "yyyy/MM/dd" ;
         ValueRenderer.DefaultDateTimeFormat = "yyyy/MM/dd HH:mm:ss" ;

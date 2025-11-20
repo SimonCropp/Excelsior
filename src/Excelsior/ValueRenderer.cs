@@ -6,7 +6,7 @@ public static partial class ValueRenderer
     static bool bookBuilderUsed;
     static Dictionary<Type, Func<object, string>> renders =[];
     static Dictionary<Type, Func<object, string>> enumerableRenders = [];
-    static Func<Enum, string> enumRender = Extensions.DisplayName;
+    static Func<Enum, string> enumRender = EnumExtensions.Humanize;
 
     public static void DisableWhitespaceTrimming()
     {

@@ -4,8 +4,8 @@ public class ValueRendererForEnums
     #region ValueRendererForEnumsInit
 
     [ModuleInitializer]
-    public static void UseHumanizerForEnums() =>
-        ValueRenderer.ForEnums(_ => _.Humanize());
+    public static void CustomEnumRender() =>
+        ValueRenderer.ForEnums(_ => _.ToString().ToUpper());
 
     #endregion
 

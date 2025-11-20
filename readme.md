@@ -795,8 +795,8 @@ builder.AddSheet(data);
 <a id='snippet-ValueRendererForEnumsInit'></a>
 ```cs
 [ModuleInitializer]
-public static void UseHumanizerForEnums() =>
-    ValueRenderer.ForEnums(_ => _.Humanize());
+public static void CustomEnumRender() =>
+    ValueRenderer.ForEnums(_ => _.ToString().ToUpper());
 ```
 <sup><a href='/src/StaticSettingsTests/ValueRendererForEnums.cs#L4-L10' title='Snippet source file'>snippet source</a> | <a href='#snippet-ValueRendererForEnumsInit' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
@@ -848,7 +848,7 @@ Date formats can be customized:
 <a id='snippet-DateFormatsInit'></a>
 ```cs
 [ModuleInitializer]
-public static void UseHumanizerForEnums()
+public static void CustomDateFormats()
 {
     ValueRenderer.DefaultDateFormat = "yyyy/MM/dd" ;
     ValueRenderer.DefaultDateTimeFormat = "yyyy/MM/dd HH:mm:ss" ;

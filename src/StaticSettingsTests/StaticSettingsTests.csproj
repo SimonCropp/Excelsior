@@ -4,7 +4,6 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Aspose.Cells" />
-    <PackageReference Include="Humanizer.Core" />
     <PackageReference Include="Verify.Aspose" />
     <PackageReference Include="Verify.DiffPlex" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
@@ -15,8 +14,6 @@
     <ProjectReference Include="..\ExcelsiorAspose\ExcelsiorAspose.csproj" />
     <Using Include="NUnit.Framework.Legacy.ClassicAssert" Static="True" />
     <PackageReference Include="ProjectDefaults" PrivateAssets="all" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="..\ExcelsiorAspose.Tests\AsposeLicense.cs">
       <Link>AsposeLicense.cs</Link>
     </Compile>

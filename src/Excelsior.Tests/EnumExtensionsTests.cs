@@ -2,6 +2,38 @@
 public class EnumExtensionsTests
 {
     [Test]
+    public void Humanize_WithDescriptionOnly_ReturnsDescription()
+    {
+        var result = TestEnum.WithDescription.Humanize();
+
+        Assert.That(result, Is.EqualTo("This is the description"));
+    }
+
+    [Test]
+    public void Humanize_WithDescriptionAndName_ReturnsDescription()
+    {
+        var result = TestEnum.WithBoth.Humanize();
+
+        Assert.That(result, Is.EqualTo("Description wins"));
+    }
+
+    [Test]
+    public void Humanize_WithNameOnly_ReturnsName()
+    {
+        var result = TestEnum.WithNameOnly.Humanize();
+
+        Assert.That(result, Is.EqualTo("Custom Name"));
+    }
+
+    [Test]
+    public void Humanize_WithEmptyDisplayAttribute_FallsBackToHumanization()
+    {
+        var result = TestEnum.EmptyDisplay.Humanize();
+
+        Assert.That(result, Is.EqualTo("Empty display"));
+    }
+
+    [Test]
     public void Humanize_PascalCase_AddsSpacesAndLowercases()
     {
         var result = TestEnum.AntiqueWhite.Humanize();
@@ -23,22 +55,6 @@ public class EnumExtensionsTests
         var result = TestEnum.Red.Humanize();
 
         Assert.That(result, Is.EqualTo("Red"));
-    }
-
-    [Test]
-    public void Humanize_WithDisplayAttribute_ReturnsDisplayName()
-    {
-        var result = TestEnum.CustomColor.Humanize();
-
-        Assert.That(result, Is.EqualTo("My Custom Color"));
-    }
-
-    [Test]
-    public void Humanize_WithEmptyDisplayAttribute_FallsBackToHumanization()
-    {
-        var result = TestEnum.FallbackName.Humanize();
-
-        Assert.That(result, Is.EqualTo("Fallback name"));
     }
 
     [Test]
@@ -85,15 +101,17 @@ public class EnumExtensionsTests
     }
 
     [Test]
-    [TestCase(TestEnum.Red)]
-    [TestCase(TestEnum.AntiqueWhite)]
-    [TestCase(TestEnum.DeepSkyBlue)]
-    public void Humanize_MultipleValues_EachCachedIndependently(TestEnum value)
+    [TestCase(TestEnum.Red, "Red")]
+    [TestCase(TestEnum.AntiqueWhite, "Antique white")]
+    [TestCase(TestEnum.DeepSkyBlue, "Deep sky blue")]
+    [TestCase(TestEnum.WithDescription, "This is the description")]
+    [TestCase(TestEnum.WithBoth, "Description wins")]
+    [TestCase(TestEnum.WithNameOnly, "Custom Name")]
+    public void Humanize_VariousValues_ReturnsExpectedResult(TestEnum value, string expected)
     {
         var result = value.Humanize();
 
-        Assert.That(result, Is.Not.Null);
-        Assert.That(result, Is.Not.Empty);
+        Assert.That(result, Is.EqualTo(expected));
     }
 
     [Test]
@@ -112,7 +130,8 @@ public class EnumExtensionsTests
                     {
                         TestEnum.AntiqueWhite.Humanize();
                         TestEnum.DeepSkyBlue.Humanize();
-                        TestEnum.CustomColor.Humanize();
+                        TestEnum.WithDescription.Humanize();
+                        TestEnum.WithBoth.Humanize();
                     }
                 }
                 catch (Exception ex)
@@ -151,6 +170,16 @@ public class EnumExtensionsTests
         Assert.That(result, Is.EqualTo("UPPERCASE"));
     }
 
+    [Test]
+    public void Humanize_DisplayAttributePriority_DescriptionOverName()
+    {
+        // Verify that when both Description and Name are set, Description is used
+        var result = TestEnum.WithBoth.Humanize();
+
+        Assert.That(result, Is.Not.EqualTo("Name comes second"));
+        Assert.That(result, Is.EqualTo("Description wins"));
+    }
+
     public enum TestEnum
     {
         Red,
@@ -160,11 +189,17 @@ public class EnumExtensionsTests
         HTML,
         HTMLColor,
 
-        [Display(Name = "My Custom Color")]
-        CustomColor,
+        [Display(Description = "This is the description")]
+        WithDescription,
+
+        [Display(Description = "Description wins", Name = "Name comes second")]
+        WithBoth,
+
+        [Display(Name = "Custom Name")]
+        WithNameOnly,
 
         [Display]
-        FallbackName
+        EmptyDisplay
     }
 
     public enum AnotherEnum

@@ -8,7 +8,7 @@ public class RenderExcel
     [Explicit]
     public void Run()
     {
-        var directory = AttributeReader.GetSolutionDirectory();
+        var directory = ProjectFiles.SolutionDirectory;
         var imageFiles = Directory.EnumerateFiles(directory, "*.png", SearchOption.AllDirectories).ToList();
 
         foreach (var file in imageFiles)
@@ -39,7 +39,7 @@ public class RenderExcel
     [Explicit]
     public void RunSingle()
     {
-        var directory = AttributeReader.GetSolutionDirectory();
+        var directory = ProjectFiles.SolutionDirectory;
         var path = Path.Combine(directory,@"ExcelsiorClosedXml.Tests\Tests.Simple.verified.xlsx");
         Convert(path);
     }

@@ -7,6 +7,7 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="NUnit" />
     <PackageReference Include="NUnit3TestAdapter" />
+    <PackageReference Include="ProjectFiles" />
     <PackageReference Include="Verify" />
     <PackageReference Include="Verify.NUnit" />
     <Using Include="NUnit.Framework.Legacy.ClassicAssert" Static="True" />

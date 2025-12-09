@@ -19,6 +19,7 @@ Currently supported libraries include:
  * [ClosedXML](https://github.com/ClosedXML/ClosedXML) via the [ExcelsiorClosedXml](https://nuget.org/packages/ExcelsiorClosedXml/) nuget
  * [Aspose.Cells](https://docs.aspose.com/cells/net/) via the [ExcelsiorAspose](https://nuget.org/packages/ExcelsiorAspose/) nuget
  * [Syncfusion XlsIO](https://help.syncfusion.com/document-processing/excel/excel-library/net/overview) via the [ExcelsiorSyncfusion](https://nuget.org/packages/ExcelsiorSyncfusion/) nuget
+ * [DocumentFormat.OpenXml](https://github.com/dotnet/Open-XML-SDK) via the [ExcelsiorOpenXml](https://nuget.org/packages/ExcelsiorOpenXml/) nuget
 
 
 ## Usage
@@ -110,6 +111,7 @@ The above sample builds an instance of the Workbook for the target library:
  * `Aspose.Cells.Workbook` for Aspose
  * `ClosedXML.Excel.IXLWorkbook` for ClosedXml.
  * `ExcelsiorSyncfusion.IDisposableBook` for Syncfusion. Which implements both `Syncfusion.XlsIO.IWorkbook`, and `System.IDisposable`
+ * `DocumentFormat.OpenXml.Packaging.SpreadsheetDocument` for OpenXml
 
 
 

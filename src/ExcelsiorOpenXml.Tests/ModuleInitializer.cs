@@ -8,6 +8,8 @@ public static class ModuleInitializer
         VerifyDiffPlex.Initialize();
         VerifierSettings.InitializePlugins();
         VerifierSettings.ScrubEmptyLines();
+        VerifierSettings.DontScrubDateTimes();
+        VerifierSettings.DontScrubGuids();
         Environment.SetEnvironmentVariable("DiffEngine_Disabled", "true");
     }
 }

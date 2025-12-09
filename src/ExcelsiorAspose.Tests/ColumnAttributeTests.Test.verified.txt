@@ -7,22 +7,16 @@
       Name: Sheet1,
       Columns: [
         {
-          Name: Number
+          Name: Employee ID
         },
         {
-          Name: String
+          Name: Full Name
         },
         {
-          Name: Date Time
+          Name: Hire Date
         },
         {
-          Name: Date
-        },
-        {
-          Name: Enum
-        },
-        {
-          Name: Bool
+          Name: Email Address
         }
       ]
     }

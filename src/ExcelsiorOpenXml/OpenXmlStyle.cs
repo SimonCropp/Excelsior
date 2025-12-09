@@ -11,14 +11,14 @@ public class OpenXmlStyle
     public class FontStyle
     {
         public bool Bold { get; set; }
-        public OpenXmlColor? FontColor { get; set; }
+        public Color? FontColor { get; set; }
         public double? FontSize { get; set; }
         public string? FontName { get; set; }
     }
 
     public class FillStyle
     {
-        public OpenXmlColor? BackgroundColor { get; set; }
+        public Color? BackgroundColor { get; set; }
     }
 
     public class AlignmentStyle

@@ -1,0 +1,33 @@
+﻿{
+  HasMacro: False,
+  HasRevisions: False,
+  IsDigitallySigned: False,
+  Sheets: [
+    {
+      Name: Sheet1,
+      Columns: [
+        {
+          Name: Employee ID
+        },
+        {
+          Name: Full Name
+        },
+        {
+          Name: Email Address
+        },
+        {
+          Name: Hire Date
+        },
+        {
+          Name: Annual Salary
+        },
+        {
+          Name: Is Active
+        },
+        {
+          Name: Status
+        }
+      ]
+    }
+  ]
+}

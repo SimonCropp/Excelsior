@@ -1,0 +1,30 @@
+﻿{
+  HasMacro: False,
+  HasRevisions: False,
+  IsDigitallySigned: False,
+  Sheets: [
+    {
+      Name: Sheet1,
+      Columns: [
+        {
+          Name: Number
+        },
+        {
+          Name: String
+        },
+        {
+          Name: Date Time
+        },
+        {
+          Name: Date
+        },
+        {
+          Name: Enum
+        },
+        {
+          Name: Bool
+        }
+      ]
+    }
+  ]
+}

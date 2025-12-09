@@ -1,14 +1,12 @@
-using DocumentFormat.OpenXml;
-
 namespace ExcelsiorOpenXml;
 
 public class BookBuilder(
     bool useAlternatingRowColors = false,
-    OpenXmlColor? alternateRowColor = null,
-    Action<OpenXmlStyle>? headingStyle = null,
-    Action<OpenXmlStyle>? globalStyle = null,
+    Color? alternateRowColor = null,
+    Action<Style>? headingStyle = null,
+    Action<Style>? globalStyle = null,
     int defaultMaxColumnWidth = 50) :
-        BookBuilderBase<Book, Sheet, OpenXmlStyle, CellWrapper, OpenXmlColor, OpenXmlColumn>(
+        BookBuilderBase<Book, Sheet, Style, CellWrapper, Color, Column>(
             useAlternatingRowColors,
             alternateRowColor,
             headingStyle,
@@ -17,10 +15,10 @@ public class BookBuilder(
 {
     MemoryStream? stream;
 
-    internal override RendererBase<TModel, Sheet, OpenXmlStyle, CellWrapper, Book, OpenXmlColor, OpenXmlColumn> ConstructSheetRenderer<TModel>(
+    internal override RendererBase<TModel, Sheet, Style, CellWrapper, Book, Color, Column> ConstructSheetRenderer<TModel>(
         IAsyncEnumerable<TModel> data,
         string name,
-        List<ColumnConfig<OpenXmlStyle, TModel>> columns,
+        List<ColumnConfig<Style, TModel>> columns,
         int? maxColumnWidth) =>
         new Renderer<TModel>(
             name,
@@ -38,7 +36,7 @@ public class BookBuilder(
     protected override Book BuildBook()
     {
         stream = new();
-        var document = SpreadsheetDocument.Create(stream, SpreadsheetDocumentType.Workbook);
+        var document = Book.Create(stream, SpreadsheetDocumentType.Workbook);
 
         var workbookPart = document.AddWorkbookPart();
         workbookPart.Workbook = new Workbook();

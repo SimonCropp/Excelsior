@@ -1,18 +1,15 @@
-using DocumentFormat.OpenXml;
-using DocumentFormat.OpenXml.Packaging;
-
 class Renderer<TModel>(
     string name,
     IAsyncEnumerable<TModel> data,
-    List<ColumnConfig<OpenXmlStyle, TModel>> columns,
+    List<ColumnConfig<Style, TModel>> columns,
     int? maxColumnWidth,
     BookBuilder bookBuilder) :
-    RendererBase<TModel, Sheet, OpenXmlStyle, CellWrapper, Book, OpenXmlColor, OpenXmlColumn>(data, columns, maxColumnWidth, bookBuilder)
+    RendererBase<TModel, Sheet, Style, CellWrapper, Book, Color, Column>(data, columns, maxColumnWidth, bookBuilder)
 {
     WorksheetPart? worksheetPart;
     SheetData? sheetData;
     readonly Dictionary<string, CellWrapper> cellCache = [];
-    readonly Dictionary<uint, OpenXmlColumn> columnCache = [];
+    readonly Dictionary<uint, Column> columnCache = [];
     readonly int columnCount = columns.Count;
 
     protected override void ApplyFilter(Sheet sheet)
@@ -93,30 +90,30 @@ class Renderer<TModel>(
         return wrapper;
     }
 
-    protected override void ApplyDefaultStyles(OpenXmlStyle style)
+    protected override void ApplyDefaultStyles(Style style)
     {
-        style.Alignment.Horizontal = OpenXmlStyle.HorizontalAlignment.Left;
-        style.Alignment.Vertical = OpenXmlStyle.VerticalAlignment.Top;
+        style.Alignment.Horizontal = Style.HorizontalAlignment.Left;
+        style.Alignment.Vertical = Style.VerticalAlignment.Top;
         style.Alignment.WrapText = true;
     }
 
-    protected override OpenXmlStyle GetStyle(CellWrapper cell) =>
+    protected override Style GetStyle(CellWrapper cell) =>
         cell.Style;
 
-    protected override void CommitStyle(CellWrapper cellWrapper, OpenXmlStyle style)
+    protected override void CommitStyle(CellWrapper cellWrapper, Style style)
     {
         // Styles in OpenXML are applied via StyleIndex, which requires building a stylesheet
         // For simplicity, we'll apply basic formatting directly to cells where possible
         // More complex styling would require extending the stylesheet
     }
 
-    protected override void SetStyleColor(OpenXmlStyle style, OpenXmlColor color) =>
+    protected override void SetStyleColor(Style style, Color color) =>
         style.Fill.BackgroundColor = color;
 
-    protected override void SetDateFormat(OpenXmlStyle style, string format) =>
+    protected override void SetDateFormat(Style style, string format) =>
         style.DateFormat = format;
 
-    protected override void SetNumberFormat(OpenXmlStyle style, string format) =>
+    protected override void SetNumberFormat(Style style, string format) =>
         style.NumberFormat = format;
 
     protected override void SetCellValue(CellWrapper cellWrapper, object value)
@@ -169,7 +166,7 @@ class Renderer<TModel>(
         var workbookPart = book.WorkbookPart ?? throw new InvalidOperationException("WorkbookPart is null");
 
         worksheetPart = workbookPart.AddNewPart<WorksheetPart>();
-        var worksheet = new Worksheet();
+        var worksheet = new Sheet();
         sheetData = new SheetData();
         worksheet.AppendChild(sheetData);
         worksheetPart.Worksheet = worksheet;
@@ -189,13 +186,13 @@ class Renderer<TModel>(
         return worksheet;
     }
 
-    protected override void ApplyGlobalStyling(Sheet sheet, Action<OpenXmlStyle> globalStyle)
+    protected override void ApplyGlobalStyling(Sheet sheet, Action<Style> globalStyle)
     {
         // Global styling in OpenXML requires updating the stylesheet
         // This is a simplified implementation
     }
 
-    protected override OpenXmlColumn GetColumn(Sheet sheet, int index)
+    protected override Column GetColumn(Sheet sheet, int index)
     {
         var columnIndex = (uint) (index + 1);
 
@@ -220,19 +217,19 @@ class Renderer<TModel>(
 
         columns.AppendChild(column);
 
-        var wrapper = new OpenXmlColumn(column);
+        var wrapper = new Column(column);
         columnCache[columnIndex] = wrapper;
 
         return wrapper;
     }
 
-    protected override void SetColumnWidth(OpenXmlColumn column, int width)
+    protected override void SetColumnWidth(Column column, int width)
     {
         column.Width = width;
         column.Column.Width = width;
     }
 
-    protected override double AdjustColumnWidth(Sheet sheet, OpenXmlColumn column) =>
+    protected override double AdjustColumnWidth(Sheet sheet, Column column) =>
         // OpenXML doesn't have auto-sizing built-in
         // Return a default width that will be adjusted by the base class
         column.Width ?? 10;

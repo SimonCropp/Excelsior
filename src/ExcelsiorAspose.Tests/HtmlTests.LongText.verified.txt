@@ -2,6 +2,9 @@
   HasMacro: False,
   HasRevisions: False,
   IsDigitallySigned: False,
+  Fonts: [
+    Arial
+  ],
   Sheets: [
     {
       Name: Sheet1,

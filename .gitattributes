@@ -4,6 +4,7 @@
 *.bmp binary
 *.tif binary
 *.xlsx binary
+*.docx binary
 *.zip binary
 
 src/Verify/EmptyFiles/* binary

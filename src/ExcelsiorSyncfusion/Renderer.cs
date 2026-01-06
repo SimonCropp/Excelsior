@@ -65,6 +65,19 @@
         return column.ColumnWidth;
     }
 
-    protected override void ResizeRows(Sheet sheet) =>
+    protected override void ResizeRows(Sheet sheet)
+    {
         sheet.UsedRange.AutofitRows();
+
+        // Clamp row heights to Excel's maximum of 409 points
+        var lastRow = sheet.UsedRange.LastRow;
+        for (var i = 1; i <= lastRow; i++)
+        {
+            var height = sheet.Range[i, 1].RowHeight;
+            if (height > 409)
+            {
+                sheet.Range[i, 1].RowHeight = 409;
+            }
+        }
+    }
 }

@@ -70,6 +70,13 @@
         return column.Width;
     }
 
-    protected override void ResizeRows(Sheet sheet) =>
-        sheet.Rows().AdjustToContents();
+    protected override void ResizeRows(Sheet sheet)
+    {
+        var rows = sheet.Rows();
+
+        foreach (var row in rows)
+        {
+            row.AdjustToContents(startColumn: 1, endColumn: XLHelper.MaxColumnNumber, 0, 409);
+        }
+    }
 }

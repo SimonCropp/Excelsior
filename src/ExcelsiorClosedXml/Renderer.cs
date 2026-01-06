@@ -70,6 +70,19 @@
         return column.Width;
     }
 
-    protected override void ResizeRows(Sheet sheet) =>
+    protected override void ResizeRows(Sheet sheet)
+    {
         sheet.Rows().AdjustToContents();
+
+        // Clamp row heights to Excel's maximum of 409 points
+        var lastRow = sheet.LastRowUsed()!.RowNumber();
+        for (var i = 1; i <= lastRow; i++)
+        {
+            var row = sheet.Row(i);
+            if (row.Height > 409)
+            {
+                row.Height = 409;
+            }
+        }
+    }
 }

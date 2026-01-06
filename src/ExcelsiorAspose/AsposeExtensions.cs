@@ -12,7 +12,7 @@
             for (var index = 0; index <= maxRow; index++)
             {
                 var height = cells.GetRowHeight(index);
-                cells.SetRowHeight(index, Math.Round(height) + 1);
+                cells.SetRowHeight(index, Math.Min(409, Math.Round(height) + 1));
             }
         }
 

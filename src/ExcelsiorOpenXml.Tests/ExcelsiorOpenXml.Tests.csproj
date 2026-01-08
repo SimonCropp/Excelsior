@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="DocumentFormat.OpenXml" />
+    <PackageReference Include="Verify.ClosedXml" />
+    <PackageReference Include="Verify.DiffPlex" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Verify.ImageMagick" />
+    <PackageReference Include="Verify.NUnit" />
+    <PackageReference Include="NUnit" />
+    <PackageReference Include="NUnit3TestAdapter" />
+    <ProjectReference Include="..\ExcelsiorOpenXml\ExcelsiorOpenXml.csproj" />
+    <ProjectReference Include="..\Model\Model.csproj" />
+    <Using Include="NUnit.Framework.Legacy.ClassicAssert" Static="True" />
+    <PackageReference Include="ProjectDefaults" PrivateAssets="all" />
+  </ItemGroup>
+</Project>

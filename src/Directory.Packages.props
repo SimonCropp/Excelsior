@@ -6,7 +6,7 @@
   <ItemGroup>
     <PackageVersion Include="ClosedXML" Version="0.105.0" />
     <PackageVersion Include="MarkdownSnippets.MsBuild" Version="28.0.0-beta.10" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.1" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.2" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
     <PackageVersion Include="Microsoft.Office.Interop.Excel" Version="16.0.18925.20022" />
     <PackageVersion Include="Polyfill" Version="9.7.2" />
@@ -14,7 +14,7 @@
     <PackageVersion Include="ProjectFiles" Version="0.4.0" />
     <PackageVersion Include="Syncfusion.XlsIO.Net.Core" Version="32.1.23" />
     <PackageVersion Include="System.ComponentModel.Annotations" Version="5.0.0" />
-    <PackageVersion Include="Aspose.Cells" Version="25.12.0" />
+    <PackageVersion Include="Aspose.Cells" Version="26.1.0" />
     <PackageVersion Include="Verify" Version="31.9.4" />
     <PackageVersion Include="Verify.ClosedXml" Version="0.6.0" />
     <PackageVersion Include="Verify.Aspose" Version="5.18.0" />

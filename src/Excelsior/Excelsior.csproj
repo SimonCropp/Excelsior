@@ -6,7 +6,7 @@
   <ItemGroup>
     <PackageReference Include="Polyfill" PrivateAssets="all" />
     <PackageReference Include="ProjectDefaults" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.Sbom.Targets" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.Sbom.Targets" PrivateAssets="all" Condition="$(Configuration)=='Release'" />
     <PackageReference Include="System.ComponentModel.Annotations" />
     <None Include="buildTransitive\Excelsior.props" Pack="true" PackagePath="buildTransitive\" />
     <None Include="buildTransitive\Excelsior.props" Pack="true" PackagePath="build\" />

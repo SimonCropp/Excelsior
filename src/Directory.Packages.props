@@ -9,7 +9,7 @@
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.2" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
     <PackageVersion Include="Microsoft.Office.Interop.Excel" Version="16.0.18925.20022" />
-    <PackageVersion Include="Polyfill" Version="9.7.3" />
+    <PackageVersion Include="Polyfill" Version="9.7.5" />
     <PackageVersion Include="ProjectDefaults" Version="1.0.170" />
     <PackageVersion Include="ProjectFiles" Version="0.4.0" />
     <PackageVersion Include="Syncfusion.XlsIO.Net.Core" Version="32.1.23" />

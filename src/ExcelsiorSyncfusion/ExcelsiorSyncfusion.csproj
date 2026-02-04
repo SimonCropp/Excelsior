@@ -5,7 +5,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="ProjectDefaults" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.Sbom.Targets" PrivateAssets="all" Condition="$(Configuration)=='Release'" />
+    <PackageReference Include="Microsoft.Sbom.Targets" PrivateAssets="all" Condition="'$(CI)' == 'true'" />
     <PackageReference Include="Syncfusion.XlsIO.Net.Core" />
     <PackageReference Include="System.ComponentModel.Annotations" />
     <ProjectReference Include="..\Excelsior\Excelsior.csproj" />

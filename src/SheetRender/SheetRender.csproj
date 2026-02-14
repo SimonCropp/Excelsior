@@ -10,6 +10,10 @@
     <PackageReference Include="ProjectFiles" />
     <PackageReference Include="Verify" />
     <PackageReference Include="Verify.NUnit" />
+    <PackageReference Include="Argon" />
+    <PackageReference Include="DiffEngine" />
+    <PackageReference Include="EmptyFiles" />
+    <PackageReference Include="SimpleInfoName" />
     <Using Include="NUnit.Framework.Legacy.ClassicAssert" Static="True" />
     <PackageReference Include="ProjectDefaults" PrivateAssets="all" />
     <Reference Include="System.Windows.Forms" Condition="'$(TargetFramework)' == 'net48'" />

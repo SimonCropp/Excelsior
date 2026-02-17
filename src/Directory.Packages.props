@@ -12,7 +12,7 @@
     <PackageVersion Include="Polyfill" Version="9.9.0" />
     <PackageVersion Include="ProjectDefaults" Version="1.0.172" />
     <PackageVersion Include="ProjectFiles" Version="0.5.0" />
-    <PackageVersion Include="Syncfusion.XlsIO.Net.Core" Version="32.2.4" />
+    <PackageVersion Include="Syncfusion.XlsIO.Net.Core" Version="32.2.5" />
     <PackageVersion Include="System.ComponentModel.Annotations" Version="5.0.0" />
     <PackageVersion Include="Aspose.Cells" Version="26.2.0" />
     <PackageVersion Include="Verify" Version="31.13.0" />

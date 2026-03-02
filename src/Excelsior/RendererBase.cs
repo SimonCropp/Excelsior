@@ -195,8 +195,8 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor, TColum
         {
             ThrowIfHtml();
 
-            SetDateFormat(style, column.Format ?? ValueRenderer.DefaultDateFormat);
             var format = column.Format ?? ValueRenderer.DefaultDateTimeOffsetFormat;
+            SetDateFormat(style, format);
             SetCellValue(cell, dateTimeOffset.ToString(format, CultureInfo.InvariantCulture));
 
             return;

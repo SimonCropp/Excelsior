@@ -22,12 +22,10 @@ build_script:
       }
     }
 - dotnet build src --configuration Release
-- dotnet test src --configuration Release --no-build --no-restore --logger:"nunit;LogFilePath=TestResults\{assembly}.xml" --results-directory src\TestResults
+- dotnet test src --configuration Release --no-build --no-restore --logger:trx --results-directory src\TestResults
+- ps: Get-ChildItem src\TestResults\*.trx | % { (New-Object 'System.Net.WebClient').UploadFile("https://ci.appveyor.com/api/testresults/mstest/$($env:APPVEYOR_JOB_ID)", $_) }
 on_failure:
   - ps: Get-ChildItem *.received.* -recurse | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
-test:
-  assemblies:
-    only:
-    - src\TestResults\*.xml
+test: off
 artifacts:
 - path: nugets\*.nupkg

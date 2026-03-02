@@ -22,9 +22,12 @@ build_script:
       }
     }
 - dotnet build src --configuration Release
-- dotnet test src --configuration Release --no-build --no-restore
+- dotnet test src --configuration Release --no-build --no-restore --logger:"nunit;LogFilePath=TestResults\{assembly}.xml" --results-directory src\TestResults
 on_failure:
   - ps: Get-ChildItem *.received.* -recurse | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
-test: off
+test:
+  assemblies:
+    only:
+    - src\TestResults\*.xml
 artifacts:
 - path: nugets\*.nupkg

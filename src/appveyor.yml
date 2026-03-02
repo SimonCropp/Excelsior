@@ -22,11 +22,15 @@ build_script:
       }
     }
 - dotnet build src --configuration Release
-test_script:
-- dotnet test src --configuration Release --no-build --no-restore --logger:trx --results-directory src\TestResults
-after_test:
-- ps: Get-ChildItem src\TestResults\*.trx | % { (New-Object 'System.Net.WebClient').UploadFile("https://ci.appveyor.com/api/testresults/mstest/$($env:APPVEYOR_JOB_ID)", $_) }
+- ps: |
+    dotnet test src --configuration Release --no-build --no-restore --logger:trx --results-directory src\TestResults
+    $testExitCode = $LASTEXITCODE
+    Get-ChildItem src\TestResults\*.trx -ErrorAction SilentlyContinue | % {
+      (New-Object 'System.Net.WebClient').UploadFile("https://ci.appveyor.com/api/testresults/mstest/$($env:APPVEYOR_JOB_ID)", $_.FullName)
+    }
+    if ($testExitCode -ne 0) { throw "Tests failed with exit code $testExitCode" }
 on_failure:
   - ps: Get-ChildItem *.received.* -recurse | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
+test: off
 artifacts:
 - path: nugets\*.nupkg

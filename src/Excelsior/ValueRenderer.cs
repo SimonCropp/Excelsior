@@ -46,11 +46,15 @@ public static partial class ValueRenderer
         }
     }
 
+    static bool IsTypeCompatible(Type type, Type key) =>
+        type.IsAssignableTo(key) ||
+        Nullable.GetUnderlyingType(type)?.IsAssignableTo(key) == true;
+
     internal static (bool isEnumerable, Func<object, string>? render) GetRender(Type type)
     {
         foreach (var (key, value) in renders)
         {
-            if (key.IsAssignableTo(type))
+            if (IsTypeCompatible(type, key))
             {
                 return (false, value);
             }
@@ -66,7 +70,7 @@ public static partial class ValueRenderer
         {
             foreach (var (key, value) in enumerableRenders)
             {
-                if (key.IsAssignableTo(enumerableType))
+                if (IsTypeCompatible(enumerableType, key))
                 {
                     return (true, value);
                 }

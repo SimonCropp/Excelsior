@@ -4,7 +4,7 @@
     List<ColumnConfig<Style, TModel>> columns,
     int? maxColumnWidth,
     BookBuilder bookBuilder) :
-    RendererBase<TModel, Sheet, Style, Column, IDisposableBook, Color?, Cell>(data, columns, maxColumnWidth, bookBuilder)
+    RendererBase<TModel, Sheet, Style, Cell, IDisposableBook, Color?, Column>(data, columns, maxColumnWidth, bookBuilder)
 {
     protected override void ApplyFilter(Sheet sheet) =>
         sheet.AutoFilters.FilterRange = sheet.UsedRange;

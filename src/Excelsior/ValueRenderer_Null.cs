@@ -16,7 +16,7 @@ public static partial class ValueRenderer
     {
         foreach (var (key, value) in nullDisplay)
         {
-            if (key.IsAssignableTo(type))
+            if (IsTypeCompatible(type, key))
             {
                 return value;
             }

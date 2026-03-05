@@ -1,0 +1,11 @@
+global using DocumentFormat.OpenXml;
+global using DocumentFormat.OpenXml.Packaging;
+global using DocumentFormat.OpenXml.Spreadsheet;
+global using Excelsior;
+global using ExcelsiorOpenXml;
+global using Cell = DocumentFormat.OpenXml.Spreadsheet.Cell;
+global using CellStyle = ExcelsiorOpenXml.CellStyle;
+global using Color = DocumentFormat.OpenXml.Spreadsheet.Color;
+global using Column = DocumentFormat.OpenXml.Spreadsheet.Column;
+global using Font = DocumentFormat.OpenXml.Spreadsheet.Font;
+global using Style = ExcelsiorOpenXml.CellStyle;

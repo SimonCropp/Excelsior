@@ -21,7 +21,7 @@
     <PackageVersion Include="Verify.DiffPlex" Version="3.1.2" />
     <PackageVersion Include="Verify.ImageMagick" Version="3.8.4" />
     <PackageVersion Include="Verify.NUnit" Version="31.13.2" />
-    <PackageVersion Include="NUnit" Version="4.5.0" />
+    <PackageVersion Include="NUnit" Version="4.5.1" />
     <PackageVersion Include="NUnit3TestAdapter" Version="5.2.0" Pinned="true" />
     <PackageVersion Include="Microsoft.Sbom.Targets" Version="4.1.5" />
     <PackageVersion Include="Verify.Syncfusion" Version="2.4.2" />

@@ -1,6 +1,7 @@
 class StyleManager
 {
     record FontKey(bool Bold, string? Color, double? Size, string? Name);
+
     record FillKey(string? BackgroundColor);
 
     record CellFormatKey(
@@ -11,20 +12,28 @@ class StyleManager
         VerticalAlignmentValues VAlign,
         bool WrapText);
 
-    readonly List<FontKey> fonts = [new(false, null, null, null)];
-    readonly Dictionary<FontKey, uint> fontIndex = new() { [new(false, null, null, null)] = 0 };
+    List<FontKey> fonts = [new(false, null, null, null)];
 
-    readonly List<FillKey> fills = [new(null), new("gray125")];
-    readonly Dictionary<FillKey, uint> fillIndex = new() { [new(null)] = 0 };
+    Dictionary<FontKey, uint> fontIndex = new()
+    {
+        [new(false, null, null, null)] = 0
+    };
 
-    readonly List<string> customNumberFormats = [];
-    readonly Dictionary<string, uint> numberFormatIds = new();
+    List<FillKey> fills = [new(null), new("gray125")];
+
+    Dictionary<FillKey, uint> fillIndex = new()
+    {
+        [new(null)] = 0
+    };
+
+    List<string> customNumberFormats = [];
+    Dictionary<string, uint> numberFormatIds = [];
     uint nextNumberFormatId = 164;
 
-    readonly List<CellFormatKey> cellFormats =
+    List<CellFormatKey> cellFormats =
         [new(0, 0, null, HorizontalAlignmentValues.General, VerticalAlignmentValues.Bottom, false)];
 
-    readonly Dictionary<CellFormatKey, uint> cellFormatIndex = new();
+    Dictionary<CellFormatKey, uint> cellFormatIndex = [];
 
     internal uint GetOrCreateStyleIndex(CellStyle style)
     {
@@ -111,34 +120,59 @@ class StyleManager
 
         if (customNumberFormats.Count > 0)
         {
-            var nfs = new NumberingFormats { Count = (uint)customNumberFormats.Count };
+            var nfs = new NumberingFormats
+            {
+                Count = (uint)customNumberFormats.Count
+            };
             uint nfId = 164;
             foreach (var fmt in customNumberFormats)
             {
-                nfs.Append(new NumberingFormat { NumberFormatId = nfId++, FormatCode = fmt });
+                nfs.Append(
+                    new NumberingFormat
+                    {
+                        NumberFormatId = nfId++,
+                        FormatCode = fmt
+                    });
             }
 
             stylesheet.Append(nfs);
         }
 
-        var fontsEl = new Fonts { Count = (uint)fonts.Count };
-        foreach (var f in fonts)
+        var fontsEl = new Fonts
+        {
+            Count = (uint)fonts.Count
+        };
+
+        foreach (var fontKey in fonts)
         {
             var font = new Font();
-            if (f.Bold)
+            if (fontKey.Bold)
             {
                 font.Append(new Bold());
             }
 
-            font.Append(new FontSize { Val = f.Size ?? 11 });
-            if (f.Name != null)
+            font.Append(
+                new FontSize
+                {
+                    Val = fontKey.Size ?? 11
+                });
+
+            if (fontKey.Name != null)
             {
-                font.Append(new FontName { Val = f.Name });
+                font.Append(
+                    new FontName
+                    {
+                        Val = fontKey.Name
+                    });
             }
 
-            if (f.Color != null)
+            if (fontKey.Color != null)
             {
-                font.Append(new Color { Rgb = f.Color });
+                font.Append(
+                    new Color
+                    {
+                        Rgb = fontKey.Color
+                    });
             }
 
             fontsEl.Append(font);
@@ -146,58 +180,85 @@ class StyleManager
 
         stylesheet.Append(fontsEl);
 
-        var fillsEl = new Fills { Count = (uint)fills.Count };
-        fillsEl.Append(new Fill(new PatternFill { PatternType = PatternValues.None }));
-        fillsEl.Append(new Fill(new PatternFill { PatternType = PatternValues.Gray125 }));
+        var fillsEl = new Fills
+        {
+            Count = (uint)fills.Count
+        };
+        fillsEl.Append(
+            new Fill(
+                new PatternFill
+        {
+            PatternType = PatternValues.None
+        }));
+        fillsEl.Append(
+            new Fill(
+                new PatternFill
+        {
+            PatternType = PatternValues.Gray125
+        }));
         for (var i = 2; i < fills.Count; i++)
         {
             fillsEl.Append(new Fill(
                 new PatternFill(
-                    new ForegroundColor { Rgb = fills[i].BackgroundColor })
-                { PatternType = PatternValues.Solid }));
+                    new ForegroundColor
+                    {
+                        Rgb = fills[i].BackgroundColor
+                    })
+                {
+                    PatternType = PatternValues.Solid
+                }));
         }
 
         stylesheet.Append(fillsEl);
 
-        var borders = new Borders { Count = 1 };
-        borders.Append(new Border(
-            new LeftBorder(), new RightBorder(),
-            new TopBorder(), new BottomBorder(),
-            new DiagonalBorder()));
+        var borders = new Borders
+        {
+            Count = 1
+        };
+        borders.Append(
+            new Border(
+                new LeftBorder(),
+                new RightBorder(),
+                new TopBorder(),
+                new BottomBorder(),
+                new DiagonalBorder()));
         stylesheet.Append(borders);
 
-        var cellFormatsEl = new CellFormats { Count = (uint)cellFormats.Count };
-        foreach (var cf in cellFormats)
+        var cellFormatsEl = new CellFormats
         {
-            var xf = new CellFormat
+            Count = (uint)cellFormats.Count
+        };
+        foreach (var key in cellFormats)
+        {
+            var cellFormat = new CellFormat
             {
-                FontId = cf.FontId,
-                FillId = cf.FillId,
+                FontId = key.FontId,
+                FillId = key.FillId,
                 BorderId = 0,
-                ApplyFont = cf.FontId > 0,
-                ApplyFill = cf.FillId > 0
+                ApplyFont = key.FontId > 0,
+                ApplyFill = key.FillId > 0
             };
 
-            if (cf.NumberFormatId.HasValue)
+            if (key.NumberFormatId.HasValue)
             {
-                xf.NumberFormatId = cf.NumberFormatId.Value;
-                xf.ApplyNumberFormat = true;
+                cellFormat.NumberFormatId = key.NumberFormatId.Value;
+                cellFormat.ApplyNumberFormat = true;
             }
 
-            if (cf.HAlign != HorizontalAlignmentValues.General ||
-                cf.VAlign != VerticalAlignmentValues.Bottom ||
-                cf.WrapText)
+            if (key.HAlign != HorizontalAlignmentValues.General ||
+                key.VAlign != VerticalAlignmentValues.Bottom ||
+                key.WrapText)
             {
-                xf.ApplyAlignment = true;
-                xf.Append(new Alignment
+                cellFormat.ApplyAlignment = true;
+                cellFormat.Append(new Alignment
                 {
-                    Horizontal = cf.HAlign,
-                    Vertical = cf.VAlign,
-                    WrapText = cf.WrapText
+                    Horizontal = key.HAlign,
+                    Vertical = key.VAlign,
+                    WrapText = key.WrapText
                 });
             }
 
-            cellFormatsEl.Append(xf);
+            cellFormatsEl.Append(cellFormat);
         }
 
         stylesheet.Append(cellFormatsEl);

@@ -1,5 +1,3 @@
-namespace ExcelsiorOpenXml;
-
 class StyleManager
 {
     record FontKey(bool Bold, string? Color, double? Size, string? Name);
@@ -32,12 +30,20 @@ class StyleManager
     {
         var fontId = GetOrCreateFontId(style.Font);
         var fillId = GetOrCreateFillId(style.Fill);
-        var nfId = style.NumberFormat != null
-            ? GetOrCreateNumberFormatId(style.NumberFormat)
-            : (uint?)null;
+        uint? nfId;
+        if (style.NumberFormat == null)
+        {
+            nfId = null;
+        }
+        else
+        {
+            nfId = GetOrCreateNumberFormatId(style.NumberFormat);
+        }
 
         var key = new CellFormatKey(
-            fontId, fillId, nfId,
+            fontId,
+            fillId,
+            nfId,
             style.Alignment.Horizontal,
             style.Alignment.Vertical,
             style.Alignment.WrapText);

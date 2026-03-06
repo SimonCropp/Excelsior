@@ -1,5 +1,3 @@
-using System.Globalization;
-
 class Renderer<TModel>(
     string name,
     IAsyncEnumerable<TModel> data,
@@ -116,7 +114,7 @@ class Renderer<TModel>(
     }
 
     protected override void SetCellHtml(Cell cell, string value) =>
-        throw new("OpenXml does not support html");
+        SpreadsheetHtmlConverter.SetCellHtml(cell, value);
 
     protected override void ApplyGlobalStyling(SheetContext sheet, Action<CellStyle> globalStyle)
     {

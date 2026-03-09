@@ -5,6 +5,8 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="ClosedXML" Version="0.105.0" />
+    <PackageVersion Include="DocumentFormat.OpenXml" Version="3.4.1" />
+    <PackageVersion Include="Verify.OpenXML" Version="1.0.0" />
     <PackageVersion Include="MarkdownSnippets.MsBuild" Version="28.0.1" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.3" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.3.0" />
@@ -22,6 +24,7 @@
     <PackageVersion Include="Verify.ImageMagick" Version="3.8.4" />
     <PackageVersion Include="Verify.NUnit" Version="31.13.2" />
     <PackageVersion Include="NUnit3TestAdapter" Version="5.2.0" Pinned="true" />
+    <PackageVersion Include="OpenXmlHtml" Version="0.1.0" />
     <PackageVersion Include="NUnit" Version="4.5.1" />
     <PackageVersion Include="Microsoft.Sbom.Targets" Version="4.1.5" />
     <PackageVersion Include="Verify.Syncfusion" Version="2.4.2" />

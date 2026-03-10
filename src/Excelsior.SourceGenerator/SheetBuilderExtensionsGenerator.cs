@@ -32,7 +32,7 @@ public class SheetBuilderExtensionsGenerator : IIncrementalGenerator
     static ModelInfo? GetModelInfo(GeneratorAttributeSyntaxContext context)
     {
         var type = (INamedTypeSymbol)context.TargetSymbol;
-        var properties = GetProperties(type).ToImmutableArray();
+        var properties = new EquatableArray<PropertyInfo>(GetProperties(type).ToImmutableArray());
 
         if (properties.Length == 0)
         {
@@ -113,7 +113,7 @@ public class SheetBuilderExtensionsGenerator : IIncrementalGenerator
         sb.AppendLine($"public static class {model.TypeName}SheetBuilderExtensions");
         sb.AppendLine("{");
 
-        for (var i = 0; i < model.Properties.Length; i++)
+        for (var i = 0; i < model.Properties.Array.Length; i++)
         {
             var prop = model.Properties[i];
             if (i > 0)
@@ -192,9 +192,9 @@ public class SheetBuilderExtensionsGenerator : IIncrementalGenerator
 record struct ModelInfo(
     string TypeFullName,
     string TypeName,
-    ImmutableArray<PropertyInfo> Properties);
+    EquatableArray<PropertyInfo> Properties);
 
 record struct PropertyInfo(
     string Name,
     string TypeFullName,
-    string AccessPath);
+    string AccessPath) : System.IEquatable<PropertyInfo>;

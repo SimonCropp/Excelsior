@@ -1,5 +1,5 @@
-﻿// ReSharper disable UseSymbolAlias
-[TestFixture]
+﻿using System.Threading.Tasks;
+
 public class DateFormats
 {
     #region DateFormatsInit

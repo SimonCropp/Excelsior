@@ -2,8 +2,8 @@
 
 using Syncfusion.Drawing;
 using Syncfusion.XlsIO;
+using System.Threading.Tasks;
 
-[TestFixture]
 public class StyleTests
 {
     [Test]

@@ -1,4 +1,5 @@
-[TestFixture]
+using System.Threading.Tasks;
+
 public class DateTimeOffsetFormatTests
 {
     [Test]
@@ -20,7 +21,7 @@ public class DateTimeOffsetFormatTests
         var cell = sheet.Cells[1, 0];
         var style = cell.GetStyle();
 
-        Assert.That(style.Custom, Is.EqualTo(ValueRenderer.DefaultDateTimeOffsetFormat));
+        await Assert.That(style.Custom).IsEqualTo(ValueRenderer.DefaultDateTimeOffsetFormat);
     }
 
     [Test]
@@ -43,7 +44,7 @@ public class DateTimeOffsetFormatTests
         var cell = worksheet.Cells[1, 0];
         var style = cell.GetStyle();
 
-        Assert.That(style.Custom, Is.EqualTo("yyyy/MM/dd HH:mm"));
+        await Assert.That(style.Custom).IsEqualTo("yyyy/MM/dd HH:mm");
     }
 
     class Model

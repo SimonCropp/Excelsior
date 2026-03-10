@@ -1,4 +1,5 @@
-﻿[TestFixture]
+﻿using System.Threading.Tasks;
+
 public class FormatGuessingTests
 {
     public record Model(string Date, string Number, string Bool);

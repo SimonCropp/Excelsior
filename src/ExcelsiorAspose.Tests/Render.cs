@@ -1,5 +1,5 @@
-﻿// ReSharper disable UnusedParameter.Local
-[TestFixture]
+﻿using System.Threading.Tasks;
+
 public class Render
 {
     [Test]

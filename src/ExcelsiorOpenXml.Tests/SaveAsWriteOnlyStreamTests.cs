@@ -1,4 +1,5 @@
-[TestFixture]
+using System.Threading.Tasks;
+
 public class SaveAsWriteOnlyStreamTests
 {
     [Test]
@@ -12,7 +13,7 @@ public class SaveAsWriteOnlyStreamTests
         await using var writeOnlyStream = new WriteOnlyStream(memoryStream);
         book.SaveAs(writeOnlyStream);
 
-        Assert.That(memoryStream.Length, Is.GreaterThan(0));
+        await Assert.That(memoryStream.Length).IsGreaterThan(0);
     }
 
     class WriteOnlyStream(Stream inner) : Stream

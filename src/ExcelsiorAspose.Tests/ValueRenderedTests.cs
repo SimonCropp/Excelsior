@@ -1,4 +1,5 @@
-﻿[TestFixture]
+﻿using System.Threading.Tasks;
+
 public class ValueRenderedTests
 {
     public enum AnEnum

@@ -1,4 +1,5 @@
-[TestFixture]
+using System.Threading.Tasks;
+
 public class RowHeightTests
 {
     public record Target(string LongText);
@@ -28,8 +29,7 @@ public class RowHeightTests
         for (var i = 0; i <= maxRow; i++)
         {
             var height = sheet.Cells.GetRowHeight(i);
-            Assert.That(height, Is.LessThanOrEqualTo(409),
-                $"Row {i} height {height} exceeds maximum allowed height of 409");
+            await Assert.That(height).IsLessThanOrEqualTo(409).Because($"Row {i} height {height} exceeds maximum allowed height of 409");
         }
     }
 }

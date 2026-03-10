@@ -1,4 +1,5 @@
-﻿[TestFixture]
+﻿using System.Threading.Tasks;
+
 public class HtmlTests
 {
     public record Target(string Value1, string Value2 = "sss");

@@ -1,25 +1,22 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
+    <OutputType>Exe</OutputType>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Verify.DiffPlex" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="Verify.ImageMagick" />
-    <PackageReference Include="Verify.NUnit" />
+    <PackageReference Include="Verify.TUnit" />
     <PackageReference Include="Argon" />
     <PackageReference Include="DiffEngine" />
     <PackageReference Include="EmptyFiles" />
     <PackageReference Include="SimpleInfoName" />
     <PackageReference Include="Verify" />
-    <PackageReference Include="NUnit" />
-    <PackageReference Include="NUnit3TestAdapter" />
     <PackageReference Include="Verify.Syncfusion" />
     <ProjectReference Include="..\ExcelsiorSyncfusion\ExcelsiorSyncfusion.csproj" />
     <ProjectReference Include="..\Model\Model.csproj" />
     <Using Include="NUnit.Framework.Legacy.ClassicAssert" Static="True" />
     <PackageReference Include="ProjectDefaults" PrivateAssets="all" />
-
     <Compile Include="..\ExcelsiorAspose.Tests\ComplexTypeWithSplitter.cs" />
     <Compile Include="..\ExcelsiorAspose.Tests\SplitterTests.cs" />
     <Compile Include="..\ExcelsiorAspose.Tests\ComplexTypeWithCustomEnumerableRender.cs" />
@@ -48,5 +45,6 @@
       <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0])</ParentFile>
       <DependentUpon>%(ParentFile).cs</DependentUpon>
     </None>
+    <PackageReference Include="TUnit" />
   </ItemGroup>
 </Project>

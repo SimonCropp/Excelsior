@@ -1,4 +1,5 @@
-[TestFixture]
+using System.Threading.Tasks;
+
 public class ValueRendererTests
 {
     public interface IAnimal
@@ -24,89 +25,89 @@ public class ValueRendererTests
     }
 
     [Test]
-    public void GetRender_WithSubtype_ReturnsRender()
+    public async Task GetRender_WithSubtype_ReturnsRender()
     {
         var (isEnumerable, render) = ValueRenderer.GetRender(typeof(Dog));
 
-        Assert.That(render, Is.Not.Null);
-        Assert.That(isEnumerable, Is.False);
-        Assert.That(render!(new Dog("Rex")), Is.EqualTo("Animal: Rex"));
+        await Assert.That(render).IsNotNull();
+        await Assert.That(isEnumerable).IsFalse();
+        await Assert.That(render!(new Dog("Rex"))).IsEqualTo("Animal: Rex");
     }
 
     [Test]
-    public void GetRender_WithExactType_ReturnsRender()
+    public async Task GetRender_WithExactType_ReturnsRender()
     {
         var (isEnumerable, render) = ValueRenderer.GetRender(typeof(IAnimal));
 
-        Assert.That(render, Is.Not.Null);
-        Assert.That(isEnumerable, Is.False);
+        await Assert.That(render).IsNotNull();
+        await Assert.That(isEnumerable).IsFalse();
     }
 
     [Test]
-    public void GetRender_WithUnrelatedType_ReturnsNull()
+    public async Task GetRender_WithUnrelatedType_ReturnsNull()
     {
         var (_, render) = ValueRenderer.GetRender(typeof(string));
 
-        Assert.That(render, Is.Null);
+        await Assert.That(render).IsNull();
     }
 
     [Test]
-    public void GetRender_WithNullableValueType_ReturnsRender()
+    public async Task GetRender_WithNullableValueType_ReturnsRender()
     {
         var (isEnumerable, render) = ValueRenderer.GetRender(typeof(TestColor?));
 
-        Assert.That(render, Is.Not.Null);
-        Assert.That(isEnumerable, Is.False);
-        Assert.That(render!(TestColor.Red), Is.EqualTo("Color: Red"));
+        await Assert.That(render).IsNotNull();
+        await Assert.That(isEnumerable).IsFalse();
+        await Assert.That(render!(TestColor.Red)).IsEqualTo("Color: Red");
     }
 
     [Test]
-    public void GetNullDisplay_WithSubtype_ReturnsDisplay()
+    public async Task GetNullDisplay_WithSubtype_ReturnsDisplay()
     {
         var result = ValueRenderer.GetNullDisplay(typeof(Dog));
 
-        Assert.That(result, Is.EqualTo("No Animal"));
+        await Assert.That(result).IsEqualTo("No Animal");
     }
 
     [Test]
-    public void GetNullDisplay_WithExactType_ReturnsDisplay()
+    public async Task GetNullDisplay_WithExactType_ReturnsDisplay()
     {
         var result = ValueRenderer.GetNullDisplay(typeof(IAnimal));
 
-        Assert.That(result, Is.EqualTo("No Animal"));
+        await Assert.That(result).IsEqualTo("No Animal");
     }
 
     [Test]
-    public void GetNullDisplay_WithUnrelatedType_ReturnsNull()
+    public async Task GetNullDisplay_WithUnrelatedType_ReturnsNull()
     {
         var result = ValueRenderer.GetNullDisplay(typeof(string));
 
-        Assert.That(result, Is.Null);
+        await Assert.That(result).IsNull();
     }
 
     [Test]
-    public void GetNullDisplay_WithNullableValueType_ReturnsDisplay()
+    public async Task GetNullDisplay_WithNullableValueType_ReturnsDisplay()
     {
         var result = ValueRenderer.GetNullDisplay(typeof(TestColor?));
 
-        Assert.That(result, Is.EqualTo("No Color"));
+        await Assert.That(result).IsEqualTo("No Color");
     }
 
     [Test]
-    public void GetRender_EnumerableOfSubtype_ReturnsRender()
+    public async Task GetRender_EnumerableOfSubtype_ReturnsRender()
     {
         var (isEnumerable, render) = ValueRenderer.GetRender(typeof(IReadOnlyList<Dog>));
 
-        Assert.That(isEnumerable, Is.True);
-        Assert.That(render, Is.Not.Null);
+        await Assert.That(isEnumerable).IsTrue();
+        await Assert.That(render).IsNotNull();
     }
 
     [Test]
-    public void GetRender_EnumerableOfExactType_ReturnsRender()
+    public async Task GetRender_EnumerableOfExactType_ReturnsRender()
     {
         var (isEnumerable, render) = ValueRenderer.GetRender(typeof(IReadOnlyList<IAnimal>));
 
-        Assert.That(isEnumerable, Is.True);
-        Assert.That(render, Is.Not.Null);
+        await Assert.That(isEnumerable).IsTrue();
+        await Assert.That(render).IsNotNull();
     }
 }

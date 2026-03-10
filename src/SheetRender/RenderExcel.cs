@@ -1,7 +1,6 @@
-﻿using Application = Microsoft.Office.Interop.Excel.Application;
-
-[TestFixture]
-[Apartment(ApartmentState.STA)]
+﻿using System.IO;
+using Application = Microsoft.Office.Interop.Excel.Application;
+[STAThreadExecutor]
 public class RenderExcel
 {
     [Test]

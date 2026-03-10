@@ -184,15 +184,15 @@ class StyleManager
         fillsEl.Append(
             new Fill(
                 new PatternFill
-        {
-            PatternType = PatternValues.None
-        }));
+                {
+                    PatternType = PatternValues.None
+                }));
         fillsEl.Append(
             new Fill(
                 new PatternFill
-        {
-            PatternType = PatternValues.Gray125
-        }));
+                {
+                    PatternType = PatternValues.Gray125
+                }));
         for (var i = 2; i < fills.Count; i++)
         {
             fillsEl.Append(new Fill(

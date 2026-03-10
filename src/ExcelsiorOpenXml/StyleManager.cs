@@ -157,14 +157,11 @@ class StyleManager
                     Val = fontKey.Size ?? 11
                 });
 
-            if (fontKey.Name != null)
-            {
-                font.Append(
-                    new FontName
-                    {
-                        Val = fontKey.Name
-                    });
-            }
+            font.Append(
+                new FontName
+                {
+                    Val = fontKey.Name ?? "Aptos"
+                });
 
             if (fontKey.Color != null)
             {

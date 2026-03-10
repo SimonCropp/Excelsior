@@ -7,9 +7,6 @@ public static class ModuleInitializer
         VerifierSettings.DontScrubDateTimes();
         VerifierSettings.DontScrubGuids();
         VerifierSettings.InitializePlugins();
-        VerifierSettings.RegisterStreamComparer(
-            "xlsx",
-            (_, _, _) => Task.FromResult(new CompareResult(true)));
         VerifyOpenXmlBook.Initialize();
     }
 }

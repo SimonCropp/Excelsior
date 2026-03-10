@@ -10,5 +10,18 @@ public sealed class ColumnAttribute :
     public string? Format { get; set; }
     public string? NullDisplay { get; set; }
     public bool IsHtml { get; set; }
-    public bool? Filter { get; set; }
+
+    bool filter;
+
+    public bool Filter
+    {
+        get => filter;
+        set
+        {
+            filter = value;
+            FilterHasValue = true;
+        }
+    }
+
+    internal bool FilterHasValue { get; private set; }
 }

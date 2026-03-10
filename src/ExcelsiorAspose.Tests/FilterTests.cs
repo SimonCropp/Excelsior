@@ -4,6 +4,12 @@ public class FilterTests
 {
     record Target(string Name, int Age, string Email);
 
+    // ReSharper disable once NotAccessedPositionalProperty.Local
+    record AttributeFilterFalseTarget(string Name, [property: Column(Filter = false)] int Age, string Email);
+
+    // ReSharper disable once NotAccessedPositionalProperty.Local
+    record AttributeFilterTrueTarget(string Name, [property: Column(Filter = true)] int Age, string Email);
+
     static List<Target> Data() =>
     [
         new("Alice", 30, "alice@test.com"),
@@ -63,6 +69,35 @@ public class FilterTests
             _ => _.Filter = false);
 
         #endregion
+
+        var book = await builder.Build();
+        await Verify(book);
+    }
+
+    [Test]
+    public async Task AttributeFilterFalse()
+    {
+        var builder = new BookBuilder();
+        builder.AddSheet<AttributeFilterFalseTarget>(
+        [
+            new("Alice", 30, "alice@test.com"),
+            new("Bob", 25, "bob@test.com")
+        ]);
+
+        var book = await builder.Build();
+        await Verify(book);
+    }
+
+    [Test]
+    public async Task AttributeFilterTrueWithAutoFilterOff()
+    {
+        var builder = new BookBuilder();
+        var sheet = builder.AddSheet<AttributeFilterTrueTarget>(
+        [
+            new("Alice", 30, "alice@test.com"),
+            new("Bob", 25, "bob@test.com")
+        ]);
+        sheet.DisableFilter();
 
         var book = await builder.Build();
         await Verify(book);

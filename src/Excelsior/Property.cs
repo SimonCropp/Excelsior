@@ -17,7 +17,7 @@
         Format = column?.Format;
         NullDisplay = column?.NullDisplay;
         IsHtml = column?.IsHtml ?? false;
-        Filter = column?.Filter;
+        Filter = column is { FilterHasValue: true } ? column.Filter : null;
         Type = info.PropertyType;
         IsNumber = info.PropertyType.IsNumericType();
     }

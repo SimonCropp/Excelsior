@@ -724,10 +724,23 @@ public sealed class ColumnAttribute :
     public string? Format { get; set; }
     public string? NullDisplay { get; set; }
     public bool IsHtml { get; set; }
-    public bool? Filter { get; set; }
+
+    bool filter;
+
+    public bool Filter
+    {
+        get => filter;
+        set
+        {
+            filter = value;
+            FilterHasValue = true;
+        }
+    }
+
+    internal bool FilterHasValue { get; private set; }
 }
 ```
-<sup><a href='/src/Excelsior/Attributes/ColumnAttribute.cs#L1-L14' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnAttribute.cs' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior/Attributes/ColumnAttribute.cs#L1-L27' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnAttribute.cs' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -882,7 +895,7 @@ var builder = new BookBuilder();
 var sheet = builder.AddSheet(Data());
 sheet.DisableFilter();
 ```
-<sup><a href='/src/ExcelsiorAspose.Tests/FilterTests.cs#L26-L32' title='Snippet source file'>snippet source</a> | <a href='#snippet-FilterAllOff' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/ExcelsiorAspose.Tests/FilterTests.cs#L32-L38' title='Snippet source file'>snippet source</a> | <a href='#snippet-FilterAllOff' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -898,7 +911,7 @@ var sheet = builder.AddSheet(Data());
 sheet.DisableFilter();
 sheet.Filter(_ => _.Name);
 ```
-<sup><a href='/src/ExcelsiorAspose.Tests/FilterTests.cs#L41-L48' title='Snippet source file'>snippet source</a> | <a href='#snippet-FilterDefaultOffWithOneOn' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/ExcelsiorAspose.Tests/FilterTests.cs#L47-L54' title='Snippet source file'>snippet source</a> | <a href='#snippet-FilterDefaultOffWithOneOn' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -915,7 +928,7 @@ sheet.Column(
     _ => _.Age,
     _ => _.Filter = false);
 ```
-<sup><a href='/src/ExcelsiorAspose.Tests/FilterTests.cs#L57-L65' title='Snippet source file'>snippet source</a> | <a href='#snippet-FilterDefaultOnWithOneOff' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/ExcelsiorAspose.Tests/FilterTests.cs#L63-L71' title='Snippet source file'>snippet source</a> | <a href='#snippet-FilterDefaultOnWithOneOff' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 

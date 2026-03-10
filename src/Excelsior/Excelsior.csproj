@@ -8,6 +8,8 @@
     <PackageReference Include="ProjectDefaults" PrivateAssets="all" />
     <PackageReference Include="Microsoft.Sbom.Targets" PrivateAssets="all" Condition="'$(CI)' == 'true'" />
     <PackageReference Include="System.ComponentModel.Annotations" />
+    <ProjectReference Include="..\Excelsior.SourceGenerator\Excelsior.SourceGenerator.csproj"
+                      OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     <None Include="buildTransitive\Excelsior.props" Pack="true" PackagePath="buildTransitive\" />
     <None Include="buildTransitive\Excelsior.props" Pack="true" PackagePath="build\" />
   </ItemGroup>

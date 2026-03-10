@@ -724,9 +724,10 @@ public sealed class ColumnAttribute :
     public string? Format { get; set; }
     public string? NullDisplay { get; set; }
     public bool IsHtml { get; set; }
+    public bool Filter { get; set; }
 }
 ```
-<sup><a href='/src/Excelsior/Attributes/ColumnAttribute.cs#L1-L13' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnAttribute.cs' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior/Attributes/ColumnAttribute.cs#L1-L14' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnAttribute.cs' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -865,6 +866,67 @@ public static void CustomDateFormats()
 #### Result
 
 <img src="/src/StaticSettingsTests\DateFormats.Test%23Sheet1.verified.png">
+
+
+### Filters
+
+By default, auto-filter is enabled on all columns.
+
+
+#### Disable all filters
+
+<!-- snippet: FilterAllOff -->
+<a id='snippet-FilterAllOff'></a>
+```cs
+var builder = new BookBuilder();
+var sheet = builder.AddSheet(Data());
+sheet.DisableFilter();
+```
+<sup><a href='/src/ExcelsiorAspose.Tests/FilterTests.cs#L26-L32' title='Snippet source file'>snippet source</a> | <a href='#snippet-FilterAllOff' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+
+#### Enable filter on specific columns
+
+Filters can be disabled at the sheet level, then selectively enabled on specific columns:
+
+<!-- snippet: FilterDefaultOffWithOneOn -->
+<a id='snippet-FilterDefaultOffWithOneOn'></a>
+```cs
+var builder = new BookBuilder();
+var sheet = builder.AddSheet(Data());
+sheet.DisableFilter();
+sheet.Filter(_ => _.Name);
+```
+<sup><a href='/src/ExcelsiorAspose.Tests/FilterTests.cs#L41-L48' title='Snippet source file'>snippet source</a> | <a href='#snippet-FilterDefaultOffWithOneOn' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+
+#### Disable filter on specific columns
+
+Individual columns can opt out of filtering while the rest remain enabled:
+
+<!-- snippet: FilterDefaultOnWithOneOff -->
+<a id='snippet-FilterDefaultOnWithOneOff'></a>
+```cs
+var builder = new BookBuilder();
+var sheet = builder.AddSheet(Data());
+sheet.Column(
+    _ => _.Age,
+    _ => _.Filter = false);
+```
+<sup><a href='/src/ExcelsiorAspose.Tests/FilterTests.cs#L57-L65' title='Snippet source file'>snippet source</a> | <a href='#snippet-FilterDefaultOnWithOneOff' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+
+#### ColumnAttribute
+
+```
+public class Employee
+{
+    [Column(Filter = true)]
+    public required string Name { get; init; }
+```
 
 
 ### Splitting

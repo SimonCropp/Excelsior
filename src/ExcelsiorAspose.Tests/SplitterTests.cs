@@ -22,7 +22,9 @@ public class SplitterTests
                     NestedProperty: "the NestedProperty")),
         ];
         var sheet = builder.AddSheet(data);
-        sheet.Column(_ => _.Nested.NestedProperty, _ => _.Heading = "Custom");
+        sheet.Column(
+            _ => _.Nested.NestedProperty,
+            _ => _.Heading = "Custom");
         var book = await builder.Build();
 
         await Verify(book);
@@ -71,8 +73,12 @@ public class SplitterTests
                     NestedProperty: "the NestedProperty 2")),
         ];
         var sheet = builder.AddSheet(data);
-        sheet.Column(_ => _.Nested1.NestedProperty, _ => _.Heading = "Custom1");
-        sheet.Column(_ => _.Nested2.NestedProperty, _ => _.Heading = "Custom2");
+        sheet.Column(
+            _ => _.Nested1.NestedProperty,
+            _ => _.Heading = "Custom1");
+        sheet.Column(
+            _ => _.Nested2.NestedProperty,
+            _ => _.Heading = "Custom2");
         var book = await builder.Build();
 
         await Verify(book);

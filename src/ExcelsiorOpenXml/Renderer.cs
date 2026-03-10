@@ -128,20 +128,16 @@ class Renderer<TModel>(
         }
     }
 
-    protected override void ApplyFilter(SheetContext sheet)
+    protected override void ApplyFilter(SheetContext sheet, int firstColumn, int lastColumn)
     {
         if (sheet.RowCount == 0)
         {
             return;
         }
 
-        var lastCol = finalColumnWidths.Count - 1;
-        if (lastCol < 0)
-        {
-            return;
-        }
-
-        var reference = $"A1:{SheetContext.GetColumnLetter(lastCol)}{sheet.RowCount}";
+        var firstCol = SheetContext.GetColumnLetter(firstColumn);
+        var lastCol = SheetContext.GetColumnLetter(lastColumn);
+        var reference = $"{firstCol}1:{lastCol}{sheet.RowCount}";
         sheet.Worksheet.InsertAfter(new AutoFilter
         {
             Reference = reference

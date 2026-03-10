@@ -1,6 +1,7 @@
 ﻿class Columns<TModel, TStyle>
 {
     Dictionary<string, ColumnConfig<TStyle, TModel>> columns = [];
+    public bool AutoFilter { get; set; } = true;
 
     public Columns()
     {
@@ -29,6 +30,7 @@
                 NullDisplay = property.NullDisplay ?? ValueRenderer.GetNullDisplay(type),
                 Render = render == null ? null : (_, value) => render(value),
                 IsHtml = property.IsHtml,
+                Filter = property.Filter ? true : null,
                 IsNumber = property.IsNumber,
                 IsEnumerable = isEnumerable,
                 GetValue = property.Get
@@ -90,6 +92,11 @@
         if (config.IsHtml != null)
         {
             column.IsHtml = config.IsHtml.Value;
+        }
+
+        if (config.Filter != null)
+        {
+            column.Filter = config.Filter.Value;
         }
     }
 

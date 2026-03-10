@@ -6,6 +6,7 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor, TColum
     int? maxColumnWidth,
     BookBuilderBase<TBook, TSheet, TStyle, TCell, TColor, TColumn> bookBuilder)
 {
+    internal bool AutoFilter { get; set; } = true;
     protected abstract void SetDateFormat(TStyle style, string format);
     protected abstract void SetStyleColor(TStyle style, TColor color);
     protected abstract void SetNumberFormat(TStyle style, string format);
@@ -30,7 +31,26 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor, TColum
             ApplyGlobalStyling(sheet, bookBuilder.GlobalStyle);
         }
 
-        ApplyFilter(sheet);
+        var first = -1;
+        var last = -1;
+        for (var i = 0; i < columns.Count; i++)
+        {
+            if (columns[i].Filter ?? AutoFilter)
+            {
+                if (first == -1)
+                {
+                    first = i;
+                }
+
+                last = i;
+            }
+        }
+
+        if (first != -1)
+        {
+            ApplyFilter(sheet, first, last);
+        }
+
         AutoSizeColumns(sheet);
         ResizeRows(sheet);
     }
@@ -62,7 +82,7 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor, TColum
 
     protected abstract void ApplyGlobalStyling(TSheet sheet, Action<TStyle> bookBuilderGlobalStyle);
 
-    protected abstract void ApplyFilter(TSheet sheet);
+    protected abstract void ApplyFilter(TSheet sheet, int firstColumn, int lastColumn);
 
     void ResizeColumn(TSheet sheet, int index, ColumnConfig<TStyle, TModel> columnConfig)
     {

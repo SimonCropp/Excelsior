@@ -52,4 +52,16 @@ public interface ISheetBuilder<TModel, TStyle>
     public void Render<TProperty>(
         Expression<Func<TModel, TProperty>> property,
         Func<TProperty, string?> value);
+
+    /// <summary>
+    /// Enable auto-filter for a specific column. Overrides the sheet-level default.
+    /// </summary>
+    public void Filter<TProperty>(
+        Expression<Func<TModel, TProperty>> property);
+
+    /// <summary>
+    /// Disable auto-filter for all columns. Individual columns can still opt in via <see cref="Filter{TProperty}"/>
+    /// or by setting <see cref="ColumnConfig{TStyle,TModel,TProperty}.Filter"/> to true.
+    /// </summary>
+    public void DisableFilter();
 }

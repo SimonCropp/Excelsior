@@ -13,7 +13,7 @@ public class SheetBuilderExtensionsGenerator : IIncrementalGenerator
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         var models = context.SyntaxProvider.ForAttributeWithMetadataName(
-            "Excelsior.ExcelsiorExtensionsAttribute",
+            "Excelsior.ExcelsiorModelAttribute",
             (node, _) => node is TypeDeclarationSyntax,
             (ctx, _) => GetModelInfo(ctx));
 

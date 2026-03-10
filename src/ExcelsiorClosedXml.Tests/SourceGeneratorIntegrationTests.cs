@@ -30,7 +30,7 @@ public class SourceGeneratorIntegrationTests
 
 #region SourceGeneratedModel
 
-[ExcelsiorExtensions]
+[ExcelsiorModel]
 public class GeneratedTestModel
 {
     public required string Name { get; init; }

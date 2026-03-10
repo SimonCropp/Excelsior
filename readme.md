@@ -995,19 +995,19 @@ A source generator is included that generates typed extension methods for `IShee
 
 #### Model
 
-Add `[ExcelsiorExtensions]` to the model class:
+Add `[ExcelsiorModel]` to the model class:
 
 <!-- snippet: SourceGeneratedModel -->
 <a id='snippet-SourceGeneratedModel'></a>
 ```cs
-[ExcelsiorExtensions]
+[ExcelsiorModel]
 public class GeneratedTestModel
 {
     public required string Name { get; init; }
     public required int Age { get; init; }
 }
 ```
-<sup><a href='/src/ExcelsiorClosedXml.Tests/SourceGeneratorIntegrationTests.cs#L33-L41' title='Snippet source file'>snippet source</a> | <a href='#snippet-SourceGeneratedModel' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/ExcelsiorClosedXml.Tests/SourceGeneratorIntegrationTests.cs#L31-L40' title='Snippet source file'>snippet source</a> | <a href='#snippet-SourceGeneratedModel' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 This generates typed extension methods for each property, such as `NameColumn`, `NameOrder`, `AgeWidth`, etc.

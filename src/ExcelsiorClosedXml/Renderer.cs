@@ -47,6 +47,9 @@
     protected override void SetCellHtml(Cell cell, string value) =>
         throw new("ClosedXml does not support html");
 
+    protected override void SetBold(Style style) =>
+        style.Font.Bold = true;
+
     protected override Sheet BuildSheet(Book book) =>
         book.Worksheets.Add(name);
 

@@ -882,7 +882,7 @@ var builder = new BookBuilder();
 var sheet = builder.AddSheet(Data());
 sheet.DisableFilter();
 ```
-<sup><a href='/src/ExcelsiorAspose.Tests/FilterTests.cs#L27-L31' title='Snippet source file'>snippet source</a> | <a href='#snippet-FilterAllOff' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/ExcelsiorAspose.Tests/FilterTests.cs#L26-L32' title='Snippet source file'>snippet source</a> | <a href='#snippet-FilterAllOff' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -898,7 +898,7 @@ var sheet = builder.AddSheet(Data());
 sheet.DisableFilter();
 sheet.Filter(_ => _.Name);
 ```
-<sup><a href='/src/ExcelsiorAspose.Tests/FilterTests.cs#L43-L48' title='Snippet source file'>snippet source</a> | <a href='#snippet-FilterDefaultOffWithOneOn' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/ExcelsiorAspose.Tests/FilterTests.cs#L41-L48' title='Snippet source file'>snippet source</a> | <a href='#snippet-FilterDefaultOffWithOneOn' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -911,9 +911,11 @@ Individual columns can opt out of filtering while the rest remain enabled:
 ```cs
 var builder = new BookBuilder();
 var sheet = builder.AddSheet(Data());
-sheet.Column(_ => _.Age, _ => _.Filter = false);
+sheet.Column(
+    _ => _.Age,
+    _ => _.Filter = false);
 ```
-<sup><a href='/src/ExcelsiorAspose.Tests/FilterTests.cs#L59-L63' title='Snippet source file'>snippet source</a> | <a href='#snippet-FilterDefaultOnWithOneOff' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/ExcelsiorAspose.Tests/FilterTests.cs#L57-L65' title='Snippet source file'>snippet source</a> | <a href='#snippet-FilterDefaultOnWithOneOff' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 

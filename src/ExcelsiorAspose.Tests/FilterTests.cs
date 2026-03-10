@@ -58,7 +58,9 @@ public class FilterTests
 
         var builder = new BookBuilder();
         var sheet = builder.AddSheet(Data());
-        sheet.Column(_ => _.Age, _ => _.Filter = false);
+        sheet.Column(
+            _ => _.Age,
+            _ => _.Filter = false);
 
         #endregion
 

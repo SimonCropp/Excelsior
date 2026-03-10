@@ -10,4 +10,5 @@ public sealed class ColumnAttribute :
     public string? Format { get; set; }
     public string? NullDisplay { get; set; }
     public bool IsHtml { get; set; }
+    public bool Filter { get; set; }
 }

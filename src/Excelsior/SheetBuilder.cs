@@ -67,9 +67,6 @@
         Expression<Func<TModel, TProperty>> property) =>
         Column(property, _ => _.Filter = true);
 
-    public void FilterAll() =>
-        columns.FilterAll = true;
-
     public void DisableFilter() =>
-        columns.FilterDisabled = true;
+        columns.AutoFilter = false;
 }

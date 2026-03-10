@@ -11,6 +11,9 @@ class Renderer<TModel>(
     Dictionary<Cell, CellStyle> cellStyles = [];
     Dictionary<int, double> finalColumnWidths = [];
 
+    protected override void SetBold(CellStyle style) =>
+        style.Font.Bold = true;
+
     protected override SheetContext BuildSheet(OpenXmlBook book)
     {
         styleManager = book.StyleManager;

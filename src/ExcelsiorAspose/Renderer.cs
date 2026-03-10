@@ -46,6 +46,9 @@
     protected override void SetCellHtml(Cell cell, string value) =>
         cell.SafeSetHtml(value);
 
+    protected override void SetBold(Style style) =>
+        style.Font.IsBold = true;
+
     protected override Sheet BuildSheet(Book book) =>
         book.Worksheets.Add(name);
 

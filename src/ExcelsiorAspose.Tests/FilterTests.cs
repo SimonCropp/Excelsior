@@ -23,9 +23,13 @@ public class FilterTests
     [Test]
     public async Task AllOff()
     {
+        #region FilterAllOff
+
         var builder = new BookBuilder();
         var sheet = builder.AddSheet(Data());
         sheet.DisableFilter();
+
+        #endregion
 
         var book = await builder.Build();
         await Verify(book);
@@ -34,10 +38,14 @@ public class FilterTests
     [Test]
     public async Task DefaultOffWithOneOn()
     {
+        #region FilterDefaultOffWithOneOn
+
         var builder = new BookBuilder();
         var sheet = builder.AddSheet(Data());
         sheet.DisableFilter();
         sheet.Filter(_ => _.Name);
+
+        #endregion
 
         var book = await builder.Build();
         await Verify(book);
@@ -46,9 +54,13 @@ public class FilterTests
     [Test]
     public async Task DefaultOnWithOneOff()
     {
+        #region FilterDefaultOnWithOneOff
+
         var builder = new BookBuilder();
         var sheet = builder.AddSheet(Data());
         sheet.Column(_ => _.Age, _ => _.Filter = false);
+
+        #endregion
 
         var book = await builder.Build();
         await Verify(book);

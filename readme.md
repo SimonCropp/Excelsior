@@ -724,7 +724,7 @@ public sealed class ColumnAttribute :
     public string? Format { get; set; }
     public string? NullDisplay { get; set; }
     public bool IsHtml { get; set; }
-    public bool Filter { get; set; }
+    public bool? Filter { get; set; }
 }
 ```
 <sup><a href='/src/Excelsior/Attributes/ColumnAttribute.cs#L1-L14' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnAttribute.cs' title='Start of snippet'>anchor</a></sup>

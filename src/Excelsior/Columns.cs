@@ -30,7 +30,7 @@
                 NullDisplay = property.NullDisplay ?? ValueRenderer.GetNullDisplay(type),
                 Render = render == null ? null : (_, value) => render(value),
                 IsHtml = property.IsHtml,
-                Filter = property.Filter ? true : null,
+                Filter = property.Filter,
                 IsNumber = property.IsNumber,
                 IsEnumerable = isEnumerable,
                 GetValue = property.Get

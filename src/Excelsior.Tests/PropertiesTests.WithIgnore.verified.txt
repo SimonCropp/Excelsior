@@ -5,7 +5,6 @@
     Name: Include,
     Type: string,
     IsNumber: false,
-    IsHtml: false,
-    Filter: false
+    IsHtml: false
   }
 ]

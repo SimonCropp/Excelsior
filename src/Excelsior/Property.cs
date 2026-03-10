@@ -17,7 +17,7 @@
         Format = column?.Format;
         NullDisplay = column?.NullDisplay;
         IsHtml = column?.IsHtml ?? false;
-        Filter = column?.Filter ?? false;
+        Filter = column?.Filter;
         Type = info.PropertyType;
         IsNumber = info.PropertyType.IsNumericType();
     }
@@ -52,7 +52,7 @@
     public string? Format { get; }
     public string? NullDisplay { get; }
     public bool IsHtml { get; }
-    public bool Filter { get; }
+    public bool? Filter { get; }
 
     static string GetHeading(IReadOnlyList<(PropertyInfo property, ParameterInfo? parameter)> infos, bool useHierachyForName)
     {

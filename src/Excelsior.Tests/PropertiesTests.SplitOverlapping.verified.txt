@@ -5,8 +5,7 @@
     Name: Prop1,
     Type: string,
     IsNumber: false,
-    IsHtml: false,
-    Filter: false
+    IsHtml: false
   },
   {
     Get: {Scrubbed},
@@ -14,8 +13,7 @@
     Name: Child1.Level2,
     Type: string,
     IsNumber: false,
-    IsHtml: false,
-    Filter: false
+    IsHtml: false
   },
   {
     Get: {Scrubbed},
@@ -23,7 +21,6 @@
     Name: Child2.Level2,
     Type: string,
     IsNumber: false,
-    IsHtml: false,
-    Filter: false
+    IsHtml: false
   }
 ]

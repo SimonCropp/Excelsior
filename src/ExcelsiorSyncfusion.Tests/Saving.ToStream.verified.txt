@@ -6,7 +6,6 @@
   DetectDateTimeInValue: true,
   ArgumentsSeparator: ,,
   DisplayWorkbookTabs: true,
-  ActiveSheetIndex: 1,
   IsRightToLeft: false,
   IsWindowProtection: false,
   Version: Xlsx,

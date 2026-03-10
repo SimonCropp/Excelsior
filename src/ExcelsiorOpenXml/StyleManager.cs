@@ -160,7 +160,7 @@ class StyleManager
             font.Append(
                 new FontName
                 {
-                    Val = fontKey.Name ?? "Aptos"
+                    Val = fontKey.Name ?? "Calibri"
                 });
 
             if (fontKey.Color != null)

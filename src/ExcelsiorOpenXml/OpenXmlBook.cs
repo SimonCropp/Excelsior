@@ -26,7 +26,17 @@ public class OpenXmlBook : IDisposable
     public void SaveAs(Stream stream)
     {
         ApplyStylesheet();
-        Document.Clone(stream);
+        if (stream.CanRead)
+        {
+            Document.Clone(stream);
+        }
+        else
+        {
+            using var temp = new MemoryStream();
+            Document.Clone(temp);
+            temp.Position = 0;
+            temp.CopyTo(stream);
+        }
     }
 
     public void Dispose()

@@ -12,6 +12,7 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor, TColum
     protected abstract void SetCellValue(TCell cell, object value);
     protected abstract void SetCellValue(TCell cell, string value);
     protected abstract void SetCellHtml(TCell cell, string value);
+    protected abstract void SetBold(TStyle style);
     protected abstract TSheet BuildSheet(TBook book);
 
     protected abstract TColumn GetColumn(TSheet sheet, int index);
@@ -53,6 +54,7 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor, TColum
 
     void ApplyHeadingStyling(ColumnConfig<TStyle, TModel> column, TStyle style)
     {
+        SetBold(style);
         bookBuilder.HeadingStyle?.Invoke(style);
 
         column.HeadingStyle?.Invoke(style);

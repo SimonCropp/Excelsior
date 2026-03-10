@@ -16,13 +16,6 @@
             }
         }
 
-        public void AutoFilterAll()
-        {
-            var cells = sheet.Cells;
-            var row = CellsHelper.RowIndexToName(cells.MaxRow);
-            var column = CellsHelper.ColumnIndexToName(cells.MaxColumn);
-            sheet.AutoFilter.Range = $"A1:{column}{row}";
-        }
     }
 
     extension(Cell cell)

@@ -51,6 +51,8 @@ public abstract class BookBuilderBase<TBook, TSheet, TStyle, TCell, TColor, TCol
         actions.Add((book, cancel) =>
         {
             var renderer = ConstructSheetRenderer(data, name, columns.OrderedColumns(), defaultMaxColumnWidth);
+            renderer.FilterDisabled = columns.FilterDisabled;
+            renderer.FilterAll = columns.FilterAll;
             return renderer.AddSheet(book, cancel);
         });
 

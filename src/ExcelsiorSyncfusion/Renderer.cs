@@ -6,8 +6,11 @@
     BookBuilder bookBuilder) :
     RendererBase<TModel, Sheet, Style, Cell, IDisposableBook, Color?, Column>(data, columns, maxColumnWidth, bookBuilder)
 {
-    protected override void ApplyFilter(Sheet sheet) =>
-        sheet.AutoFilters.FilterRange = sheet.UsedRange;
+    protected override void ApplyFilter(Sheet sheet, int firstColumn, int lastColumn)
+    {
+        var lastRow = sheet.UsedRange.LastRow;
+        sheet.AutoFilters.FilterRange = sheet.Range[1, firstColumn + 1, lastRow, lastColumn + 1];
+    }
 
     protected override void FreezeHeader(Sheet sheet) =>
         sheet.Rows[0].FreezePanes();

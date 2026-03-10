@@ -62,4 +62,14 @@
         Expression<Func<TModel, TProperty>> property,
         Func<TProperty, string?> value) =>
         Column(property, _ => _.Render = (_, property) => value(property));
+
+    public void Filter<TProperty>(
+        Expression<Func<TModel, TProperty>> property) =>
+        Column(property, _ => _.Filter = true);
+
+    public void FilterAll() =>
+        columns.FilterAll = true;
+
+    public void DisableFilter() =>
+        columns.FilterDisabled = true;
 }

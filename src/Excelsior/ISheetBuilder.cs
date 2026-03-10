@@ -52,4 +52,11 @@ public interface ISheetBuilder<TModel, TStyle>
     public void Render<TProperty>(
         Expression<Func<TModel, TProperty>> property,
         Func<TProperty, string?> value);
+
+    public void Filter<TProperty>(
+        Expression<Func<TModel, TProperty>> property);
+
+    public void FilterAll();
+
+    public void DisableFilter();
 }

@@ -11,14 +11,12 @@ public sealed class ColumnAttribute :
     public string? NullDisplay { get; set; }
     public bool IsHtml { get; set; }
 
-    bool filter;
-
     public bool Filter
     {
-        get => filter;
+        get;
         set
         {
-            filter = value;
+            field = value;
             FilterHasValue = true;
         }
     }

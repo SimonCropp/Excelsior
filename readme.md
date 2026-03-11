@@ -986,6 +986,82 @@ public record Address(int Number, string Street, string City, State State, ushor
 <img src="/src/ExcelsiorAspose.Tests/ComplexTypeWithSplitterUseHierachyForName.Test%23Sheet1.verified.png">
 
 
+### Source Generated Extensions
+
+A source generator is included that generates typed extension methods for `ISheetBuilder`, providing a more concise API.
+
+
+#### Model
+
+Add `[SheetModel]` to the model class:
+
+<!-- snippet: SourceGeneratedModel -->
+<a id='snippet-SourceGeneratedModel'></a>
+```cs
+[SheetModel]
+public class GeneratedTestModel
+{
+    public required string Name { get; init; }
+    public required int Age { get; init; }
+}
+```
+<sup><a href='/src/ExcelsiorClosedXml.Tests/SourceGeneratorIntegrationTests.cs#L31-L40' title='Snippet source file'>snippet source</a> | <a href='#snippet-SourceGeneratedModel' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+This generates typed extension methods for each property, such as `NameColumn`, `NameOrder`, `AgeWidth`, etc.
+
+
+#### Usage
+
+Instead of:
+
+```cs
+sheet.Column(_ => _.Name, _ => _.Heading = "Full Name");
+sheet.Order(_ => _.Age, 1);
+```
+
+Use the generated methods:
+
+<!-- snippet: SourceGeneratedUsage -->
+<a id='snippet-SourceGeneratedUsage'></a>
+```cs
+var builder = new BookBuilder();
+
+List<GeneratedTestModel> data =
+[
+    new() { Name = "Alice", Age = 30 },
+    new() { Name = "Bob", Age = 25 },
+];
+
+var sheet = builder.AddSheet(data);
+sheet.NameColumn(_ => _.Heading = "Full Name");
+sheet.AgeOrder(1);
+sheet.NameOrder(2);
+sheet.AgeWidth(15);
+```
+<sup><a href='/src/ExcelsiorClosedXml.Tests/SourceGeneratorIntegrationTests.cs#L7-L23' title='Snippet source file'>snippet source</a> | <a href='#snippet-SourceGeneratedUsage' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+
+#### Generated methods per property
+
+For each public property, the following extension methods are generated:
+
+ * `{Property}Column` — configure the column (heading, order, width, style, etc.)
+ * `{Property}HeadingText` — set the heading text
+ * `{Property}Order` — set the column order
+ * `{Property}Width` — set the column width
+ * `{Property}HeadingStyle` — set the heading style
+ * `{Property}CellStyle` — set the cell style
+ * `{Property}Format` — set the format string
+ * `{Property}NullDisplay` — set the null display text
+ * `{Property}IsHtml` — mark the column as HTML
+ * `{Property}Render` — set a custom render function
+ * `{Property}Filter` — enable auto-filter for the column
+
+Properties with `[Ignore]` are skipped. Properties with `[Split]` (or types with `[Split]`) are recursed into, generating methods for the nested properties.
+
+
 ## Icon
 
 [Grim Fandango](https://github.com/PapirusDevelopmentTeam/papirus-icon-theme/blob/master/Papirus/64x64/apps/grim-fandango-remastered.svg) from [Papirus Icons](https://github.com/PapirusDevelopmentTeam/papirus-icon-theme).

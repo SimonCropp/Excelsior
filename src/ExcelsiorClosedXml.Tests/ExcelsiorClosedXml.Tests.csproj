@@ -18,6 +18,8 @@
     <PackageReference Include="NUnit3TestAdapter" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" />
     <ProjectReference Include="..\ExcelsiorClosedXml\ExcelsiorClosedXml.csproj" />
+    <ProjectReference Include="..\Excelsior.SourceGenerator\Excelsior.SourceGenerator.csproj"
+                      OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     <ProjectReference Include="..\Model\Model.csproj" />
     <Using Include="NUnit.Framework.Legacy.ClassicAssert" Static="True" />
     <PackageReference Include="ProjectDefaults" PrivateAssets="all" />

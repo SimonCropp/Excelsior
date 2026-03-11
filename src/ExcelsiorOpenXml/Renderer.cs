@@ -159,7 +159,7 @@ class Renderer<TModel>(
         {
             var cellRef = colLetter + row.RowIndex;
             var cell = row.Elements<Cell>()
-                .FirstOrDefault(c => c.CellReference?.Value == cellRef);
+                .FirstOrDefault(_ => _.CellReference?.Value == cellRef);
             if (cell == null)
             {
                 continue;

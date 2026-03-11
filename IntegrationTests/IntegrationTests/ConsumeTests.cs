@@ -16,7 +16,7 @@ public class ConsumeTests
         ];
 
         var sheet = builder.AddSheet(data);
-        sheet.NameColumn(c => c.Heading = "Full Name");
+        sheet.NameColumn(_ => _.Heading = "Full Name");
         sheet.AgeOrder(1);
         sheet.NameOrder(2);
         sheet.AgeWidth(15);

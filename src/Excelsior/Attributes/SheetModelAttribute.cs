@@ -3,5 +3,5 @@ namespace Excelsior;
 [AttributeUsage(
     AttributeTargets.Class |
     AttributeTargets.Struct)]
-public sealed class ExcelsiorModelAttribute :
+public sealed class SheetModelAttribute :
     Attribute;

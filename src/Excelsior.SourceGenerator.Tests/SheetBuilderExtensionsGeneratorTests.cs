@@ -12,7 +12,7 @@ public class SheetBuilderExtensionsGeneratorTests
 
             namespace TestModels;
 
-            [ExcelsiorModel]
+            [SheetModel]
             public record Employee(string Email, int Age);
             """;
 
@@ -27,7 +27,7 @@ public class SheetBuilderExtensionsGeneratorTests
 
             namespace TestModels;
 
-            [ExcelsiorModel]
+            [SheetModel]
             public record Employee(string Email, [Ignore] int Age, string Name);
             """;
 
@@ -45,7 +45,7 @@ public class SheetBuilderExtensionsGeneratorTests
             [Split]
             public record Address(string Street, string City);
 
-            [ExcelsiorModel]
+            [SheetModel]
             public record Employee(string Email, Address Address);
             """;
 
@@ -62,7 +62,7 @@ public class SheetBuilderExtensionsGeneratorTests
 
             public record Address(string Street, string City);
 
-            [ExcelsiorModel]
+            [SheetModel]
             public record Employee(string Email, [Split] Address Address);
             """;
 
@@ -77,7 +77,7 @@ public class SheetBuilderExtensionsGeneratorTests
 
             namespace TestModels;
 
-            [ExcelsiorModel]
+            [SheetModel]
             public class Product
             {
                 public string Name { get; set; }
@@ -98,7 +98,7 @@ public class SheetBuilderExtensionsGeneratorTests
             .ToList();
 
         var excelsiorRef = MetadataReference.CreateFromFile(
-            typeof(Excelsior.ExcelsiorModelAttribute).Assembly.Location);
+            typeof(Excelsior.SheetModelAttribute).Assembly.Location);
 
         var references = trustedAssemblies.Append(excelsiorRef);
 

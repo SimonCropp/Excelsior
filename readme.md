@@ -995,12 +995,12 @@ A source generator is included that generates typed extension methods for `IShee
 
 #### Model
 
-Add `[ExcelsiorModel]` to the model class:
+Add `[SheetModel]` to the model class:
 
 <!-- snippet: SourceGeneratedModel -->
 <a id='snippet-SourceGeneratedModel'></a>
 ```cs
-[ExcelsiorModel]
+[SheetModel]
 public class GeneratedTestModel
 {
     public required string Name { get; init; }

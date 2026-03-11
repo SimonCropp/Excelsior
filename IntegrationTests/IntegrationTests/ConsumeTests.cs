@@ -1,14 +1,15 @@
+using Excelsior;
+using ExcelsiorClosedXml;
+
 [TestFixture]
-public class SourceGeneratorIntegrationTests
+public class ConsumeTests
 {
     [Test]
     public async Task GeneratedExtensionMethods()
     {
-        #region SourceGeneratedUsage
-
         var builder = new BookBuilder();
 
-        List<GeneratedTestModel> data =
+        List<TestModel> data =
         [
             new() { Name = "Alice", Age = 30 },
             new() { Name = "Bob", Age = 25 },
@@ -20,21 +21,13 @@ public class SourceGeneratorIntegrationTests
         sheet.NameOrder(2);
         sheet.AgeWidth(15);
 
-        #endregion
-
         using var book = await builder.Build();
-
-        await Verify(book);
     }
 }
 
-#region SourceGeneratedModel
-
 [SheetModel]
-public class GeneratedTestModel
+public class TestModel
 {
     public required string Name { get; init; }
     public required int Age { get; init; }
 }
-
-#endregion

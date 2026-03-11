@@ -13,7 +13,7 @@ public class SheetBuilderExtensionsGenerator : IIncrementalGenerator
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         var models = context.SyntaxProvider.ForAttributeWithMetadataName(
-            "Excelsior.ExcelsiorModelAttribute",
+            "Excelsior.SheetModelAttribute",
             (node, _) => node is TypeDeclarationSyntax,
             (ctx, _) => GetModelInfo(ctx));
 
@@ -188,13 +188,3 @@ public class SheetBuilderExtensionsGenerator : IIncrementalGenerator
         return sb.ToString();
     }
 }
-
-record struct ModelInfo(
-    string TypeFullName,
-    string TypeName,
-    EquatableArray<PropertyInfo> Properties);
-
-record struct PropertyInfo(
-    string Name,
-    string TypeFullName,
-    string AccessPath) : System.IEquatable<PropertyInfo>;

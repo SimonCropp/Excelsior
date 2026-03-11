@@ -1,5 +1,3 @@
-namespace Excelsior.SourceGenerator;
-
 record struct ModelInfo(
     string TypeFullName,
     string TypeName,

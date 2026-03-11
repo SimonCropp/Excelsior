@@ -1,8 +1,5 @@
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-
 [TestFixture]
-public class SheetBuilderExtensionsGeneratorTests
+public class GeneratorTests
 {
     [Test]
     public Task SimpleRecord()
@@ -10,13 +7,13 @@ public class SheetBuilderExtensionsGeneratorTests
         var source = """
             using Excelsior;
 
-            namespace TestModels;
-
             [SheetModel]
             public record Employee(string Email, int Age);
             """;
 
-        return Verify(source);
+        var generated = Generate(source);
+
+        return Verify(generated);
     }
 
     [Test]
@@ -25,13 +22,13 @@ public class SheetBuilderExtensionsGeneratorTests
         var source = """
             using Excelsior;
 
-            namespace TestModels;
-
             [SheetModel]
             public record Employee(string Email, [Ignore] int Age, string Name);
             """;
 
-        return Verify(source);
+        var generated = Generate(source);
+
+        return Verify(generated);
     }
 
     [Test]
@@ -40,8 +37,6 @@ public class SheetBuilderExtensionsGeneratorTests
         var source = """
             using Excelsior;
 
-            namespace TestModels;
-
             [Split]
             public record Address(string Street, string City);
 
@@ -49,7 +44,9 @@ public class SheetBuilderExtensionsGeneratorTests
             public record Employee(string Email, Address Address);
             """;
 
-        return Verify(source);
+        var generated = Generate(source);
+
+        return Verify(generated);
     }
 
     [Test]
@@ -58,15 +55,15 @@ public class SheetBuilderExtensionsGeneratorTests
         var source = """
             using Excelsior;
 
-            namespace TestModels;
-
             public record Address(string Street, string City);
 
             [SheetModel]
             public record Employee(string Email, [Split] Address Address);
             """;
 
-        return Verify(source);
+        var generated = Generate(source);
+
+        return Verify(generated);
     }
 
     [Test]
@@ -74,8 +71,6 @@ public class SheetBuilderExtensionsGeneratorTests
     {
         var source = """
             using Excelsior;
-
-            namespace TestModels;
 
             [SheetModel]
             public class Product
@@ -85,16 +80,18 @@ public class SheetBuilderExtensionsGeneratorTests
             }
             """;
 
-        return Verify(source);
+        var generated = Generate(source);
+
+        return Verify(generated);
     }
 
-    static Task Verify(string source)
+    static Dictionary<string, string> Generate(string source)
     {
         var syntaxTree = CSharpSyntaxTree.ParseText(source);
 
         var trustedAssemblies = ((string)AppContext.GetData("TRUSTED_PLATFORM_ASSEMBLIES")!)
             .Split(Path.PathSeparator)
-            .Select(p => MetadataReference.CreateFromFile(p))
+            .Select(_ => MetadataReference.CreateFromFile(_))
             .ToList();
 
         var excelsiorRef = MetadataReference.CreateFromFile(
@@ -106,7 +103,7 @@ public class SheetBuilderExtensionsGeneratorTests
             "Tests",
             [syntaxTree],
             references,
-            new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+            new(OutputKind.DynamicallyLinkedLibrary));
 
         var generator = new Excelsior.SourceGenerator.SheetBuilderExtensionsGenerator();
 
@@ -114,10 +111,10 @@ public class SheetBuilderExtensionsGeneratorTests
         driver = driver.RunGenerators(compilation);
 
         var result = driver.GetRunResult();
-        var generated = result.Results
-            .SelectMany(r => r.GeneratedSources)
-            .ToDictionary(s => s.HintName, s => s.SourceText.ToString());
-
-        return Verifier.Verify(generated).UseDirectory("Snapshots");
+        return result.Results
+            .SelectMany(_ => _.GeneratedSources)
+            .ToDictionary(
+                _ => _.HintName,
+                _ => _.SourceText.ToString());
     }
 }

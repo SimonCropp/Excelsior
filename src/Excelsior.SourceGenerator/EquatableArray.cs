@@ -1,10 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-
-namespace Excelsior.SourceGenerator;
-
 /// <summary>
 /// An immutable array wrapper with structural equality for incremental generator caching.
 /// </summary>
@@ -37,7 +30,7 @@ readonly struct EquatableArray<T>(ImmutableArray<T> array) :
         return true;
     }
 
-    public override bool Equals(object obj) =>
+    public override bool Equals(object? obj) =>
         obj is EquatableArray<T> other && Equals(other);
 
     public override int GetHashCode()

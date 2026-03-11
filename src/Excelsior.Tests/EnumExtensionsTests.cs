@@ -151,7 +151,7 @@ public class EnumExtensionsTests
             thread.Join();
         }
 
-        Assert.That(exceptions, Is.Empty, $"Exceptions occurred: {string.Join(", ", exceptions.Select(e => e.Message))}");
+        Assert.That(exceptions, Is.Empty, $"Exceptions occurred: {string.Join(", ", exceptions.Select(_ => _.Message))}");
     }
 
     [Test]

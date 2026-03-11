@@ -725,14 +725,12 @@ public sealed class ColumnAttribute :
     public string? NullDisplay { get; set; }
     public bool IsHtml { get; set; }
 
-    bool filter;
-
     public bool Filter
     {
-        get => filter;
+        get;
         set
         {
-            filter = value;
+            field = value;
             FilterHasValue = true;
         }
     }
@@ -740,7 +738,7 @@ public sealed class ColumnAttribute :
     internal bool FilterHasValue { get; private set; }
 }
 ```
-<sup><a href='/src/Excelsior/Attributes/ColumnAttribute.cs#L1-L27' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnAttribute.cs' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior/Attributes/ColumnAttribute.cs#L1-L25' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnAttribute.cs' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 

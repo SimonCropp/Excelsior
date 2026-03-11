@@ -105,7 +105,7 @@ public class GeneratorTests
             references,
             new(OutputKind.DynamicallyLinkedLibrary));
 
-        var generator = new Excelsior.SourceGenerator.SheetBuilderExtensionsGenerator();
+        var generator = new Excelsior.SourceGenerator.SheetBuilderGenerator();
 
         GeneratorDriver driver = CSharpGeneratorDriver.Create(generator);
         driver = driver.RunGenerators(compilation);

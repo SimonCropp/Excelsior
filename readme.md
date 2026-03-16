@@ -736,9 +736,21 @@ public sealed class ColumnAttribute :
     }
 
     internal bool FilterHasValue { get; private set; }
+
+    public bool Include
+    {
+        get;
+        set
+        {
+            field = value;
+            IncludeHasValue = true;
+        }
+    } = true;
+
+    internal bool IncludeHasValue { get; private set; }
 }
 ```
-<sup><a href='/src/Excelsior/Attributes/ColumnAttribute.cs#L1-L25' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnAttribute.cs' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior/Attributes/ColumnAttribute.cs#L1-L37' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnAttribute.cs' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -940,6 +952,49 @@ public class Employee
 ```
 
 
+### Include/Exclude Columns
+
+By default, all columns are included in the output.
+
+
+#### Exclude a column via fluent API
+
+<!-- snippet: IncludeExcludeOne -->
+<a id='snippet-IncludeExcludeOne'></a>
+```cs
+var builder = new BookBuilder();
+var sheet = builder.AddSheet(Data());
+sheet.Include(_ => _.Age, false);
+```
+<sup><a href='/src/ExcelsiorAspose.Tests/IncludeTests.cs#L29-L35' title='Snippet source file'>snippet source</a> | <a href='#snippet-IncludeExcludeOne' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+
+#### Exclude a column via Column configuration
+
+<!-- snippet: IncludeExcludeOneViaColumn -->
+<a id='snippet-IncludeExcludeOneViaColumn'></a>
+```cs
+var builder = new BookBuilder();
+var sheet = builder.AddSheet(Data());
+sheet.Column(
+    _ => _.Age,
+    _ => _.Include = false);
+```
+<sup><a href='/src/ExcelsiorAspose.Tests/IncludeTests.cs#L44-L52' title='Snippet source file'>snippet source</a> | <a href='#snippet-IncludeExcludeOneViaColumn' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+
+#### ColumnAttribute
+
+```
+public class Employee
+{
+    [Column(Include = false)]
+    public required string Name { get; init; }
+```
+
+
 ### Splitting
 
 
@@ -1058,6 +1113,7 @@ For each public property, the following extension methods are generated:
  * `{Property}IsHtml` — mark the column as HTML
  * `{Property}Render` — set a custom render function
  * `{Property}Filter` — enable auto-filter for the column
+ * `{Property}Include` — include or exclude the column from the output
 
 Properties with `[Ignore]` are skipped. Properties with `[Split]` (or types with `[Split]`) are recursed into, generating methods for the nested properties.
 

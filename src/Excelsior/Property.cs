@@ -18,6 +18,7 @@
         NullDisplay = column?.NullDisplay;
         IsHtml = column?.IsHtml ?? false;
         Filter = column is { FilterHasValue: true } ? column.Filter : null;
+        Include = column is { IncludeHasValue: true } ? column.Include : null;
         Type = info.PropertyType;
         IsNumber = info.PropertyType.IsNumericType();
     }
@@ -53,6 +54,7 @@
     public string? NullDisplay { get; }
     public bool IsHtml { get; }
     public bool? Filter { get; }
+    public bool? Include { get; }
 
     static string GetHeading(IReadOnlyList<(PropertyInfo property, ParameterInfo? parameter)> infos, bool useHierachyForName)
     {

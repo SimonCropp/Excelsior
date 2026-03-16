@@ -64,4 +64,11 @@ public interface ISheetBuilder<TModel, TStyle>
     /// or by setting <see cref="ColumnConfig{TStyle,TModel,TProperty}.Filter"/> to true.
     /// </summary>
     public void DisableFilter();
+
+    /// <summary>
+    /// Include or exclude a specific column from the output.
+    /// </summary>
+    public void Include<TProperty>(
+        Expression<Func<TModel, TProperty>> property,
+        bool value);
 }

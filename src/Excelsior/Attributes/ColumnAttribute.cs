@@ -22,4 +22,16 @@ public sealed class ColumnAttribute :
     }
 
     internal bool FilterHasValue { get; private set; }
+
+    public bool Include
+    {
+        get;
+        set
+        {
+            field = value;
+            IncludeHasValue = true;
+        }
+    } = true;
+
+    internal bool IncludeHasValue { get; private set; }
 }

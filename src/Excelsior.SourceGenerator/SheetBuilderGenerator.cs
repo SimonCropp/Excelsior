@@ -159,6 +159,9 @@ public class SheetBuilderGenerator : IIncrementalGenerator
                      public static void {prefix}Filter<TStyle>(this ISheetBuilder<{modelType}, TStyle> builder)
                          => builder.Filter(_ => _.{access});
 
+                     public static void {prefix}Include<TStyle>(this ISheetBuilder<{modelType}, TStyle> builder, bool value)
+                         => builder.Include(_ => _.{access}, value);
+
                  """);
         }
 

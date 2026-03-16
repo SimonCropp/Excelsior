@@ -68,4 +68,58 @@ public class IncludeTests
         var book = await builder.Build();
         await Verify(book);
     }
+
+    [Test]
+    public async Task ToggleBasedOnState()
+    {
+        #region IncludeToggleBasedOnState
+
+        var data = Data();
+        var isInternalReport = true;
+
+        var builder = new BookBuilder();
+        var sheet = builder.AddSheet(data);
+        sheet.Include(_ => _.Email, !isInternalReport);
+
+        #endregion
+
+        var book = await builder.Build();
+        await Verify(book);
+    }
+
+    [Test]
+    public async Task MultipleSpreadsheetsSameModel_Public()
+    {
+        #region IncludeMultipleSpreadsheets_Public
+
+        var data = Data();
+
+        // Public report: exclude age and email
+        var builder = new BookBuilder();
+        var sheet = builder.AddSheet(data);
+        sheet.Include(_ => _.Age, false);
+        sheet.Include(_ => _.Email, false);
+
+        #endregion
+
+        var book = await builder.Build();
+        await Verify(book);
+    }
+
+    [Test]
+    public async Task MultipleSpreadsheetsSameModel_Internal()
+    {
+        #region IncludeMultipleSpreadsheets_Internal
+
+        var data = Data();
+
+        // Internal report: include all columns
+        var builder = new BookBuilder();
+        builder.AddSheet(data);
+
+        #endregion
+
+        var book = await builder.Build();
+        await Verify(book);
+    }
 }

@@ -954,10 +954,57 @@ public class Employee
 
 ### Include/Exclude Columns
 
-By default, all columns are included in the output.
+Columns can be included or excluded from the output at runtime. This is useful when generating multiple spreadsheets from the same model with different columns based on some state.
 
 
-#### Exclude a column via fluent API
+#### Toggle based on state
+
+<!-- snippet: IncludeToggleBasedOnState -->
+<a id='snippet-IncludeToggleBasedOnState'></a>
+```cs
+var data = Data();
+var isInternalReport = true;
+
+var builder = new BookBuilder();
+var sheet = builder.AddSheet(data);
+sheet.Include(_ => _.Email, !isInternalReport);
+```
+<sup><a href='/src/ExcelsiorAspose.Tests/IncludeTests.cs#L75-L84' title='Snippet source file'>snippet source</a> | <a href='#snippet-IncludeToggleBasedOnState' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+
+#### Multiple spreadsheets from the same model
+
+The same data can produce different reports by toggling column inclusion per spreadsheet:
+
+<!-- snippet: IncludeMultipleSpreadsheets_Public -->
+<a id='snippet-IncludeMultipleSpreadsheets_Public'></a>
+```cs
+var data = Data();
+
+// Public report: exclude age and email
+var builder = new BookBuilder();
+var sheet = builder.AddSheet(data);
+sheet.Include(_ => _.Age, false);
+sheet.Include(_ => _.Email, false);
+```
+<sup><a href='/src/ExcelsiorAspose.Tests/IncludeTests.cs#L93-L103' title='Snippet source file'>snippet source</a> | <a href='#snippet-IncludeMultipleSpreadsheets_Public' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+<!-- snippet: IncludeMultipleSpreadsheets_Internal -->
+<a id='snippet-IncludeMultipleSpreadsheets_Internal'></a>
+```cs
+var data = Data();
+
+// Internal report: include all columns
+var builder = new BookBuilder();
+builder.AddSheet(data);
+```
+<sup><a href='/src/ExcelsiorAspose.Tests/IncludeTests.cs#L112-L120' title='Snippet source file'>snippet source</a> | <a href='#snippet-IncludeMultipleSpreadsheets_Internal' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+
+#### Exclude a column
 
 <!-- snippet: IncludeExcludeOne -->
 <a id='snippet-IncludeExcludeOne'></a>
@@ -970,7 +1017,7 @@ sheet.Include(_ => _.Age, false);
 <!-- endSnippet -->
 
 
-#### Exclude a column via Column configuration
+#### Exclude via Column configuration
 
 <!-- snippet: IncludeExcludeOneViaColumn -->
 <a id='snippet-IncludeExcludeOneViaColumn'></a>

@@ -969,7 +969,7 @@ var builder = new BookBuilder();
 var sheet = builder.AddSheet(data);
 sheet.Include(_ => _.Email, !isInternalReport);
 ```
-<sup><a href='/src/ExcelsiorAspose.Tests/IncludeTests.cs#L75-L84' title='Snippet source file'>snippet source</a> | <a href='#snippet-IncludeToggleBasedOnState' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/ExcelsiorAspose.Tests/IncludeTests.cs#L83-L92' title='Snippet source file'>snippet source</a> | <a href='#snippet-IncludeToggleBasedOnState' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -988,19 +988,22 @@ var sheet = builder.AddSheet(data);
 sheet.Include(_ => _.Age, false);
 sheet.Include(_ => _.Email, false);
 ```
-<sup><a href='/src/ExcelsiorAspose.Tests/IncludeTests.cs#L93-L103' title='Snippet source file'>snippet source</a> | <a href='#snippet-IncludeMultipleSpreadsheets_Public' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/ExcelsiorAspose.Tests/IncludeTests.cs#L101-L111' title='Snippet source file'>snippet source</a> | <a href='#snippet-IncludeMultipleSpreadsheets_Public' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 <!-- snippet: IncludeMultipleSpreadsheets_Internal -->
 <a id='snippet-IncludeMultipleSpreadsheets_Internal'></a>
 ```cs
-var data = Data();
+List<Target> data = [
+    new("Alice", 30, "alice@test.com"),
+    new("Bob", 25, "bob@test.com")
+];
 
 // Internal report: include all columns
 var builder = new BookBuilder();
 builder.AddSheet(data);
 ```
-<sup><a href='/src/ExcelsiorAspose.Tests/IncludeTests.cs#L112-L120' title='Snippet source file'>snippet source</a> | <a href='#snippet-IncludeMultipleSpreadsheets_Internal' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/ExcelsiorAspose.Tests/IncludeTests.cs#L120-L131' title='Snippet source file'>snippet source</a> | <a href='#snippet-IncludeMultipleSpreadsheets_Internal' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -1009,11 +1012,15 @@ builder.AddSheet(data);
 <!-- snippet: IncludeExcludeOne -->
 <a id='snippet-IncludeExcludeOne'></a>
 ```cs
+List<Target> data = [
+    new("Alice", 30, "alice@test.com"),
+    new("Bob", 25, "bob@test.com")
+];
 var builder = new BookBuilder();
-var sheet = builder.AddSheet(Data());
+var sheet = builder.AddSheet(data);
 sheet.Include(_ => _.Age, false);
 ```
-<sup><a href='/src/ExcelsiorAspose.Tests/IncludeTests.cs#L29-L35' title='Snippet source file'>snippet source</a> | <a href='#snippet-IncludeExcludeOne' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/ExcelsiorAspose.Tests/IncludeTests.cs#L29-L39' title='Snippet source file'>snippet source</a> | <a href='#snippet-IncludeExcludeOne' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -1022,13 +1029,17 @@ sheet.Include(_ => _.Age, false);
 <!-- snippet: IncludeExcludeOneViaColumn -->
 <a id='snippet-IncludeExcludeOneViaColumn'></a>
 ```cs
+List<Target> data = [
+    new("Alice", 30, "alice@test.com"),
+    new("Bob", 25, "bob@test.com")
+];
 var builder = new BookBuilder();
-var sheet = builder.AddSheet(Data());
+var sheet = builder.AddSheet(data);
 sheet.Column(
     _ => _.Age,
     _ => _.Include = false);
 ```
-<sup><a href='/src/ExcelsiorAspose.Tests/IncludeTests.cs#L44-L52' title='Snippet source file'>snippet source</a> | <a href='#snippet-IncludeExcludeOneViaColumn' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/ExcelsiorAspose.Tests/IncludeTests.cs#L48-L60' title='Snippet source file'>snippet source</a> | <a href='#snippet-IncludeExcludeOneViaColumn' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 

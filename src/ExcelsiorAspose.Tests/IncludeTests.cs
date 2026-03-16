@@ -28,8 +28,12 @@ public class IncludeTests
     {
         #region IncludeExcludeOne
 
+        List<Target> data = [
+            new("Alice", 30, "alice@test.com"),
+            new("Bob", 25, "bob@test.com")
+        ];
         var builder = new BookBuilder();
-        var sheet = builder.AddSheet(Data());
+        var sheet = builder.AddSheet(data);
         sheet.Include(_ => _.Age, false);
 
         #endregion
@@ -43,8 +47,12 @@ public class IncludeTests
     {
         #region IncludeExcludeOneViaColumn
 
+        List<Target> data = [
+            new("Alice", 30, "alice@test.com"),
+            new("Bob", 25, "bob@test.com")
+        ];
         var builder = new BookBuilder();
-        var sheet = builder.AddSheet(Data());
+        var sheet = builder.AddSheet(data);
         sheet.Column(
             _ => _.Age,
             _ => _.Include = false);
@@ -111,7 +119,10 @@ public class IncludeTests
     {
         #region IncludeMultipleSpreadsheets_Internal
 
-        var data = Data();
+        List<Target> data = [
+            new("Alice", 30, "alice@test.com"),
+            new("Bob", 25, "bob@test.com")
+        ];
 
         // Internal report: include all columns
         var builder = new BookBuilder();

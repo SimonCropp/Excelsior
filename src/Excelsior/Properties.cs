@@ -3,7 +3,7 @@
     static Properties() =>
         Items = GetPropertiesRecursive(typeof(T), [], false).ToList();
 
-    static IEnumerable<Property<T>> GetPropertiesRecursive(Type type, Stack<(PropertyInfo property, ParameterInfo? parameter)> stack, bool useHierachyForName)
+    static IEnumerable<Property<T>> GetPropertiesRecursive(Type type, List<(PropertyInfo property, ParameterInfo? parameter)> path, bool useHierachyForName)
     {
         var defaultConstructor = type.GetConstructors(BindingFlags.Public | BindingFlags.Instance)
             .Select(_ => _.GetParameters())
@@ -28,13 +28,13 @@
                 continue;
             }
 
-            stack.Push((property, parameter));
+            path.Add((property, parameter));
 
-            var infos = stack.Reverse().ToList();
+            var infos = path.ToList();
             var func = CreateGet(infos.Select(_ => _.property));
             if (ShouldSplit(property, parameter, out var nestedUseHierachyForName))
             {
-                foreach (var nested in GetPropertiesRecursive(property.PropertyType, stack, nestedUseHierachyForName))
+                foreach (var nested in GetPropertiesRecursive(property.PropertyType, path, nestedUseHierachyForName))
                 {
                     yield return nested;
                 }
@@ -44,7 +44,7 @@
                 yield return new(property, parameter, func, infos, useHierachyForName);
             }
 
-            stack.Pop();
+            path.RemoveAt(path.Count - 1);
         }
     }
 

@@ -7,6 +7,7 @@ public static partial class ValueRenderer
     static Dictionary<Type, Func<object, string>> renders =[];
     static Dictionary<Type, Func<object, string>> enumerableRenders = [];
     static Func<Enum, string> enumRender = EnumExtensions.Humanize;
+    static Dictionary<Type, (bool isEnumerable, Func<object, string>? render)> renderCache = [];
 
     public static void DisableWhitespaceTrimming()
     {
@@ -52,6 +53,18 @@ public static partial class ValueRenderer
 
     internal static (bool isEnumerable, Func<object, string>? render) GetRender(Type type)
     {
+        if (renderCache.TryGetValue(type, out var cached))
+        {
+            return cached;
+        }
+
+        var result = ResolveRender(type);
+        renderCache[type] = result;
+        return result;
+    }
+
+    static (bool isEnumerable, Func<object, string>? render) ResolveRender(Type type)
+    {
         foreach (var (key, value) in renders)
         {
             if (IsTypeCompatible(type, key))
@@ -65,8 +78,7 @@ public static partial class ValueRenderer
             return (true, _ => ListBuilder.Build((IEnumerable<string>)_));
         }
 
-        var enumerableTypes = GetEnumerableTypes(type).ToList();
-        foreach (var enumerableType in enumerableTypes)
+        foreach (var enumerableType in GetEnumerableTypes(type))
         {
             foreach (var (key, value) in enumerableRenders)
             {
@@ -79,7 +91,6 @@ public static partial class ValueRenderer
 
         if (type.IsEnum)
         {
-            //TODO: should cache this
             return (false, _ => enumRender((Enum)_));
         }
 

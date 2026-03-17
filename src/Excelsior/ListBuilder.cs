@@ -1,12 +1,22 @@
-﻿static class ListBuilder
+static class ListBuilder
 {
     public static string Build(IEnumerable<string?> enumerable)
     {
-        if (ValueRenderer.TrimWhitespace)
+        var trim = ValueRenderer.TrimWhitespace;
+        var builder = new StringBuilder();
+        var first = true;
+        foreach (var item in enumerable)
         {
-            enumerable = enumerable.Select(_ => _?.Trim());
+            if (!first)
+            {
+                builder.Append('\n');
+            }
+
+            first = false;
+            builder.Append("● ");
+            builder.Append(trim ? item?.Trim() : item);
         }
 
-        return string.Join('\n', enumerable.Select(_ => $"● {_}"));
+        return builder.ToString();
     }
 }

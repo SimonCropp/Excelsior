@@ -985,8 +985,8 @@ var data = Data();
 // Public report: exclude age and email
 var builder = new BookBuilder();
 var sheet = builder.AddSheet(data);
-sheet.Include(_ => _.Age, false);
-sheet.Include(_ => _.Email, false);
+sheet.Exclude(_ => _.Age);
+sheet.Exclude(_ => _.Email);
 ```
 <sup><a href='/src/ExcelsiorAspose.Tests/IncludeTests.cs#L101-L111' title='Snippet source file'>snippet source</a> | <a href='#snippet-IncludeMultipleSpreadsheets_Public' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
@@ -1018,7 +1018,7 @@ List<Target> data = [
 ];
 var builder = new BookBuilder();
 var sheet = builder.AddSheet(data);
-sheet.Include(_ => _.Age, false);
+sheet.Exclude(_ => _.Age);
 ```
 <sup><a href='/src/ExcelsiorAspose.Tests/IncludeTests.cs#L29-L39' title='Snippet source file'>snippet source</a> | <a href='#snippet-IncludeExcludeOne' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
@@ -1172,6 +1172,7 @@ For each public property, the following extension methods are generated:
  * `{Property}Render` — set a custom render function
  * `{Property}Filter` — enable auto-filter for the column
  * `{Property}Include` — include or exclude the column from the output
+ * `{Property}Exclude` — exclude the column from the output
 
 Properties with `[Ignore]` are skipped. Properties with `[Split]` (or types with `[Split]`) are recursed into, generating methods for the nested properties.
 

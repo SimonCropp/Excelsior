@@ -44,6 +44,9 @@ public static class EmployeeSheetBuilderExtensions
     public static void EmailInclude<TStyle>(this ISheetBuilder<global::Employee, TStyle> builder, bool value)
         => builder.Include(_ => _.Email, value);
 
+    public static void EmailExclude<TStyle>(this ISheetBuilder<global::Employee, TStyle> builder)
+        => builder.Exclude(_ => _.Email);
+
     public static ISheetBuilder<global::Employee, TStyle> StreetColumn<TStyle>(
         this ISheetBuilder<global::Employee, TStyle> builder,
         Action<ColumnConfig<TStyle, global::Employee, string>> configuration)
@@ -82,6 +85,9 @@ public static class EmployeeSheetBuilderExtensions
     public static void StreetInclude<TStyle>(this ISheetBuilder<global::Employee, TStyle> builder, bool value)
         => builder.Include(_ => _.Address.Street, value);
 
+    public static void StreetExclude<TStyle>(this ISheetBuilder<global::Employee, TStyle> builder)
+        => builder.Exclude(_ => _.Address.Street);
+
     public static ISheetBuilder<global::Employee, TStyle> CityColumn<TStyle>(
         this ISheetBuilder<global::Employee, TStyle> builder,
         Action<ColumnConfig<TStyle, global::Employee, string>> configuration)
@@ -119,6 +125,9 @@ public static class EmployeeSheetBuilderExtensions
 
     public static void CityInclude<TStyle>(this ISheetBuilder<global::Employee, TStyle> builder, bool value)
         => builder.Include(_ => _.Address.City, value);
+
+    public static void CityExclude<TStyle>(this ISheetBuilder<global::Employee, TStyle> builder)
+        => builder.Exclude(_ => _.Address.City);
 }
 
 }

@@ -74,4 +74,8 @@
         Expression<Func<TModel, TProperty>> property,
         bool value) =>
         Column(property, _ => _.Include = value);
+
+    public void Exclude<TProperty>(
+        Expression<Func<TModel, TProperty>> property) =>
+        Column(property, _ => _.Include = false);
 }

@@ -44,6 +44,9 @@ public static class ProductSheetBuilderExtensions
     public static void NameInclude<TStyle>(this ISheetBuilder<global::Product, TStyle> builder, bool value)
         => builder.Include(_ => _.Name, value);
 
+    public static void NameExclude<TStyle>(this ISheetBuilder<global::Product, TStyle> builder)
+        => builder.Exclude(_ => _.Name);
+
     public static ISheetBuilder<global::Product, TStyle> PriceColumn<TStyle>(
         this ISheetBuilder<global::Product, TStyle> builder,
         Action<ColumnConfig<TStyle, global::Product, decimal>> configuration)
@@ -81,6 +84,9 @@ public static class ProductSheetBuilderExtensions
 
     public static void PriceInclude<TStyle>(this ISheetBuilder<global::Product, TStyle> builder, bool value)
         => builder.Include(_ => _.Price, value);
+
+    public static void PriceExclude<TStyle>(this ISheetBuilder<global::Product, TStyle> builder)
+        => builder.Exclude(_ => _.Price);
 }
 
 }

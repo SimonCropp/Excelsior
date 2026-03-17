@@ -71,4 +71,10 @@ public interface ISheetBuilder<TModel, TStyle>
     public void Include<TProperty>(
         Expression<Func<TModel, TProperty>> property,
         bool value);
+
+    /// <summary>
+    /// Exclude a specific column from the output.
+    /// </summary>
+    public void Exclude<TProperty>(
+        Expression<Func<TModel, TProperty>> property);
 }

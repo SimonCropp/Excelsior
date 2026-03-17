@@ -44,6 +44,9 @@ public static class EmployeeSheetBuilderExtensions
     public static void EmailInclude<TStyle>(this ISheetBuilder<global::Employee, TStyle> builder, bool value)
         => builder.Include(_ => _.Email, value);
 
+    public static void EmailExclude<TStyle>(this ISheetBuilder<global::Employee, TStyle> builder)
+        => builder.Exclude(_ => _.Email);
+
     public static ISheetBuilder<global::Employee, TStyle> AddressColumn<TStyle>(
         this ISheetBuilder<global::Employee, TStyle> builder,
         Action<ColumnConfig<TStyle, global::Employee, global::Address>> configuration)
@@ -81,6 +84,9 @@ public static class EmployeeSheetBuilderExtensions
 
     public static void AddressInclude<TStyle>(this ISheetBuilder<global::Employee, TStyle> builder, bool value)
         => builder.Include(_ => _.Address, value);
+
+    public static void AddressExclude<TStyle>(this ISheetBuilder<global::Employee, TStyle> builder)
+        => builder.Exclude(_ => _.Address);
 }
 
 }

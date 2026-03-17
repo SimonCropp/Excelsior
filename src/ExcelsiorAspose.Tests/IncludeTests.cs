@@ -34,7 +34,7 @@ public class IncludeTests
         ];
         var builder = new BookBuilder();
         var sheet = builder.AddSheet(data);
-        sheet.Include(_ => _.Age, false);
+        sheet.Exclude(_ => _.Age);
 
         #endregion
 
@@ -105,8 +105,8 @@ public class IncludeTests
         // Public report: exclude age and email
         var builder = new BookBuilder();
         var sheet = builder.AddSheet(data);
-        sheet.Include(_ => _.Age, false);
-        sheet.Include(_ => _.Email, false);
+        sheet.Exclude(_ => _.Age);
+        sheet.Exclude(_ => _.Email);
 
         #endregion
 

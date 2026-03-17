@@ -41,6 +41,12 @@ public static class EmployeeSheetBuilderExtensions
     public static void EmailFilter<TStyle>(this ISheetBuilder<global::Employee, TStyle> builder)
         => builder.Filter(_ => _.Email);
 
+    public static void EmailInclude<TStyle>(this ISheetBuilder<global::Employee, TStyle> builder, bool value)
+        => builder.Include(_ => _.Email, value);
+
+    public static void EmailExclude<TStyle>(this ISheetBuilder<global::Employee, TStyle> builder)
+        => builder.Exclude(_ => _.Email);
+
     public static ISheetBuilder<global::Employee, TStyle> AgeColumn<TStyle>(
         this ISheetBuilder<global::Employee, TStyle> builder,
         Action<ColumnConfig<TStyle, global::Employee, int>> configuration)
@@ -76,6 +82,12 @@ public static class EmployeeSheetBuilderExtensions
     public static void AgeFilter<TStyle>(this ISheetBuilder<global::Employee, TStyle> builder)
         => builder.Filter(_ => _.Age);
 
+    public static void AgeInclude<TStyle>(this ISheetBuilder<global::Employee, TStyle> builder, bool value)
+        => builder.Include(_ => _.Age, value);
+
+    public static void AgeExclude<TStyle>(this ISheetBuilder<global::Employee, TStyle> builder)
+        => builder.Exclude(_ => _.Age);
+
     public static ISheetBuilder<global::Employee, TStyle> NameColumn<TStyle>(
         this ISheetBuilder<global::Employee, TStyle> builder,
         Action<ColumnConfig<TStyle, global::Employee, string>> configuration)
@@ -110,6 +122,12 @@ public static class EmployeeSheetBuilderExtensions
 
     public static void NameFilter<TStyle>(this ISheetBuilder<global::Employee, TStyle> builder)
         => builder.Filter(_ => _.Name);
+
+    public static void NameInclude<TStyle>(this ISheetBuilder<global::Employee, TStyle> builder, bool value)
+        => builder.Include(_ => _.Name, value);
+
+    public static void NameExclude<TStyle>(this ISheetBuilder<global::Employee, TStyle> builder)
+        => builder.Exclude(_ => _.Name);
 }
 
 }

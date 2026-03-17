@@ -736,9 +736,21 @@ public sealed class ColumnAttribute :
     }
 
     internal bool FilterHasValue { get; private set; }
+
+    public bool Include
+    {
+        get;
+        set
+        {
+            field = value;
+            IncludeHasValue = true;
+        }
+    } = true;
+
+    internal bool IncludeHasValue { get; private set; }
 }
 ```
-<sup><a href='/src/Excelsior/Attributes/ColumnAttribute.cs#L1-L25' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnAttribute.cs' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior/Attributes/ColumnAttribute.cs#L1-L37' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnAttribute.cs' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -940,6 +952,107 @@ public class Employee
 ```
 
 
+### Include/Exclude Columns
+
+Columns can be included or excluded from the output at runtime. This is useful when generating multiple spreadsheets from the same model with different columns based on some state.
+
+
+#### Toggle based on state
+
+<!-- snippet: IncludeToggleBasedOnState -->
+<a id='snippet-IncludeToggleBasedOnState'></a>
+```cs
+var data = Data();
+var isInternalReport = true;
+
+var builder = new BookBuilder();
+var sheet = builder.AddSheet(data);
+sheet.Include(_ => _.Email, !isInternalReport);
+```
+<sup><a href='/src/ExcelsiorAspose.Tests/IncludeTests.cs#L83-L92' title='Snippet source file'>snippet source</a> | <a href='#snippet-IncludeToggleBasedOnState' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+
+#### Multiple spreadsheets from the same model
+
+The same data can produce different reports by toggling column inclusion per spreadsheet:
+
+<!-- snippet: IncludeMultipleSpreadsheets_Public -->
+<a id='snippet-IncludeMultipleSpreadsheets_Public'></a>
+```cs
+var data = Data();
+
+// Public report: exclude age and email
+var builder = new BookBuilder();
+var sheet = builder.AddSheet(data);
+sheet.Exclude(_ => _.Age);
+sheet.Exclude(_ => _.Email);
+```
+<sup><a href='/src/ExcelsiorAspose.Tests/IncludeTests.cs#L101-L111' title='Snippet source file'>snippet source</a> | <a href='#snippet-IncludeMultipleSpreadsheets_Public' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+<!-- snippet: IncludeMultipleSpreadsheets_Internal -->
+<a id='snippet-IncludeMultipleSpreadsheets_Internal'></a>
+```cs
+List<Target> data = [
+    new("Alice", 30, "alice@test.com"),
+    new("Bob", 25, "bob@test.com")
+];
+
+// Internal report: include all columns
+var builder = new BookBuilder();
+builder.AddSheet(data);
+```
+<sup><a href='/src/ExcelsiorAspose.Tests/IncludeTests.cs#L120-L131' title='Snippet source file'>snippet source</a> | <a href='#snippet-IncludeMultipleSpreadsheets_Internal' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+
+#### Exclude a column
+
+<!-- snippet: IncludeExcludeOne -->
+<a id='snippet-IncludeExcludeOne'></a>
+```cs
+List<Target> data = [
+    new("Alice", 30, "alice@test.com"),
+    new("Bob", 25, "bob@test.com")
+];
+var builder = new BookBuilder();
+var sheet = builder.AddSheet(data);
+sheet.Exclude(_ => _.Age);
+```
+<sup><a href='/src/ExcelsiorAspose.Tests/IncludeTests.cs#L29-L39' title='Snippet source file'>snippet source</a> | <a href='#snippet-IncludeExcludeOne' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+
+#### Exclude via Column configuration
+
+<!-- snippet: IncludeExcludeOneViaColumn -->
+<a id='snippet-IncludeExcludeOneViaColumn'></a>
+```cs
+List<Target> data = [
+    new("Alice", 30, "alice@test.com"),
+    new("Bob", 25, "bob@test.com")
+];
+var builder = new BookBuilder();
+var sheet = builder.AddSheet(data);
+sheet.Column(
+    _ => _.Age,
+    _ => _.Include = false);
+```
+<sup><a href='/src/ExcelsiorAspose.Tests/IncludeTests.cs#L48-L60' title='Snippet source file'>snippet source</a> | <a href='#snippet-IncludeExcludeOneViaColumn' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+
+#### ColumnAttribute
+
+```
+public class Employee
+{
+    [Column(Include = false)]
+    public required string Name { get; init; }
+```
+
+
 ### Splitting
 
 
@@ -1058,6 +1171,8 @@ For each public property, the following extension methods are generated:
  * `{Property}IsHtml` — mark the column as HTML
  * `{Property}Render` — set a custom render function
  * `{Property}Filter` — enable auto-filter for the column
+ * `{Property}Include` — include or exclude the column from the output
+ * `{Property}Exclude` — exclude the column from the output
 
 Properties with `[Ignore]` are skipped. Properties with `[Split]` (or types with `[Split]`) are recursed into, generating methods for the nested properties.
 

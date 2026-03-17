@@ -31,6 +31,7 @@
                 Render = render == null ? null : (_, value) => render(value),
                 IsHtml = property.IsHtml,
                 Filter = property.Filter,
+                Include = property.Include ?? true,
                 IsNumber = property.IsNumber,
                 IsEnumerable = isEnumerable,
                 GetValue = property.Get
@@ -98,8 +99,13 @@
         {
             column.Filter = config.Filter.Value;
         }
+
+        if (config.Include != null)
+        {
+            column.Include = config.Include.Value;
+        }
     }
 
     public List<ColumnConfig<TStyle, TModel>> OrderedColumns() =>
-        columns.Values.OrderBy(_ => _.Order ?? int.MaxValue).ToList();
+        columns.Values.Where(_ => _.Include).OrderBy(_ => _.Order ?? int.MaxValue).ToList();
 }

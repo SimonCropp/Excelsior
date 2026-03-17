@@ -8,6 +8,8 @@ Excelsior is a .NET library for Excel spreadsheet generation using a data-driven
 
 ## Build & Test Commands
 
+All commands must be run from the repository root.
+
 ```bash
 # Build
 dotnet build src --configuration Release

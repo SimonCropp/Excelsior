@@ -9,7 +9,10 @@ public class RowHeightTests
         var bookBuilder = new BookBuilder();
 
         // Create a very long text that would cause row height to exceed 409 when wrapped
-        var longText = string.Join("\n", Enumerable.Range(1, 100).Select(i => $"Line {i}: This is a very long line of text that will wrap"));
+        var longText = string.Join(
+            '\n',
+            Enumerable.Range(1, 100)
+                .Select(_ => $"Line {_}: This is a very long line of text that will wrap"));
 
         List<Target> data =
         [

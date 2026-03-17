@@ -69,4 +69,13 @@
 
     public void DisableFilter() =>
         columns.AutoFilter = false;
+
+    public void Include<TProperty>(
+        Expression<Func<TModel, TProperty>> property,
+        bool value) =>
+        Column(property, _ => _.Include = value);
+
+    public void Exclude<TProperty>(
+        Expression<Func<TModel, TProperty>> property) =>
+        Column(property, _ => _.Include = false);
 }

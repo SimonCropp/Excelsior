@@ -5,13 +5,14 @@
 
     public Columns()
     {
+        var index = 0;
         foreach (var property in Properties<TModel>.Items)
         {
-            AddColumn(property);
+            AddColumn(property, index++);
         }
     }
 
-    void AddColumn(Property<TModel> property)
+    void AddColumn(Property<TModel> property, int index)
     {
         var type = property.Type;
         var (isEnumerable, render) = ValueRenderer.GetRender(type);
@@ -21,7 +22,7 @@
             new()
             {
                 Name = property.Name,
-                Order = property.Order,
+                Order = property.Order ?? index,
                 Heading = property.DisplayName,
                 Width = property.Width,
                 HeadingStyle = null,
@@ -107,5 +108,5 @@
     }
 
     public List<ColumnConfig<TStyle, TModel>> OrderedColumns() =>
-        columns.Values.Where(_ => _.Include).OrderBy(_ => _.Order ?? int.MaxValue).ToList();
+        columns.Values.Where(_ => _.Include).OrderBy(_ => _.Order).ToList();
 }

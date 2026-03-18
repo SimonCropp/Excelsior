@@ -22,7 +22,8 @@
             new()
             {
                 Name = property.Name,
-                Order = property.Order ?? index,
+                Order = property.Order,
+                DeclarationIndex = index,
                 Heading = property.DisplayName,
                 Width = property.Width,
                 HeadingStyle = null,
@@ -108,5 +109,9 @@
     }
 
     public List<ColumnConfig<TStyle, TModel>> OrderedColumns() =>
-        columns.Values.Where(_ => _.Include).OrderBy(_ => _.Order).ToList();
+        columns.Values
+            .Where(_ => _.Include)
+            .OrderBy(_ => _.Order.HasValue ? 0 : 1)
+            .ThenBy(_ => _.Order ?? _.DeclarationIndex)
+            .ToList();
 }

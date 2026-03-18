@@ -2,6 +2,7 @@ class ColumnConfig<TStyle, TModel>
 {
     public required string Heading { get; set; }
     public required int? Order { get; set; }
+    public required int DeclarationIndex { get; init; }
     public required int? Width { get; set; }
     public required Action<TStyle>? HeadingStyle { get; set; }
     public required Action<TStyle, TModel, object?>? CellStyle { get; set; }

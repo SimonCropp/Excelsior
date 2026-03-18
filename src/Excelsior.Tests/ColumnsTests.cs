@@ -1,3 +1,4 @@
+// ReSharper disable NotAccessedPositionalProperty.Local
 [TestFixture]
 public class ColumnsTests
 {
@@ -14,7 +15,7 @@ public class ColumnsTests
         var columns = new Columns<NoOrderModel, object>();
         var ordered = columns.OrderedColumns();
 
-        Assert.That(ordered.Select(_ => _.Name).ToList(), Is.EqualTo(new[] { "First", "Second", "Third" }));
+        Assert.That(ordered.Select(_ => _.Name).ToList(), Is.EqualTo(["First", "Second", "Third"]));
     }
 
     class MixedOrderModel
@@ -33,7 +34,7 @@ public class ColumnsTests
         var columns = new Columns<MixedOrderModel, object>();
         var ordered = columns.OrderedColumns();
 
-        Assert.That(ordered.Select(_ => _.Name).ToList(), Is.EqualTo(new[] { "NoOrder1", "NoOrder2", "Ordered" }));
+        Assert.That(ordered.Select(_ => _.Name).ToList(), Is.EqualTo(["Ordered", "NoOrder1", "NoOrder2"]));
     }
 
     class AllOrderedModel
@@ -54,7 +55,7 @@ public class ColumnsTests
         var columns = new Columns<AllOrderedModel, object>();
         var ordered = columns.OrderedColumns();
 
-        Assert.That(ordered.Select(_ => _.Name).ToList(), Is.EqualTo(new[] { "First", "Second", "Third" }));
+        Assert.That(ordered.Select(_ => _.Name).ToList(), Is.EqualTo(["First", "Second", "Third"]));
     }
 
     record NoOrderRecord(string First, string Second, string Third);
@@ -65,7 +66,7 @@ public class ColumnsTests
         var columns = new Columns<NoOrderRecord, object>();
         var ordered = columns.OrderedColumns();
 
-        Assert.That(ordered.Select(_ => _.Name).ToList(), Is.EqualTo(new[] { "First", "Second", "Third" }));
+        Assert.That(ordered.Select(_ => _.Name).ToList(), Is.EqualTo(["First", "Second", "Third"]));
     }
 
     record MixedOrderRecord(
@@ -79,7 +80,7 @@ public class ColumnsTests
         var columns = new Columns<MixedOrderRecord, object>();
         var ordered = columns.OrderedColumns();
 
-        Assert.That(ordered.Select(_ => _.Name).ToList(), Is.EqualTo(new[] { "NoOrder1", "NoOrder2", "Ordered" }));
+        Assert.That(ordered.Select(_ => _.Name).ToList(), Is.EqualTo(["Ordered", "NoOrder1", "NoOrder2"]));
     }
 
     record MixedConstructorAndProperties(string First, string Second)
@@ -94,7 +95,7 @@ public class ColumnsTests
         var columns = new Columns<MixedConstructorAndProperties, object>();
         var ordered = columns.OrderedColumns();
 
-        Assert.That(ordered.Select(_ => _.Name).ToList(), Is.EqualTo(new[] { "First", "Second", "Third", "Fourth" }));
+        Assert.That(ordered.Select(_ => _.Name).ToList(), Is.EqualTo(["First", "Second", "Third", "Fourth"]));
     }
 
     record MixedConstructorAndPropertiesWithOrder(
@@ -113,7 +114,7 @@ public class ColumnsTests
         var columns = new Columns<MixedConstructorAndPropertiesWithOrder, object>();
         var ordered = columns.OrderedColumns();
 
-        Assert.That(ordered.Select(_ => _.Name).ToList(), Is.EqualTo(new[] { "NoOrder1", "NoOrder2", "Ordered2", "Ordered1" }));
+        Assert.That(ordered.Select(_ => _.Name).ToList(), Is.EqualTo(["Ordered2", "Ordered1", "NoOrder1", "NoOrder2"]));
     }
 
     record AllOrderedRecord(
@@ -127,6 +128,76 @@ public class ColumnsTests
         var columns = new Columns<AllOrderedRecord, object>();
         var ordered = columns.OrderedColumns();
 
-        Assert.That(ordered.Select(_ => _.Name).ToList(), Is.EqualTo(new[] { "First", "Second", "Third" }));
+        Assert.That(ordered.Select(_ => _.Name).ToList(), Is.EqualTo(["First", "Second", "Third"]));
+    }
+
+    [Test]
+    public void Fluent_ReorderColumns()
+    {
+        var columns = new Columns<NoOrderModel, object>();
+        columns.Add<string>(_ => _.Third, _ => _.Order = 1);
+        columns.Add<string>(_ => _.First, _ => _.Order = 2);
+        columns.Add<string>(_ => _.Second, _ => _.Order = 3);
+        var ordered = columns.OrderedColumns();
+
+        Assert.That(ordered.Select(_ => _.Name).ToList(), Is.EqualTo(["Third", "First", "Second"]));
+    }
+
+    [Test]
+    public void Fluent_PartialOrder_UnorderedAfterOrdered()
+    {
+        var columns = new Columns<NoOrderModel, object>();
+        columns.Add<string>(_ => _.Third, _ => _.Order = 1);
+        var ordered = columns.OrderedColumns();
+
+        Assert.That(ordered.Select(_ => _.Name).ToList(), Is.EqualTo(["Third", "First", "Second"]));
+    }
+
+    class AttributeOrderModel
+    {
+        [Column(Order = 2)]
+        public string A { get; set; } = "";
+
+        public string B { get; set; } = "";
+
+        [Column(Order = 1)]
+        public string C { get; set; } = "";
+    }
+
+    [Test]
+    public void Fluent_OverridesAttributeOrder()
+    {
+        var columns = new Columns<AttributeOrderModel, object>();
+        columns.Add<string>(_ => _.B, _ => _.Order = 0);
+        var ordered = columns.OrderedColumns();
+
+        Assert.That(ordered.Select(_ => _.Name).ToList(), Is.EqualTo(["B", "C", "A"]));
+    }
+
+    [Test]
+    public void Fluent_MixedWithAttributeAndPositional()
+    {
+        var columns = new Columns<MixedOrderModel, object>();
+        // MixedOrderModel: NoOrder1 (no attr), Ordered (Order=5), NoOrder2 (no attr)
+        // Fluent sets NoOrder2 to Order=3
+        columns.Add<string>(_ => _.NoOrder2, _ => _.Order = 3);
+        var ordered = columns.OrderedColumns();
+
+        // Ordered(5), NoOrder2(3) are explicitly ordered; NoOrder1 is positional
+        Assert.That(ordered.Select(_ => _.Name).ToList(), Is.EqualTo(["NoOrder2", "Ordered", "NoOrder1"]));
+    }
+
+    record FluentRecordModel(string A, string B, string C, string D);
+
+    [Test]
+    public void Fluent_Record_MixOrderedAndPositional()
+    {
+        var columns = new Columns<FluentRecordModel, object>();
+        columns.Add<string>(_ => _.C, _ => _.Order = 1);
+        columns.Add<string>(_ => _.A, _ => _.Order = 2);
+        var ordered = columns.OrderedColumns();
+
+        // C(1), A(2) explicitly ordered; B, D positional
+        Assert.That(ordered.Select(_ => _.Name).ToList(), Is.EqualTo(["C", "A", "B", "D"]));
     }
 }

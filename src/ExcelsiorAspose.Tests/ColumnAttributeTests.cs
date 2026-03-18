@@ -14,7 +14,7 @@ public class ColumnAttributeTests
         [Column(Heading = "Email Address", Width = 30)]
         public required string Email { get; init; }
 
-        [Column(Heading = "Hire Date", Order = 3, NullDisplay = "unknown")]
+        [Column(Order = 3, NullDisplay = "unknown")]
         public Date? HireDate { get; init; }
     }
 

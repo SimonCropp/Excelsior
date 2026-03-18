@@ -82,6 +82,40 @@ public class ColumnsTests
         Assert.That(ordered.Select(_ => _.Name).ToList(), Is.EqualTo(new[] { "NoOrder1", "NoOrder2", "Ordered" }));
     }
 
+    record MixedConstructorAndProperties(string First, string Second)
+    {
+        public string Third { get; init; } = "";
+        public string Fourth { get; init; } = "";
+    }
+
+    [Test]
+    public void Record_MixedConstructorAndProperties_UsesDeclarationOrder()
+    {
+        var columns = new Columns<MixedConstructorAndProperties, object>();
+        var ordered = columns.OrderedColumns();
+
+        Assert.That(ordered.Select(_ => _.Name).ToList(), Is.EqualTo(new[] { "First", "Second", "Third", "Fourth" }));
+    }
+
+    record MixedConstructorAndPropertiesWithOrder(
+        string NoOrder1,
+        [Column(Order = 10)] string Ordered1)
+    {
+        public string NoOrder2 { get; init; } = "";
+
+        [Column(Order = 5)]
+        public string Ordered2 { get; init; } = "";
+    }
+
+    [Test]
+    public void Record_MixedConstructorAndPropertiesWithOrder()
+    {
+        var columns = new Columns<MixedConstructorAndPropertiesWithOrder, object>();
+        var ordered = columns.OrderedColumns();
+
+        Assert.That(ordered.Select(_ => _.Name).ToList(), Is.EqualTo(new[] { "NoOrder1", "NoOrder2", "Ordered2", "Ordered1" }));
+    }
+
     record AllOrderedRecord(
         [Column(Order = 3)] string Third,
         [Column(Order = 1)] string First,

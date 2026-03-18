@@ -1,18 +1,34 @@
-﻿static class CamelCase
+static class CamelCase
 {
     public static string Split(string text)
     {
-        var result = new StringBuilder(text.Length);
-        for (var i = 0; i < text.Length; i++)
+        var spaceCount = 0;
+        for (var i = 1; i < text.Length; i++)
         {
-            if (i > 0 && char.IsUpper(text[i]))
+            if (char.IsUpper(text[i]))
             {
-                result.Append(' ');
+                spaceCount++;
             }
-
-            result.Append(text[i]);
         }
 
-        return result.ToString();
+        if (spaceCount == 0)
+        {
+            return text;
+        }
+
+        var result = new char[text.Length + spaceCount];
+        var pos = 0;
+        result[pos++] = text[0];
+        for (var i = 1; i < text.Length; i++)
+        {
+            if (char.IsUpper(text[i]))
+            {
+                result[pos++] = ' ';
+            }
+
+            result[pos++] = text[i];
+        }
+
+        return new string(result);
     }
 }

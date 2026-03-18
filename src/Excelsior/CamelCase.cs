@@ -29,6 +29,6 @@ static class CamelCase
             result[pos++] = text[i];
         }
 
-        return new string(result);
+        return new(result);
     }
 }

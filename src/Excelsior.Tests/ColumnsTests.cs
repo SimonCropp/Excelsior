@@ -56,4 +56,43 @@ public class ColumnsTests
 
         Assert.That(ordered.Select(_ => _.Name).ToList(), Is.EqualTo(new[] { "First", "Second", "Third" }));
     }
+
+    record NoOrderRecord(string First, string Second, string Third);
+
+    [Test]
+    public void Record_NoOrder_UsesDeclarationOrder()
+    {
+        var columns = new Columns<NoOrderRecord, object>();
+        var ordered = columns.OrderedColumns();
+
+        Assert.That(ordered.Select(_ => _.Name).ToList(), Is.EqualTo(new[] { "First", "Second", "Third" }));
+    }
+
+    record MixedOrderRecord(
+        string NoOrder1,
+        [Column(Order = 5)] string Ordered,
+        string NoOrder2);
+
+    [Test]
+    public void Record_MixedOrder_UnorderedMaintainDeclarationPosition()
+    {
+        var columns = new Columns<MixedOrderRecord, object>();
+        var ordered = columns.OrderedColumns();
+
+        Assert.That(ordered.Select(_ => _.Name).ToList(), Is.EqualTo(new[] { "NoOrder1", "NoOrder2", "Ordered" }));
+    }
+
+    record AllOrderedRecord(
+        [Column(Order = 3)] string Third,
+        [Column(Order = 1)] string First,
+        [Column(Order = 2)] string Second);
+
+    [Test]
+    public void Record_AllOrdered_SortsByOrder()
+    {
+        var columns = new Columns<AllOrderedRecord, object>();
+        var ordered = columns.OrderedColumns();
+
+        Assert.That(ordered.Select(_ => _.Name).ToList(), Is.EqualTo(new[] { "First", "Second", "Third" }));
+    }
 }

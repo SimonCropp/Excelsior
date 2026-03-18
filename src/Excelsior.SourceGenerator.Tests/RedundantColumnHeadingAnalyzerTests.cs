@@ -40,6 +40,25 @@ public class RedundantColumnHeadingAnalyzerTests
     }
 
     [Test]
+    public void RedundantHeading_CamelCaseSplit()
+    {
+        var source = """
+            using Excelsior;
+
+            public class Order
+            {
+                [Column(Heading = "Announced By", Width = 25)]
+                public string AnnouncedBy { get; set; }
+            }
+            """;
+
+        var diagnostics = GetDiagnostics(source);
+
+        AreEqual(1, diagnostics.Length);
+        AreEqual("EXCEL001", diagnostics[0].Id);
+    }
+
+    [Test]
     public void DifferentHeading_NoDiagnostic()
     {
         var source = """
@@ -47,7 +66,7 @@ public class RedundantColumnHeadingAnalyzerTests
 
             public class Order
             {
-                [Column(Heading = "Reference Number")]
+                [Column(Heading = "Ref #")]
                 public string ReferenceNumber { get; set; }
             }
             """;

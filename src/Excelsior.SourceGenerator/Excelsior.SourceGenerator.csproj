@@ -10,5 +10,6 @@
     <PackageReference Include="ProjectDefaults" PrivateAssets="all" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
     <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" PrivateAssets="all" />
+    <Compile Include="..\Excelsior\CamelCase.cs" Link="CamelCase.cs" />
   </ItemGroup>
 </Project>

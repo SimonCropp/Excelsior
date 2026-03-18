@@ -61,7 +61,8 @@ public class RedundantColumnHeadingAnalyzer : DiagnosticAnalyzer
                     continue;
                 }
 
-                if (!string.Equals(heading, memberName, StringComparison.Ordinal))
+                if (!string.Equals(heading, memberName, StringComparison.Ordinal) &&
+                    !string.Equals(heading, CamelCase.Split(memberName), StringComparison.Ordinal))
                 {
                     continue;
                 }
@@ -76,4 +77,5 @@ public class RedundantColumnHeadingAnalyzer : DiagnosticAnalyzer
             }
         }
     }
+
 }

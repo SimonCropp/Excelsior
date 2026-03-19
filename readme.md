@@ -787,7 +787,7 @@ List<Employee> data =
     new()
     {
         Id = 1,
-        Name = "John Does",
+        Name = "John Doe",
         Email = "john@company.com",
         HireDate = new(2020, 1, 15),
     },

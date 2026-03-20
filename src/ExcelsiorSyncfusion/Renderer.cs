@@ -91,7 +91,7 @@ class Renderer<TModel>(
         style.Font.Underline = ExcelUnderline.Single;
     }
 
-    protected override void SetCellLinkList(Cell cell, Style style, IReadOnlyList<string> items)
+    protected override void SetCellLinkList(Cell cell, Sheet sheet, Style style, IReadOnlyList<string> items, string? hyperlinkUrl)
     {
         var builder = new StringBuilder();
         for (var i = 0; i < items.Count; i++)
@@ -125,6 +125,11 @@ class Renderer<TModel>(
             textFont.Underline = ExcelUnderline.Single;
             cell.RichText.SetFont(pos + 2, pos + 1 + items[i].Length, textFont);
             pos += 2 + items[i].Length;
+        }
+
+        if (hyperlinkUrl != null)
+        {
+            cell.Worksheet.HyperLinks.Add(cell, ExcelHyperLinkType.Url, hyperlinkUrl, cell.Text);
         }
     }
 

@@ -46,6 +46,15 @@
             Row: 1
           },
           LinkType: External
+        },
+        {
+          Address: https://google.com,
+          Text: ● Google (https://google.com),
+          Area: {
+            Column: 4,
+            Row: 1
+          },
+          LinkType: External
         }
       ]
     }

@@ -91,7 +91,7 @@ class Renderer<TModel>(
         style.Font.Underline = FontUnderlineType.Single;
     }
 
-    protected override void SetCellLinkList(Cell cell, Style style, IReadOnlyList<string> items)
+    protected override void SetCellLinkList(Cell cell, Sheet sheet, Style style, IReadOnlyList<string> items, string? hyperlinkUrl)
     {
         var builder = new StringBuilder();
         for (var i = 0; i < items.Count; i++)
@@ -123,6 +123,11 @@ class Renderer<TModel>(
             textChars.Font.Color = Color.Blue;
             textChars.Font.Underline = FontUnderlineType.Single;
             pos += 2 + items[i].Length;
+        }
+
+        if (hyperlinkUrl != null)
+        {
+            sheet.Hyperlinks.Add(cell.Row, cell.Column, 1, 1, hyperlinkUrl);
         }
     }
 

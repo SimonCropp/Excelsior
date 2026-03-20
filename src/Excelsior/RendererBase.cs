@@ -16,7 +16,7 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor, TColum
     protected abstract void SetCellHtml(TCell cell, string value);
     protected abstract void SetCellList(TCell cell, IReadOnlyList<string> items);
     protected abstract void SetCellLink(TCell cell, TSheet sheet, TStyle style, Link link);
-    protected abstract void SetCellLinkList(TCell cell, TStyle style, IReadOnlyList<string> items);
+    protected abstract void SetCellLinkList(TCell cell, TSheet sheet, TStyle style, IReadOnlyList<string> items, string? hyperlinkUrl);
     protected abstract void SetBold(TStyle style);
     protected abstract TSheet BuildSheet(TBook book);
 
@@ -217,7 +217,7 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor, TColum
 
         if (column.IsEnumerable && value is IEnumerable<Link> linkEnumerable)
         {
-            var linkItems = new List<string>();
+            var links = new List<Link>();
             foreach (var l in linkEnumerable)
             {
                 if (l == null)
@@ -225,12 +225,19 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor, TColum
                     continue;
                 }
 
-                linkItems.Add(l.Text != null ? $"{l.Text} ({l.Url})" : l.Url);
+                links.Add(l);
             }
 
-            if (linkItems.Count > 0)
+            if (links.Count > 0)
             {
-                SetCellLinkList(cell, style, linkItems);
+                var linkItems = new List<string>(links.Count);
+                foreach (var l in links)
+                {
+                    linkItems.Add(l.Text != null ? $"{l.Text} ({l.Url})" : l.Url);
+                }
+
+                var hyperlinkUrl = links.Count == 1 ? links[0].Url : null;
+                SetCellLinkList(cell, sheet, style, linkItems, hyperlinkUrl);
             }
 
             return;

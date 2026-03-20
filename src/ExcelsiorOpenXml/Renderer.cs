@@ -173,7 +173,7 @@ class Renderer<TModel>(
         style.Font.Underline = true;
     }
 
-    protected override void SetCellLinkList(Cell cell, CellStyle style, IReadOnlyList<string> items)
+    protected override void SetCellLinkList(Cell cell, SheetContext sheet, CellStyle style, IReadOnlyList<string> items, string? hyperlinkUrl)
     {
         cell.DataType = CellValues.InlineString;
         var blueColor = new Color { Rgb = "0563C1" };
@@ -207,6 +207,19 @@ class Renderer<TModel>(
         }
 
         cell.InlineString = inlineString;
+
+        if (hyperlinkUrl != null)
+        {
+            var rel = sheet.WorksheetPart.AddHyperlinkRelationship(new Uri(hyperlinkUrl), true);
+            var hyperlinks = sheet.Worksheet.GetFirstChild<Hyperlinks>();
+            if (hyperlinks == null)
+            {
+                hyperlinks = new Hyperlinks();
+                sheet.Worksheet.InsertAfter(hyperlinks, sheet.SheetData);
+            }
+
+            hyperlinks.Append(new Hyperlink { Reference = cell.CellReference, Id = rel.Id });
+        }
     }
 
     protected override void ApplyGlobalStyling(SheetContext sheet, Action<CellStyle> globalStyle)

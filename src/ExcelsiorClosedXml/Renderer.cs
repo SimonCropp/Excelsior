@@ -79,7 +79,7 @@
         style.Font.Underline = XLFontUnderlineValues.Single;
     }
 
-    protected override void SetCellLinkList(Cell cell, Style style, IReadOnlyList<string> items)
+    protected override void SetCellLinkList(Cell cell, Sheet sheet, Style style, IReadOnlyList<string> items, string? hyperlinkUrl)
     {
         var richText = cell.CreateRichText();
         for (var i = 0; i < items.Count; i++)
@@ -91,6 +91,11 @@
 
             richText.AddText("● ").SetBold(true).SetFontColor(XLColor.Blue).SetUnderline(XLFontUnderlineValues.Single);
             richText.AddText(items[i]).SetFontColor(XLColor.Blue).SetUnderline(XLFontUnderlineValues.Single);
+        }
+
+        if (hyperlinkUrl != null)
+        {
+            cell.SetHyperlink(new XLHyperlink(hyperlinkUrl));
         }
     }
 

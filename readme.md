@@ -190,7 +190,6 @@ public enum EmployeeStatus
 
 ### Saving to a stream
 
-
 To save to a stream use `ToStream()`.
 
 <!-- snippet: ToStream -->

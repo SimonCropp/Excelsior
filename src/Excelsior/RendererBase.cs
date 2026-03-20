@@ -13,6 +13,7 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor, TColum
     protected abstract void SetCellValue(TCell cell, object value);
     protected abstract void SetCellValue(TCell cell, string value);
     protected abstract void SetCellHtml(TCell cell, string value);
+    protected abstract void SetCellLink(TSheet sheet, TCell cell, Link link);
     protected abstract void SetBold(TStyle style);
     protected abstract TSheet BuildSheet(TBook book);
 
@@ -138,7 +139,7 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor, TColum
                 var cell = GetCell(sheet, rowIndex, columnIndex);
                 var style = GetStyle(cell);
                 ApplyDefaultStyles(style);
-                SetCellValue(cell, style, value, column, item);
+                SetCellValue(sheet, cell, style, value, column, item);
 
                 if (bookBuilder.UseAlternatingRowColors &&
                     rowIndex % 2 == 1)
@@ -161,6 +162,7 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor, TColum
     protected abstract void CommitStyle(TCell cell, TStyle style);
 
     void SetCellValue(
+        TSheet sheet,
         TCell cell,
         TStyle style,
         object? value,
@@ -200,6 +202,29 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor, TColum
         if (column.TryRender(item, value, out var render))
         {
             SetStringOrHtml(render);
+
+            return;
+        }
+
+        if (value is Link link)
+        {
+            ThrowIfHtml();
+            SetCellLink(sheet, cell, link);
+            return;
+        }
+
+        if (value is IEnumerable<Link> links)
+        {
+            ThrowIfHtml();
+            var list = links.ToList();
+            if (list.Count == 1)
+            {
+                SetCellLink(sheet, cell, list[0]);
+            }
+            else if (list.Count > 0)
+            {
+                SetStringOrHtml(LinkListBuilder.Build(list));
+            }
 
             return;
         }

@@ -45,6 +45,7 @@
     <Compile Include="..\ExcelsiorAspose.Tests\WhitespaceTests.cs" />
     <Compile Include="..\ExcelsiorAspose.Tests\FilterTests.cs" />
     <Compile Include="..\ExcelsiorAspose.Tests\HtmlTests.cs" />
+    <Compile Include="..\ExcelsiorAspose.Tests\LinkTests.cs" />
     <None Include="**\*.png" Exclude="bin\**">
       <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0])</ParentFile>
       <DependentUpon>%(ParentFile).cs</DependentUpon>

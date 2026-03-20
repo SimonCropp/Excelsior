@@ -10,6 +10,7 @@ class Renderer<TModel>(
     StyleManager? styleManager;
     Dictionary<Cell, CellStyle> cellStyles = [];
     Dictionary<int, double> finalColumnWidths = [];
+    int hyperlinkCount;
 
     protected override void SetBold(CellStyle style) =>
         style.Font.Bold = true;
@@ -118,6 +119,19 @@ class Renderer<TModel>(
 
     protected override void SetCellHtml(Cell cell, string value) =>
         SpreadsheetHtmlConverter.SetCellHtml(cell, value);
+
+    protected override void SetCellLink(SheetContext sheet, Cell cell, Link link)
+    {
+        cell.DataType = CellValues.InlineString;
+        cell.InlineString = new(new Text(link.Text) { Space = SpaceProcessingModeValues.Preserve });
+
+        var id = $"link{Interlocked.Increment(ref hyperlinkCount)}";
+        var rel = sheet.WorksheetPart.AddHyperlinkRelationship(new Uri(link.Url), true, id);
+
+        var hyperlinks = sheet.Worksheet.GetFirstChild<Hyperlinks>()
+            ?? sheet.Worksheet.InsertAfter(new Hyperlinks(), sheet.SheetData);
+        hyperlinks.Append(new Hyperlink { Reference = cell.CellReference, Id = rel.Id });
+    }
 
     protected override void ApplyGlobalStyling(SheetContext sheet, Action<CellStyle> globalStyle)
     {

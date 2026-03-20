@@ -73,6 +73,16 @@ public static partial class ValueRenderer
             }
         }
 
+        if (type == typeof(Link))
+        {
+            return (false, null);
+        }
+
+        if (type.IsAssignableTo(typeof(IEnumerable<Link>)))
+        {
+            return (true, null);
+        }
+
         if (type.IsAssignableTo<IEnumerable<string>>())
         {
             return (true, _ => ListBuilder.Build((IEnumerable<string>)_));

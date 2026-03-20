@@ -50,6 +50,12 @@
     protected override void SetCellHtml(Cell cell, string value) =>
         cell.HtmlString = value;
 
+    protected override void SetCellLink(Sheet sheet, Cell cell, Link link)
+    {
+        cell.Text = link.Text;
+        sheet.HyperLinks.Add(cell, ExcelHyperLinkType.Url, link.Url, link.Text);
+    }
+
     protected override void SetBold(Style style) =>
         style.Font.Bold = true;
 

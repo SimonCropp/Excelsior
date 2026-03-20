@@ -625,39 +625,18 @@ builder.AddSheet(data);
 <img src="/src/ExcelsiorClosedXml.Tests/EnumerableStringTests.Test_Sheet1.png">
 
 
-## Binding Model
+### Link properties
 
-The recommended approach is to use a specific type for binding.
+Properties of type `Link` will be rendered as native Excel hyperlinks.
 
-This will make configuration and rendering simpler. It will often also result in better performance. The reason being that the projection into the binding type can be done by the database via an ORM. This will result in a faster query response and less data being transferred from the database.
+#### Model
 
-Take for example of rendering employees to a sheet. A potential model could be `Company`, `Employee`, and `Address`.
-
-<!-- snippet: DataModel -->
-<a id='snippet-DataModel'></a>
+<!-- snippet: LinkModel -->
+<a id='snippet-LinkModel'></a>
 ```cs
-public class Address
-{
-    public required int StreetNumber { get; init; }
-    public required string Street { get; init; }
-}
-
-public class Company
-{
-    public required int Id { get; init; }
-    public required string Name { get; init; }
-}
-
-public class Employee
-{
-    public required int Id { get; init; }
-    public required string Name { get; init; }
-    public required Company Company { get; init; }
-    public required Address Address { get; init; }
-    public required string Email { get; init; }
-}
+public record Target(string Name, Link? Link);
 ```
-<sup><a href='/src/ExcelsiorClosedXml.Tests/BindingModel.cs#L3-L26' title='Snippet source file'>snippet source</a> | <a href='#snippet-DataModel' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/ExcelsiorAspose.Tests/LinkTests.cs#L4-L8' title='Snippet source file'>snippet source</a> | <a href='#snippet-LinkModel' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 Then a custom binding type can be used.

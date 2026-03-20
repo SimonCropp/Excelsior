@@ -56,6 +56,12 @@
     protected override void SetCellHtml(Cell cell, string value) =>
         throw new("ClosedXml does not support html");
 
+    protected override void SetCellLink(Sheet sheet, Cell cell, Link link)
+    {
+        cell.SetValue(link.Text);
+        cell.SetHyperlink(new XLHyperlink(link.Url));
+    }
+
     protected override void SetBold(Style style) =>
         style.Font.Bold = true;
 

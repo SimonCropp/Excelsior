@@ -1,4 +1,6 @@
-﻿class Renderer<TModel>(
+﻿using System.Text;
+
+class Renderer<TModel>(
     string name,
     IAsyncEnumerable<TModel> data,
     List<ColumnConfig<Style, TModel>> columns,
@@ -49,6 +51,37 @@
 
     protected override void SetCellHtml(Cell cell, string value) =>
         cell.HtmlString = value;
+
+    protected override void SetCellList(Cell cell, IReadOnlyList<string> items)
+    {
+        var builder = new StringBuilder();
+        for (var i = 0; i < items.Count; i++)
+        {
+            if (i > 0)
+            {
+                builder.Append('\n');
+            }
+
+            builder.Append("● ");
+            builder.Append(items[i]);
+        }
+
+        cell.Text = builder.ToString();
+
+        var pos = 0;
+        for (var i = 0; i < items.Count; i++)
+        {
+            if (i > 0)
+            {
+                pos++; // newline
+            }
+
+            var font = cell.Worksheet.Workbook.CreateFont();
+            font.Bold = true;
+            cell.RichText.SetFont(pos, pos + 1, font);
+            pos += 2 + items[i].Length;
+        }
+    }
 
     protected override void SetBold(Style style) =>
         style.Font.Bold = true;

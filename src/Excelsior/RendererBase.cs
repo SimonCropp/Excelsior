@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System.Collections;
+using System.Globalization;
 
 abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor, TColumn>(
     IAsyncEnumerable<TModel> data,
@@ -13,6 +14,7 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor, TColum
     protected abstract void SetCellValue(TCell cell, object value);
     protected abstract void SetCellValue(TCell cell, string value);
     protected abstract void SetCellHtml(TCell cell, string value);
+    protected abstract void SetCellList(TCell cell, IReadOnlyList<string> items);
     protected abstract void SetBold(TStyle style);
     protected abstract TSheet BuildSheet(TBook book);
 
@@ -200,6 +202,36 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor, TColum
         if (column.TryRender(item, value, out var render))
         {
             SetStringOrHtml(render);
+
+            return;
+        }
+
+        if (column.IsEnumerable && value is IEnumerable enumerable)
+        {
+            var items = new List<string>();
+            foreach (var obj in enumerable)
+            {
+                if (obj == null)
+                {
+                    continue;
+                }
+
+                var str = column.ItemRender != null ? column.ItemRender(obj) : obj.ToString();
+                if (str != null && ValueRenderer.TrimWhitespace)
+                {
+                    str = str.Trim();
+                }
+
+                if (str != null)
+                {
+                    items.Add(str);
+                }
+            }
+
+            if (items.Count > 0)
+            {
+                SetCellList(cell, items);
+            }
 
             return;
         }

@@ -56,6 +56,21 @@
     protected override void SetCellHtml(Cell cell, string value) =>
         throw new("ClosedXml does not support html");
 
+    protected override void SetCellList(Cell cell, IReadOnlyList<string> items)
+    {
+        var richText = cell.CreateRichText();
+        for (var i = 0; i < items.Count; i++)
+        {
+            if (i > 0)
+            {
+                richText.AddNewLine();
+            }
+
+            richText.AddText("● ").SetBold(true);
+            richText.AddText(items[i]);
+        }
+    }
+
     protected override void SetBold(Style style) =>
         style.Font.Bold = true;
 

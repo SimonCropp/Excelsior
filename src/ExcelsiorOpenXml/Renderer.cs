@@ -119,6 +119,40 @@ class Renderer<TModel>(
     protected override void SetCellHtml(Cell cell, string value) =>
         SpreadsheetHtmlConverter.SetCellHtml(cell, value);
 
+    protected override void SetCellList(Cell cell, IReadOnlyList<string> items)
+    {
+        cell.DataType = CellValues.InlineString;
+        var inlineString = new InlineString();
+        for (var i = 0; i < items.Count; i++)
+        {
+            if (i > 0)
+            {
+                inlineString.Append(
+                    new Run(
+                        new Text("\n")
+                        {
+                            Space = SpaceProcessingModeValues.Preserve
+                        }));
+            }
+
+            inlineString.Append(
+                new Run(
+                    new RunProperties(new Bold()),
+                    new Text("● ")
+                    {
+                        Space = SpaceProcessingModeValues.Preserve
+                    }));
+            inlineString.Append(
+                new Run(
+                    new Text(items[i])
+                    {
+                        Space = SpaceProcessingModeValues.Preserve
+                    }));
+        }
+
+        cell.InlineString = inlineString;
+    }
+
     protected override void ApplyGlobalStyling(SheetContext sheet, Action<CellStyle> globalStyle)
     {
         foreach (var (cell, style) in cellStyles)
@@ -178,9 +212,25 @@ class Renderer<TModel>(
 
     static int GetCellContentLength(Cell cell)
     {
-        if (cell.InlineString?.Text != null)
+        if (cell.InlineString != null)
         {
-            return cell.InlineString.Text.Text.Length;
+            var length = 0;
+            var hasRuns = false;
+            foreach (var run in cell.InlineString.Elements<Run>())
+            {
+                hasRuns = true;
+                length += run.Text?.Text.Length ?? 0;
+            }
+
+            if (hasRuns)
+            {
+                return length;
+            }
+
+            if (cell.InlineString.Text != null)
+            {
+                return cell.InlineString.Text.Text.Length;
+            }
         }
 
         return cell.CellValue?.Text.Length ?? 0;

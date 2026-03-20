@@ -14,6 +14,7 @@ class ColumnConfig<TStyle, TModel>
     public required bool Include { get; set; }
     public required bool IsNumber { get; init; }
     public required bool IsEnumerable { get; init; }
+    public required Func<object, string>? ItemRender { get; init; }
     public required string Name { get; set; }
     public required Func<TModel, object?> GetValue { get; init; }
 

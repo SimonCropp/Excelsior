@@ -11,9 +11,6 @@
       Columns: [
         {
           Name: Name
-        },
-        {
-          Name: Addresses
         }
       ]
     }

@@ -192,7 +192,7 @@ class Renderer<TModel>(
 
             inlineString.Append(
                 new Run(
-                    new RunProperties(new Bold(), new Underline(), blueColor.CloneNode(true)),
+                    new RunProperties(new Bold()),
                     new Text("● ")
                     {
                         Space = SpaceProcessingModeValues.Preserve

@@ -117,8 +117,6 @@ class Renderer<TModel>(
 
             var bulletChars = cell.Characters(pos, 2);
             bulletChars.Font.IsBold = true;
-            bulletChars.Font.Color = Color.Blue;
-            bulletChars.Font.Underline = FontUnderlineType.Single;
             var textChars = cell.Characters(pos + 2, items[i].Length);
             textChars.Font.Color = Color.Blue;
             textChars.Font.Underline = FontUnderlineType.Single;

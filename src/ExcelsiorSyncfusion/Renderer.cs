@@ -117,8 +117,6 @@ class Renderer<TModel>(
 
             var bulletFont = cell.Worksheet.Workbook.CreateFont();
             bulletFont.Bold = true;
-            bulletFont.Color = ExcelKnownColors.Blue;
-            bulletFont.Underline = ExcelUnderline.Single;
             cell.RichText.SetFont(pos, pos + 1, bulletFont);
             var textFont = cell.Worksheet.Workbook.CreateFont();
             textFont.Color = ExcelKnownColors.Blue;

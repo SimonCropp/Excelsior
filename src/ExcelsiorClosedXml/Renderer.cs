@@ -89,7 +89,7 @@
                 richText.AddNewLine();
             }
 
-            richText.AddText("● ").SetBold(true).SetFontColor(XLColor.Blue).SetUnderline(XLFontUnderlineValues.Single);
+            richText.AddText("● ").SetBold(true);
             richText.AddText(items[i]).SetFontColor(XLColor.Blue).SetUnderline(XLFontUnderlineValues.Single);
         }
 

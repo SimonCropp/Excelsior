@@ -71,6 +71,29 @@
         }
     }
 
+    protected override void SetCellLink(Cell cell, Sheet sheet, Style style, Link link)
+    {
+        cell.SetValue(link.Text ?? link.Url);
+        cell.SetHyperlink(new XLHyperlink(link.Url));
+        style.Font.FontColor = XLColor.Blue;
+        style.Font.Underline = XLFontUnderlineValues.Single;
+    }
+
+    protected override void SetCellLinkList(Cell cell, Style style, IReadOnlyList<string> items)
+    {
+        var richText = cell.CreateRichText();
+        for (var i = 0; i < items.Count; i++)
+        {
+            if (i > 0)
+            {
+                richText.AddNewLine();
+            }
+
+            richText.AddText("● ").SetBold(true).SetFontColor(XLColor.Blue).SetUnderline(XLFontUnderlineValues.Single);
+            richText.AddText(items[i]).SetFontColor(XLColor.Blue).SetUnderline(XLFontUnderlineValues.Single);
+        }
+    }
+
     protected override void SetBold(Style style) =>
         style.Font.Bold = true;
 

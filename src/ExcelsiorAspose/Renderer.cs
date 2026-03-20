@@ -83,6 +83,49 @@ class Renderer<TModel>(
         }
     }
 
+    protected override void SetCellLink(Cell cell, Sheet sheet, Style style, Link link)
+    {
+        cell.PutValue(link.Text ?? link.Url, false);
+        sheet.Hyperlinks.Add(cell.Row, cell.Column, 1, 1, link.Url);
+        style.Font.Color = Color.Blue;
+        style.Font.Underline = FontUnderlineType.Single;
+    }
+
+    protected override void SetCellLinkList(Cell cell, Style style, IReadOnlyList<string> items)
+    {
+        var builder = new StringBuilder();
+        for (var i = 0; i < items.Count; i++)
+        {
+            if (i > 0)
+            {
+                builder.Append('\n');
+            }
+
+            builder.Append("● ");
+            builder.Append(items[i]);
+        }
+
+        cell.PutValue(builder.ToString());
+
+        var pos = 0;
+        for (var i = 0; i < items.Count; i++)
+        {
+            if (i > 0)
+            {
+                pos++; // newline
+            }
+
+            var bulletChars = cell.Characters(pos, 2);
+            bulletChars.Font.IsBold = true;
+            bulletChars.Font.Color = Color.Blue;
+            bulletChars.Font.Underline = FontUnderlineType.Single;
+            var textChars = cell.Characters(pos + 2, items[i].Length);
+            textChars.Font.Color = Color.Blue;
+            textChars.Font.Underline = FontUnderlineType.Single;
+            pos += 2 + items[i].Length;
+        }
+    }
+
     protected override void SetBold(Style style) =>
         style.Font.IsBold = true;
 

@@ -74,6 +74,11 @@ public static partial class ValueRenderer
             return (true, null);
         }
 
+        if (type.IsAssignableTo<IEnumerable<Link>>())
+        {
+            return (true, null);
+        }
+
         foreach (var enumerableType in GetEnumerableTypes(type))
         {
             foreach (var (key, value) in itemRenders)

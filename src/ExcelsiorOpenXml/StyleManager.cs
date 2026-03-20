@@ -1,6 +1,6 @@
 class StyleManager
 {
-    record FontKey(bool Bold, string? Color, double? Size, string? Name);
+    record FontKey(bool Bold, bool Underline, string? Color, double? Size, string? Name);
 
     record FillKey(string? BackgroundColor);
 
@@ -12,11 +12,11 @@ class StyleManager
         VerticalAlignmentValues VAlign,
         bool WrapText);
 
-    List<FontKey> fonts = [new(false, null, null, null)];
+    List<FontKey> fonts = [new(false, false, null, null, null)];
 
     Dictionary<FontKey, uint> fontIndex = new()
     {
-        [new(false, null, null, null)] = 0
+        [new(false, false, null, null, null)] = 0
     };
 
     List<FillKey> fills = [new(null), new("gray125")];
@@ -70,7 +70,7 @@ class StyleManager
 
     uint GetOrCreateFontId(CellFont font)
     {
-        var key = new FontKey(font.Bold, font.Color, font.Size, font.Name);
+        var key = new FontKey(font.Bold, font.Underline, font.Color, font.Size, font.Name);
         if (fontIndex.TryGetValue(key, out var id))
         {
             return id;
@@ -149,6 +149,11 @@ class StyleManager
             if (fontKey.Bold)
             {
                 font.Append(new Bold());
+            }
+
+            if (fontKey.Underline)
+            {
+                font.Append(new Underline());
             }
 
             font.Append(

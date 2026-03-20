@@ -15,6 +15,8 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor, TColum
     protected abstract void SetCellValue(TCell cell, string value);
     protected abstract void SetCellHtml(TCell cell, string value);
     protected abstract void SetCellList(TCell cell, IReadOnlyList<string> items);
+    protected abstract void SetCellLink(TCell cell, TSheet sheet, TStyle style, Link link);
+    protected abstract void SetCellLinkList(TCell cell, TStyle style, IReadOnlyList<string> items);
     protected abstract void SetBold(TStyle style);
     protected abstract TSheet BuildSheet(TBook book);
 
@@ -140,7 +142,7 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor, TColum
                 var cell = GetCell(sheet, rowIndex, columnIndex);
                 var style = GetStyle(cell);
                 ApplyDefaultStyles(style);
-                SetCellValue(cell, style, value, column, item);
+                SetCellValue(cell, sheet, style, value, column, item);
 
                 if (bookBuilder.UseAlternatingRowColors &&
                     rowIndex % 2 == 1)
@@ -164,6 +166,7 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor, TColum
 
     void SetCellValue(
         TCell cell,
+        TSheet sheet,
         TStyle style,
         object? value,
         ColumnConfig<TStyle, TModel> column,
@@ -202,6 +205,33 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor, TColum
         if (column.TryRender(item, value, out var render))
         {
             SetStringOrHtml(render);
+
+            return;
+        }
+
+        if (value is Link link)
+        {
+            SetCellLink(cell, sheet, style, link);
+            return;
+        }
+
+        if (column.IsEnumerable && value is IEnumerable<Link> linkEnumerable)
+        {
+            var linkItems = new List<string>();
+            foreach (var l in linkEnumerable)
+            {
+                if (l == null)
+                {
+                    continue;
+                }
+
+                linkItems.Add(l.Text != null ? $"{l.Text} ({l.Url})" : l.Url);
+            }
+
+            if (linkItems.Count > 0)
+            {
+                SetCellLinkList(cell, style, linkItems);
+            }
 
             return;
         }

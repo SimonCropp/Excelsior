@@ -1,0 +1,47 @@
+﻿{
+  HasMacro: False,
+  HasRevisions: False,
+  IsDigitallySigned: False,
+  Fonts: [
+    Arial
+  ],
+  Sheets: [
+    {
+      Name: Sheet1,
+      Columns: [
+        {
+          Name: Name
+        },
+        {
+          Name: Link
+        },
+        {
+          Name: Nullable Link
+        },
+        {
+          Name: Links
+        }
+      ],
+      Hyperlinks: [
+        {
+          Address: https://google.com,
+          Text: Google,
+          Area: {
+            Column: 1,
+            Row: 1
+          },
+          LinkType: External
+        },
+        {
+          Address: https://google.com,
+          Text: ● Google (https://google.com),
+          Area: {
+            Column: 3,
+            Row: 1
+          },
+          LinkType: External
+        }
+      ]
+    }
+  ]
+}

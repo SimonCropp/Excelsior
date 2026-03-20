@@ -531,6 +531,70 @@ builder.AddSheet(data);
 <img src="/src/ExcelsiorClosedXml.Tests/ComplexTypeWithCustomRender.Test_Sheet1.png">
 
 
+### Links
+
+Excelsior has first-class support for hyperlinks via the `Link` type.
+
+```cs
+namespace Excelsior;
+
+public record Link(string Url, string? Text = null);
+```
+
+A single `Link` property renders as a clickable hyperlink. When `Text` is provided it is shown as the display text; otherwise the URL is displayed.
+
+For `IEnumerable<Link>`, items are rendered as blue-styled rich text with URLs visible (e.g., `● Google (https://google.com)`) but are not individually clickable since Excel supports only one hyperlink per cell.
+
+
+#### Model
+
+<!-- snippet: LinkModel -->
+<a id='snippet-LinkModel'></a>
+```cs
+public record LinkTarget(
+    string Name,
+    Link Link,
+    Link? NullableLink,
+    IEnumerable<Link> Links,
+    IEnumerable<Link>? NullableLinks,
+    IEnumerable<Link?> LinksWithNulls);
+```
+<sup><a href='/src/ExcelsiorAspose.Tests/LinkTests.cs#L4-L14' title='Snippet source file'>snippet source</a> | <a href='#snippet-LinkModel' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+
+#### Build
+
+<!-- snippet: LinkUsage -->
+<a id='snippet-LinkUsage'></a>
+```cs
+List<LinkTarget> data =
+[
+    new(
+        "Test",
+        new Link("https://google.com", "Google"),
+        new Link("https://github.com", "GitHub"),
+        [
+            new Link("https://google.com", "Google"),
+            new Link("https://github.com", "GitHub")
+        ],
+        [
+            new Link("https://google.com", "Google")
+        ],
+        [
+            new Link("https://google.com", "Google"),
+            null,
+            new Link("https://github.com", "GitHub")
+        ])
+];
+
+var builder = new BookBuilder();
+builder.AddSheet(data);
+```
+<sup><a href='/src/ExcelsiorAspose.Tests/LinkTests.cs#L19-L44' title='Snippet source file'>snippet source</a> | <a href='#snippet-LinkUsage' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+
 ### Whitespace
 
 By default whitespace is trimmed

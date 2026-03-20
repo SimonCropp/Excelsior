@@ -5,7 +5,7 @@ public static partial class ValueRenderer
     internal static bool TrimWhitespace { get; private set; } = true;
     static bool bookBuilderUsed;
     static Dictionary<Type, Func<object, string>> renders =[];
-    static Dictionary<Type, Func<object, string>> enumerableRenders = [];
+    static Dictionary<Type, Func<object, string>> itemRenders = [];
     static Func<Enum, string> enumRender = EnumExtensions.Humanize;
     static Dictionary<Type, (bool isEnumerable, Func<object, string>? render)> renderCache = [];
 
@@ -32,11 +32,7 @@ public static partial class ValueRenderer
         ThrowIfBookBuilderUsed();
 
         renders[typeof(T)] = _ => func((T) _);
-        enumerableRenders[typeof(T)] = _ =>
-        {
-            var enumerable = (IEnumerable<T?>) _;
-            return ListBuilder.Build(enumerable.Select(_ => _ == null ? null : func(_)));
-        };
+        itemRenders[typeof(T)] = _ => func((T) _);
     }
 
     static void ThrowIfBookBuilderUsed()
@@ -75,12 +71,17 @@ public static partial class ValueRenderer
 
         if (type.IsAssignableTo<IEnumerable<string>>())
         {
-            return (true, _ => ListBuilder.Build((IEnumerable<string>)_));
+            return (true, null);
+        }
+
+        if (type.IsAssignableTo<IEnumerable<Link>>())
+        {
+            return (true, null);
         }
 
         foreach (var enumerableType in GetEnumerableTypes(type))
         {
-            foreach (var (key, value) in enumerableRenders)
+            foreach (var (key, value) in itemRenders)
             {
                 if (IsTypeCompatible(enumerableType, key))
                 {

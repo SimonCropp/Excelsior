@@ -30,12 +30,13 @@
                 CellStyle = null,
                 Format = property.Format,
                 NullDisplay = property.NullDisplay ?? ValueRenderer.GetNullDisplay(type),
-                Render = render == null ? null : (_, value) => render(value),
+                Render = isEnumerable ? null : render == null ? null : (_, value) => render(value),
                 IsHtml = property.IsHtml,
                 Filter = property.Filter,
                 Include = property.Include ?? true,
                 IsNumber = property.IsNumber,
                 IsEnumerable = isEnumerable,
+                ItemRender = isEnumerable ? render : null,
                 GetValue = property.Get
             });
     }

@@ -1,4 +1,6 @@
-﻿class Renderer<TModel>(
+﻿using System.Text;
+
+class Renderer<TModel>(
     string name,
     IAsyncEnumerable<TModel> data,
     List<ColumnConfig<Style, TModel>> columns,
@@ -49,6 +51,85 @@
 
     protected override void SetCellHtml(Cell cell, string value) =>
         cell.HtmlString = value;
+
+    protected override void SetCellList(Cell cell, IReadOnlyList<string> items)
+    {
+        var builder = new StringBuilder();
+        for (var i = 0; i < items.Count; i++)
+        {
+            if (i > 0)
+            {
+                builder.Append('\n');
+            }
+
+            builder.Append("● ");
+            builder.Append(items[i]);
+        }
+
+        cell.Text = builder.ToString();
+
+        var pos = 0;
+        for (var i = 0; i < items.Count; i++)
+        {
+            if (i > 0)
+            {
+                pos++; // newline
+            }
+
+            var font = cell.Worksheet.Workbook.CreateFont();
+            font.Bold = true;
+            cell.RichText.SetFont(pos, pos + 1, font);
+            pos += 2 + items[i].Length;
+        }
+    }
+
+    protected override void SetCellLink(Cell cell, Sheet sheet, Style style, Link link)
+    {
+        var display = link.Text ?? link.Url;
+        cell.Worksheet.HyperLinks.Add(cell, ExcelHyperLinkType.Url, link.Url, display);
+        style.Font.Color = ExcelKnownColors.Blue;
+        style.Font.Underline = ExcelUnderline.Single;
+    }
+
+    protected override void SetCellLinkList(Cell cell, Sheet sheet, Style style, IReadOnlyList<string> items, string? hyperlinkUrl)
+    {
+        var builder = new StringBuilder();
+        for (var i = 0; i < items.Count; i++)
+        {
+            if (i > 0)
+            {
+                builder.Append('\n');
+            }
+
+            builder.Append("● ");
+            builder.Append(items[i]);
+        }
+
+        cell.Text = builder.ToString();
+
+        var pos = 0;
+        for (var i = 0; i < items.Count; i++)
+        {
+            if (i > 0)
+            {
+                pos++; // newline
+            }
+
+            var bulletFont = cell.Worksheet.Workbook.CreateFont();
+            bulletFont.Bold = true;
+            cell.RichText.SetFont(pos, pos + 1, bulletFont);
+            var textFont = cell.Worksheet.Workbook.CreateFont();
+            textFont.Color = ExcelKnownColors.Blue;
+            textFont.Underline = ExcelUnderline.Single;
+            cell.RichText.SetFont(pos + 2, pos + 1 + items[i].Length, textFont);
+            pos += 2 + items[i].Length;
+        }
+
+        if (hyperlinkUrl != null)
+        {
+            cell.Worksheet.HyperLinks.Add(cell, ExcelHyperLinkType.Url, hyperlinkUrl, cell.Text);
+        }
+    }
 
     protected override void SetBold(Style style) =>
         style.Font.Bold = true;

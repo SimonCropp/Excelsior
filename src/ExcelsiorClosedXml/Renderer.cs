@@ -56,6 +56,49 @@
     protected override void SetCellHtml(Cell cell, string value) =>
         throw new("ClosedXml does not support html");
 
+    protected override void SetCellList(Cell cell, IReadOnlyList<string> items)
+    {
+        var richText = cell.CreateRichText();
+        for (var i = 0; i < items.Count; i++)
+        {
+            if (i > 0)
+            {
+                richText.AddNewLine();
+            }
+
+            richText.AddText("● ").SetBold(true);
+            richText.AddText(items[i]);
+        }
+    }
+
+    protected override void SetCellLink(Cell cell, Sheet sheet, Style style, Link link)
+    {
+        cell.SetValue(link.Text ?? link.Url);
+        cell.SetHyperlink(new XLHyperlink(link.Url));
+        style.Font.FontColor = XLColor.Blue;
+        style.Font.Underline = XLFontUnderlineValues.Single;
+    }
+
+    protected override void SetCellLinkList(Cell cell, Sheet sheet, Style style, IReadOnlyList<string> items, string? hyperlinkUrl)
+    {
+        var richText = cell.CreateRichText();
+        for (var i = 0; i < items.Count; i++)
+        {
+            if (i > 0)
+            {
+                richText.AddNewLine();
+            }
+
+            richText.AddText("● ").SetBold(true);
+            richText.AddText(items[i]).SetFontColor(XLColor.Blue).SetUnderline(XLFontUnderlineValues.Single);
+        }
+
+        if (hyperlinkUrl != null)
+        {
+            cell.SetHyperlink(new XLHyperlink(hyperlinkUrl));
+        }
+    }
+
     protected override void SetBold(Style style) =>
         style.Font.Bold = true;
 

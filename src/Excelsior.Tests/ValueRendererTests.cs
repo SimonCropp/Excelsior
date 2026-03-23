@@ -109,4 +109,24 @@ public class ValueRendererTests
         Assert.That(isEnumerable, Is.True);
         Assert.That(render, Is.Not.Null);
     }
+
+    [Test]
+    public void GetRender_ConcurrentAccess()
+    {
+        var types = new[]
+        {
+            typeof(int),
+            typeof(long),
+            typeof(double),
+            typeof(float),
+            typeof(decimal),
+            typeof(bool),
+            typeof(DateTime),
+            typeof(DateTimeOffset),
+            typeof(Guid),
+            typeof(byte)
+        };
+
+        Parallel.ForEach(types, type => ValueRenderer.GetRender(type));
+    }
 }

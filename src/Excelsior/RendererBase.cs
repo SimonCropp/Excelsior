@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Globalization;
-
-abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor, TColumn>(
+﻿abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor, TColumn>(
     IAsyncEnumerable<TModel> data,
     List<ColumnConfig<TStyle, TModel>> columns,
     int? maxColumnWidth,
@@ -39,15 +36,18 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor, TColum
         var last = -1;
         for (var i = 0; i < columns.Count; i++)
         {
-            if (columns[i].Filter ?? AutoFilter)
+            var column = columns[i];
+            if (column.IsEnumerable || !(column.Filter ?? AutoFilter))
             {
-                if (first == -1)
-                {
-                    first = i;
-                }
-
-                last = i;
+                continue;
             }
+
+            if (first == -1)
+            {
+                first = i;
+            }
+
+            last = i;
         }
 
         if (first != -1)
@@ -215,7 +215,8 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor, TColum
             return;
         }
 
-        if (column.IsEnumerable && value is IEnumerable<Link> linkEnumerable)
+        if (column.IsEnumerable &&
+            value is IEnumerable<Link?> linkEnumerable)
         {
             var links = new List<Link>();
             foreach (var l in linkEnumerable)
@@ -233,7 +234,7 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor, TColum
                 var linkItems = new List<string>(links.Count);
                 foreach (var l in links)
                 {
-                    linkItems.Add(l.Text != null ? $"{l.Text} ({l.Url})" : l.Url);
+                    linkItems.Add(l.Text == null ? l.Url : $"{l.Text} ({l.Url})");
                 }
 
                 var hyperlinkUrl = links.Count == 1 ? links[0].Url : null;
@@ -243,7 +244,8 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor, TColum
             return;
         }
 
-        if (column.IsEnumerable && value is IEnumerable enumerable)
+        if (column.IsEnumerable &&
+            value is IEnumerable enumerable)
         {
             var items = new List<string>();
             foreach (var obj in enumerable)
@@ -253,8 +255,9 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor, TColum
                     continue;
                 }
 
-                var str = column.ItemRender != null ? column.ItemRender(obj) : obj.ToString();
-                if (str != null && ValueRenderer.TrimWhitespace)
+                var str = column.ItemRender == null ? obj.ToString() : column.ItemRender(obj);
+                if (str != null &&
+                    ValueRenderer.TrimWhitespace)
                 {
                     str = str.Trim();
                 }
@@ -323,7 +326,8 @@ abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor, TColum
 
         var valueAsString = value.ToString();
         // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
-        if (valueAsString != null && ValueRenderer.TrimWhitespace)
+        if (valueAsString != null &&
+            ValueRenderer.TrimWhitespace)
         {
             valueAsString = valueAsString.Trim();
         }

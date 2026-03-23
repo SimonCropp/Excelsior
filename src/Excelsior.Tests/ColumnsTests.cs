@@ -1,5 +1,4 @@
 // ReSharper disable NotAccessedPositionalProperty.Local
-// ReSharper disable AutoPropertyCanBeMadeGetOnly.Local
 [TestFixture]
 public class ColumnsTests
 {

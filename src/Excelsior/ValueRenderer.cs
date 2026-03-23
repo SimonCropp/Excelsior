@@ -7,7 +7,7 @@ public static partial class ValueRenderer
     static Dictionary<Type, Func<object, string>> renders =[];
     static Dictionary<Type, Func<object, string>> itemRenders = [];
     static Func<Enum, string> enumRender = EnumExtensions.Humanize;
-    static Dictionary<Type, (bool isEnumerable, Func<object, string>? render)> renderCache = [];
+    static ConcurrentDictionary<Type, (bool isEnumerable, Func<object, string>? render)> renderCache = [];
 
     public static void DisableWhitespaceTrimming()
     {
@@ -47,17 +47,8 @@ public static partial class ValueRenderer
         type.IsAssignableTo(key) ||
         Nullable.GetUnderlyingType(type)?.IsAssignableTo(key) == true;
 
-    internal static (bool isEnumerable, Func<object, string>? render) GetRender(Type type)
-    {
-        if (renderCache.TryGetValue(type, out var cached))
-        {
-            return cached;
-        }
-
-        var result = ResolveRender(type);
-        renderCache[type] = result;
-        return result;
-    }
+    internal static (bool isEnumerable, Func<object, string>? render) GetRender(Type type) =>
+        renderCache.GetOrAdd(type, ResolveRender);
 
     static (bool isEnumerable, Func<object, string>? render) ResolveRender(Type type)
     {

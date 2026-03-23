@@ -258,11 +258,11 @@ class Renderer<TModel>(
         var reference = $"{firstCol}1:{lastCol}{sheet.RowCount}";
         sheet.Worksheet
             .InsertAfter(
-            new AutoFilter
-        {
-            Reference = reference
-        },
-            sheet.SheetData);
+                new AutoFilter
+                {
+                    Reference = reference
+                },
+                sheet.SheetData);
     }
 
     protected override ColumnRef GetColumn(SheetContext sheet, int index) =>

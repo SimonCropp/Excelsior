@@ -75,7 +75,7 @@
     {
         cell.SetValue(link.Text ?? link.Url);
         cell.SetHyperlink(new XLHyperlink(link.Url));
-        style.Font.FontColor = XLColor.Blue;
+        style.Font.FontColor = Color.Blue;
         style.Font.Underline = XLFontUnderlineValues.Single;
     }
 
@@ -90,7 +90,7 @@
             }
 
             richText.AddText("● ").SetBold(true);
-            richText.AddText(items[i]).SetFontColor(XLColor.Blue).SetUnderline(XLFontUnderlineValues.Single);
+            richText.AddText(items[i]).SetFontColor(Color.Blue).SetUnderline(XLFontUnderlineValues.Single);
         }
 
         if (hyperlinkUrl != null)

@@ -22,19 +22,19 @@ public class LinkTests
         [
             new(
                 "Test",
-                new Link("https://google.com", "Google"),
-                new Link("https://github.com", "GitHub"),
+                new("https://google.com", "Google"),
+                new("https://github.com", "GitHub"),
                 [
-                    new Link("https://google.com", "Google"),
-                    new Link("https://github.com", "GitHub")
+                    new("https://google.com", "Google"),
+                    new("https://github.com", "GitHub")
                 ],
                 [
-                    new Link("https://google.com", "Google")
+                    new("https://google.com", "Google")
                 ],
                 [
-                    new Link("https://google.com", "Google"),
+                    new("https://google.com", "Google"),
                     null,
-                    new Link("https://github.com", "GitHub")
+                    new("https://github.com", "GitHub")
                 ])
         ];
 
@@ -55,9 +55,9 @@ public class LinkTests
         [
             new(
                 "Test",
-                new Link("https://google.com", "Google"),
+                new("https://google.com", "Google"),
                 null,
-                [new Link("https://google.com", "Google")],
+                [new("https://google.com", "Google")],
                 null,
                 [null, null])
         ];
@@ -77,11 +77,11 @@ public class LinkTests
         [
             new(
                 "Test",
-                new Link("https://google.com", "Google"),
+                new("https://google.com", "Google"),
                 null,
-                [new Link("https://google.com", "Google")],
+                [new("https://google.com", "Google")],
                 null,
-                [null, new Link("https://github.com", "GitHub"), null])
+                [null, new("https://github.com", "GitHub"), null])
         ];
 
         var builder = new BookBuilder();
@@ -99,11 +99,11 @@ public class LinkTests
         [
             new(
                 "Test",
-                new Link("https://google.com", "Google"),
+                new("https://google.com", "Google"),
                 null,
-                [new Link("https://google.com", "Google")],
+                [new("https://google.com", "Google")],
                 null,
-                [new Link("https://github.com")])
+                [new("https://github.com")])
         ];
 
         var builder = new BookBuilder();
@@ -121,14 +121,14 @@ public class LinkTests
         [
             new(
                 "Test",
-                new Link("https://google.com", "Google"),
-                new Link("https://github.com", "GitHub"),
+                new("https://google.com", "Google"),
+                new("https://github.com", "GitHub"),
                 [
-                    new Link("https://google.com", "Google"),
-                    new Link("https://github.com", "GitHub")
+                    new("https://google.com", "Google"),
+                    new("https://github.com", "GitHub")
                 ],
                 null,
-                [new Link("https://google.com", "Google")])
+                [new("https://google.com", "Google")])
         ];
 
         var builder = new BookBuilder();
@@ -146,14 +146,14 @@ public class LinkTests
         [
             new(
                 "Test",
-                new Link("https://google.com"),
-                new Link("https://github.com"),
+                new("https://google.com"),
+                new("https://github.com"),
                 [
-                    new Link("https://google.com"),
-                    new Link("https://github.com")
+                    new("https://google.com"),
+                    new("https://github.com")
                 ],
                 null,
-                [new Link("https://google.com")])
+                [new("https://google.com")])
         ];
 
         var builder = new BookBuilder();

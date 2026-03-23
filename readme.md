@@ -572,19 +572,19 @@ List<LinkTarget> data =
 [
     new(
         "Test",
-        new Link("https://google.com", "Google"),
-        new Link("https://github.com", "GitHub"),
+        new("https://google.com", "Google"),
+        new("https://github.com", "GitHub"),
         [
-            new Link("https://google.com", "Google"),
-            new Link("https://github.com", "GitHub")
+            new("https://google.com", "Google"),
+            new("https://github.com", "GitHub")
         ],
         [
-            new Link("https://google.com", "Google")
+            new("https://google.com", "Google")
         ],
         [
-            new Link("https://google.com", "Google"),
+            new("https://google.com", "Google"),
             null,
-            new Link("https://github.com", "GitHub")
+            new("https://github.com", "GitHub")
         ])
 ];
 

@@ -74,7 +74,7 @@
     protected override void SetCellLink(Cell cell, Sheet sheet, Style style, Link link)
     {
         cell.SetValue(link.Text ?? link.Url);
-        cell.SetHyperlink(new XLHyperlink(link.Url));
+        cell.SetHyperlink(new(link.Url));
         style.Font.FontColor = Color.Blue;
         style.Font.Underline = XLFontUnderlineValues.Single;
     }
@@ -95,7 +95,7 @@
 
         if (hyperlinkUrl != null)
         {
-            cell.SetHyperlink(new XLHyperlink(hyperlinkUrl));
+            cell.SetHyperlink(new(hyperlinkUrl));
         }
     }
 

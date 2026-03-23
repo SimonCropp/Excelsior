@@ -159,15 +159,20 @@ class Renderer<TModel>(
         cell.DataType = CellValues.InlineString;
         cell.InlineString = new(new Text(display) { Space = SpaceProcessingModeValues.Preserve });
 
-        var rel = sheet.WorksheetPart.AddHyperlinkRelationship(new Uri(link.Url), true);
+        var rel = sheet.WorksheetPart.AddHyperlinkRelationship(new(link.Url), true);
         var hyperlinks = sheet.Worksheet.GetFirstChild<Hyperlinks>();
         if (hyperlinks == null)
         {
-            hyperlinks = new Hyperlinks();
+            hyperlinks = new();
             sheet.Worksheet.InsertAfter(hyperlinks, sheet.SheetData);
         }
 
-        hyperlinks.Append(new Hyperlink { Reference = cell.CellReference, Id = rel.Id });
+        hyperlinks.Append(
+            new Hyperlink
+            {
+                Reference = cell.CellReference,
+                Id = rel.Id
+            });
 
         style.Font.Color = "0563C1";
         style.Font.Underline = true;
@@ -176,7 +181,10 @@ class Renderer<TModel>(
     protected override void SetCellLinkList(Cell cell, SheetContext sheet, CellStyle style, IReadOnlyList<string> items, string? hyperlinkUrl)
     {
         cell.DataType = CellValues.InlineString;
-        var blueColor = new Color { Rgb = "0563C1" };
+        var blueColor = new Color
+        {
+            Rgb = "0563C1"
+        };
         var inlineString = new InlineString();
         for (var i = 0; i < items.Count; i++)
         {
@@ -208,18 +216,25 @@ class Renderer<TModel>(
 
         cell.InlineString = inlineString;
 
-        if (hyperlinkUrl != null)
+        if (hyperlinkUrl == null)
         {
-            var rel = sheet.WorksheetPart.AddHyperlinkRelationship(new Uri(hyperlinkUrl), true);
-            var hyperlinks = sheet.Worksheet.GetFirstChild<Hyperlinks>();
-            if (hyperlinks == null)
-            {
-                hyperlinks = new Hyperlinks();
-                sheet.Worksheet.InsertAfter(hyperlinks, sheet.SheetData);
-            }
-
-            hyperlinks.Append(new Hyperlink { Reference = cell.CellReference, Id = rel.Id });
+            return;
         }
+
+        var rel = sheet.WorksheetPart.AddHyperlinkRelationship(new(hyperlinkUrl), true);
+        var hyperlinks = sheet.Worksheet.GetFirstChild<Hyperlinks>();
+        if (hyperlinks == null)
+        {
+            hyperlinks = new();
+            sheet.Worksheet.InsertAfter(hyperlinks, sheet.SheetData);
+        }
+
+        hyperlinks.Append(
+            new Hyperlink
+            {
+                Reference = cell.CellReference,
+                Id = rel.Id
+            });
     }
 
     protected override void ApplyGlobalStyling(SheetContext sheet, Action<CellStyle> globalStyle)
@@ -241,10 +256,13 @@ class Renderer<TModel>(
         var firstCol = SheetContext.GetColumnLetter(firstColumn);
         var lastCol = SheetContext.GetColumnLetter(lastColumn);
         var reference = $"{firstCol}1:{lastCol}{sheet.RowCount}";
-        sheet.Worksheet.InsertAfter(new AutoFilter
+        sheet.Worksheet
+            .InsertAfter(
+            new AutoFilter
         {
             Reference = reference
-        }, sheet.SheetData);
+        },
+            sheet.SheetData);
     }
 
     protected override ColumnRef GetColumn(SheetContext sheet, int index) =>

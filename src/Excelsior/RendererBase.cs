@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Globalization;
-
-abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor, TColumn>(
+﻿abstract class RendererBase<TModel, TSheet, TStyle, TCell, TBook, TColor, TColumn>(
     IAsyncEnumerable<TModel> data,
     List<ColumnConfig<TStyle, TModel>> columns,
     int? maxColumnWidth,

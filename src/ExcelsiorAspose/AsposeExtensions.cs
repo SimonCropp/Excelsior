@@ -6,13 +6,13 @@
         {
             var cells = sheet.Cells;
             sheet.AutoFitRows();
-            //Round row since Aspose AutoFitRows is not deterministic
+            //Round row to nearest 5 since Aspose AutoFitRows is not deterministic
             //MaxRow is expensive so cache
             var maxRow = cells.MaxRow;
             for (var index = 0; index <= maxRow; index++)
             {
                 var height = cells.GetRowHeight(index);
-                cells.SetRowHeight(index, Math.Min(409, Math.Round(height) + 1));
+                cells.SetRowHeight(index, Math.Min(409, Math.Round(height / 5.0) * 5 + 1));
             }
         }
 

@@ -9,19 +9,6 @@ public class RenderExcel
     public void Run()
     {
         var directory = ProjectFiles.SolutionDirectory;
-        var imageFiles = Directory.EnumerateFiles(directory, "*.png", SearchOption.AllDirectories).ToList();
-
-        foreach (var file in imageFiles)
-        {
-            if (file.Contains(".verified.") ||
-                file.EndsWith("icon.png"))
-            {
-                continue;
-            }
-
-            File.Delete(file);
-        }
-
         var excelFiles = Directory.EnumerateFiles(directory, "*.verified.xlsx", SearchOption.AllDirectories).ToList();
         foreach (var file in excelFiles)
         {
@@ -98,6 +85,16 @@ public class RenderExcel
     {
         try
         {
+            var imageFile = excelPath
+                .Replace(".verified", "")
+                .Replace(".xlsx", $"_{sheet.Name}.png");
+
+            if (File.Exists(imageFile) &&
+                File.GetLastWriteTimeUtc(imageFile) > File.GetLastWriteTimeUtc(excelPath))
+            {
+                return;
+            }
+
             var range = sheet.UsedRange;
             sheet.Activate();
             range.Select();
@@ -134,9 +131,6 @@ public class RenderExcel
                 throw new($"Failed to capture image from clipboard for sheet '{sheet.Name}'");
             }
 
-            var imageFile = excelPath
-                .Replace(".verified", "")
-                .Replace(".xlsx", $"_{sheet.Name}.png");
             image.Save(imageFile, ImageFormat.Png);
         }
         finally

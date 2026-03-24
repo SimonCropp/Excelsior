@@ -26,6 +26,35 @@ public class SourceGeneratorIntegrationTests
 
         await Verify(book);
     }
+    [Test]
+    public async Task ColumnAttributesAppliedAutomatically()
+    {
+        var builder = new BookBuilder();
+
+        List<GeneratedColumnAttributeModel> data =
+        [
+            new()
+            {
+                Id = 1,
+                Name = "Alice",
+                Email = "alice@test.com",
+                HireDate = new(2020, 1, 15)
+            },
+            new()
+            {
+                Id = 2,
+                Name = "Bob",
+                Email = "bob@test.com",
+                HireDate = null
+            },
+        ];
+
+        builder.AddSheet(data);
+
+        using var book = await builder.Build();
+
+        await Verify(book);
+    }
 }
 
 #region SourceGeneratedModel
@@ -38,3 +67,19 @@ public class GeneratedTestModel
 }
 
 #endregion
+
+[SheetModel]
+public class GeneratedColumnAttributeModel
+{
+    [Column(Heading = "Employee ID", Order = 1, Format = "0000")]
+    public required int Id { get; init; }
+
+    [Column(Heading = "Full Name", Order = 2, Width = 20)]
+    public required string Name { get; init; }
+
+    [Column(Heading = "Email Address", Width = 30)]
+    public required string Email { get; init; }
+
+    [Column(Order = 3, NullDisplay = "unknown")]
+    public Date? HireDate { get; init; }
+}

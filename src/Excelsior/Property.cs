@@ -8,17 +8,33 @@
         bool useHierachyForName)
     {
         Get = get;
-        var column = info.Attribute<ColumnAttribute>() ?? constructorParameter?.Attribute<ColumnAttribute>();
+        var generated = GeneratedColumnAttributes.TryGet(info.DeclaringType!, info.Name);
         var display = info.Attribute<DisplayAttribute>() ?? constructorParameter?.Attribute<DisplayAttribute>();
         DisplayName = GetHeading(infos, useHierachyForName);
         Name = string.Join('.', infos.Select(_ => _.property.Name));
-        Order = GetOrder(column, display);
-        Width = GetWidth(column);
-        Format = column?.Format;
-        NullDisplay = column?.NullDisplay;
-        IsHtml = column?.IsHtml ?? false;
-        Filter = column is { FilterHasValue: true } ? column.Filter : null;
-        Include = column is { IncludeHasValue: true } ? column.Include : null;
+
+        if (generated is null)
+        {
+            var column = info.Attribute<ColumnAttribute>() ?? constructorParameter?.Attribute<ColumnAttribute>();
+            Order = GetOrder(column, display);
+            Width = GetWidth(column);
+            Format = column?.Format;
+            NullDisplay = column?.NullDisplay;
+            IsHtml = column?.IsHtml ?? false;
+            Filter = column is {FilterHasValue: true} ? column.Filter : null;
+            Include = column is {IncludeHasValue: true} ? column.Include : null;
+        }
+        else
+        {
+            Order = generated.Order ?? display?.Order;
+            Width = generated.Width;
+            Format = generated.Format;
+            NullDisplay = generated.NullDisplay;
+            IsHtml = generated.IsHtml;
+            Filter = generated.Filter;
+            Include = generated.Include;
+        }
+
         Type = info.PropertyType;
         IsNumber = info.PropertyType.IsNumericType();
     }
@@ -73,11 +89,21 @@
 
         void Add(PropertyInfo property, ParameterInfo? parameter)
         {
-            var column = property.Attribute<ColumnAttribute>() ?? parameter?.Attribute<ColumnAttribute>();
-            if (column?.Heading != null)
+            var generated = GeneratedColumnAttributes.TryGet(property.DeclaringType!, property.Name);
+            if (generated?.Heading is not null)
             {
-                names.Add(column.Heading);
+                names.Add(generated.Heading);
                 return;
+            }
+
+            if (generated is null)
+            {
+                var column = property.Attribute<ColumnAttribute>() ?? parameter?.Attribute<ColumnAttribute>();
+                if (column?.Heading != null)
+                {
+                    names.Add(column.Heading);
+                    return;
+                }
             }
 
             var display = property.Attribute<DisplayAttribute>() ?? parameter?.Attribute<DisplayAttribute>();

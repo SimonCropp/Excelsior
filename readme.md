@@ -918,6 +918,45 @@ builder.AddSheet(data);
 <img src="/src/StaticSettingsTests/ValueRendererForEnums.Test%23Sheet1.verified.png">
 
 
+### ValueRenderer.ForEnums using Humanizer
+
+Using [Humanizer](https://github.com/Humanizr/Humanizer) to convert enums to strings:
+
+
+#### Config in a ModuleInitializer
+
+<!-- snippet: ValueRendererForEnumsHumanizerInit -->
+<a id='snippet-ValueRendererForEnumsHumanizerInit'></a>
+```cs
+[ModuleInitializer]
+public static void CustomEnumRender() =>
+    ValueRenderer.ForEnums(_ => _.Humanize());
+```
+<sup><a href='/src/HumanizerEnumTests/ValueRendererForEnumsHumanizer.cs#L6-L12' title='Snippet source file'>snippet source</a> | <a href='#snippet-ValueRendererForEnumsHumanizerInit' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+
+#### Example use
+
+<!-- snippet: ValueRendererForEnumsHumanizer -->
+<a id='snippet-ValueRendererForEnumsHumanizer'></a>
+```cs
+var builder = new BookBuilder();
+
+List<Car> data =
+[
+    new()
+    {
+        Manufacturer = Manufacturer.BuildYourDream,
+        Color = Color.AntiqueWhite,
+    }
+];
+builder.AddSheet(data);
+```
+<sup><a href='/src/HumanizerEnumTests/ValueRendererForEnumsHumanizer.cs#L17-L31' title='Snippet source file'>snippet source</a> | <a href='#snippet-ValueRendererForEnumsHumanizer' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+
 ### Date formats
 
 `DateTime` and `DateOnly` are passed directly in to the respective library.

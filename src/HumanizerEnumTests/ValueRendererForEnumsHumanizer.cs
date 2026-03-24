@@ -1,18 +1,20 @@
-﻿[TestFixture]
-public class ValueRendererForEnums
+using Humanizer;
+
+[TestFixture]
+public class ValueRendererForEnumsHumanizer
 {
-    #region ValueRendererForEnumsInit
+    #region ValueRendererForEnumsHumanizerInit
 
     [ModuleInitializer]
     public static void CustomEnumRender() =>
-        ValueRenderer.ForEnums(_ => _.ToString().ToUpper());
+        ValueRenderer.ForEnums(_ => _.Humanize());
 
     #endregion
 
     [Test]
     public async Task Test()
     {
-        #region ValueRendererForEnums
+        #region ValueRendererForEnumsHumanizer
 
         var builder = new BookBuilder();
 

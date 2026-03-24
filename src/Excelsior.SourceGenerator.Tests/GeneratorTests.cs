@@ -107,6 +107,30 @@ public class GeneratorTests
     }
 
     [Test]
+    public Task NestedUnderDifferentParentsWithSameName()
+    {
+        var source = """
+            using Excelsior;
+
+            public class GroupA
+            {
+                [SheetModel]
+                public record Row(string Name, int Age);
+            }
+
+            public class GroupB
+            {
+                [SheetModel]
+                public record Row(string Email, decimal Salary);
+            }
+            """;
+
+        var generated = Generate(source);
+
+        return Verify(generated);
+    }
+
+    [Test]
     public void PrivateNestedTypeProducesError()
     {
         var source = """

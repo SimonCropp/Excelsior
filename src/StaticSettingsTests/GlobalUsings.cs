@@ -1,2 +1,2 @@
-﻿global using Excelsior;
-global using ExcelsiorAspose;
+global using Excelsior;
+global using ExcelsiorOpenXml;

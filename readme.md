@@ -188,6 +188,11 @@ public enum EmployeeStatus
 <!-- endSnippet -->
 
 
+#### Result
+
+<img src="/src/ExcelsiorClosedXml.Tests/DataAnnotationsTests.Simple_Sheet1.png">
+
+
 ### Saving to a stream
 
 To save to a stream use `ToStream()`.
@@ -595,6 +600,11 @@ builder.AddSheet(data);
 <!-- endSnippet -->
 
 
+#### Result
+
+<img src="/src/ExcelsiorClosedXml.Tests/LinkTests.Test_Sheet1.png">
+
+
 ### Whitespace
 
 By default whitespace is trimmed
@@ -631,11 +641,10 @@ using var book = await builder.Build();
 <!-- snippet: DisableWhitespaceTrim -->
 <a id='snippet-DisableWhitespaceTrim'></a>
 ```cs
-[ModuleInitializer]
-public static void DisableTrimWhitespace() =>
+static void DisableTrimWhitespace() =>
     ValueRenderer.DisableWhitespaceTrimming();
 ```
-<sup><a href='/src/StaticSettingsTests/DisableWhitespaceTrimmingTests.cs#L4-L10' title='Snippet source file'>snippet source</a> | <a href='#snippet-DisableWhitespaceTrim' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/StaticSettingsTests/DisableWhitespaceTrimmingTests.cs#L12-L17' title='Snippet source file'>snippet source</a> | <a href='#snippet-DisableWhitespaceTrim' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -884,11 +893,10 @@ builder.AddSheet(data);
 <!-- snippet: ValueRendererForEnumsInit -->
 <a id='snippet-ValueRendererForEnumsInit'></a>
 ```cs
-[ModuleInitializer]
-public static void CustomEnumRender() =>
+static void CustomEnumRender() =>
     ValueRenderer.ForEnums(_ => _.ToString().ToUpper());
 ```
-<sup><a href='/src/StaticSettingsTests/ValueRendererForEnums.cs#L4-L10' title='Snippet source file'>snippet source</a> | <a href='#snippet-ValueRendererForEnumsInit' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/StaticSettingsTests/ValueRendererForEnums.cs#L12-L17' title='Snippet source file'>snippet source</a> | <a href='#snippet-ValueRendererForEnumsInit' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -909,13 +917,13 @@ List<Car> data =
 ];
 builder.AddSheet(data);
 ```
-<sup><a href='/src/StaticSettingsTests/ValueRendererForEnums.cs#L15-L29' title='Snippet source file'>snippet source</a> | <a href='#snippet-ValueRendererForEnums' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/StaticSettingsTests/ValueRendererForEnums.cs#L22-L36' title='Snippet source file'>snippet source</a> | <a href='#snippet-ValueRendererForEnums' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
 #### Result
 
-<img src="/src/StaticSettingsTests/ValueRendererForEnums.Test%23Sheet1.verified.png">
+<img src="/src/StaticSettingsTests/ValueRendererForEnums.Test_Sheet1.png">
 
 
 ### ValueRenderer.ForEnums using Humanizer
@@ -928,11 +936,10 @@ Using [Humanizer](https://github.com/Humanizr/Humanizer) to convert enums to str
 <!-- snippet: ValueRendererForEnumsHumanizerInit -->
 <a id='snippet-ValueRendererForEnumsHumanizerInit'></a>
 ```cs
-[ModuleInitializer]
-public static void CustomEnumRender() =>
+static void CustomEnumRender() =>
     ValueRenderer.ForEnums(_ => _.Humanize());
 ```
-<sup><a href='/src/HumanizerEnumTests/ValueRendererForEnumsHumanizer.cs#L6-L12' title='Snippet source file'>snippet source</a> | <a href='#snippet-ValueRendererForEnumsHumanizerInit' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/StaticSettingsTests/ValueRendererForEnumsHumanizer.cs#L14-L19' title='Snippet source file'>snippet source</a> | <a href='#snippet-ValueRendererForEnumsHumanizerInit' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -953,8 +960,13 @@ List<Car> data =
 ];
 builder.AddSheet(data);
 ```
-<sup><a href='/src/HumanizerEnumTests/ValueRendererForEnumsHumanizer.cs#L17-L31' title='Snippet source file'>snippet source</a> | <a href='#snippet-ValueRendererForEnumsHumanizer' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/StaticSettingsTests/ValueRendererForEnumsHumanizer.cs#L24-L38' title='Snippet source file'>snippet source</a> | <a href='#snippet-ValueRendererForEnumsHumanizer' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
+
+
+#### Result
+
+<img src="/src/StaticSettingsTests/ValueRendererForEnumsHumanizer.Test_Sheet1.png">
 
 
 ### Date formats
@@ -976,21 +988,20 @@ Date formats can be customized:
 <!-- snippet: DateFormatsInit -->
 <a id='snippet-DateFormatsInit'></a>
 ```cs
-[ModuleInitializer]
-public static void CustomDateFormats()
+static void CustomDateFormats()
 {
     ValueRenderer.DefaultDateFormat = "yyyy/MM/dd" ;
     ValueRenderer.DefaultDateTimeFormat = "yyyy/MM/dd HH:mm:ss" ;
     ValueRenderer.DefaultDateTimeOffsetFormat = "yyyy/MM/dd HH:mm:ss z" ;
 }
 ```
-<sup><a href='/src/StaticSettingsTests/DateFormats.cs#L5-L15' title='Snippet source file'>snippet source</a> | <a href='#snippet-DateFormatsInit' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/StaticSettingsTests/DateFormats.cs#L17-L26' title='Snippet source file'>snippet source</a> | <a href='#snippet-DateFormatsInit' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
 #### Result
 
-<img src="/src/StaticSettingsTests\DateFormats.Test%23Sheet1.verified.png">
+<img src="/src/StaticSettingsTests/DateFormats.Test_Sheet1.png">
 
 
 ### Filters
@@ -1011,6 +1022,11 @@ sheet.DisableFilter();
 <!-- endSnippet -->
 
 
+#### Result
+
+<img src="/src/ExcelsiorClosedXml.Tests/FilterTests.AllOff_Sheet1.png">
+
+
 #### Enable filter on specific columns
 
 Filters can be disabled at the sheet level, then selectively enabled on specific columns:
@@ -1025,6 +1041,11 @@ sheet.Filter(_ => _.Name);
 ```
 <sup><a href='/src/ExcelsiorAspose.Tests/FilterTests.cs#L47-L54' title='Snippet source file'>snippet source</a> | <a href='#snippet-FilterDefaultOffWithOneOn' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
+
+
+#### Result
+
+<img src="/src/ExcelsiorClosedXml.Tests/FilterTests.DefaultOffWithOneOn_Sheet1.png">
 
 
 #### Disable filter on specific columns
@@ -1042,6 +1063,11 @@ sheet.Column(
 ```
 <sup><a href='/src/ExcelsiorAspose.Tests/FilterTests.cs#L63-L71' title='Snippet source file'>snippet source</a> | <a href='#snippet-FilterDefaultOnWithOneOff' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
+
+
+#### Result
+
+<img src="/src/ExcelsiorClosedXml.Tests/FilterTests.DefaultOnWithOneOff_Sheet1.png">
 
 
 #### ColumnAttribute
@@ -1075,6 +1101,11 @@ sheet.Include(_ => _.Email, !isInternalReport);
 <!-- endSnippet -->
 
 
+#### Result
+
+<img src="/src/ExcelsiorClosedXml.Tests/IncludeTests.ToggleBasedOnState_Sheet1.png">
+
+
 #### Multiple spreadsheets from the same model
 
 The same data can produce different reports by toggling column inclusion per spreadsheet:
@@ -1093,6 +1124,11 @@ sheet.Exclude(_ => _.Email);
 <sup><a href='/src/ExcelsiorAspose.Tests/IncludeTests.cs#L101-L111' title='Snippet source file'>snippet source</a> | <a href='#snippet-IncludeMultipleSpreadsheets_Public' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
+
+#### Result
+
+<img src="/src/ExcelsiorClosedXml.Tests/IncludeTests.MultipleSpreadsheetsSameModel_Public_Sheet1.png">
+
 <!-- snippet: IncludeMultipleSpreadsheets_Internal -->
 <a id='snippet-IncludeMultipleSpreadsheets_Internal'></a>
 ```cs
@@ -1107,6 +1143,11 @@ builder.AddSheet(data);
 ```
 <sup><a href='/src/ExcelsiorAspose.Tests/IncludeTests.cs#L120-L131' title='Snippet source file'>snippet source</a> | <a href='#snippet-IncludeMultipleSpreadsheets_Internal' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
+
+
+#### Result
+
+<img src="/src/ExcelsiorClosedXml.Tests/IncludeTests.MultipleSpreadsheetsSameModel_Internal_Sheet1.png">
 
 
 #### Exclude a column
@@ -1126,6 +1167,11 @@ sheet.Exclude(_ => _.Age);
 <!-- endSnippet -->
 
 
+#### Result
+
+<img src="/src/ExcelsiorClosedXml.Tests/IncludeTests.ExcludeOne_Sheet1.png">
+
+
 #### Exclude via Column configuration
 
 <!-- snippet: IncludeExcludeOneViaColumn -->
@@ -1143,6 +1189,11 @@ sheet.Column(
 ```
 <sup><a href='/src/ExcelsiorAspose.Tests/IncludeTests.cs#L48-L60' title='Snippet source file'>snippet source</a> | <a href='#snippet-IncludeExcludeOneViaColumn' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
+
+
+#### Result
+
+<img src="/src/ExcelsiorClosedXml.Tests/IncludeTests.ExcludeOneViaColumn_Sheet1.png">
 
 
 #### ColumnAttribute

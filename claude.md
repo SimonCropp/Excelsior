@@ -49,7 +49,7 @@ Each backend has a `BookBuilder` (extends `BookBuilderBase`) and a `Renderer` (e
 - `ExcelsiorAspose.Tests` — Aspose tests (many test files are shared with ClosedXml tests)
 - `ExcelsiorSyncfusion.Tests` — Syncfusion tests
 - `StaticSettingsTests` — tests for global static settings (date formats, whitespace trimming, enum rendering)
-- `SheetRender` — .NET Framework 4.8 project using Office Interop for rendering verification
+- `SheetRender` — .NET Framework 4.8 utility using Excel Interop. Contains `RenderExcel` which opens all `.verified.xlsx` files, renders each sheet's used range to a bitmap, and saves as `_SheetName.png` alongside the xlsx. These pngs are referenced in the readme. Tests are `[Explicit]` (manual run only).
 - `Model` — shared model classes used by tests
 
 Tests use **NUnit** with **Verify** for snapshot testing. Verified snapshots are `.verified.png` and `.verified.txt` files alongside test classes.

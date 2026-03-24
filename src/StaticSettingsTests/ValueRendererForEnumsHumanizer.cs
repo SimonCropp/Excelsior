@@ -1,12 +1,17 @@
-using Humanizer;
-
 [TestFixture]
 public class ValueRendererForEnumsHumanizer
 {
+    [SetUp]
+    public void Setup() =>
+        ValueRenderer.ForEnums(_ => _.Humanize());
+
+    [TearDown]
+    public void Teardown() =>
+        ValueRenderer.Reset();
+
     #region ValueRendererForEnumsHumanizerInit
 
-    [ModuleInitializer]
-    public static void CustomEnumRender() =>
+    static void CustomEnumRender() =>
         ValueRenderer.ForEnums(_ => _.Humanize());
 
     #endregion

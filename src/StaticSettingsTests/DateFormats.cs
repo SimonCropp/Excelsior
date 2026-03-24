@@ -1,11 +1,22 @@
-﻿// ReSharper disable UseSymbolAlias
+// ReSharper disable UseSymbolAlias
 [TestFixture]
 public class DateFormats
 {
+    [SetUp]
+    public void Setup()
+    {
+        ValueRenderer.DefaultDateFormat = "yyyy/MM/dd";
+        ValueRenderer.DefaultDateTimeFormat = "yyyy/MM/dd HH:mm:ss";
+        ValueRenderer.DefaultDateTimeOffsetFormat = "yyyy/MM/dd HH:mm:ss z";
+    }
+
+    [TearDown]
+    public void Teardown() =>
+        ValueRenderer.Reset();
+
     #region DateFormatsInit
 
-    [ModuleInitializer]
-    public static void CustomDateFormats()
+    static void CustomDateFormats()
     {
         ValueRenderer.DefaultDateFormat = "yyyy/MM/dd" ;
         ValueRenderer.DefaultDateTimeFormat = "yyyy/MM/dd HH:mm:ss" ;

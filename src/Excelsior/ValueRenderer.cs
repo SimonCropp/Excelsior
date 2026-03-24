@@ -123,5 +123,18 @@ public static partial class ValueRenderer
         return false;
     }
 
+    internal static void Reset()
+    {
+        bookBuilderUsed = false;
+        TrimWhitespace = true;
+        renders = [];
+        itemRenders = [];
+        enumRender = EnumExtensions.Humanize;
+        renderCache = [];
+        DefaultDateFormat = "yyyy-MM-dd";
+        DefaultDateTimeFormat = "yyyy-MM-dd HH:mm:ss";
+        DefaultDateTimeOffsetFormat = "yyyy-MM-dd HH:mm:ss z";
+    }
+
     internal static void SetBookBuilderUsed() => bookBuilderUsed = true;
 }

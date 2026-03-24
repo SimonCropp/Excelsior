@@ -3,12 +3,11 @@
     <TargetFramework>net10.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Aspose.Cells" />
-    <PackageReference Include="Verify.Aspose" />
+    <PackageReference Include="Humanizer.Core" />
     <PackageReference Include="Verify.DiffPlex" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
-    <PackageReference Include="Verify.ImageSharp" />
     <PackageReference Include="Verify.NUnit" />
+    <PackageReference Include="Verify.OpenXML" />
     <PackageReference Include="Argon" />
     <PackageReference Include="DiffEngine" />
     <PackageReference Include="EmptyFiles" />
@@ -16,11 +15,11 @@
     <PackageReference Include="Verify" />
     <PackageReference Include="NUnit" />
     <PackageReference Include="NUnit3TestAdapter" />
-    <ProjectReference Include="..\ExcelsiorAspose\ExcelsiorAspose.csproj" />
+    <ProjectReference Include="..\ExcelsiorOpenXml\ExcelsiorOpenXml.csproj" />
     <Using Include="NUnit.Framework.Legacy.ClassicAssert" Static="True" />
     <PackageReference Include="ProjectDefaults" PrivateAssets="all" />
-    <Compile Include="..\ExcelsiorAspose.Tests\AsposeLicense.cs">
-      <Link>AsposeLicense.cs</Link>
+    <Compile Include="..\ExcelsiorOpenXml.Tests\VerifyOpenXml.cs">
+      <Link>VerifyOpenXml.cs</Link>
     </Compile>
   </ItemGroup>
 </Project>

@@ -1,10 +1,17 @@
-﻿[TestFixture]
+[TestFixture]
 public class ValueRendererForEnums
 {
+    [SetUp]
+    public void Setup() =>
+        ValueRenderer.ForEnums(_ => _.ToString().ToUpper());
+
+    [TearDown]
+    public void Teardown() =>
+        ValueRenderer.Reset();
+
     #region ValueRendererForEnumsInit
 
-    [ModuleInitializer]
-    public static void CustomEnumRender() =>
+    static void CustomEnumRender() =>
         ValueRenderer.ForEnums(_ => _.ToString().ToUpper());
 
     #endregion

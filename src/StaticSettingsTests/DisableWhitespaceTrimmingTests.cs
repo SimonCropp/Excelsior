@@ -1,10 +1,17 @@
-﻿[TestFixture]
+[TestFixture]
 public class DisableWhitespaceTrimmingTests
 {
+    [SetUp]
+    public void Setup() =>
+        ValueRenderer.DisableWhitespaceTrimming();
+
+    [TearDown]
+    public void Teardown() =>
+        ValueRenderer.Reset();
+
     #region DisableWhitespaceTrim
 
-    [ModuleInitializer]
-    public static void DisableTrimWhitespace() =>
+    static void DisableTrimWhitespace() =>
         ValueRenderer.DisableWhitespaceTrimming();
 
     #endregion

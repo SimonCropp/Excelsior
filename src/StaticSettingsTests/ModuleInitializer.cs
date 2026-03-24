@@ -1,3 +1,5 @@
+[assembly: NonParallelizable]
+
 public static class ModuleInitializer
 {
     [ModuleInitializer]
@@ -5,8 +7,7 @@ public static class ModuleInitializer
     {
         VerifierSettings.DontScrubDateTimes();
         VerifierSettings.DontScrubGuids();
-        VerifyImageSharp.Initialize();
         VerifierSettings.InitializePlugins();
-        VerifierSettings.IgnoreMember("Width");
+        VerifyOpenXmlBook.Initialize();
     }
 }

@@ -81,7 +81,8 @@ public static partial class ValueRenderer
             }
         }
 
-        if (type.IsEnum)
+        if (type.IsEnum ||
+            Nullable.GetUnderlyingType(type)?.IsEnum == true)
         {
             return (false, _ => enumRender((Enum)_));
         }

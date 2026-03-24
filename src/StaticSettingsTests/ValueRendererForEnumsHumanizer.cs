@@ -29,6 +29,12 @@ public class ValueRendererForEnumsHumanizer
             {
                 Manufacturer = Manufacturer.BuildYourDream,
                 Color = Color.AntiqueWhite,
+                NullableColor = Color.AntiqueWhite,
+            },
+            new()
+            {
+                Manufacturer = Manufacturer.BuildYourDream,
+                Color = Color.AntiqueWhite,
             }
         ];
         builder.AddSheet(data);

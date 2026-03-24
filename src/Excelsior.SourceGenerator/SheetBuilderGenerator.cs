@@ -64,7 +64,7 @@ public class SheetBuilderGenerator : IIncrementalGenerator
 
         var model = new ModelInfo(
             type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
-            type.Name,
+            GetFlattenedName(type),
             properties);
         return new(model, null);
     }
@@ -83,6 +83,18 @@ public class SheetBuilderGenerator : IIncrementalGenerator
         }
 
         return true;
+    }
+
+    static string GetFlattenedName(INamedTypeSymbol type)
+    {
+        var parts = new List<string>();
+        for (var current = type; current is not null; current = current.ContainingType)
+        {
+            parts.Add(current.Name);
+        }
+
+        parts.Reverse();
+        return string.Concat(parts);
     }
 
     static IEnumerable<PropertyInfo> GetProperties(INamedTypeSymbol type) =>

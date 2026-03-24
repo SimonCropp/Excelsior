@@ -913,11 +913,17 @@ List<Car> data =
     {
         Manufacturer = Manufacturer.BuildYourDream,
         Color = Color.AntiqueWhite,
+        NullableColor = Color.AntiqueWhite,
+    },
+    new()
+    {
+        Manufacturer = Manufacturer.BuildYourDream,
+        Color = Color.AntiqueWhite,
     }
 ];
 builder.AddSheet(data);
 ```
-<sup><a href='/src/StaticSettingsTests/ValueRendererForEnums.cs#L22-L36' title='Snippet source file'>snippet source</a> | <a href='#snippet-ValueRendererForEnums' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/StaticSettingsTests/ValueRendererForEnums.cs#L22-L42' title='Snippet source file'>snippet source</a> | <a href='#snippet-ValueRendererForEnums' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -956,11 +962,17 @@ List<Car> data =
     {
         Manufacturer = Manufacturer.BuildYourDream,
         Color = Color.AntiqueWhite,
+        NullableColor = Color.AntiqueWhite,
+    },
+    new()
+    {
+        Manufacturer = Manufacturer.BuildYourDream,
+        Color = Color.AntiqueWhite,
     }
 ];
 builder.AddSheet(data);
 ```
-<sup><a href='/src/StaticSettingsTests/ValueRendererForEnumsHumanizer.cs#L22-L36' title='Snippet source file'>snippet source</a> | <a href='#snippet-ValueRendererForEnumsHumanizer' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/StaticSettingsTests/ValueRendererForEnumsHumanizer.cs#L22-L42' title='Snippet source file'>snippet source</a> | <a href='#snippet-ValueRendererForEnumsHumanizer' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -1071,6 +1083,53 @@ builder.AddSheet(data);
 #### Result
 
 <img src="/src/StaticSettingsTests/ValueRendererNullDisplayForBool.Test_Sheet1.png">
+
+
+### ValueRenderer.NullDisplayFor&lt;Enum&gt;
+
+`ValueRenderer.NullDisplayFor<Enum>` can be used to set a default display text for all null enum properties:
+
+
+#### Config in a ModuleInitializer
+
+<!-- snippet: ValueRendererNullDisplayForEnumInit -->
+<a id='snippet-ValueRendererNullDisplayForEnumInit'></a>
+```cs
+static void CustomNullEnumDisplay() =>
+    ValueRenderer.NullDisplayFor<Enum>("Unknown");
+```
+<sup><a href='/src/StaticSettingsTests/ValueRendererNullDisplayForEnum.cs#L12-L17' title='Snippet source file'>snippet source</a> | <a href='#snippet-ValueRendererNullDisplayForEnumInit' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+
+#### Example use
+
+<!-- snippet: ValueRendererNullDisplayForEnum -->
+<a id='snippet-ValueRendererNullDisplayForEnum'></a>
+```cs
+var builder = new BookBuilder();
+
+List<Target> data =
+[
+    new()
+    {
+        Name = "Alice",
+        Color = Color.AntiqueWhite,
+    },
+    new()
+    {
+        Name = "Bob",
+    }
+];
+builder.AddSheet(data);
+```
+<sup><a href='/src/StaticSettingsTests/ValueRendererNullDisplayForEnum.cs#L22-L40' title='Snippet source file'>snippet source</a> | <a href='#snippet-ValueRendererNullDisplayForEnum' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+
+#### Result
+
+<img src="/src/StaticSettingsTests/ValueRendererNullDisplayForEnum.Test_Sheet1.png">
 
 
 ### Date formats

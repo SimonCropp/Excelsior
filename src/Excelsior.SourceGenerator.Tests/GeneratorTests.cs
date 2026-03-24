@@ -107,6 +107,82 @@ public class GeneratorTests
     }
 
     [Test]
+    public Task WithColumnAttributes()
+    {
+        var source = """
+            using Excelsior;
+
+            [SheetModel]
+            public class Employee
+            {
+                [Column(Heading = "Employee ID", Order = 1, Format = "0000")]
+                public int Id { get; set; }
+
+                [Column(Heading = "Full Name", Order = 2, Width = 20)]
+                public string Name { get; set; }
+
+                [Column(Heading = "Email Address", Width = 30)]
+                public string Email { get; set; }
+
+                [Column(Order = 3, NullDisplay = "unknown")]
+                public string HireDate { get; set; }
+
+                [Column(IsHtml = true)]
+                public string Notes { get; set; }
+
+                [Column(Filter = true)]
+                public string Department { get; set; }
+
+                [Column(Include = false)]
+                public string Internal { get; set; }
+
+                public int Age { get; set; }
+            }
+            """;
+
+        var generated = Generate(source);
+
+        return Verify(generated);
+    }
+
+    [Test]
+    public Task WithColumnAttributesOnRecordParameters()
+    {
+        var source = """
+            using Excelsior;
+
+            [SheetModel]
+            public record Employee(
+                [Column(Heading = "Employee ID", Order = 1)] int Id,
+                [Column(Width = 20)] string Name);
+            """;
+
+        var generated = Generate(source);
+
+        return Verify(generated);
+    }
+
+    [Test]
+    public Task WithColumnAttributesOnSplitProperties()
+    {
+        var source = """
+            using Excelsior;
+
+            [Split]
+            public record Address(
+                [Column(Heading = "Street Address", Width = 30)] string Street,
+                string City);
+
+            [SheetModel]
+            public record Employee(string Name, Address Address);
+            """;
+
+        var generated = Generate(source);
+
+        return Verify(generated);
+    }
+
+    [Test]
     public Task NestedUnderDifferentParentsWithSameName()
     {
         var source = """

@@ -20,7 +20,7 @@ public class SheetBuilderGenerator : IIncrementalGenerator
                 {
                     productionContext.ReportDiagnostic(
                         Diagnostic.Create(
-                            InaccessibleTypeDescriptor,
+                            inaccessibleTypeDescriptor,
                             diagnostic.Location,
                             diagnostic.TypeName));
                     return;
@@ -31,12 +31,18 @@ public class SheetBuilderGenerator : IIncrementalGenerator
                     return;
                 }
 
-                var source = GenerateSource(model);
+                var source = GenerateExtensions(model);
                 productionContext.AddSource($"{model.TypeName}SheetBuilderExtensions.g.cs", source);
+
+                if (HasColumnAttributes(model))
+                {
+                    var registration = GenerateRegistration(model);
+                    productionContext.AddSource($"{model.TypeName}ColumnAttributes.g.cs", registration);
+                }
             });
     }
 
-    static readonly DiagnosticDescriptor InaccessibleTypeDescriptor = new(
+    static readonly DiagnosticDescriptor inaccessibleTypeDescriptor = new(
         "EXCEL002",
         "SheetModel type is not accessible",
         "Type '{0}' with [SheetModel] must be internal or public, including all containing types",
@@ -144,7 +150,10 @@ public class SheetBuilderGenerator : IIncrementalGenerator
                 ? property.Name
                 : string.Join(".", parentPath.Add(property.Name));
 
-            yield return new(property.Name, propertyType, accessPath);
+            var column = GetColumnData(property);
+            var declaringType = property.ContainingType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+
+            yield return new(property.Name, propertyType, accessPath, declaringType, column);
         }
     }
 
@@ -154,7 +163,103 @@ public class SheetBuilderGenerator : IIncrementalGenerator
     static bool HasAttribute(ITypeSymbol symbol, string fullName) =>
         symbol.GetAttributes().Any(_ => _.AttributeClass?.ToDisplayString() == fullName);
 
-    static string GenerateSource(ModelInfo model)
+    static AttributeData? FindColumnAttribute(IPropertySymbol property)
+    {
+        var attr = property.GetAttributes()
+            .FirstOrDefault(_ => _.AttributeClass?.ToDisplayString() == "Excelsior.ColumnAttribute");
+
+        if (attr is not null)
+        {
+            return attr;
+        }
+
+        // Check matching constructor parameter (e.g. record positional parameters)
+        if (property.ContainingType is { } type)
+        {
+            foreach (var constructor in type.Constructors)
+            {
+                var param = constructor.Parameters
+                    .FirstOrDefault(_ => _.Name == property.Name);
+
+                if (param is null)
+                {
+                    continue;
+                }
+
+                attr = param.GetAttributes()
+                    .FirstOrDefault(_ => _.AttributeClass?.ToDisplayString() == "Excelsior.ColumnAttribute");
+
+                if (attr is not null)
+                {
+                    return attr;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    static ColumnData? GetColumnData(IPropertySymbol property)
+    {
+        var attr = FindColumnAttribute(property);
+
+        if (attr is null)
+        {
+            return null;
+        }
+
+        string? heading = null;
+        int? order = null;
+        int? width = null;
+        string? format = null;
+        string? nullDisplay = null;
+        var isHtml = false;
+        bool? filter = null;
+        bool? include = null;
+
+        foreach (var arg in attr.NamedArguments)
+        {
+            switch (arg.Key)
+            {
+                case "Heading":
+                    heading = arg.Value.Value as string;
+                    break;
+                case "Order":
+                    if (arg.Value.Value is int o and > -1)
+                    {
+                        order = o;
+                    }
+
+                    break;
+                case "Width":
+                    if (arg.Value.Value is int w and > -1)
+                    {
+                        width = w;
+                    }
+
+                    break;
+                case "Format":
+                    format = arg.Value.Value as string;
+                    break;
+                case "NullDisplay":
+                    nullDisplay = arg.Value.Value as string;
+                    break;
+                case "IsHtml":
+                    isHtml = arg.Value.Value is true;
+                    break;
+                case "Filter":
+                    filter = arg.Value.Value as bool?;
+                    break;
+                case "Include":
+                    include = arg.Value.Value as bool?;
+                    break;
+            }
+        }
+
+        return new(heading, order, width, format, nullDisplay, isHtml, filter, include);
+    }
+
+    static string GenerateExtensions(ModelInfo model)
     {
         var builder = new StringBuilder(
             $$"""
@@ -174,7 +279,10 @@ public class SheetBuilderGenerator : IIncrementalGenerator
                 builder.AppendLine();
             }
 
-            var (prefix, propType, access) = model.Properties[i];
+            var prop = model.Properties[i];
+            var prefix = prop.Name;
+            var propType = prop.TypeFullName;
+            var access = prop.AccessPath;
             var modelType = model.TypeFullName;
 
             builder.Append(
@@ -227,4 +335,88 @@ public class SheetBuilderGenerator : IIncrementalGenerator
 
         return builder.ToString();
     }
+
+    static string GenerateRegistration(ModelInfo model)
+    {
+        var builder = new StringBuilder(
+            $$"""
+              // <auto-generated/>
+              #nullable enable
+              namespace Excelsior;
+              using System.Runtime.CompilerServices;
+              file static class {{model.TypeName}}ColumnAttributesRegistration
+              {
+                  [ModuleInitializer]
+                  internal static void Register()
+                  {
+
+              """);
+
+        foreach (var prop in model.Properties)
+        {
+            if (prop.Column is not { } col)
+            {
+                continue;
+            }
+
+            var args = new List<string>();
+
+            if (col.Heading is { } heading)
+            {
+                args.Add($"Heading: \"{Escape(heading)}\"");
+            }
+
+            if (col.Order is { } order)
+            {
+                args.Add($"Order: {order}");
+            }
+
+            if (col.Width is { } width)
+            {
+                args.Add($"Width: {width}");
+            }
+
+            if (col.Format is { } format)
+            {
+                args.Add($"Format: \"{Escape(format)}\"");
+            }
+
+            if (col.NullDisplay is { } nullDisplay)
+            {
+                args.Add($"NullDisplay: \"{Escape(nullDisplay)}\"");
+            }
+
+            if (col.IsHtml)
+            {
+                args.Add("IsHtml: true");
+            }
+
+            if (col.Filter is { } filter)
+            {
+                args.Add($"Filter: {(filter ? "true" : "false")}");
+            }
+
+            if (col.Include is { } include)
+            {
+                args.Add($"Include: {(include ? "true" : "false")}");
+            }
+
+            builder.AppendLine(
+                $"        GeneratedColumnAttributes.Register(typeof({prop.DeclaringTypeFullName}), \"{prop.Name}\", new({string.Join(", ", args)}));");
+        }
+
+        builder.Append(
+            """
+                }
+            }
+            """);
+
+        return builder.ToString();
+    }
+
+    static bool HasColumnAttributes(ModelInfo model) =>
+        model.Properties.Any(_ => _.Column is not null);
+
+    static string Escape(string value) =>
+        value.Replace("\\", "\\\\").Replace("\"", "\\\"");
 }

@@ -85,7 +85,39 @@ public class GeneratorTests
         return Verify(generated);
     }
 
+    [Test]
+    public void PrivateNestedTypeProducesError()
+    {
+        var source = """
+            using Excelsior;
+
+            public static class Container
+            {
+                [SheetModel]
+                record Row(string Name, int Age);
+            }
+            """;
+
+        var result = RunGenerator(source);
+        var diagnostics = result.Diagnostics;
+
+        Assert.That(result.Results.SelectMany(_ => _.GeneratedSources), Is.Empty);
+        Assert.That(diagnostics, Has.Length.EqualTo(1));
+        Assert.That(diagnostics[0].Id, Is.EqualTo("EXCEL002"));
+        Assert.That(diagnostics[0].Severity, Is.EqualTo(DiagnosticSeverity.Error));
+    }
+
     static Dictionary<string, string> Generate(string source)
+    {
+        var result = RunGenerator(source);
+        return result.Results
+            .SelectMany(_ => _.GeneratedSources)
+            .ToDictionary(
+                _ => _.HintName,
+                _ => _.SourceText.ToString());
+    }
+
+    static GeneratorDriverRunResult RunGenerator(string source)
     {
         var syntaxTree = CSharpSyntaxTree.ParseText(source);
 
@@ -110,11 +142,6 @@ public class GeneratorTests
         GeneratorDriver driver = CSharpGeneratorDriver.Create(generator);
         driver = driver.RunGenerators(compilation);
 
-        var result = driver.GetRunResult();
-        return result.Results
-            .SelectMany(_ => _.GeneratedSources)
-            .ToDictionary(
-                _ => _.HintName,
-                _ => _.SourceText.ToString());
+        return driver.GetRunResult();
     }
 }

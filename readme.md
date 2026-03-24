@@ -939,7 +939,7 @@ Using [Humanizer](https://github.com/Humanizr/Humanizer) to convert enums to str
 static void CustomEnumRender() =>
     ValueRenderer.ForEnums(_ => _.Humanize());
 ```
-<sup><a href='/src/StaticSettingsTests/ValueRendererForEnumsHumanizer.cs#L14-L19' title='Snippet source file'>snippet source</a> | <a href='#snippet-ValueRendererForEnumsHumanizerInit' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/StaticSettingsTests/ValueRendererForEnumsHumanizer.cs#L12-L17' title='Snippet source file'>snippet source</a> | <a href='#snippet-ValueRendererForEnumsHumanizerInit' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -960,13 +960,61 @@ List<Car> data =
 ];
 builder.AddSheet(data);
 ```
-<sup><a href='/src/StaticSettingsTests/ValueRendererForEnumsHumanizer.cs#L24-L38' title='Snippet source file'>snippet source</a> | <a href='#snippet-ValueRendererForEnumsHumanizer' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/StaticSettingsTests/ValueRendererForEnumsHumanizer.cs#L22-L36' title='Snippet source file'>snippet source</a> | <a href='#snippet-ValueRendererForEnumsHumanizer' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
 #### Result
 
 <img src="/src/StaticSettingsTests/ValueRendererForEnumsHumanizer.Test_Sheet1.png">
+
+
+### ValueRenderer.For&lt;T&gt;
+
+`ValueRenderer.For<T>` can be used to control the rendering for all instances of a specific type. For example rendering `bool` as "Yes"/"No":
+
+
+#### Config in a ModuleInitializer
+
+<!-- snippet: ValueRendererForBoolInit -->
+<a id='snippet-ValueRendererForBoolInit'></a>
+```cs
+static void CustomBoolRender() =>
+    ValueRenderer.For<bool>(_ => _ ? "Yes" : "No");
+```
+<sup><a href='/src/StaticSettingsTests/ValueRendererForBool.cs#L12-L17' title='Snippet source file'>snippet source</a> | <a href='#snippet-ValueRendererForBoolInit' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+
+#### Example use
+
+<!-- snippet: ValueRendererForBool -->
+<a id='snippet-ValueRendererForBool'></a>
+```cs
+var builder = new BookBuilder();
+
+List<Target> data =
+[
+    new()
+    {
+        Name = "Alice",
+        IsActive = true,
+    },
+    new()
+    {
+        Name = "Bob",
+        IsActive = false,
+    }
+];
+builder.AddSheet(data);
+```
+<sup><a href='/src/StaticSettingsTests/ValueRendererForBool.cs#L22-L41' title='Snippet source file'>snippet source</a> | <a href='#snippet-ValueRendererForBool' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+
+#### Result
+
+<img src="/src/StaticSettingsTests/ValueRendererForBool.Test_Sheet1.png">
 
 
 ### Date formats

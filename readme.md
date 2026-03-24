@@ -1029,6 +1029,11 @@ builder.AddSheet(data);
 <img src="/src/StaticSettingsTests/ValueRendererForBool.Test_Sheet1.png">
 
 
+#### Type specificity
+
+When multiple `For<T>` registrations match a property type, the most specific type wins. For example, `For<Color>(...)` takes precedence over `For<Enum>(...)` for `Color` properties, while other enum types still use the `Enum` fallback.
+
+
 ### ValueRenderer.NullDisplayFor&lt;T&gt;
 
 `ValueRenderer.NullDisplayFor<T>` can be used to control the display text when a nullable property is null. This combines well with `ValueRenderer.For<T>`:
@@ -1130,6 +1135,8 @@ builder.AddSheet(data);
 #### Result
 
 <img src="/src/StaticSettingsTests/ValueRendererNullDisplayForEnum.Test_Sheet1.png">
+
+The same type specificity applies to `NullDisplayFor<T>`: `NullDisplayFor<Color>("Color unknown")` takes precedence over `NullDisplayFor<Enum>("Enum unknown")` for `Color?` properties.
 
 
 ### Date formats

@@ -5,41 +5,84 @@ public class SheetBuilderGenerator : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        var models = context
+        var results = context
             .SyntaxProvider
             .ForAttributeWithMetadataName(
                 "Excelsior.SheetModelAttribute",
                 (node, _) => node is TypeDeclarationSyntax,
-                (context, _) => GetModelInfo(context));
+                (context, _) => GetModelResult(context));
 
         context.RegisterSourceOutput(
-            models,
-            (productionContext, model) =>
+            results,
+            (productionContext, result) =>
             {
-                if (model is null)
+                if (result.Diagnostic is { } diagnostic)
+                {
+                    productionContext.ReportDiagnostic(
+                        Diagnostic.Create(
+                            InaccessibleTypeDescriptor,
+                            diagnostic.Location,
+                            diagnostic.TypeName));
+                    return;
+                }
+
+                if (result.Model is not { } model)
                 {
                     return;
                 }
 
-                var source = GenerateSource(model.Value);
-                productionContext.AddSource($"{model.Value.TypeName}SheetBuilderExtensions.g.cs", source);
+                var source = GenerateSource(model);
+                productionContext.AddSource($"{model.TypeName}SheetBuilderExtensions.g.cs", source);
             });
     }
 
-    static ModelInfo? GetModelInfo(GeneratorAttributeSyntaxContext context)
+    static readonly DiagnosticDescriptor InaccessibleTypeDescriptor = new(
+        "EXCEL002",
+        "SheetModel type is not accessible",
+        "Type '{0}' with [SheetModel] must be internal or public, including all containing types",
+        "Excelsior",
+        DiagnosticSeverity.Error,
+        true);
+
+    static ModelResult GetModelResult(GeneratorAttributeSyntaxContext context)
     {
         var type = (INamedTypeSymbol)context.TargetSymbol;
+
+        if (!IsAccessible(type))
+        {
+            return new(
+                null,
+                new(type.Name, type.Locations.FirstOrDefault()));
+        }
+
         var properties = new EquatableArray<PropertyInfo>(GetProperties(type).ToImmutableArray());
 
         if (properties.Length == 0)
         {
-            return null;
+            return new(null, null);
         }
 
-        return new ModelInfo(
+        var model = new ModelInfo(
             type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
             type.Name,
             properties);
+        return new(model, null);
+    }
+
+    static bool IsAccessible(INamedTypeSymbol type)
+    {
+        for (var current = type; current is not null; current = current.ContainingType)
+        {
+            if (current.DeclaredAccessibility is
+                Accessibility.Private or
+                Accessibility.Protected or
+                Accessibility.ProtectedAndInternal)
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     static IEnumerable<PropertyInfo> GetProperties(INamedTypeSymbol type) =>

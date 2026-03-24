@@ -67,6 +67,27 @@ public class GeneratorTests
     }
 
     [Test]
+    public Task NestedUnderSameParent()
+    {
+        var source = """
+            using Excelsior;
+
+            public class Models
+            {
+                [SheetModel]
+                public record Employee(string Email, int Age);
+
+                [SheetModel]
+                public record Product(string Name, decimal Price);
+            }
+            """;
+
+        var generated = Generate(source);
+
+        return Verify(generated);
+    }
+
+    [Test]
     public Task ClassWithProperties()
     {
         var source = """

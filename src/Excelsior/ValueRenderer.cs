@@ -50,14 +50,36 @@ public static partial class ValueRenderer
     internal static (bool isEnumerable, Func<object, string>? render) GetRender(Type type) =>
         renderCache.GetOrAdd(type, ResolveRender);
 
+    static TValue? FindBestMatch<TValue>(Type type, Dictionary<Type, TValue> dictionary)
+        where TValue : class
+    {
+        TValue? result = null;
+        var underlyingType = Nullable.GetUnderlyingType(type) ?? type;
+
+        foreach (var (key, value) in dictionary)
+        {
+            if (!IsTypeCompatible(type, key))
+            {
+                continue;
+            }
+
+            if (key == underlyingType)
+            {
+                return value;
+            }
+
+            result ??= value;
+        }
+
+        return result;
+    }
+
     static (bool isEnumerable, Func<object, string>? render) ResolveRender(Type type)
     {
-        foreach (var (key, value) in renders)
+        var render = FindBestMatch(type, renders);
+        if (render != null)
         {
-            if (IsTypeCompatible(type, key))
-            {
-                return (false, value);
-            }
+            return (false, render);
         }
 
         if (type.IsAssignableTo<IEnumerable<string>>())
@@ -72,12 +94,10 @@ public static partial class ValueRenderer
 
         foreach (var enumerableType in GetEnumerableTypes(type))
         {
-            foreach (var (key, value) in itemRenders)
+            var itemRender = FindBestMatch(enumerableType, itemRenders);
+            if (itemRender != null)
             {
-                if (IsTypeCompatible(enumerableType, key))
-                {
-                    return (true, value);
-                }
+                return (true, itemRender);
             }
         }
 

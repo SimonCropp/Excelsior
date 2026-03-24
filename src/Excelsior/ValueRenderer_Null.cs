@@ -12,16 +12,6 @@ public static partial class ValueRenderer
         nullDisplay[typeof(T)] = value;
     }
 
-    internal static string? GetNullDisplay(Type type)
-    {
-        foreach (var (key, value) in nullDisplay)
-        {
-            if (IsTypeCompatible(type, key))
-            {
-                return value;
-            }
-        }
-
-        return null;
-    }
+    internal static string? GetNullDisplay(Type type) =>
+        FindBestMatch(type, nullDisplay);
 }

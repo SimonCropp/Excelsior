@@ -104,16 +104,18 @@ public class RenderExcel
             Clipboard.Clear();
             Thread.Sleep(100);
             range.Copy();
+            Exception? lastException = null;
             for (var i = 0; i < 10; i++)
             {
                 try
                 {
                     range.CopyPicture(XlPictureAppearance.xlScreen, XlCopyPictureFormat.xlBitmap);
-
+                    lastException = null;
                     break;
                 }
-                catch
+                catch (Exception ex)
                 {
+                    lastException = ex;
                 }
                 finally
                 {
@@ -121,7 +123,17 @@ public class RenderExcel
                 }
             }
 
-            using var image = Clipboard.GetImage()!;
+            if (lastException != null)
+            {
+                throw new($"CopyPicture failed after 10 attempts for sheet '{sheet.Name}'", lastException);
+            }
+
+            using var image = Clipboard.GetImage();
+            if (image == null)
+            {
+                throw new($"Failed to capture image from clipboard for sheet '{sheet.Name}'");
+            }
+
             var imageFile = excelPath
                 .Replace(".verified", "")
                 .Replace(".xlsx", $"_{sheet.Name}.png");

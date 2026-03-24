@@ -252,12 +252,13 @@ class StyleManager
                 key.WrapText)
             {
                 cellFormat.ApplyAlignment = true;
-                cellFormat.Append(new Alignment
-                {
-                    Horizontal = key.HAlign,
-                    Vertical = key.VAlign,
-                    WrapText = key.WrapText
-                });
+                cellFormat.Append(
+                    new Alignment
+                    {
+                        Horizontal = key.HAlign,
+                        Vertical = key.VAlign,
+                        WrapText = key.WrapText
+                    });
             }
 
             cellFormatsEl.Append(cellFormat);

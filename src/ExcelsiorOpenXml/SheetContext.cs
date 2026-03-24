@@ -32,7 +32,10 @@ public class SheetContext
         }
 
         var cellRef = GetColumnLetter(columnIndex) + (rowIndex + 1);
-        var cell = new Cell { CellReference = cellRef };
+        var cell = new Cell
+        {
+            CellReference = cellRef
+        };
         row.Append(cell);
         return cell;
     }

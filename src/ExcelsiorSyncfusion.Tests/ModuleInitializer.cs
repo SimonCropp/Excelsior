@@ -7,7 +7,7 @@ public static class ModuleInitializer
             new(projectDirectory.Replace("Aspose", "Syncfusion")));
         VerifierSettings.DontScrubDateTimes();
         VerifierSettings.DontScrubGuids();
-        VerifyImageMagick.RegisterComparers(threshold: 0.05);
+        VerifyImageSharp.Initialize();
         VerifierSettings.InitializePlugins();
     }
 }

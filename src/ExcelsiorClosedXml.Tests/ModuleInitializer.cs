@@ -6,7 +6,7 @@ public static class ModuleInitializer
         DerivePathInfo((_, projectDirectory, _, _) => new(projectDirectory.Replace("Aspose", "CloseXml")));
         VerifierSettings.DontScrubDateTimes();
         VerifierSettings.DontScrubGuids();
-        VerifyImageMagick.RegisterComparers(threshold: 0.05);
+        VerifyImageSharp.Initialize();
         VerifierSettings.InitializePlugins();
     }
 }

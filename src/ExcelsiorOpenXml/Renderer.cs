@@ -24,12 +24,13 @@ class Renderer<TModel>(
 
         var sheets = workbookPart.Workbook!.GetFirstChild<Sheets>()!;
         var sheetId = (uint)(sheets.Count() + 1);
-        sheets.Append(new Sheet
-        {
-            Id = workbookPart.GetIdOfPart(worksheetPart),
-            SheetId = sheetId,
-            Name = name
-        });
+        sheets.Append(
+            new Sheet
+            {
+                Id = workbookPart.GetIdOfPart(worksheetPart),
+                SheetId = sheetId,
+                Name = name
+            });
 
         return new(worksheetPart);
     }
@@ -157,7 +158,11 @@ class Renderer<TModel>(
     {
         var display = link.Text ?? link.Url;
         cell.DataType = CellValues.InlineString;
-        cell.InlineString = new(new Text(display) { Space = SpaceProcessingModeValues.Preserve });
+        cell.InlineString = new(
+            new Text(display)
+            {
+                Space = SpaceProcessingModeValues.Preserve
+            });
 
         var rel = sheet.WorksheetPart.AddHyperlinkRelationship(new(link.Url), true);
         var hyperlinks = sheet.Worksheet.GetFirstChild<Hyperlinks>();
@@ -181,10 +186,6 @@ class Renderer<TModel>(
     protected override void SetCellLinkList(Cell cell, SheetContext sheet, CellStyle style, IReadOnlyList<string> items, string? hyperlinkUrl)
     {
         cell.DataType = CellValues.InlineString;
-        var blueColor = new Color
-        {
-            Rgb = "0563C1"
-        };
         var inlineString = new InlineString();
         for (var i = 0; i < items.Count; i++)
         {
@@ -207,7 +208,12 @@ class Renderer<TModel>(
                     }));
             inlineString.Append(
                 new Run(
-                    new RunProperties(new Underline(), blueColor.CloneNode(true)),
+                    new RunProperties(
+                        new Underline(),
+                        new Color
+                        {
+                            Rgb = "0563C1"
+                        }),
                     new Text(items[i])
                     {
                         Space = SpaceProcessingModeValues.Preserve

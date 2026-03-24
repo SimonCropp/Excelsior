@@ -125,13 +125,13 @@ public class SheetBuilderGenerator : IIncrementalGenerator
                 continue;
             }
 
-            if (HasAttribute(property, "Excelsior.IgnoreAttribute"))
+            if (HasAttribute(property, "IgnoreAttribute"))
             {
                 continue;
             }
 
-            if (HasAttribute(property, "Excelsior.SplitAttribute") ||
-                HasAttribute(property.Type, "Excelsior.SplitAttribute"))
+            if (HasAttribute(property, "SplitAttribute") ||
+                HasAttribute(property.Type, "SplitAttribute"))
             {
                 if (property.Type is INamedTypeSymbol namedType)
                 {
@@ -157,16 +157,22 @@ public class SheetBuilderGenerator : IIncrementalGenerator
         }
     }
 
-    static bool HasAttribute(ISymbol symbol, string fullName) =>
-        symbol.GetAttributes().Any(_ => _.AttributeClass?.ToDisplayString() == fullName);
+    static bool IsAttribute(INamedTypeSymbol? type, string name) =>
+        type is { Name: var n, ContainingNamespace: { Name: "Excelsior", ContainingNamespace.IsGlobalNamespace: true } }
+        && n == name;
 
-    static bool HasAttribute(ITypeSymbol symbol, string fullName) =>
-        symbol.GetAttributes().Any(_ => _.AttributeClass?.ToDisplayString() == fullName);
+    static bool HasAttribute(ISymbol symbol, string name) =>
+        symbol.GetAttributes().Any(_ => IsAttribute(_.AttributeClass, name));
+
+    static bool HasAttribute(ITypeSymbol symbol, string name) =>
+        symbol.GetAttributes().Any(_ => IsAttribute(_.AttributeClass, name));
+
+    static AttributeData? FindAttribute(ImmutableArray<AttributeData> attributes, string name) =>
+        attributes.FirstOrDefault(_ => IsAttribute(_.AttributeClass, name));
 
     static AttributeData? FindColumnAttribute(IPropertySymbol property)
     {
-        var attr = property.GetAttributes()
-            .FirstOrDefault(_ => _.AttributeClass?.ToDisplayString() == "Excelsior.ColumnAttribute");
+        var attr = FindAttribute(property.GetAttributes(), "ColumnAttribute");
 
         if (attr is not null)
         {
@@ -186,8 +192,7 @@ public class SheetBuilderGenerator : IIncrementalGenerator
                     continue;
                 }
 
-                attr = param.GetAttributes()
-                    .FirstOrDefault(_ => _.AttributeClass?.ToDisplayString() == "Excelsior.ColumnAttribute");
+                attr = FindAttribute(param.GetAttributes(), "ColumnAttribute");
 
                 if (attr is not null)
                 {

@@ -1017,6 +1017,62 @@ builder.AddSheet(data);
 <img src="/src/StaticSettingsTests/ValueRendererForBool.Test_Sheet1.png">
 
 
+### ValueRenderer.NullDisplayFor&lt;T&gt;
+
+`ValueRenderer.NullDisplayFor<T>` can be used to control the display text when a nullable property is null. This combines well with `ValueRenderer.For<T>`:
+
+
+#### Config in a ModuleInitializer
+
+<!-- snippet: ValueRendererNullDisplayForBoolInit -->
+<a id='snippet-ValueRendererNullDisplayForBoolInit'></a>
+```cs
+static void CustomBoolRender()
+{
+    ValueRenderer.For<bool>(_ => _ ? "Yes" : "No");
+    ValueRenderer.NullDisplayFor<bool>("Unknown");
+}
+```
+<sup><a href='/src/StaticSettingsTests/ValueRendererNullDisplayForBool.cs#L15-L23' title='Snippet source file'>snippet source</a> | <a href='#snippet-ValueRendererNullDisplayForBoolInit' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+
+#### Example use
+
+<!-- snippet: ValueRendererNullDisplayForBool -->
+<a id='snippet-ValueRendererNullDisplayForBool'></a>
+```cs
+var builder = new BookBuilder();
+
+List<Target> data =
+[
+    new()
+    {
+        Name = "Alice",
+        IsActive = true,
+    },
+    new()
+    {
+        Name = "Bob",
+        IsActive = false,
+    },
+    new()
+    {
+        Name = "Charlie",
+        IsActive = null,
+    }
+];
+builder.AddSheet(data);
+```
+<sup><a href='/src/StaticSettingsTests/ValueRendererNullDisplayForBool.cs#L28-L52' title='Snippet source file'>snippet source</a> | <a href='#snippet-ValueRendererNullDisplayForBool' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+
+#### Result
+
+<img src="/src/StaticSettingsTests/ValueRendererNullDisplayForBool.Test_Sheet1.png">
+
+
 ### Date formats
 
 `DateTime` and `DateOnly` are passed directly in to the respective library.

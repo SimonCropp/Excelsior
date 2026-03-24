@@ -131,6 +131,7 @@ public static partial class ValueRenderer
         itemRenders = [];
         enumRender = EnumExtensions.Humanize;
         renderCache = [];
+        nullDisplay = [];
         DefaultDateFormat = "yyyy-MM-dd";
         DefaultDateTimeFormat = "yyyy-MM-dd HH:mm:ss";
         DefaultDateTimeOffsetFormat = "yyyy-MM-dd HH:mm:ss z";

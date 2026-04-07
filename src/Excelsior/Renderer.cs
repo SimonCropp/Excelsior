@@ -19,7 +19,7 @@ class Renderer<TModel>(
         await PopulateData(sheet, cancel);
         if (bookBuilder.GlobalStyle != null)
         {
-            ApplyGlobalStyling(sheet, bookBuilder.GlobalStyle);
+            ApplyGlobalStyling(bookBuilder.GlobalStyle);
         }
 
         var first = -1;
@@ -291,7 +291,7 @@ class Renderer<TModel>(
         style.Font.Underline = true;
     }
 
-    static void SetCellLinkList(Cell cell, SheetContext sheet, CellStyle style, IReadOnlyList<string> items, string? hyperlinkUrl)
+    static void SetCellLinkList(Cell cell, SheetContext sheet, List<string> items, string? hyperlinkUrl)
     {
         cell.DataType = CellValues.InlineString;
         var inlineString = new InlineString();
@@ -351,7 +351,7 @@ class Renderer<TModel>(
             });
     }
 
-    void ApplyGlobalStyling(SheetContext sheet, Action<CellStyle> globalStyle)
+    void ApplyGlobalStyling(Action<CellStyle> globalStyle)
     {
         foreach (var (cell, style) in cellStyles)
         {
@@ -528,7 +528,7 @@ class Renderer<TModel>(
                 }
 
                 var hyperlinkUrl = links.Count == 1 ? links[0].Url : null;
-                SetCellLinkList(cell, sheet, style, linkItems, hyperlinkUrl);
+                SetCellLinkList(cell, sheet, linkItems, hyperlinkUrl);
             }
 
             return;

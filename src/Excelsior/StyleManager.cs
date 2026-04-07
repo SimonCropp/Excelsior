@@ -2,8 +2,6 @@ class StyleManager
 {
     record FontKey(bool Bold, bool Underline, string? Color, double? Size, string? Name);
 
-    record FillKey(string? BackgroundColor);
-
     record CellFormatKey(
         uint FontId,
         uint FillId,
@@ -19,12 +17,9 @@ class StyleManager
         [new(false, false, null, null, null)] = 0
     };
 
-    List<FillKey> fills = [new(null), new("gray125")];
+    List<string?> fills = [null, "gray125"];
 
-    Dictionary<FillKey, uint> fillIndex = new()
-    {
-        [new(null)] = 0
-    };
+    Dictionary<string, uint> fillIndex = [];
 
     List<string> customNumberFormats = [];
     Dictionary<string, uint> numberFormatIds = [];
@@ -84,20 +79,19 @@ class StyleManager
 
     uint GetOrCreateFillId(string? backgroundColor)
     {
-        var key = new FillKey(backgroundColor);
         if (backgroundColor == null)
         {
             return 0;
         }
 
-        if (fillIndex.TryGetValue(key, out var id))
+        if (fillIndex.TryGetValue(backgroundColor, out var id))
         {
             return id;
         }
 
         id = (uint)fills.Count;
-        fills.Add(key);
-        fillIndex[key] = id;
+        fills.Add(backgroundColor);
+        fillIndex[backgroundColor] = id;
         return id;
     }
 
@@ -204,7 +198,7 @@ class StyleManager
                 new PatternFill(
                     new ForegroundColor
                     {
-                        Rgb = fills[i].BackgroundColor
+                        Rgb = fills[i]
                     })
                 {
                     PatternType = PatternValues.Solid

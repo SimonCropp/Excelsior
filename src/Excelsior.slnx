@@ -13,15 +13,7 @@
   <Project Path="Excelsior/Excelsior.csproj" />
   <Project Path="Excelsior.SourceGenerator/Excelsior.SourceGenerator.csproj" />
   <Project Path="Excelsior.SourceGenerator.Tests/Excelsior.SourceGenerator.Tests.csproj" />
-  <Project Path="ExcelsiorAspose.Tests/ExcelsiorAspose.Tests.csproj" />
-  <Project Path="ExcelsiorAspose/ExcelsiorAspose.csproj" />
-  <Project Path="ExcelsiorClosedXml.Tests/ExcelsiorClosedXml.Tests.csproj" />
-  <Project Path="ExcelsiorClosedXml/ExcelsiorClosedXml.csproj" />
-  <Project Path="ExcelsiorOpenXml/ExcelsiorOpenXml.csproj" />
-  <Project Path="ExcelsiorOpenXml.Tests/ExcelsiorOpenXml.Tests.csproj" />
-  <Project Path="ExcelsiorSyncfusion.Tests\ExcelsiorSyncfusion.Tests.csproj" Type="C#" />
-  <Project Path="ExcelsiorSyncfusion\ExcelsiorSyncfusion.csproj" Type="C#" />
-<Project Path="Model/Model.csproj" />
+  <Project Path="Model/Model.csproj" />
   <Project Path="SheetRender/SheetRender.csproj" />
   <Project Path="StaticSettingsTests/StaticSettingsTests.csproj" />
 </Solution>

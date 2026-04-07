@@ -1,26 +1,11 @@
 # <img src="/src/icon.png" height="30px"> Excelsior
 
 [![Build status](https://img.shields.io/appveyor/build/SimonCropp/Excelsior)](https://ci.appveyor.com/project/SimonCropp/Excelsior)
-[![NuGet Status](https://img.shields.io/nuget/v/ExcelsiorClosedXml.svg?label=ExcelsiorClosedXml)](https://www.nuget.org/packages/ExcelsiorClosedXml/)
-[![NuGet Status](https://img.shields.io/nuget/v/ExcelsiorClosedXml.svg?label=ExcelsiorAspose)](https://www.nuget.org/packages/ExcelsiorAspose/)
-[![NuGet Status](https://img.shields.io/nuget/v/ExcelsiorClosedXml.svg?label=ExcelsiorSyncfusion)](https://www.nuget.org/packages/ExcelsiorSyncfusion/)
-[![NuGet Status](https://img.shields.io/nuget/v/ExcelsiorOpenXml.svg?label=ExcelsiorOpenXml)](https://www.nuget.org/packages/ExcelsiorOpenXml/)
+[![NuGet Status](https://img.shields.io/nuget/v/Excelsior.svg?label=Excelsior)](https://www.nuget.org/packages/Excelsior/)
 
-Excelsior is a Excel spreadsheet generation library with a distinctive data-driven approach.
+Excelsior is a Excel spreadsheet generation library with a distinctive data-driven approach. Uses [DocumentFormat.OpenXml](https://github.com/dotnet/Open-XML-SDK) for spreadsheet creation and [OpenXmlHtml](https://github.com/SimonCropp/OpenXmlHtml) for HTML cell rendering.
 
 **See [Milestones](../../milestones?state=closed) for release notes.**
-
-
-## Supported libraries
-
-The architecture is designed to support multiple spreadsheet creation libraries.
-
-Currently supported libraries include:
-
- * [ClosedXML](https://github.com/ClosedXML/ClosedXML) via the [ExcelsiorClosedXml](https://nuget.org/packages/ExcelsiorClosedXml/) nuget
- * [Aspose.Cells](https://docs.aspose.com/cells/net/) via the [ExcelsiorAspose](https://nuget.org/packages/ExcelsiorAspose/) nuget
- * [Syncfusion XlsIO](https://help.syncfusion.com/document-processing/excel/excel-library/net/overview) via the [ExcelsiorSyncfusion](https://nuget.org/packages/ExcelsiorSyncfusion/) nuget
- * [DocumentFormat.OpenXml](https://github.com/dotnet/Open-XML-SDK) via the [ExcelsiorOpenXml](https://nuget.org/packages/ExcelsiorOpenXml/) nuget. Uses [OpenXmlHtml](https://github.com/SimonCropp/OpenXmlHtml) for HTML cell rendering.
 
 
 ## Usage
@@ -104,21 +89,13 @@ builder.AddSheet(data);
 
 using var book = await builder.Build();
 ```
-<sup><a href='/src/ExcelsiorAspose.Tests/UsageTests.cs#L7-L38' title='Snippet source file'>snippet source</a> | <a href='#snippet-Usage' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/UsageTests.cs#L7-L38' title='Snippet source file'>snippet source</a> | <a href='#snippet-Usage' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
-
-The above sample builds an instance of the Workbook for the target library:
-
- * `Aspose.Cells.Workbook` for Aspose
- * `ClosedXML.Excel.IXLWorkbook` for ClosedXml.
- * `ExcelsiorSyncfusion.IDisposableBook` for Syncfusion. Which implements both `Syncfusion.XlsIO.IWorkbook`, and `System.IDisposable`
- * `ExcelsiorOpenXml.OpenXmlBook` for OpenXml.
-
 
 
 ### Result:
 
-<img src="/src/ExcelsiorClosedXml.Tests/UsageTests.Test_Sheet1.png">
+<img src="/src/Excelsior.Tests/UsageTests.Test_Sheet1.png">
 
 
 ### Worksheet Name
@@ -133,7 +110,7 @@ The name can be controlled by passing an explicit value.
 var builder = new BookBuilder();
 builder.AddSheet(employees, "Employee Report");
 ```
-<sup><a href='/src/ExcelsiorAspose.Tests/WorksheetName.cs#L9-L14' title='Snippet source file'>snippet source</a> | <a href='#snippet-WorksheetName' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/WorksheetName.cs#L9-L14' title='Snippet source file'>snippet source</a> | <a href='#snippet-WorksheetName' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -184,13 +161,13 @@ public enum EmployeeStatus
     Terminated
 }
 ```
-<sup><a href='/src/ExcelsiorAspose.Tests/DataAnnotationsTests.cs#L43-L83' title='Snippet source file'>snippet source</a> | <a href='#snippet-DataAnnotationsModel' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/DataAnnotationsTests.cs#L43-L83' title='Snippet source file'>snippet source</a> | <a href='#snippet-DataAnnotationsModel' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
 #### Result
 
-<img src="/src/ExcelsiorClosedXml.Tests/DataAnnotationsTests.Simple_Sheet1.png">
+<img src="/src/Excelsior.Tests/DataAnnotationsTests.Simple_Sheet1.png">
 
 
 ### Saving to a stream
@@ -206,7 +183,7 @@ builder.AddSheet(data);
 var stream = new MemoryStream();
 await builder.ToStream(stream);
 ```
-<sup><a href='/src/ExcelsiorAspose.Tests/Saving.cs#L10-L18' title='Snippet source file'>snippet source</a> | <a href='#snippet-ToStream' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/Saving.cs#L10-L18' title='Snippet source file'>snippet source</a> | <a href='#snippet-ToStream' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -225,7 +202,7 @@ builder.AddSheet(employees)
         _ => _.Name,
         _ => _.Heading = "Employee Name");
 ```
-<sup><a href='/src/ExcelsiorAspose.Tests/Headings.cs#L9-L17' title='Snippet source file'>snippet source</a> | <a href='#snippet-CustomHeadings' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/Headings.cs#L9-L17' title='Snippet source file'>snippet source</a> | <a href='#snippet-CustomHeadings' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -261,7 +238,7 @@ public class Employee
 
 #### Result:
 
-<img src="/src/ExcelsiorClosedXml.Tests/Headings.Fluent_Sheet1.png">
+<img src="/src/Excelsior.Tests/Headings.Fluent_Sheet1.png">
 
 
 #### Order of precedence
@@ -285,13 +262,13 @@ builder.AddSheet(employees)
     .Column(_ => _.Name, _ => _.Order = 2)
     .Column(_ => _.Salary, _ => _.Order = 3);
 ```
-<sup><a href='/src/ExcelsiorAspose.Tests/ColumnOrdering.cs#L9-L17' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnOrdering' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/ColumnOrdering.cs#L9-L17' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnOrdering' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
 #### Result:
 
-<img src="/src/ExcelsiorClosedXml.Tests/ColumnOrdering.Fluent_Sheet1.png">
+<img src="/src/Excelsior.Tests/ColumnOrdering.Fluent_Sheet1.png">
 
 
 ### Heading Style
@@ -303,18 +280,18 @@ var builder = new BookBuilder(
     headingStyle: style =>
     {
         style.Font.Bold = true;
-        style.Font.FontColor = XLColor.White;
-        style.Fill.BackgroundColor = XLColor.DarkBlue;
+        style.Font.Color = "FFFFFF";
+        style.Fill.BackgroundColor = "00008B";
     });
 builder.AddSheet(data);
 ```
-<sup><a href='/src/ExcelsiorClosedXml.Tests/StyleTests.cs#L10-L21' title='Snippet source file'>snippet source</a> | <a href='#snippet-HeadingStyle' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/StyleTests.cs#L10-L21' title='Snippet source file'>snippet source</a> | <a href='#snippet-HeadingStyle' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
 #### Result:
 
-<img src="/src/ExcelsiorClosedXml.Tests/StyleTests.HeadingStyle_Sheet1.png">
+<img src="/src/Excelsior.Tests/StyleTests.HeadingStyle_Sheet1.png">
 
 
 ### Global Style
@@ -326,18 +303,18 @@ var builder = new BookBuilder(
     globalStyle: style =>
     {
         style.Font.Bold = true;
-        style.Font.FontColor = XLColor.White;
-        style.Fill.BackgroundColor = XLColor.DarkBlue;
+        style.Font.Color = "FFFFFF";
+        style.Fill.BackgroundColor = "00008B";
     });
 builder.AddSheet(data);
 ```
-<sup><a href='/src/ExcelsiorClosedXml.Tests/StyleTests.cs#L33-L44' title='Snippet source file'>snippet source</a> | <a href='#snippet-GlobalStyle' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/StyleTests.cs#L33-L44' title='Snippet source file'>snippet source</a> | <a href='#snippet-GlobalStyle' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
 #### Result:
 
-<img src="/src/ExcelsiorClosedXml.Tests/StyleTests.GlobalStyle_Sheet1.png">
+<img src="/src/Excelsior.Tests/StyleTests.GlobalStyle_Sheet1.png">
 
 
 ### Cell Styling
@@ -355,7 +332,7 @@ builder.AddSheet(employees)
             {
                 if (salary > 100000)
                 {
-                    style.Font.FontColor = XLColor.DarkGreen;
+                    style.Font.Color = "006400";
                     style.Font.Bold = true;
                 }
             };
@@ -366,25 +343,24 @@ builder.AddSheet(employees)
         {
             config.CellStyle = (style, employee, isActive) =>
             {
-                var fill = style.Fill;
                 if (isActive)
                 {
-                    fill.BackgroundColor = XLColor.LightGreen;
+                    style.Fill.BackgroundColor = "90EE90";
                 }
                 else
                 {
-                    fill.BackgroundColor = XLColor.LightPink;
+                    style.Fill.BackgroundColor = "FFB6C1";
                 }
             };
         });
 ```
-<sup><a href='/src/ExcelsiorClosedXml.Tests/StyleTests.cs#L56-L91' title='Snippet source file'>snippet source</a> | <a href='#snippet-CellStyle' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/StyleTests.cs#L56-L90' title='Snippet source file'>snippet source</a> | <a href='#snippet-CellStyle' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
 #### Result:
 
-<img src="/src/ExcelsiorClosedXml.Tests/StyleTests.CellStyle_Sheet1.png">
+<img src="/src/Excelsior.Tests/StyleTests.CellStyle_Sheet1.png">
 
 
 ### Render
@@ -404,13 +380,13 @@ builder.AddSheet(employees)
         _ => _.HireDate,
         _ => _.Format = "yyyy-MM-dd");
 ```
-<sup><a href='/src/ExcelsiorAspose.Tests/Render.cs#L10-L24' title='Snippet source file'>snippet source</a> | <a href='#snippet-CustomRender' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/Render.cs#L10-L24' title='Snippet source file'>snippet source</a> | <a href='#snippet-CustomRender' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
 #### Result:
 
-<img src="/src/ExcelsiorClosedXml.Tests/Render.Fluent_Sheet1.png">
+<img src="/src/Excelsior.Tests/Render.Fluent_Sheet1.png">
 
 
 ### Column Widths
@@ -427,7 +403,7 @@ builder.AddSheet(employees)
     .Column(_ => _.Email, _ => _.Width = 30)
     .Column(_ => _.HireDate, _ => _.Width = 15);
 ```
-<sup><a href='/src/ExcelsiorAspose.Tests/ColumnWidths.cs#L9-L17' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnWidths' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/ColumnWidths.cs#L9-L17' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnWidths' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -443,7 +419,7 @@ public class Employee
 
 #### Result:
 
-<img src="/src/ExcelsiorClosedXml.Tests/ColumnWidths.Fluent_Sheet1.png">
+<img src="/src/Excelsior.Tests/ColumnWidths.Fluent_Sheet1.png">
 
 
 #### Order of precedence
@@ -466,7 +442,7 @@ public record Person(string Name, Address Address);
 
 public record Address(int Number, string Street, string City, State State, ushort PostCode);
 ```
-<sup><a href='/src/ExcelsiorAspose.Tests/ComplexTypeWithToString.cs#L10-L16' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeModels' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/ComplexTypeWithToString.cs#L10-L16' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeModels' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -489,13 +465,13 @@ List<Person> data =
 ];
 builder.AddSheet(data);
 ```
-<sup><a href='/src/ExcelsiorAspose.Tests/ComplexTypeWithToString.cs#L21-L37' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeWithToString' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/ComplexTypeWithToString.cs#L21-L37' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeWithToString' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
 #### Result:
 
-<img src="/src/ExcelsiorClosedXml.Tests/ComplexTypeWithToString.Test_Sheet1.png">
+<img src="/src/Excelsior.Tests/ComplexTypeWithToString.Test_Sheet1.png">
 
 
 ### Custom render for Complex Types
@@ -507,7 +483,7 @@ builder.AddSheet(data);
 public static void Init() =>
     ValueRenderer.For<Address>(_ => $"{_.Number}, {_.Street}, {_.City}, {_.State}, {_.PostCode}");
 ```
-<sup><a href='/src/ExcelsiorAspose.Tests/ComplexTypeWithCustomRender.cs#L14-L20' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeWithCustomRenderInit' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/ComplexTypeWithCustomRender.cs#L14-L20' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeWithCustomRenderInit' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 <!-- snippet: ComplexTypeWithCustomRender -->
@@ -527,13 +503,13 @@ List<Person> data =
 ];
 builder.AddSheet(data);
 ```
-<sup><a href='/src/ExcelsiorAspose.Tests/ComplexTypeWithCustomRender.cs#L25-L41' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeWithCustomRender' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/ComplexTypeWithCustomRender.cs#L25-L41' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeWithCustomRender' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
 #### Result:
 
-<img src="/src/ExcelsiorClosedXml.Tests/ComplexTypeWithCustomRender.Test_Sheet1.png">
+<img src="/src/Excelsior.Tests/ComplexTypeWithCustomRender.Test_Sheet1.png">
 
 
 ### Links
@@ -564,7 +540,7 @@ public record LinkTarget(
     IEnumerable<Link>? NullableLinks,
     IEnumerable<Link?> LinksWithNulls);
 ```
-<sup><a href='/src/ExcelsiorAspose.Tests/LinkTests.cs#L4-L14' title='Snippet source file'>snippet source</a> | <a href='#snippet-LinkModel' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/LinkTests.cs#L4-L14' title='Snippet source file'>snippet source</a> | <a href='#snippet-LinkModel' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -596,13 +572,13 @@ List<LinkTarget> data =
 var builder = new BookBuilder();
 builder.AddSheet(data);
 ```
-<sup><a href='/src/ExcelsiorAspose.Tests/LinkTests.cs#L19-L44' title='Snippet source file'>snippet source</a> | <a href='#snippet-LinkUsage' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/LinkTests.cs#L19-L44' title='Snippet source file'>snippet source</a> | <a href='#snippet-LinkUsage' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
 #### Result
 
-<img src="/src/ExcelsiorClosedXml.Tests/LinkTests.Test_Sheet1.png">
+<img src="/src/Excelsior.Tests/LinkTests.Test_Sheet1.png">
 
 
 ### Whitespace
@@ -627,13 +603,13 @@ builder.AddSheet(data);
 
 using var book = await builder.Build();
 ```
-<sup><a href='/src/ExcelsiorAspose.Tests/WhitespaceTests.cs#L7-L24' title='Snippet source file'>snippet source</a> | <a href='#snippet-Whitespace' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/WhitespaceTests.cs#L7-L24' title='Snippet source file'>snippet source</a> | <a href='#snippet-Whitespace' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
 #### Result
 
-<img src="/src/ExcelsiorClosedXml.Tests/WhitespaceTests.Whitespace_Sheet1.png">
+<img src="/src/Excelsior.Tests/WhitespaceTests.Whitespace_Sheet1.png">
 
 
 #### Disable whitespace trimming
@@ -665,7 +641,7 @@ Properties that are castable to an `IEnumerable<string>` will automatically be r
 ```cs
 public record Person(string Name, IEnumerable<string> PhoneNumbers);
 ```
-<sup><a href='/src/ExcelsiorAspose.Tests/EnumerableStringTests.cs#L4-L8' title='Snippet source file'>snippet source</a> | <a href='#snippet-EnumerableModel' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/EnumerableStringTests.cs#L4-L8' title='Snippet source file'>snippet source</a> | <a href='#snippet-EnumerableModel' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -688,13 +664,13 @@ List<Person> data =
 var builder = new BookBuilder();
 builder.AddSheet(data);
 ```
-<sup><a href='/src/ExcelsiorAspose.Tests/EnumerableStringTests.cs#L13-L29' title='Snippet source file'>snippet source</a> | <a href='#snippet-EnumerableUsage' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/EnumerableStringTests.cs#L13-L29' title='Snippet source file'>snippet source</a> | <a href='#snippet-EnumerableUsage' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
 #### Result
 
-<img src="/src/ExcelsiorClosedXml.Tests/EnumerableStringTests.Test_Sheet1.png">
+<img src="/src/Excelsior.Tests/EnumerableStringTests.Test_Sheet1.png">
 
 
 ## Binding Model
@@ -729,7 +705,7 @@ public class Employee
     public required string Email { get; init; }
 }
 ```
-<sup><a href='/src/ExcelsiorClosedXml.Tests/BindingModel.cs#L3-L26' title='Snippet source file'>snippet source</a> | <a href='#snippet-DataModel' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/BindingModel.cs#L3-L26' title='Snippet source file'>snippet source</a> | <a href='#snippet-DataModel' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 Then a custom binding type can be used.
@@ -745,7 +721,7 @@ public class EmployeeBindingModel
     public required string Address { get; init; }
 }
 ```
-<sup><a href='/src/ExcelsiorClosedXml.Tests/BindingModel.cs#L28-L38' title='Snippet source file'>snippet source</a> | <a href='#snippet-EmployeeBindingModel' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/BindingModel.cs#L28-L38' title='Snippet source file'>snippet source</a> | <a href='#snippet-EmployeeBindingModel' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 The custom binding type can be queried and  rendered into a sheet.
@@ -766,7 +742,7 @@ var employees = dbContext
 var builder = new BookBuilder();
 builder.AddSheet(employees);
 ```
-<sup><a href='/src/ExcelsiorClosedXml.Tests/BindingModel.cs#L50-L65' title='Snippet source file'>snippet source</a> | <a href='#snippet-ModelProjection' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/BindingModel.cs#L50-L65' title='Snippet source file'>snippet source</a> | <a href='#snippet-ModelProjection' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -846,7 +822,7 @@ public class Employee
     public Date? HireDate { get; init; }
 }
 ```
-<sup><a href='/src/ExcelsiorAspose.Tests/ColumnAttributeTests.cs#L4-L21' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnAttributeModel' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/ColumnAttributeTests.cs#L4-L21' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnAttributeModel' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 <!-- snippet: ColumnAttribute -->
@@ -874,13 +850,13 @@ List<Employee> data =
 
 builder.AddSheet(data);
 ```
-<sup><a href='/src/ExcelsiorAspose.Tests/ColumnAttributeTests.cs#L26-L50' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnAttribute' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/ColumnAttributeTests.cs#L26-L50' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnAttribute' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
 #### Result
 
-<img src="/src/ExcelsiorClosedXml.Tests/ColumnAttributeTests.Test_Sheet1.png">
+<img src="/src/Excelsior.Tests/ColumnAttributeTests.Test_Sheet1.png">
 
 
 ### ValueRenderer.ForEnums
@@ -1188,13 +1164,13 @@ var builder = new BookBuilder();
 var sheet = builder.AddSheet(Data());
 sheet.DisableFilter();
 ```
-<sup><a href='/src/ExcelsiorAspose.Tests/FilterTests.cs#L32-L38' title='Snippet source file'>snippet source</a> | <a href='#snippet-FilterAllOff' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/FilterTests.cs#L32-L38' title='Snippet source file'>snippet source</a> | <a href='#snippet-FilterAllOff' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
 #### Result
 
-<img src="/src/ExcelsiorClosedXml.Tests/FilterTests.AllOff_Sheet1.png">
+<img src="/src/Excelsior.Tests/FilterTests.AllOff_Sheet1.png">
 
 
 #### Enable filter on specific columns
@@ -1209,13 +1185,13 @@ var sheet = builder.AddSheet(Data());
 sheet.DisableFilter();
 sheet.Filter(_ => _.Name);
 ```
-<sup><a href='/src/ExcelsiorAspose.Tests/FilterTests.cs#L47-L54' title='Snippet source file'>snippet source</a> | <a href='#snippet-FilterDefaultOffWithOneOn' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/FilterTests.cs#L47-L54' title='Snippet source file'>snippet source</a> | <a href='#snippet-FilterDefaultOffWithOneOn' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
 #### Result
 
-<img src="/src/ExcelsiorClosedXml.Tests/FilterTests.DefaultOffWithOneOn_Sheet1.png">
+<img src="/src/Excelsior.Tests/FilterTests.DefaultOffWithOneOn_Sheet1.png">
 
 
 #### Disable filter on specific columns
@@ -1231,13 +1207,13 @@ sheet.Column(
     _ => _.Age,
     _ => _.Filter = false);
 ```
-<sup><a href='/src/ExcelsiorAspose.Tests/FilterTests.cs#L63-L71' title='Snippet source file'>snippet source</a> | <a href='#snippet-FilterDefaultOnWithOneOff' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/FilterTests.cs#L63-L71' title='Snippet source file'>snippet source</a> | <a href='#snippet-FilterDefaultOnWithOneOff' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
 #### Result
 
-<img src="/src/ExcelsiorClosedXml.Tests/FilterTests.DefaultOnWithOneOff_Sheet1.png">
+<img src="/src/Excelsior.Tests/FilterTests.DefaultOnWithOneOff_Sheet1.png">
 
 
 #### ColumnAttribute
@@ -1267,13 +1243,13 @@ var builder = new BookBuilder();
 var sheet = builder.AddSheet(data);
 sheet.Include(_ => _.Email, !isInternalReport);
 ```
-<sup><a href='/src/ExcelsiorAspose.Tests/IncludeTests.cs#L83-L92' title='Snippet source file'>snippet source</a> | <a href='#snippet-IncludeToggleBasedOnState' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/IncludeTests.cs#L83-L92' title='Snippet source file'>snippet source</a> | <a href='#snippet-IncludeToggleBasedOnState' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
 #### Result
 
-<img src="/src/ExcelsiorClosedXml.Tests/IncludeTests.ToggleBasedOnState_Sheet1.png">
+<img src="/src/Excelsior.Tests/IncludeTests.ToggleBasedOnState_Sheet1.png">
 
 
 #### Multiple spreadsheets from the same model
@@ -1291,13 +1267,13 @@ var sheet = builder.AddSheet(data);
 sheet.Exclude(_ => _.Age);
 sheet.Exclude(_ => _.Email);
 ```
-<sup><a href='/src/ExcelsiorAspose.Tests/IncludeTests.cs#L101-L111' title='Snippet source file'>snippet source</a> | <a href='#snippet-IncludeMultipleSpreadsheets_Public' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/IncludeTests.cs#L101-L111' title='Snippet source file'>snippet source</a> | <a href='#snippet-IncludeMultipleSpreadsheets_Public' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
 #### Result
 
-<img src="/src/ExcelsiorClosedXml.Tests/IncludeTests.MultipleSpreadsheetsSameModel_Public_Sheet1.png">
+<img src="/src/Excelsior.Tests/IncludeTests.MultipleSpreadsheetsSameModel_Public_Sheet1.png">
 
 <!-- snippet: IncludeMultipleSpreadsheets_Internal -->
 <a id='snippet-IncludeMultipleSpreadsheets_Internal'></a>
@@ -1311,13 +1287,13 @@ List<Target> data = [
 var builder = new BookBuilder();
 builder.AddSheet(data);
 ```
-<sup><a href='/src/ExcelsiorAspose.Tests/IncludeTests.cs#L120-L131' title='Snippet source file'>snippet source</a> | <a href='#snippet-IncludeMultipleSpreadsheets_Internal' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/IncludeTests.cs#L120-L131' title='Snippet source file'>snippet source</a> | <a href='#snippet-IncludeMultipleSpreadsheets_Internal' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
 #### Result
 
-<img src="/src/ExcelsiorClosedXml.Tests/IncludeTests.MultipleSpreadsheetsSameModel_Internal_Sheet1.png">
+<img src="/src/Excelsior.Tests/IncludeTests.MultipleSpreadsheetsSameModel_Internal_Sheet1.png">
 
 
 #### Exclude a column
@@ -1333,13 +1309,13 @@ var builder = new BookBuilder();
 var sheet = builder.AddSheet(data);
 sheet.Exclude(_ => _.Age);
 ```
-<sup><a href='/src/ExcelsiorAspose.Tests/IncludeTests.cs#L29-L39' title='Snippet source file'>snippet source</a> | <a href='#snippet-IncludeExcludeOne' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/IncludeTests.cs#L29-L39' title='Snippet source file'>snippet source</a> | <a href='#snippet-IncludeExcludeOne' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
 #### Result
 
-<img src="/src/ExcelsiorClosedXml.Tests/IncludeTests.ExcludeOne_Sheet1.png">
+<img src="/src/Excelsior.Tests/IncludeTests.ExcludeOne_Sheet1.png">
 
 
 #### Exclude via Column configuration
@@ -1357,13 +1333,13 @@ sheet.Column(
     _ => _.Age,
     _ => _.Include = false);
 ```
-<sup><a href='/src/ExcelsiorAspose.Tests/IncludeTests.cs#L48-L60' title='Snippet source file'>snippet source</a> | <a href='#snippet-IncludeExcludeOneViaColumn' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/IncludeTests.cs#L48-L60' title='Snippet source file'>snippet source</a> | <a href='#snippet-IncludeExcludeOneViaColumn' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
 #### Result
 
-<img src="/src/ExcelsiorClosedXml.Tests/IncludeTests.ExcludeOneViaColumn_Sheet1.png">
+<img src="/src/Excelsior.Tests/IncludeTests.ExcludeOneViaColumn_Sheet1.png">
 
 
 #### ColumnAttribute
@@ -1390,13 +1366,13 @@ public record Person(
 
 public record Address(int StreetNumber, string Street, string City, State State, ushort PostCode);
 ```
-<sup><a href='/src/ExcelsiorAspose.Tests/ComplexTypeWithSplitter.cs#L10-L18' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeWithSplitter' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/ComplexTypeWithSplitter.cs#L10-L18' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeWithSplitter' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
 #### Result
 
-<img src="/src/ExcelsiorAspose.Tests/ComplexTypeWithSplitter.Test%23Sheet1.verified.png">
+<img src="/src/Excelsior.Tests/ComplexTypeWithSplitter.Test%23Sheet1.verified.png">
 
 
 #### UseHierachyForName
@@ -1413,13 +1389,13 @@ public record Person(
 
 public record Address(int Number, string Street, string City, State State, ushort PostCode);
 ```
-<sup><a href='/src/ExcelsiorAspose.Tests/ComplexTypeWithSplitterUseHierachyForName.cs#L10-L19' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeWithSplitterUseHierachyForName' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/ComplexTypeWithSplitterUseHierachyForName.cs#L10-L19' title='Snippet source file'>snippet source</a> | <a href='#snippet-ComplexTypeWithSplitterUseHierachyForName' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
 #### Result
 
-<img src="/src/ExcelsiorAspose.Tests/ComplexTypeWithSplitterUseHierachyForName.Test%23Sheet1.verified.png">
+<img src="/src/Excelsior.Tests/ComplexTypeWithSplitterUseHierachyForName.Test%23Sheet1.verified.png">
 
 
 ### Source Generated Extensions
@@ -1441,7 +1417,7 @@ public class GeneratedTestModel
     public required int Age { get; init; }
 }
 ```
-<sup><a href='/src/ExcelsiorClosedXml.Tests/SourceGeneratorIntegrationTests.cs#L60-L69' title='Snippet source file'>snippet source</a> | <a href='#snippet-SourceGeneratedModel' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/SourceGeneratorIntegrationTests.cs#L60-L69' title='Snippet source file'>snippet source</a> | <a href='#snippet-SourceGeneratedModel' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 This generates typed extension methods for each property, such as `NameColumn`, `NameOrder`, `AgeWidth`, etc.
@@ -1475,7 +1451,7 @@ sheet.AgeOrder(1);
 sheet.NameOrder(2);
 sheet.AgeWidth(15);
 ```
-<sup><a href='/src/ExcelsiorClosedXml.Tests/SourceGeneratorIntegrationTests.cs#L7-L23' title='Snippet source file'>snippet source</a> | <a href='#snippet-SourceGeneratedUsage' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/SourceGeneratorIntegrationTests.cs#L7-L23' title='Snippet source file'>snippet source</a> | <a href='#snippet-SourceGeneratedUsage' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 

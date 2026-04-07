@@ -1,9 +1,9 @@
-﻿class SheetBuilder<TModel, TStyle>(Columns<TModel, TStyle> columns) :
-    ISheetBuilder<TModel, TStyle>
+class SheetBuilder<TModel>(Columns<TModel> columns) :
+    ISheetBuilder<TModel>
 {
-    public ISheetBuilder<TModel, TStyle> Column<TProperty>(
+    public ISheetBuilder<TModel> Column<TProperty>(
         Expression<Func<TModel, TProperty>> property,
-        Action<ColumnConfig<TStyle, TModel, TProperty>> configuration)
+        Action<ColumnConfig<TModel, TProperty>> configuration)
     {
         columns.Add(property, configuration);
         return this;
@@ -26,17 +26,17 @@
 
     public void HeadingStyle<TProperty>(
         Expression<Func<TModel, TProperty>> property,
-        Action<TStyle> value) =>
+        Action<CellStyle> value) =>
         Column(property, _ => _.HeadingStyle = value);
 
     public void CellStyle<TProperty>(
         Expression<Func<TModel, TProperty>> property,
-        Action<TStyle, TModel, TProperty> value) =>
+        Action<CellStyle, TModel, TProperty> value) =>
         Column(property, _ => _.CellStyle = value);
 
     public void CellStyle<TProperty>(
         Expression<Func<TModel, TProperty>> property,
-        Action<TStyle, TProperty> value) =>
+        Action<CellStyle, TProperty> value) =>
         Column(property, _ => _.CellStyle = (style, _, property) => value(style, property));
 
     public void Format<TProperty>(

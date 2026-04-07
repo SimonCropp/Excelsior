@@ -13,7 +13,7 @@ public class ColumnsTests
     [Test]
     public void NoOrder_UsesDeclarationOrder()
     {
-        var columns = new Columns<NoOrderModel, object>();
+        var columns = new Columns<NoOrderModel>();
         var ordered = columns.OrderedColumns();
 
         Assert.That(ordered.Select(_ => _.Name).ToList(), Is.EqualTo(["First", "Second", "Third"]));
@@ -32,7 +32,7 @@ public class ColumnsTests
     [Test]
     public void MixedOrder_UnorderedMaintainDeclarationPosition()
     {
-        var columns = new Columns<MixedOrderModel, object>();
+        var columns = new Columns<MixedOrderModel>();
         var ordered = columns.OrderedColumns();
 
         Assert.That(ordered.Select(_ => _.Name).ToList(), Is.EqualTo(["Ordered", "NoOrder1", "NoOrder2"]));
@@ -53,7 +53,7 @@ public class ColumnsTests
     [Test]
     public void AllOrdered_SortsByOrder()
     {
-        var columns = new Columns<AllOrderedModel, object>();
+        var columns = new Columns<AllOrderedModel>();
         var ordered = columns.OrderedColumns();
 
         Assert.That(ordered.Select(_ => _.Name).ToList(), Is.EqualTo(["First", "Second", "Third"]));
@@ -64,7 +64,7 @@ public class ColumnsTests
     [Test]
     public void Record_NoOrder_UsesDeclarationOrder()
     {
-        var columns = new Columns<NoOrderRecord, object>();
+        var columns = new Columns<NoOrderRecord>();
         var ordered = columns.OrderedColumns();
 
         Assert.That(ordered.Select(_ => _.Name).ToList(), Is.EqualTo(["First", "Second", "Third"]));
@@ -78,7 +78,7 @@ public class ColumnsTests
     [Test]
     public void Record_MixedOrder_UnorderedMaintainDeclarationPosition()
     {
-        var columns = new Columns<MixedOrderRecord, object>();
+        var columns = new Columns<MixedOrderRecord>();
         var ordered = columns.OrderedColumns();
 
         Assert.That(ordered.Select(_ => _.Name).ToList(), Is.EqualTo(["Ordered", "NoOrder1", "NoOrder2"]));
@@ -93,7 +93,7 @@ public class ColumnsTests
     [Test]
     public void Record_MixedConstructorAndProperties_UsesDeclarationOrder()
     {
-        var columns = new Columns<MixedConstructorAndProperties, object>();
+        var columns = new Columns<MixedConstructorAndProperties>();
         var ordered = columns.OrderedColumns();
 
         Assert.That(ordered.Select(_ => _.Name).ToList(), Is.EqualTo(["First", "Second", "Third", "Fourth"]));
@@ -112,7 +112,7 @@ public class ColumnsTests
     [Test]
     public void Record_MixedConstructorAndPropertiesWithOrder()
     {
-        var columns = new Columns<MixedConstructorAndPropertiesWithOrder, object>();
+        var columns = new Columns<MixedConstructorAndPropertiesWithOrder>();
         var ordered = columns.OrderedColumns();
 
         Assert.That(ordered.Select(_ => _.Name).ToList(), Is.EqualTo(["Ordered2", "Ordered1", "NoOrder1", "NoOrder2"]));
@@ -126,7 +126,7 @@ public class ColumnsTests
     [Test]
     public void Record_AllOrdered_SortsByOrder()
     {
-        var columns = new Columns<AllOrderedRecord, object>();
+        var columns = new Columns<AllOrderedRecord>();
         var ordered = columns.OrderedColumns();
 
         Assert.That(ordered.Select(_ => _.Name).ToList(), Is.EqualTo(["First", "Second", "Third"]));
@@ -135,7 +135,7 @@ public class ColumnsTests
     [Test]
     public void Fluent_ReorderColumns()
     {
-        var columns = new Columns<NoOrderModel, object>();
+        var columns = new Columns<NoOrderModel>();
         columns.Add<string>(_ => _.Third, _ => _.Order = 1);
         columns.Add<string>(_ => _.First, _ => _.Order = 2);
         columns.Add<string>(_ => _.Second, _ => _.Order = 3);
@@ -147,7 +147,7 @@ public class ColumnsTests
     [Test]
     public void Fluent_PartialOrder_UnorderedAfterOrdered()
     {
-        var columns = new Columns<NoOrderModel, object>();
+        var columns = new Columns<NoOrderModel>();
         columns.Add<string>(_ => _.Third, _ => _.Order = 1);
         var ordered = columns.OrderedColumns();
 
@@ -168,7 +168,7 @@ public class ColumnsTests
     [Test]
     public void Fluent_OverridesAttributeOrder()
     {
-        var columns = new Columns<AttributeOrderModel, object>();
+        var columns = new Columns<AttributeOrderModel>();
         columns.Add<string>(_ => _.B, _ => _.Order = 0);
         var ordered = columns.OrderedColumns();
 
@@ -178,7 +178,7 @@ public class ColumnsTests
     [Test]
     public void Fluent_MixedWithAttributeAndPositional()
     {
-        var columns = new Columns<MixedOrderModel, object>();
+        var columns = new Columns<MixedOrderModel>();
         // MixedOrderModel: NoOrder1 (no attr), Ordered (Order=5), NoOrder2 (no attr)
         // Fluent sets NoOrder2 to Order=3
         columns.Add<string>(_ => _.NoOrder2, _ => _.Order = 3);
@@ -193,7 +193,7 @@ public class ColumnsTests
     [Test]
     public void Fluent_Record_MixOrderedAndPositional()
     {
-        var columns = new Columns<FluentRecordModel, object>();
+        var columns = new Columns<FluentRecordModel>();
         columns.Add<string>(_ => _.C, _ => _.Order = 1);
         columns.Add<string>(_ => _.A, _ => _.Order = 2);
         var ordered = columns.OrderedColumns();

@@ -292,45 +292,45 @@ public class SheetBuilderGenerator : IIncrementalGenerator
 
             builder.Append(
                 $"""
-                     public static ISheetBuilder<{modelType}, TStyle> {prefix}Column<TStyle>(
-                         this ISheetBuilder<{modelType}, TStyle> builder,
-                         Action<ColumnConfig<TStyle, {modelType}, {propType}>> configuration)
+                     public static ISheetBuilder<{modelType}> {prefix}Column(
+                         this ISheetBuilder<{modelType}> builder,
+                         Action<ColumnConfig<{modelType}, {propType}>> configuration)
                          => builder.Column(_ => _.{access}, configuration);
 
-                     public static void {prefix}HeadingText<TStyle>(this ISheetBuilder<{modelType}, TStyle> builder, string value)
+                     public static void {prefix}HeadingText(this ISheetBuilder<{modelType}> builder, string value)
                          => builder.HeadingText(_ => _.{access}, value);
 
-                     public static void {prefix}Order<TStyle>(this ISheetBuilder<{modelType}, TStyle> builder, int? value)
+                     public static void {prefix}Order(this ISheetBuilder<{modelType}> builder, int? value)
                          => builder.Order(_ => _.{access}, value);
 
-                     public static void {prefix}Width<TStyle>(this ISheetBuilder<{modelType}, TStyle> builder, int? value)
+                     public static void {prefix}Width(this ISheetBuilder<{modelType}> builder, int? value)
                          => builder.Width(_ => _.{access}, value);
 
-                     public static void {prefix}HeadingStyle<TStyle>(this ISheetBuilder<{modelType}, TStyle> builder, Action<TStyle> value)
+                     public static void {prefix}HeadingStyle(this ISheetBuilder<{modelType}> builder, Action<Excelsior.CellStyle> value)
                          => builder.HeadingStyle(_ => _.{access}, value);
 
-                     public static void {prefix}CellStyle<TStyle>(this ISheetBuilder<{modelType}, TStyle> builder, Action<TStyle, {modelType}, {propType}> value)
+                     public static void {prefix}CellStyle(this ISheetBuilder<{modelType}> builder, Action<Excelsior.CellStyle, {modelType}, {propType}> value)
                          => builder.CellStyle(_ => _.{access}, value);
 
-                     public static void {prefix}Format<TStyle>(this ISheetBuilder<{modelType}, TStyle> builder, string value)
+                     public static void {prefix}Format(this ISheetBuilder<{modelType}> builder, string value)
                          => builder.Format(_ => _.{access}, value);
 
-                     public static void {prefix}NullDisplay<TStyle>(this ISheetBuilder<{modelType}, TStyle> builder, string value)
+                     public static void {prefix}NullDisplay(this ISheetBuilder<{modelType}> builder, string value)
                          => builder.NullDisplay(_ => _.{access}, value);
 
-                     public static void {prefix}IsHtml<TStyle>(this ISheetBuilder<{modelType}, TStyle> builder)
+                     public static void {prefix}IsHtml(this ISheetBuilder<{modelType}> builder)
                          => builder.IsHtml(_ => _.{access});
 
-                     public static void {prefix}Render<TStyle>(this ISheetBuilder<{modelType}, TStyle> builder, Func<{modelType}, {propType}, string?> value)
+                     public static void {prefix}Render(this ISheetBuilder<{modelType}> builder, Func<{modelType}, {propType}, string?> value)
                          => builder.Render(_ => _.{access}, value);
 
-                     public static void {prefix}Filter<TStyle>(this ISheetBuilder<{modelType}, TStyle> builder)
+                     public static void {prefix}Filter(this ISheetBuilder<{modelType}> builder)
                          => builder.Filter(_ => _.{access});
 
-                     public static void {prefix}Include<TStyle>(this ISheetBuilder<{modelType}, TStyle> builder, bool value)
+                     public static void {prefix}Include(this ISheetBuilder<{modelType}> builder, bool value)
                          => builder.Include(_ => _.{access}, value);
 
-                     public static void {prefix}Exclude<TStyle>(this ISheetBuilder<{modelType}, TStyle> builder)
+                     public static void {prefix}Exclude(this ISheetBuilder<{modelType}> builder)
                          => builder.Exclude(_ => _.{access});
 
                  """);

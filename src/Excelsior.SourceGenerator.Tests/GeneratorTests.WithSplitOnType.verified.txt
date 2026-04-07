@@ -6,127 +6,127 @@ namespace Excelsior;
 using System;
 public static class EmployeeSheetBuilderExtensions
 {
-    public static ISheetBuilder<global::Employee, TStyle> EmailColumn<TStyle>(
-        this ISheetBuilder<global::Employee, TStyle> builder,
-        Action<ColumnConfig<TStyle, global::Employee, string>> configuration)
+    public static ISheetBuilder<global::Employee> EmailColumn(
+        this ISheetBuilder<global::Employee> builder,
+        Action<ColumnConfig<global::Employee, string>> configuration)
         => builder.Column(_ => _.Email, configuration);
 
-    public static void EmailHeadingText<TStyle>(this ISheetBuilder<global::Employee, TStyle> builder, string value)
+    public static void EmailHeadingText(this ISheetBuilder<global::Employee> builder, string value)
         => builder.HeadingText(_ => _.Email, value);
 
-    public static void EmailOrder<TStyle>(this ISheetBuilder<global::Employee, TStyle> builder, int? value)
+    public static void EmailOrder(this ISheetBuilder<global::Employee> builder, int? value)
         => builder.Order(_ => _.Email, value);
 
-    public static void EmailWidth<TStyle>(this ISheetBuilder<global::Employee, TStyle> builder, int? value)
+    public static void EmailWidth(this ISheetBuilder<global::Employee> builder, int? value)
         => builder.Width(_ => _.Email, value);
 
-    public static void EmailHeadingStyle<TStyle>(this ISheetBuilder<global::Employee, TStyle> builder, Action<TStyle> value)
+    public static void EmailHeadingStyle(this ISheetBuilder<global::Employee> builder, Action<Excelsior.CellStyle> value)
         => builder.HeadingStyle(_ => _.Email, value);
 
-    public static void EmailCellStyle<TStyle>(this ISheetBuilder<global::Employee, TStyle> builder, Action<TStyle, global::Employee, string> value)
+    public static void EmailCellStyle(this ISheetBuilder<global::Employee> builder, Action<Excelsior.CellStyle, global::Employee, string> value)
         => builder.CellStyle(_ => _.Email, value);
 
-    public static void EmailFormat<TStyle>(this ISheetBuilder<global::Employee, TStyle> builder, string value)
+    public static void EmailFormat(this ISheetBuilder<global::Employee> builder, string value)
         => builder.Format(_ => _.Email, value);
 
-    public static void EmailNullDisplay<TStyle>(this ISheetBuilder<global::Employee, TStyle> builder, string value)
+    public static void EmailNullDisplay(this ISheetBuilder<global::Employee> builder, string value)
         => builder.NullDisplay(_ => _.Email, value);
 
-    public static void EmailIsHtml<TStyle>(this ISheetBuilder<global::Employee, TStyle> builder)
+    public static void EmailIsHtml(this ISheetBuilder<global::Employee> builder)
         => builder.IsHtml(_ => _.Email);
 
-    public static void EmailRender<TStyle>(this ISheetBuilder<global::Employee, TStyle> builder, Func<global::Employee, string, string?> value)
+    public static void EmailRender(this ISheetBuilder<global::Employee> builder, Func<global::Employee, string, string?> value)
         => builder.Render(_ => _.Email, value);
 
-    public static void EmailFilter<TStyle>(this ISheetBuilder<global::Employee, TStyle> builder)
+    public static void EmailFilter(this ISheetBuilder<global::Employee> builder)
         => builder.Filter(_ => _.Email);
 
-    public static void EmailInclude<TStyle>(this ISheetBuilder<global::Employee, TStyle> builder, bool value)
+    public static void EmailInclude(this ISheetBuilder<global::Employee> builder, bool value)
         => builder.Include(_ => _.Email, value);
 
-    public static void EmailExclude<TStyle>(this ISheetBuilder<global::Employee, TStyle> builder)
+    public static void EmailExclude(this ISheetBuilder<global::Employee> builder)
         => builder.Exclude(_ => _.Email);
 
-    public static ISheetBuilder<global::Employee, TStyle> StreetColumn<TStyle>(
-        this ISheetBuilder<global::Employee, TStyle> builder,
-        Action<ColumnConfig<TStyle, global::Employee, string>> configuration)
+    public static ISheetBuilder<global::Employee> StreetColumn(
+        this ISheetBuilder<global::Employee> builder,
+        Action<ColumnConfig<global::Employee, string>> configuration)
         => builder.Column(_ => _.Address.Street, configuration);
 
-    public static void StreetHeadingText<TStyle>(this ISheetBuilder<global::Employee, TStyle> builder, string value)
+    public static void StreetHeadingText(this ISheetBuilder<global::Employee> builder, string value)
         => builder.HeadingText(_ => _.Address.Street, value);
 
-    public static void StreetOrder<TStyle>(this ISheetBuilder<global::Employee, TStyle> builder, int? value)
+    public static void StreetOrder(this ISheetBuilder<global::Employee> builder, int? value)
         => builder.Order(_ => _.Address.Street, value);
 
-    public static void StreetWidth<TStyle>(this ISheetBuilder<global::Employee, TStyle> builder, int? value)
+    public static void StreetWidth(this ISheetBuilder<global::Employee> builder, int? value)
         => builder.Width(_ => _.Address.Street, value);
 
-    public static void StreetHeadingStyle<TStyle>(this ISheetBuilder<global::Employee, TStyle> builder, Action<TStyle> value)
+    public static void StreetHeadingStyle(this ISheetBuilder<global::Employee> builder, Action<Excelsior.CellStyle> value)
         => builder.HeadingStyle(_ => _.Address.Street, value);
 
-    public static void StreetCellStyle<TStyle>(this ISheetBuilder<global::Employee, TStyle> builder, Action<TStyle, global::Employee, string> value)
+    public static void StreetCellStyle(this ISheetBuilder<global::Employee> builder, Action<Excelsior.CellStyle, global::Employee, string> value)
         => builder.CellStyle(_ => _.Address.Street, value);
 
-    public static void StreetFormat<TStyle>(this ISheetBuilder<global::Employee, TStyle> builder, string value)
+    public static void StreetFormat(this ISheetBuilder<global::Employee> builder, string value)
         => builder.Format(_ => _.Address.Street, value);
 
-    public static void StreetNullDisplay<TStyle>(this ISheetBuilder<global::Employee, TStyle> builder, string value)
+    public static void StreetNullDisplay(this ISheetBuilder<global::Employee> builder, string value)
         => builder.NullDisplay(_ => _.Address.Street, value);
 
-    public static void StreetIsHtml<TStyle>(this ISheetBuilder<global::Employee, TStyle> builder)
+    public static void StreetIsHtml(this ISheetBuilder<global::Employee> builder)
         => builder.IsHtml(_ => _.Address.Street);
 
-    public static void StreetRender<TStyle>(this ISheetBuilder<global::Employee, TStyle> builder, Func<global::Employee, string, string?> value)
+    public static void StreetRender(this ISheetBuilder<global::Employee> builder, Func<global::Employee, string, string?> value)
         => builder.Render(_ => _.Address.Street, value);
 
-    public static void StreetFilter<TStyle>(this ISheetBuilder<global::Employee, TStyle> builder)
+    public static void StreetFilter(this ISheetBuilder<global::Employee> builder)
         => builder.Filter(_ => _.Address.Street);
 
-    public static void StreetInclude<TStyle>(this ISheetBuilder<global::Employee, TStyle> builder, bool value)
+    public static void StreetInclude(this ISheetBuilder<global::Employee> builder, bool value)
         => builder.Include(_ => _.Address.Street, value);
 
-    public static void StreetExclude<TStyle>(this ISheetBuilder<global::Employee, TStyle> builder)
+    public static void StreetExclude(this ISheetBuilder<global::Employee> builder)
         => builder.Exclude(_ => _.Address.Street);
 
-    public static ISheetBuilder<global::Employee, TStyle> CityColumn<TStyle>(
-        this ISheetBuilder<global::Employee, TStyle> builder,
-        Action<ColumnConfig<TStyle, global::Employee, string>> configuration)
+    public static ISheetBuilder<global::Employee> CityColumn(
+        this ISheetBuilder<global::Employee> builder,
+        Action<ColumnConfig<global::Employee, string>> configuration)
         => builder.Column(_ => _.Address.City, configuration);
 
-    public static void CityHeadingText<TStyle>(this ISheetBuilder<global::Employee, TStyle> builder, string value)
+    public static void CityHeadingText(this ISheetBuilder<global::Employee> builder, string value)
         => builder.HeadingText(_ => _.Address.City, value);
 
-    public static void CityOrder<TStyle>(this ISheetBuilder<global::Employee, TStyle> builder, int? value)
+    public static void CityOrder(this ISheetBuilder<global::Employee> builder, int? value)
         => builder.Order(_ => _.Address.City, value);
 
-    public static void CityWidth<TStyle>(this ISheetBuilder<global::Employee, TStyle> builder, int? value)
+    public static void CityWidth(this ISheetBuilder<global::Employee> builder, int? value)
         => builder.Width(_ => _.Address.City, value);
 
-    public static void CityHeadingStyle<TStyle>(this ISheetBuilder<global::Employee, TStyle> builder, Action<TStyle> value)
+    public static void CityHeadingStyle(this ISheetBuilder<global::Employee> builder, Action<Excelsior.CellStyle> value)
         => builder.HeadingStyle(_ => _.Address.City, value);
 
-    public static void CityCellStyle<TStyle>(this ISheetBuilder<global::Employee, TStyle> builder, Action<TStyle, global::Employee, string> value)
+    public static void CityCellStyle(this ISheetBuilder<global::Employee> builder, Action<Excelsior.CellStyle, global::Employee, string> value)
         => builder.CellStyle(_ => _.Address.City, value);
 
-    public static void CityFormat<TStyle>(this ISheetBuilder<global::Employee, TStyle> builder, string value)
+    public static void CityFormat(this ISheetBuilder<global::Employee> builder, string value)
         => builder.Format(_ => _.Address.City, value);
 
-    public static void CityNullDisplay<TStyle>(this ISheetBuilder<global::Employee, TStyle> builder, string value)
+    public static void CityNullDisplay(this ISheetBuilder<global::Employee> builder, string value)
         => builder.NullDisplay(_ => _.Address.City, value);
 
-    public static void CityIsHtml<TStyle>(this ISheetBuilder<global::Employee, TStyle> builder)
+    public static void CityIsHtml(this ISheetBuilder<global::Employee> builder)
         => builder.IsHtml(_ => _.Address.City);
 
-    public static void CityRender<TStyle>(this ISheetBuilder<global::Employee, TStyle> builder, Func<global::Employee, string, string?> value)
+    public static void CityRender(this ISheetBuilder<global::Employee> builder, Func<global::Employee, string, string?> value)
         => builder.Render(_ => _.Address.City, value);
 
-    public static void CityFilter<TStyle>(this ISheetBuilder<global::Employee, TStyle> builder)
+    public static void CityFilter(this ISheetBuilder<global::Employee> builder)
         => builder.Filter(_ => _.Address.City);
 
-    public static void CityInclude<TStyle>(this ISheetBuilder<global::Employee, TStyle> builder, bool value)
+    public static void CityInclude(this ISheetBuilder<global::Employee> builder, bool value)
         => builder.Include(_ => _.Address.City, value);
 
-    public static void CityExclude<TStyle>(this ISheetBuilder<global::Employee, TStyle> builder)
+    public static void CityExclude(this ISheetBuilder<global::Employee> builder)
         => builder.Exclude(_ => _.Address.City);
 }
 

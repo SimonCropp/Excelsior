@@ -15,7 +15,7 @@
     <PackageReference Include="Verify" />
     <PackageReference Include="NUnit" />
     <PackageReference Include="NUnit3TestAdapter" />
-    <ProjectReference Include="..\ExcelsiorOpenXml\ExcelsiorOpenXml.csproj" />
+    <ProjectReference Include="..\Excelsior\Excelsior.csproj" />
     <Using Include="NUnit.Framework.Legacy.ClassicAssert" Static="True" />
     <PackageReference Include="ProjectDefaults" PrivateAssets="all" />
 

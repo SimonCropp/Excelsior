@@ -1,0 +1,2 @@
+﻿<r><t xml:space="preserve">A1</t></r><r><t xml:space="preserve">	</t></r><r><t xml:space="preserve">B1</t></r><r><t xml:space="preserve">
+</t></r><r><t xml:space="preserve">A2</t></r><r><t xml:space="preserve">	</t></r><r><t xml:space="preserve">B2</t></r>

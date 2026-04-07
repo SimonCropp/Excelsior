@@ -1,0 +1,3 @@
+﻿<r><t xml:space="preserve">1. </t></r><r><t xml:space="preserve">first</t></r><r><t xml:space="preserve">
+</t></r><r><t xml:space="preserve">2. </t></r><r><t xml:space="preserve">second</t></r><r><t xml:space="preserve">
+</t></r><r><t xml:space="preserve">3. </t></r><r><t xml:space="preserve">third</t></r>

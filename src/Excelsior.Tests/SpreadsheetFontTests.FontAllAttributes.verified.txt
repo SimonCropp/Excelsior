@@ -1,0 +1,1 @@
+﻿<r><rPr><color rgb="FF0000FF"/><sz val="16"/><rFont val="Verdana"/></rPr><t xml:space="preserve">styled text</t></r>

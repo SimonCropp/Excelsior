@@ -1,0 +1,1 @@
+﻿<r><t xml:space="preserve">quoted text</t></r>

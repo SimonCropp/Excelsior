@@ -1,0 +1,1 @@
+﻿<r><rPr><rFont val="Arial"/></rPr><t xml:space="preserve">arial text</t></r>

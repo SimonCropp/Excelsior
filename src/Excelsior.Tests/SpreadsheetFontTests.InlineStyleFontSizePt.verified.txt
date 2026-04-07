@@ -1,0 +1,1 @@
+﻿<r><rPr><sz val="18"/></rPr><t xml:space="preserve">large text</t></r>

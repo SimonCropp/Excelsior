@@ -1,0 +1,2 @@
+﻿<r><rPr><b/></rPr><t xml:space="preserve">Term</t></r><r><t xml:space="preserve">
+</t></r><r><t xml:space="preserve">Definition of the term</t></r>

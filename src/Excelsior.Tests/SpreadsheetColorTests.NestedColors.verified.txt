@@ -1,0 +1,1 @@
+﻿<r><rPr><color rgb="FFFF0000"/></rPr><t xml:space="preserve">outer </t></r><r><rPr><color rgb="FF0000FF"/></rPr><t xml:space="preserve">inner</t></r><r><rPr><color rgb="FFFF0000"/></rPr><t xml:space="preserve"> outer</t></r>

@@ -1,0 +1,1 @@
+﻿<r><t xml:space="preserve">Use </t></r><r><t xml:space="preserve">HTML</t></r><r><t xml:space="preserve"> for web pages.</t></r>

@@ -1,0 +1,1 @@
+﻿<r><t xml:space="preserve">She said </t></r><r><t xml:space="preserve">“</t></r><r><t xml:space="preserve">hello world</t></r><r><t xml:space="preserve">”</t></r><r><t xml:space="preserve"> to everyone.</t></r>

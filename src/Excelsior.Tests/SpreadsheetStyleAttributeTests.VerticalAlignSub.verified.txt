@@ -1,0 +1,1 @@
+﻿<r><t xml:space="preserve">H</t></r><r><rPr><vertAlign val="subscript"/></rPr><t xml:space="preserve">2</t></r><r><t xml:space="preserve">O</t></r>

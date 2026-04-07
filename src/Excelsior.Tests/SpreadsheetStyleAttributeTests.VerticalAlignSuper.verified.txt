@@ -1,0 +1,1 @@
+﻿<r><t xml:space="preserve">E = mc</t></r><r><rPr><vertAlign val="superscript"/></rPr><t xml:space="preserve">2</t></r>

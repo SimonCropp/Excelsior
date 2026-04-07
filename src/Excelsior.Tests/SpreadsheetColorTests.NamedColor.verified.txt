@@ -1,0 +1,1 @@
+﻿<r><rPr><color rgb="FF0000FF"/></rPr><t xml:space="preserve">blue text</t></r>

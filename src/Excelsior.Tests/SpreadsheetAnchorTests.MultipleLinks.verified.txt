@@ -1,0 +1,1 @@
+﻿<r><rPr><u/><color rgb="FF0563C1"/></rPr><t xml:space="preserve">One</t></r><r><t xml:space="preserve"> (https://one.com)</t></r><r><t xml:space="preserve"> and </t></r><r><rPr><u/><color rgb="FF0563C1"/></rPr><t xml:space="preserve">Two</t></r><r><t xml:space="preserve"> (https://two.com)</t></r>

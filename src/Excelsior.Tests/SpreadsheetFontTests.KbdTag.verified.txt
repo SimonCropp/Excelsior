@@ -1,0 +1,1 @@
+﻿<r><t xml:space="preserve">Press </t></r><r><rPr><rFont val="Courier New"/></rPr><t xml:space="preserve">Ctrl+C</t></r><r><t xml:space="preserve"> to copy</t></r>

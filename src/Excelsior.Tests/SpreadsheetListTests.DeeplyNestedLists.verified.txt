@@ -1,0 +1,5 @@
+﻿<r><t xml:space="preserve">● </t></r><r><t xml:space="preserve">level 0</t></r><r><t xml:space="preserve">
+</t></r><r><t xml:space="preserve">● </t></r><r><t xml:space="preserve">
+</t></r><r><t xml:space="preserve">  ○ </t></r><r><t xml:space="preserve">level 1</t></r><r><t xml:space="preserve">
+</t></r><r><t xml:space="preserve">  ○ </t></r><r><t xml:space="preserve">
+</t></r><r><t xml:space="preserve">    ■ </t></r><r><t xml:space="preserve">level 2</t></r>

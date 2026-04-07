@@ -1,0 +1,2 @@
+﻿<r><t xml:space="preserve">first paragraph</t></r><r><t xml:space="preserve">
+</t></r><r><t xml:space="preserve">second paragraph</t></r>

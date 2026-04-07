@@ -1,0 +1,1 @@
+﻿<r><t xml:space="preserve">price: $100 &amp; tax &lt; 10% &gt; 5%</t></r>

@@ -1,0 +1,1 @@
+﻿<r><rPr><sz val="12"/></rPr><t xml:space="preserve">pixel sized text</t></r>

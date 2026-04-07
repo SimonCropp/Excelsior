@@ -1,0 +1,1 @@
+﻿<r><t xml:space="preserve">Visit </t></r><r><rPr><u/><color rgb="FF0563C1"/></rPr><t xml:space="preserve">our site</t></r><r><t xml:space="preserve"> (https://example.com)</t></r><r><t xml:space="preserve"> for more info.</t></r>

@@ -1,0 +1,2 @@
+﻿<r><rPr><b/></rPr><t xml:space="preserve">Heading</t></r><r><t xml:space="preserve">
+</t></r><r><t xml:space="preserve">Body text</t></r>

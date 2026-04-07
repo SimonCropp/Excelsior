@@ -1,0 +1,1 @@
+﻿<r><t xml:space="preserve">start </t></r><r><rPr><b/></rPr><t xml:space="preserve">bold </t></r><r><rPr><b/><i/></rPr><t xml:space="preserve">both</t></r><r><t xml:space="preserve"> </t></r><r><rPr><u/></rPr><t xml:space="preserve">under</t></r><r><t xml:space="preserve"> end</t></r>

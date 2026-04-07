@@ -1,0 +1,1 @@
+﻿<r><t xml:space="preserve">normal </t></r><r><rPr><sz val="9.6"/></rPr><t xml:space="preserve">smaller</t></r><r><t xml:space="preserve"> normal</t></r>

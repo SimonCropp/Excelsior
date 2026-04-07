@@ -1,9 +1,9 @@
 ﻿public static class EnumExtensions
 {
-    static ConcurrentDictionary<Enum, string> Cache = new();
+    static ConcurrentDictionary<Enum, string> cache = new();
 
     public static string Humanize(this Enum value) =>
-        Cache.GetOrAdd(value, static value =>
+        cache.GetOrAdd(value, static value =>
         {
             var type = value.GetType();
             var memberInfo = type.GetField(value.ToString());

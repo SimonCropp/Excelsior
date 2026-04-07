@@ -1,0 +1,4 @@
+﻿String,Enum,Nested
+With values,Rendered EnumValue2,Rendered Nested Value
+With nulls,Rendered Nullable AnEnum,Rendered Nullable Nested
+Evaluation Only. Created with Aspose.Cells for .NET. Copyright 2003 - 2026 Aspose Pty Ltd.

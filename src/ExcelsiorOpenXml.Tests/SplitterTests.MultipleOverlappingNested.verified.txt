@@ -1,6 +1,22 @@
 ﻿{
-  SheetNames: [
-    Sheet1
+  Sheets: [
+    {
+      Name: Sheet1,
+      Columns: [
+        {
+          Name: Property,
+          Width: 16.0
+        },
+        {
+          Name: Nested Property,
+          Width: 25.0
+        },
+        {
+          Name: Nested Property,
+          Width: 25.0
+        }
+      ]
+    }
   ],
   WorksheetCount: 1
 }

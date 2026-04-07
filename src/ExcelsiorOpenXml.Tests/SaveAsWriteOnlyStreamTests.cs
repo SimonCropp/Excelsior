@@ -6,11 +6,10 @@ public class SaveAsWriteOnlyStreamTests
     {
         var builder = new BookBuilder();
         builder.AddSheet(SampleData.Employees());
-        using var book = await builder.Build();
 
         var memoryStream = new MemoryStream();
         await using var writeOnlyStream = new WriteOnlyStream(memoryStream);
-        book.SaveAs(writeOnlyStream);
+        await builder.ToStream(writeOnlyStream);
 
         Assert.That(memoryStream.Length, Is.GreaterThan(0));
     }

@@ -58,7 +58,7 @@ public abstract class BookBuilderBase<TBook, TSheet, TStyle, TCell, TColor, TCol
         return builder;
     }
 
-    public async Task<TBook> Build(Cancel cancel = default)
+    public virtual async Task<TBook> Build(Cancel cancel = default)
     {
         var book = BuildBook();
         foreach (var action in actions)

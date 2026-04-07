@@ -6,14 +6,16 @@ public class BookBuilder(
     Action<CellStyle>? headingStyle = null,
     Action<CellStyle>? globalStyle = null,
     int defaultMaxColumnWidth = 50) :
-    BookBuilderBase<OpenXmlBook, SheetContext, CellStyle, Cell, string, ColumnRef>(
+    BookBuilderBase<SpreadsheetDocument, SheetContext, CellStyle, Cell, string, ColumnRef>(
         useAlternatingRowColors,
         alternateRowColor,
         headingStyle,
         globalStyle,
         defaultMaxColumnWidth)
 {
-    internal override RendererBase<TModel, SheetContext, CellStyle, Cell, OpenXmlBook, string, ColumnRef>
+    internal StyleManager StyleManager { get; } = new();
+
+    internal override RendererBase<TModel, SheetContext, CellStyle, Cell, SpreadsheetDocument, string, ColumnRef>
         ConstructSheetRenderer<TModel>(
             IAsyncEnumerable<TModel> data,
             string name,
@@ -26,11 +28,42 @@ public class BookBuilder(
             maxColumnWidth,
             this);
 
-    public override async Task ToStream(Stream stream, Cancel cancel = default)
+    void ApplyStylesheet(SpreadsheetDocument document)
     {
-        using var book = await Build(cancel);
-        book.SaveAs(stream);
+        var stylesPart = document.WorkbookPart!.GetPartsOfType<WorkbookStylesPart>().FirstOrDefault()
+                         ?? document.WorkbookPart.AddNewPart<WorkbookStylesPart>();
+        stylesPart.Stylesheet = StyleManager.BuildStylesheet();
     }
 
-    protected override OpenXmlBook BuildBook() => new();
+    public override async Task<SpreadsheetDocument> Build(Cancel cancel = default)
+    {
+        var document = await base.Build(cancel);
+        ApplyStylesheet(document);
+        return document;
+    }
+
+    public override async Task ToStream(Stream stream, Cancel cancel = default)
+    {
+        using var document = await Build(cancel);
+
+        if (stream.CanRead)
+        {
+            document.Clone(stream);
+        }
+        else
+        {
+            using var temp = new MemoryStream();
+            document.Clone(temp);
+            temp.Position = 0;
+            temp.CopyTo(stream);
+        }
+    }
+
+    protected override SpreadsheetDocument BuildBook()
+    {
+        var document = SpreadsheetDocument.Create(new MemoryStream(), SpreadsheetDocumentType.Workbook);
+        var workbookPart = document.AddWorkbookPart();
+        workbookPart.Workbook = new(new Sheets());
+        return document;
+    }
 }

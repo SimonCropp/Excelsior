@@ -7,6 +7,6 @@ public static class ModuleInitializer
         VerifierSettings.DontScrubDateTimes();
         VerifierSettings.DontScrubGuids();
         VerifierSettings.InitializePlugins();
-        VerifyOpenXmlBook.Initialize();
+
     }
 }

@@ -18,8 +18,6 @@
     <ProjectReference Include="..\ExcelsiorOpenXml\ExcelsiorOpenXml.csproj" />
     <Using Include="NUnit.Framework.Legacy.ClassicAssert" Static="True" />
     <PackageReference Include="ProjectDefaults" PrivateAssets="all" />
-    <Compile Include="..\ExcelsiorOpenXml.Tests\VerifyOpenXml.cs">
-      <Link>VerifyOpenXml.cs</Link>
-    </Compile>
+
   </ItemGroup>
 </Project>

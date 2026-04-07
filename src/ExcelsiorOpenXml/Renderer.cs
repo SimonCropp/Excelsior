@@ -4,7 +4,7 @@ class Renderer<TModel>(
     List<ColumnConfig<CellStyle, TModel>> columns,
     int? maxColumnWidth,
     BookBuilder bookBuilder) :
-    RendererBase<TModel, SheetContext, CellStyle, Cell, OpenXmlBook, string, ColumnRef>(
+    RendererBase<TModel, SheetContext, CellStyle, Cell, SpreadsheetDocument, string, ColumnRef>(
         data, columns, maxColumnWidth, bookBuilder)
 {
     StyleManager? styleManager;
@@ -14,11 +14,11 @@ class Renderer<TModel>(
     protected override void SetBold(CellStyle style) =>
         style.Font.Bold = true;
 
-    protected override SheetContext BuildSheet(OpenXmlBook book)
+    protected override SheetContext BuildSheet(SpreadsheetDocument book)
     {
-        styleManager = book.StyleManager;
+        styleManager = bookBuilder.StyleManager;
 
-        var workbookPart = book.Document.WorkbookPart!;
+        var workbookPart = book.WorkbookPart!;
         var worksheetPart = workbookPart.AddNewPart<WorksheetPart>();
         worksheetPart.Worksheet = new(new SheetData());
 

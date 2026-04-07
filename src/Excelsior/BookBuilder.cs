@@ -95,7 +95,7 @@ public class BookBuilder
             using var temp = new MemoryStream();
             document.Clone(temp);
             temp.Position = 0;
-            temp.CopyTo(stream);
+            await temp.CopyToAsync(stream, cancel);
         }
     }
 

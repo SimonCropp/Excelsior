@@ -7,7 +7,7 @@
     <PackageVersion Include="ClosedXML" Version="0.105.0" />
     <PackageVersion Include="DocumentFormat.OpenXml" Version="3.5.1" />
     <PackageVersion Include="Humanizer.Core" Version="3.0.10" />
-    <PackageVersion Include="Verify.OpenXML" Version="1.4.4" />
+    <PackageVersion Include="Verify.OpenXML" Version="1.5.0" />
     <PackageVersion Include="MarkdownSnippets.MsBuild" Version="28.0.2" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.5" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.3.0" />
@@ -15,7 +15,7 @@
     <PackageVersion Include="Polyfill" Version="10.0.0" />
     <PackageVersion Include="ProjectDefaults" Version="1.0.172" />
     <PackageVersion Include="ProjectFiles" Version="1.1.1" />
-    <PackageVersion Include="Syncfusion.XlsIO.Net.Core" Version="33.1.46" />
+    <PackageVersion Include="Syncfusion.XlsIO.Net.Core" Version="33.1.47" />
     <PackageVersion Include="System.ComponentModel.Annotations" Version="5.0.0" />
     <PackageVersion Include="Aspose.Cells" Version="26.3.0" />
     <PackageVersion Include="Verify" Version="31.15.0" />

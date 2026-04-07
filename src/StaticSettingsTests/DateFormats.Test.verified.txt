@@ -1,6 +1,22 @@
 ﻿{
-  SheetNames: [
-    Sheet1
+  Sheets: [
+    {
+      Name: Sheet1,
+      Columns: [
+        {
+          Name: Date Property,
+          Width: 17.0
+        },
+        {
+          Name: Date Time Property,
+          Width: 23.0
+        },
+        {
+          Name: Date Time Offset Property,
+          Width: 31.0
+        }
+      ]
+    }
   ],
   WorksheetCount: 1
 }

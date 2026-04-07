@@ -38,7 +38,7 @@ class StyleManager
     internal uint GetOrCreateStyleIndex(CellStyle style)
     {
         var fontId = GetOrCreateFontId(style.Font);
-        var fillId = GetOrCreateFillId(style.Fill);
+        var fillId = GetOrCreateFillId(style.BackgroundColor);
         uint? nfId;
         if (style.NumberFormat == null)
         {
@@ -82,10 +82,10 @@ class StyleManager
         return id;
     }
 
-    uint GetOrCreateFillId(CellFill fill)
+    uint GetOrCreateFillId(string? backgroundColor)
     {
-        var key = new FillKey(fill.BackgroundColor);
-        if (key.BackgroundColor == null)
+        var key = new FillKey(backgroundColor);
+        if (backgroundColor == null)
         {
             return 0;
         }

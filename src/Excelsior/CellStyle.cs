@@ -3,7 +3,7 @@ namespace Excelsior;
 public class CellStyle
 {
     public CellFont Font { get; } = new();
-    public CellFill Fill { get; } = new();
+    public string? BackgroundColor { get; set; }
     public CellAlignment Alignment { get; } = new();
     internal string? NumberFormat { get; set; }
 }
@@ -15,11 +15,6 @@ public class CellFont
     public string? Color { get; set; }
     public double? Size { get; set; }
     public string? Name { get; set; }
-}
-
-public class CellFill
-{
-    public string? BackgroundColor { get; set; }
 }
 
 public class CellAlignment

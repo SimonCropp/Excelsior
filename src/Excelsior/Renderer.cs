@@ -130,7 +130,7 @@ class Renderer<TModel>(
                 if (bookBuilder.UseAlternatingRowColors &&
                     rowIndex % 2 == 1)
                 {
-                    style.Fill.BackgroundColor = bookBuilder.AlternateRowColor!;
+                    style.BackgroundColor = bookBuilder.AlternateRowColor!;
                 }
 
                 column.CellStyle?.Invoke(style, item, value);

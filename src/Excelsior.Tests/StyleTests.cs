@@ -14,7 +14,7 @@ public class StyleTests
             {
                 style.Font.Bold = true;
                 style.Font.Color = "FFFFFF";
-                style.Fill.BackgroundColor = "00008B";
+                style.BackgroundColor = "00008B";
             });
         builder.AddSheet(data);
 
@@ -37,7 +37,7 @@ public class StyleTests
             {
                 style.Font.Bold = true;
                 style.Font.Color = "FFFFFF";
-                style.Fill.BackgroundColor = "00008B";
+                style.BackgroundColor = "00008B";
             });
         builder.AddSheet(data);
 
@@ -78,11 +78,11 @@ public class StyleTests
                     {
                         if (isActive)
                         {
-                            style.Fill.BackgroundColor = "90EE90";
+                            style.BackgroundColor = "90EE90";
                         }
                         else
                         {
-                            style.Fill.BackgroundColor = "FFB6C1";
+                            style.BackgroundColor = "FFB6C1";
                         }
                     };
                 });

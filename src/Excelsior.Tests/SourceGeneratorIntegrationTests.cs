@@ -22,9 +22,9 @@ public class SourceGeneratorIntegrationTests
 
         #endregion
 
-        using var book = await builder.Build();
+        using var stream = await builder.Build();
 
-        await Verify(book);
+        await Verify(stream, "xlsx");
     }
     [Test]
     public async Task ColumnAttributesAppliedAutomatically()
@@ -51,9 +51,9 @@ public class SourceGeneratorIntegrationTests
 
         builder.AddSheet(data);
 
-        using var book = await builder.Build();
+        using var stream = await builder.Build();
 
-        await Verify(book);
+        await Verify(stream, "xlsx");
     }
 }
 

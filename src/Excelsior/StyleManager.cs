@@ -1,3 +1,7 @@
+using System.Xml;
+
+namespace Excelsior;
+
 class StyleManager
 {
     record FontKey(bool Bold, bool Underline, string? Color, double? Size, string? Name);
@@ -6,8 +10,8 @@ class StyleManager
         uint FontId,
         uint FillId,
         uint? NumberFormatId,
-        HorizontalAlignmentValues HAlign,
-        VerticalAlignmentValues VAlign,
+        HorizontalAlignment HAlign,
+        VerticalAlignment VAlign,
         bool WrapText);
 
     List<FontKey> fonts = [new(false, false, null, null, null)];
@@ -26,7 +30,7 @@ class StyleManager
     uint nextNumberFormatId = 164;
 
     List<CellFormatKey> cellFormats =
-        [new(0, 0, null, HorizontalAlignmentValues.General, VerticalAlignmentValues.Bottom, false)];
+        [new(0, 0, null, HorizontalAlignment.General, VerticalAlignment.Bottom, false)];
 
     Dictionary<CellFormatKey, uint> cellFormatIndex = [];
 
@@ -108,158 +112,142 @@ class StyleManager
         return id;
     }
 
-    internal Stylesheet BuildStylesheet()
+    internal void WriteStylesXml(XmlWriter writer)
     {
-        var stylesheet = new Stylesheet();
+        const string ns = "http://schemas.openxmlformats.org/spreadsheetml/2006/main";
 
+        writer.WriteStartElement("styleSheet", ns);
+
+        // Number formats
         if (customNumberFormats.Count > 0)
         {
-            var nfs = new NumberingFormats
-            {
-                Count = (uint)customNumberFormats.Count
-            };
+            writer.WriteStartElement("numFmts");
+            writer.WriteAttributeString("count", customNumberFormats.Count.ToString());
             uint nfId = 164;
             foreach (var fmt in customNumberFormats)
             {
-                nfs.Append(
-                    new NumberingFormat
-                    {
-                        NumberFormatId = nfId++,
-                        FormatCode = fmt
-                    });
+                writer.WriteStartElement("numFmt");
+                writer.WriteAttributeString("numFmtId", nfId.ToString());
+                writer.WriteAttributeString("formatCode", fmt);
+                writer.WriteEndElement();
+                nfId++;
             }
-
-            stylesheet.Append(nfs);
+            writer.WriteEndElement();
         }
 
-        var fontsEl = new Fonts
-        {
-            Count = (uint)fonts.Count
-        };
-
+        // Fonts
+        writer.WriteStartElement("fonts");
+        writer.WriteAttributeString("count", fonts.Count.ToString());
         foreach (var fontKey in fonts)
         {
-            var font = new Font();
+            writer.WriteStartElement("font");
             if (fontKey.Bold)
             {
-                font.Append(new Bold());
+                writer.WriteStartElement("b");
+                writer.WriteEndElement();
             }
-
             if (fontKey.Underline)
             {
-                font.Append(new Underline());
+                writer.WriteStartElement("u");
+                writer.WriteEndElement();
             }
-
-            font.Append(
-                new FontSize
-                {
-                    Val = fontKey.Size ?? 11
-                });
-
-            font.Append(
-                new FontName
-                {
-                    Val = fontKey.Name ?? "Calibri"
-                });
-
+            writer.WriteStartElement("sz");
+            writer.WriteAttributeString("val", (fontKey.Size ?? 11).ToString(System.Globalization.CultureInfo.InvariantCulture));
+            writer.WriteEndElement();
+            writer.WriteStartElement("name");
+            writer.WriteAttributeString("val", fontKey.Name ?? "Calibri");
+            writer.WriteEndElement();
             if (fontKey.Color != null)
             {
-                font.Append(
-                    new Color
-                    {
-                        Rgb = fontKey.Color
-                    });
+                writer.WriteStartElement("color");
+                writer.WriteAttributeString("rgb", fontKey.Color);
+                writer.WriteEndElement();
             }
-
-            fontsEl.Append(font);
+            writer.WriteEndElement(); // font
         }
+        writer.WriteEndElement(); // fonts
 
-        stylesheet.Append(fontsEl);
-
-        var fillsEl = new Fills
-        {
-            Count = (uint)fills.Count
-        };
-        fillsEl.Append(
-            new Fill(
-                new PatternFill
-                {
-                    PatternType = PatternValues.None
-                }));
-        fillsEl.Append(
-            new Fill(
-                new PatternFill
-                {
-                    PatternType = PatternValues.Gray125
-                }));
+        // Fills
+        writer.WriteStartElement("fills");
+        writer.WriteAttributeString("count", fills.Count.ToString());
+        // First fill: none
+        writer.WriteStartElement("fill");
+        writer.WriteStartElement("patternFill");
+        writer.WriteAttributeString("patternType", "none");
+        writer.WriteEndElement();
+        writer.WriteEndElement();
+        // Second fill: gray125
+        writer.WriteStartElement("fill");
+        writer.WriteStartElement("patternFill");
+        writer.WriteAttributeString("patternType", "gray125");
+        writer.WriteEndElement();
+        writer.WriteEndElement();
+        // Custom fills
         for (var i = 2; i < fills.Count; i++)
         {
-            fillsEl.Append(new Fill(
-                new PatternFill(
-                    new ForegroundColor
-                    {
-                        Rgb = fills[i]
-                    })
-                {
-                    PatternType = PatternValues.Solid
-                }));
+            writer.WriteStartElement("fill");
+            writer.WriteStartElement("patternFill");
+            writer.WriteAttributeString("patternType", "solid");
+            writer.WriteStartElement("fgColor");
+            writer.WriteAttributeString("rgb", fills[i]!);
+            writer.WriteEndElement();
+            writer.WriteEndElement(); // patternFill
+            writer.WriteEndElement(); // fill
         }
+        writer.WriteEndElement(); // fills
 
-        stylesheet.Append(fillsEl);
+        // Borders (minimal - one empty border)
+        writer.WriteStartElement("borders");
+        writer.WriteAttributeString("count", "1");
+        writer.WriteStartElement("border");
+        writer.WriteElementString("left", "");
+        writer.WriteElementString("right", "");
+        writer.WriteElementString("top", "");
+        writer.WriteElementString("bottom", "");
+        writer.WriteElementString("diagonal", "");
+        writer.WriteEndElement(); // border
+        writer.WriteEndElement(); // borders
 
-        var borders = new Borders
-        {
-            Count = 1
-        };
-        borders.Append(
-            new Border(
-                new LeftBorder(),
-                new RightBorder(),
-                new TopBorder(),
-                new BottomBorder(),
-                new DiagonalBorder()));
-        stylesheet.Append(borders);
-
-        var cellFormatsEl = new CellFormats
-        {
-            Count = (uint)cellFormats.Count
-        };
+        // Cell formats
+        writer.WriteStartElement("cellXfs");
+        writer.WriteAttributeString("count", cellFormats.Count.ToString());
         foreach (var key in cellFormats)
         {
-            var cellFormat = new CellFormat
+            writer.WriteStartElement("xf");
+            writer.WriteAttributeString("fontId", key.FontId.ToString());
+            writer.WriteAttributeString("fillId", key.FillId.ToString());
+            writer.WriteAttributeString("borderId", "0");
+            if (key.FontId > 0)
             {
-                FontId = key.FontId,
-                FillId = key.FillId,
-                BorderId = 0,
-                ApplyFont = key.FontId > 0,
-                ApplyFill = key.FillId > 0
-            };
-
+                writer.WriteAttributeString("applyFont", "1");
+            }
+            if (key.FillId > 0)
+            {
+                writer.WriteAttributeString("applyFill", "1");
+            }
             if (key.NumberFormatId.HasValue)
             {
-                cellFormat.NumberFormatId = key.NumberFormatId.Value;
-                cellFormat.ApplyNumberFormat = true;
+                writer.WriteAttributeString("numFmtId", key.NumberFormatId.Value.ToString());
+                writer.WriteAttributeString("applyNumberFormat", "1");
             }
-
-            if (key.HAlign != HorizontalAlignmentValues.General ||
-                key.VAlign != VerticalAlignmentValues.Bottom ||
+            if (key.HAlign != HorizontalAlignment.General ||
+                key.VAlign != VerticalAlignment.Bottom ||
                 key.WrapText)
             {
-                cellFormat.ApplyAlignment = true;
-                cellFormat.Append(
-                    new Alignment
-                    {
-                        Horizontal = key.HAlign,
-                        Vertical = key.VAlign,
-                        WrapText = key.WrapText
-                    });
+                writer.WriteAttributeString("applyAlignment", "1");
+                writer.WriteStartElement("alignment");
+                writer.WriteAttributeString("horizontal", key.HAlign.ToString().ToLowerInvariant());
+                writer.WriteAttributeString("vertical", key.VAlign.ToString().ToLowerInvariant());
+                if (key.WrapText)
+                {
+                    writer.WriteAttributeString("wrapText", "1");
+                }
+                writer.WriteEndElement(); // alignment
             }
-
-            cellFormatsEl.Append(cellFormat);
+            writer.WriteEndElement(); // xf
         }
+        writer.WriteEndElement(); // cellXfs
 
-        stylesheet.Append(cellFormatsEl);
-
-        return stylesheet;
+        writer.WriteEndElement(); // styleSheet
     }
 }

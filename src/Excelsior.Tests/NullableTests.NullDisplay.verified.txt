@@ -1,0 +1,34 @@
+﻿{
+  Sheets: [
+    {
+      Name: Sheet1,
+      Columns: [
+        {
+          Name: Number,
+          Width: 15.0
+        },
+        {
+          Name: String,
+          Width: 15.0
+        },
+        {
+          Name: Date Time,
+          Width: 17.0
+        },
+        {
+          Name: Date,
+          Width: 14.0
+        },
+        {
+          Name: Enum,
+          Width: 13.0
+        },
+        {
+          Name: Bool,
+          Width: 13.0
+        }
+      ]
+    }
+  ],
+  WorksheetCount: 1
+}

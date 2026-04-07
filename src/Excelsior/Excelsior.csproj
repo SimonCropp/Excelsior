@@ -4,8 +4,7 @@
     <PolyNullability>true</PolyNullability>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="DocumentFormat.OpenXml" />
-    <PackageReference Include="OpenXmlHtml" />
+    <PackageReference Include="AngleSharp" />
     <PackageReference Include="Polyfill" PrivateAssets="all" />
     <PackageReference Include="ProjectDefaults" PrivateAssets="all" />
     <PackageReference Include="Microsoft.Sbom.Targets" PrivateAssets="all" Condition="'$(CI)' == 'true'" />

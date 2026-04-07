@@ -25,9 +25,9 @@ public class SplitterTests
         sheet.Column(
             _ => _.Nested.NestedProperty,
             _ => _.Heading = "Custom");
-        var book = await builder.Build();
+        using var stream = await builder.Build();
 
-        await Verify(book);
+        await Verify(stream, "xlsx");
     }
 
     public record TargetMultipleOverlappingNested(
@@ -54,9 +54,9 @@ public class SplitterTests
                     NestedProperty: "the NestedProperty 2")),
         ];
         builder.AddSheet(data);
-        var book = await builder.Build();
+        using var stream = await builder.Build();
 
-        await Verify(book);
+        await Verify(stream, "xlsx");
     }
 
     [Test]
@@ -79,8 +79,8 @@ public class SplitterTests
         sheet.Column(
             _ => _.Nested2.NestedProperty,
             _ => _.Heading = "Custom2");
-        var book = await builder.Build();
+        using var stream = await builder.Build();
 
-        await Verify(book);
+        await Verify(stream, "xlsx");
     }
 }

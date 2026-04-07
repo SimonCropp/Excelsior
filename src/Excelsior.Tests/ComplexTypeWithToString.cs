@@ -36,9 +36,9 @@ public class ComplexTypeWithToString
 
         #endregion
 
-        var book = await builder.Build();
+        using var stream = await builder.Build();
 
-        await Verify(book);
+        await Verify(stream, "xlsx");
     }
 
     [Test]
@@ -52,8 +52,8 @@ public class ComplexTypeWithToString
         ];
         builder.AddSheet(data);
 
-        var book = await builder.Build();
+        using var stream = await builder.Build();
 
-        await Verify(book);
+        await Verify(stream, "xlsx");
     }
 }

@@ -22,8 +22,8 @@ public class FilterTests
         var builder = new BookBuilder();
         builder.AddSheet(Data());
 
-        var book = await builder.Build();
-        await Verify(book);
+        using var stream = await builder.Build();
+        await Verify(stream, "xlsx");
     }
 
     [Test]
@@ -37,8 +37,8 @@ public class FilterTests
 
         #endregion
 
-        var book = await builder.Build();
-        await Verify(book);
+        using var stream = await builder.Build();
+        await Verify(stream, "xlsx");
     }
 
     [Test]
@@ -53,8 +53,8 @@ public class FilterTests
 
         #endregion
 
-        var book = await builder.Build();
-        await Verify(book);
+        using var stream = await builder.Build();
+        await Verify(stream, "xlsx");
     }
 
     [Test]
@@ -70,8 +70,8 @@ public class FilterTests
 
         #endregion
 
-        var book = await builder.Build();
-        await Verify(book);
+        using var stream = await builder.Build();
+        await Verify(stream, "xlsx");
     }
 
     [Test]
@@ -84,8 +84,8 @@ public class FilterTests
             new("Bob", 25, "bob@test.com")
         ]);
 
-        var book = await builder.Build();
-        await Verify(book);
+        using var stream = await builder.Build();
+        await Verify(stream, "xlsx");
     }
 
     [Test]
@@ -99,7 +99,7 @@ public class FilterTests
         ]);
         sheet.DisableFilter();
 
-        var book = await builder.Build();
-        await Verify(book);
+        using var stream = await builder.Build();
+        await Verify(stream, "xlsx");
     }
 }

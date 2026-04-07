@@ -15,9 +15,9 @@ public class StructTests
         ];
         builder.AddSheet(data);
 
-        var book = await builder.Build();
+        using var stream = await builder.Build();
 
-        await Verify(book);
+        await Verify(stream, "xlsx");
     }
 
     public readonly struct Target

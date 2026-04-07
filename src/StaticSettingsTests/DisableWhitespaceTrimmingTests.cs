@@ -40,9 +40,9 @@ public class DisableWhitespaceTrimmingTests
         var builder = new BookBuilder();
         builder.AddSheet(data);
 
-        var book = await builder.Build();
+        using var stream = await builder.Build();
 
-        await Verify(book);
+        await Verify(stream, "xlsx");
     }
 
 #endif
@@ -72,9 +72,9 @@ public class DisableWhitespaceTrimmingTests
         var builder = new BookBuilder();
         builder.AddSheet(data);
 
-        var book = await builder.Build();
+        using var stream = await builder.Build();
 
-        await Verify(book);
+        await Verify(stream, "xlsx");
     }
 
     public record Target(string Value1, string[] Value2);

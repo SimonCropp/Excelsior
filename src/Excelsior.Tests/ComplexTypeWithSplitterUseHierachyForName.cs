@@ -36,8 +36,8 @@ public class ComplexTypeWithSplitterUseHierachyForName
         ];
         builder.AddSheet(data);
 
-        var book = await builder.Build();
+        using var stream = await builder.Build();
 
-        await Verify(book);
+        await Verify(stream, "xlsx");
     }
 }

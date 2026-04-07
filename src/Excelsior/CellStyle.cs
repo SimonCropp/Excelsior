@@ -19,7 +19,7 @@ public class CellFont
 
 public class CellAlignment
 {
-    public HorizontalAlignmentValues Horizontal { get; set; } = HorizontalAlignmentValues.General;
-    public VerticalAlignmentValues Vertical { get; set; } = VerticalAlignmentValues.Bottom;
+    public HorizontalAlignment Horizontal { get; set; } = HorizontalAlignment.General;
+    public VerticalAlignment Vertical { get; set; } = VerticalAlignment.Bottom;
     public bool WrapText { get; set; }
 }

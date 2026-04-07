@@ -1,3 +1,5 @@
+using System.IO.Compression;
+
 namespace Excelsior;
 
 public class BookBuilder
@@ -19,7 +21,7 @@ public class BookBuilder
 
     public bool UseAlternatingRowColors { get; }
 
-    List<Func<SpreadsheetDocument, Cancel, Task>> actions = [];
+    List<Func<Cancel, Task<SheetData>>> actions = [];
     public int DefaultMaxColumnWidth { get; }
     public string? AlternateRowColor { get; }
     public Action<CellStyle>? HeadingStyle { get; }
@@ -42,7 +44,7 @@ public class BookBuilder
         var columns = new Columns<TModel>();
         var builder = new SheetBuilder<TModel>(columns);
 
-        actions.Add((book, cancel) =>
+        actions.Add(cancel =>
         {
             var renderer = new Renderer<TModel>(
                 name,
@@ -53,50 +55,42 @@ public class BookBuilder
             {
                 AutoFilter = columns.AutoFilter
             };
-            return renderer.AddSheet(book, cancel);
+            return renderer.BuildSheet(cancel);
         });
 
         return builder;
     }
 
-    public async Task<SpreadsheetDocument> Build(Cancel cancel = default)
+    public async Task<MemoryStream> Build(Cancel cancel = default)
     {
-        var document = SpreadsheetDocument.Create(new MemoryStream(), SpreadsheetDocumentType.Workbook);
-        var workbookPart = document.AddWorkbookPart();
-        workbookPart.Workbook = new(new Sheets());
-
+        var sheets = new List<SheetData>();
         foreach (var action in actions)
         {
             cancel.ThrowIfCancellationRequested();
-            await action(document, cancel);
+            sheets.Add(await action(cancel));
         }
 
-        ApplyStylesheet(document);
-        return document;
-    }
+        var stream = new MemoryStream();
+        using (var archive = new ZipArchive(stream, ZipArchiveMode.Create, leaveOpen: true))
+        {
+            XlsxWriter.Write(archive, sheets, StyleManager);
+        }
 
-    void ApplyStylesheet(SpreadsheetDocument document)
-    {
-        var stylesPart = document.WorkbookPart!.GetPartsOfType<WorkbookStylesPart>().FirstOrDefault()
-                         ?? document.WorkbookPart.AddNewPart<WorkbookStylesPart>();
-        stylesPart.Stylesheet = StyleManager.BuildStylesheet();
+        stream.Position = 0;
+        return stream;
     }
 
     public async Task ToStream(Stream stream, Cancel cancel = default)
     {
-        using var document = await Build(cancel);
+        var sheets = new List<SheetData>();
+        foreach (var action in actions)
+        {
+            cancel.ThrowIfCancellationRequested();
+            sheets.Add(await action(cancel));
+        }
 
-        if (stream.CanRead)
-        {
-            document.Clone(stream);
-        }
-        else
-        {
-            using var temp = new MemoryStream();
-            document.Clone(temp);
-            temp.Position = 0;
-            await temp.CopyToAsync(stream, cancel);
-        }
+        using var archive = new ZipArchive(stream, ZipArchiveMode.Create, leaveOpen: true);
+        XlsxWriter.Write(archive, sheets, StyleManager);
     }
 
     public async Task ToFile(string path, Cancel cancel = default)

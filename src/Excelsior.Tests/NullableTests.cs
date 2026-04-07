@@ -7,9 +7,9 @@ public class NullableTests
         var builder = new BookBuilder();
         builder.AddSheet(Data);
 
-        var book = await builder.Build();
+        using var stream = await builder.Build();
 
-        await Verify(book);
+        await Verify(stream, "xlsx");
     }
 
     [Test]
@@ -35,9 +35,9 @@ public class NullableTests
         sheet.Column(
             _ => _.Bool,
             _ => _.Render = (_, value) => value?.ToString().ToUpper());
-        var book = await builder.Build();
+        using var stream = await builder.Build();
 
-        await Verify(book);
+        await Verify(stream, "xlsx");
     }
 
     [Test]
@@ -52,9 +52,9 @@ public class NullableTests
             .Column(_ => _.Enum, _ => _.NullDisplay = "[No Enum]")
             .Column(_ => _.Bool, _ => _.NullDisplay = "[No Bool]");
 
-        var book = await builder.Build();
+        using var stream = await builder.Build();
 
-        await Verify(book);
+        await Verify(stream, "xlsx");
     }
 
     [Test]
@@ -69,9 +69,9 @@ public class NullableTests
         sheetBuilder.NullDisplay(_ => _.Enum, "[No Enum]");
         sheetBuilder.NullDisplay(_ => _.Bool, "[No Bool]");
 
-        var book = await bookBuilder.Build();
+        using var stream = await bookBuilder.Build();
 
-        await Verify(book);
+        await Verify(stream, "xlsx");
     }
 
     static IReadOnlyList<NullableTargets> Data { get; } =

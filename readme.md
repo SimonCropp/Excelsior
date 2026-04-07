@@ -87,7 +87,7 @@ List<Employee> data =
 ];
 builder.AddSheet(data);
 
-using var book = await builder.Build();
+using var stream = await builder.Build();
 ```
 <sup><a href='/src/Excelsior.Tests/UsageTests.cs#L7-L38' title='Snippet source file'>snippet source</a> | <a href='#snippet-Usage' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
@@ -601,7 +601,7 @@ List<Employee> data =
 ];
 builder.AddSheet(data);
 
-using var book = await builder.Build();
+using var stream = await builder.Build();
 ```
 <sup><a href='/src/Excelsior.Tests/WhitespaceTests.cs#L7-L24' title='Snippet source file'>snippet source</a> | <a href='#snippet-Whitespace' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->

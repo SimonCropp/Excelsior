@@ -1,0 +1,18 @@
+﻿{
+  Sheets: [
+    {
+      Name: Sheet1,
+      Columns: [
+        {
+          Name: Name,
+          Width: 12.0
+        },
+        {
+          Name: Phone Numbers,
+          Width: 24.0
+        }
+      ]
+    }
+  ],
+  WorksheetCount: 1
+}

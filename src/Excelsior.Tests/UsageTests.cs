@@ -33,10 +33,10 @@ public class UsageTests
         ];
         builder.AddSheet(data);
 
-        using var book = await builder.Build();
+        using var stream = await builder.Build();
 
         #endregion
 
-        await Verify(book);
+        await Verify(stream, "xlsx");
     }
 }

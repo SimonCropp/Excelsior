@@ -11,9 +11,9 @@ public class Enums
                 _ => _.Status,
                 _ => _.Render = (_, value) => $"Status: {value.ToString()}");
 
-        var book = await builder.Build();
+        using var stream = await builder.Build();
 
-        await Verify(book);
+        await Verify(stream, "xlsx");
     }
 
     [Test]
@@ -36,9 +36,9 @@ public class Enums
                 _ => _.Value,
                 _ => _.Render = (_, value) => $"Value: {value}");
 
-        var book = await builder.Build();
+        using var stream = await builder.Build();
 
-        await Verify(book);
+        await Verify(stream, "xlsx");
     }
 
     enum AnEnum

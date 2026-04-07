@@ -17,9 +17,9 @@ public class HtmlTests
         sheetBuilder.Column(
             _ => _.Value1,
             _ => _.IsHtml = true);
-        var book = await bookBuilder.Build();
+        using var stream = await bookBuilder.Build();
 
-        await Verify(book);
+        await Verify(stream, "xlsx");
     }
     [Test]
     public async Task LongText()
@@ -35,9 +35,9 @@ public class HtmlTests
         sheetBuilder.Column(
             _ => _.Value1,
             _ => _.IsHtml = true);
-        var book = await bookBuilder.Build();
+        using var stream = await bookBuilder.Build();
 
-        await Verify(book);
+        await Verify(stream, "xlsx");
     }
 
     [Test]
@@ -58,9 +58,9 @@ public class HtmlTests
                 _.Width = 20;
                 _.IsHtml = true;
             });
-        var book = await bookBuilder.Build();
+        using var stream = await bookBuilder.Build();
 
-        await Verify(book);
+        await Verify(stream, "xlsx");
     }
 
     [Test]
@@ -90,8 +90,8 @@ public class HtmlTests
         sheetBuilder.Column(
             _ => _.Value1,
             _ => _.IsHtml = true);
-        var book = await bookBuilder.Build();
+        using var stream = await bookBuilder.Build();
 
-        await Verify(book);
+        await Verify(stream, "xlsx");
     }
 }

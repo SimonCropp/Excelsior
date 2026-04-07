@@ -28,9 +28,9 @@ public class EnumerableStringTests
 
         #endregion
 
-        var book = await builder.Build();
+        using var stream = await builder.Build();
 
-        await Verify(book);
+        await Verify(stream, "xlsx");
     }
 
     public record TargetWithArray(string Value1, string[] Value2);
@@ -50,9 +50,9 @@ public class EnumerableStringTests
         ];
         builder.AddSheet(data);
 
-        var book = await builder.Build();
+        using var stream = await builder.Build();
 
-        await Verify(book);
+        await Verify(stream, "xlsx");
     }
 
     public record Target(string Value1, IEnumerable<string> Value2);
@@ -81,9 +81,9 @@ public class EnumerableStringTests
         ];
         builder.AddSheet(data);
 
-        var book = await builder.Build();
+        using var stream = await builder.Build();
 
-        await Verify(book);
+        await Verify(stream, "xlsx");
     }
 
     [Test]
@@ -107,9 +107,9 @@ public class EnumerableStringTests
         ];
         builder.AddSheet(data);
 
-        var book = await builder.Build();
+        using var stream = await builder.Build();
 
-        await Verify(book);
+        await Verify(stream, "xlsx");
     }
 
     [Test]
@@ -128,8 +128,8 @@ public class EnumerableStringTests
         var builder = new BookBuilder();
         builder.AddSheet(data);
 
-        var book = await builder.Build();
+        using var stream = await builder.Build();
 
-        await Verify(book);
+        await Verify(stream, "xlsx");
     }
 }

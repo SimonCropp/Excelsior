@@ -22,6 +22,34 @@ public class ColumnWidths
     }
 
     [Test]
+    public async Task FluentZeroRows()
+    {
+        var builder = new BookBuilder();
+        builder.AddSheet(new List<Employee>())
+            .Column(_ => _.Name, _ => _.Width = 25)
+            .Column(_ => _.Email, _ => _.Width = 30)
+            .Column(_ => _.HireDate, _ => _.Width = 15);
+
+        var book = await builder.Build();
+
+        await Verify(book);
+    }
+
+    [Test]
+    public async Task FluentOneRow()
+    {
+        var builder = new BookBuilder();
+        builder.AddSheet(SampleData.Employees().Take(1).ToList())
+            .Column(_ => _.Name, _ => _.Width = 25)
+            .Column(_ => _.Email, _ => _.Width = 30)
+            .Column(_ => _.HireDate, _ => _.Width = 15);
+
+        var book = await builder.Build();
+
+        await Verify(book);
+    }
+
+    [Test]
     public async Task MinWidthFluent()
     {
         var employees = SampleData.Employees();
@@ -40,6 +68,30 @@ public class ColumnWidths
     }
 
     [Test]
+    public async Task MinWidthFluentZeroRows()
+    {
+        var builder = new BookBuilder();
+        builder.AddSheet(new List<Employee>())
+            .Column(_ => _.Name, _ => _.MinWidth = 40);
+
+        var book = await builder.Build();
+
+        await Verify(book);
+    }
+
+    [Test]
+    public async Task MinWidthFluentOneRow()
+    {
+        var builder = new BookBuilder();
+        builder.AddSheet(SampleData.Employees().Take(1).ToList())
+            .Column(_ => _.Name, _ => _.MinWidth = 40);
+
+        var book = await builder.Build();
+
+        await Verify(book);
+    }
+
+    [Test]
     public async Task MaxWidthFluent()
     {
         var employees = SampleData.Employees();
@@ -51,6 +103,30 @@ public class ColumnWidths
             .Column(_ => _.Name, _ => _.MaxWidth = 5);
 
         #endregion
+
+        var book = await builder.Build();
+
+        await Verify(book);
+    }
+
+    [Test]
+    public async Task MaxWidthFluentZeroRows()
+    {
+        var builder = new BookBuilder();
+        builder.AddSheet(new List<Employee>())
+            .Column(_ => _.Name, _ => _.MaxWidth = 5);
+
+        var book = await builder.Build();
+
+        await Verify(book);
+    }
+
+    [Test]
+    public async Task MaxWidthFluentOneRow()
+    {
+        var builder = new BookBuilder();
+        builder.AddSheet(SampleData.Employees().Take(1).ToList())
+            .Column(_ => _.Name, _ => _.MaxWidth = 5);
 
         var book = await builder.Build();
 

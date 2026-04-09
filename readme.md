@@ -466,7 +466,7 @@ var builder = new BookBuilder();
 builder.AddSheet(employees)
     .Column(_ => _.Name, _ => _.MinWidth = 40);
 ```
-<sup><a href='/src/Excelsior.Tests/ColumnWidths.cs#L29-L35' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnMinWidth' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/ColumnWidths.cs#L57-L63' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnMinWidth' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -479,7 +479,7 @@ var builder = new BookBuilder();
 builder.AddSheet(employees)
     .Column(_ => _.Name, _ => _.MaxWidth = 5);
 ```
-<sup><a href='/src/Excelsior.Tests/ColumnWidths.cs#L47-L53' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnMaxWidth' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/ColumnWidths.cs#L99-L105' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnMaxWidth' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -506,7 +506,7 @@ public class EmployeeWithMinMaxWidth
     public required string Email { get; init; }
 }
 ```
-<sup><a href='/src/Excelsior.Tests/ColumnWidths.cs#L175-L186' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnMinMaxWidthModel' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/ColumnWidths.cs#L251-L262' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnMinMaxWidthModel' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 

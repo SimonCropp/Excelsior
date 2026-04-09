@@ -1,11 +1,11 @@
-class ColumnConfig<TStyle, TModel>
+class ColumnConfig<TModel>
 {
     public required string Heading { get; set; }
     public required int? Order { get; set; }
     public required int DeclarationIndex { get; init; }
     public required int? Width { get; set; }
-    public required Action<TStyle>? HeadingStyle { get; set; }
-    public required Action<TStyle, TModel, object?>? CellStyle { get; set; }
+    public required Action<CellStyle>? HeadingStyle { get; set; }
+    public required Action<CellStyle, TModel, object?>? CellStyle { get; set; }
     public required string? Format { get; set; }
     public required string? NullDisplay { get; set; }
     public required Func<TModel, object, string?>? Render { get; set; }
@@ -31,13 +31,13 @@ class ColumnConfig<TStyle, TModel>
     }
 }
 
-public class ColumnConfig<TStyle, TModel, TProperty>
+public class ColumnConfig<TModel, TProperty>
 {
     public string? Heading { get; set; }
     public int? Order { get; set; }
     public int? Width { get; set; }
-    public Action<TStyle>? HeadingStyle { get; set; }
-    public Action<TStyle, TModel, TProperty>? CellStyle { get; set; }
+    public Action<CellStyle>? HeadingStyle { get; set; }
+    public Action<CellStyle, TModel, TProperty>? CellStyle { get; set; }
     public string? Format { get; set; }
     public string? NullDisplay { get; set; }
     public Func<TModel, TProperty, string?>? Render { get; set; }

@@ -27,7 +27,7 @@ public class RenderExcel
     public void RunSingle()
     {
         var directory = ProjectFiles.SolutionDirectory;
-        var path = Path.Combine(directory,@"ExcelsiorClosedXml.Tests\Tests.Simple.verified.xlsx");
+        var path = Path.Combine(directory,@"Excelsior.Tests\UsageTests.Test.verified.xlsx");
         Convert(path);
     }
 

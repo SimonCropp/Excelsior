@@ -1,14 +1,14 @@
 namespace Excelsior;
 
-public interface ISheetBuilder<TModel, TStyle>
+public interface ISheetBuilder<TModel>
 {
     /// <summary>
     /// Configure a column using property expression (type-safe)
     /// </summary>
     /// <returns>The converter instance for fluent chaining</returns>
-    public ISheetBuilder<TModel, TStyle> Column<TProperty>(
+    public ISheetBuilder<TModel> Column<TProperty>(
         Expression<Func<TModel, TProperty>> property,
-        Action<ColumnConfig<TStyle, TModel, TProperty>> configuration);
+        Action<ColumnConfig<TModel, TProperty>> configuration);
 
     public void HeadingText<TProperty>(
         Expression<Func<TModel, TProperty>> property,
@@ -24,15 +24,15 @@ public interface ISheetBuilder<TModel, TStyle>
 
     public void HeadingStyle<TProperty>(
         Expression<Func<TModel, TProperty>> property,
-        Action<TStyle> value);
+        Action<CellStyle> value);
 
     public void CellStyle<TProperty>(
         Expression<Func<TModel, TProperty>> property,
-        Action<TStyle, TModel, TProperty> value);
+        Action<CellStyle, TModel, TProperty> value);
 
     public void CellStyle<TProperty>(
         Expression<Func<TModel, TProperty>> property,
-        Action<TStyle, TProperty> value);
+        Action<CellStyle, TProperty> value);
 
     public void Format<TProperty>(
         Expression<Func<TModel, TProperty>> property,
@@ -61,7 +61,7 @@ public interface ISheetBuilder<TModel, TStyle>
 
     /// <summary>
     /// Disable auto-filter for all columns. Individual columns can still opt in via <see cref="Filter{TProperty}"/>
-    /// or by setting <see cref="ColumnConfig{TStyle,TModel,TProperty}.Filter"/> to true.
+    /// or by setting <see cref="ColumnConfig{TModel,TProperty}.Filter"/> to true.
     /// </summary>
     public void DisableFilter();
 

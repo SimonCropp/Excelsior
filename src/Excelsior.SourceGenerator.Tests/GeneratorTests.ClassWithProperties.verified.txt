@@ -6,86 +6,86 @@ namespace Excelsior;
 using System;
 public static class ProductSheetBuilderExtensions
 {
-    public static ISheetBuilder<global::Product, TStyle> NameColumn<TStyle>(
-        this ISheetBuilder<global::Product, TStyle> builder,
-        Action<ColumnConfig<TStyle, global::Product, string>> configuration)
+    public static ISheetBuilder<global::Product> NameColumn(
+        this ISheetBuilder<global::Product> builder,
+        Action<ColumnConfig<global::Product, string>> configuration)
         => builder.Column(_ => _.Name, configuration);
 
-    public static void NameHeadingText<TStyle>(this ISheetBuilder<global::Product, TStyle> builder, string value)
+    public static void NameHeadingText(this ISheetBuilder<global::Product> builder, string value)
         => builder.HeadingText(_ => _.Name, value);
 
-    public static void NameOrder<TStyle>(this ISheetBuilder<global::Product, TStyle> builder, int? value)
+    public static void NameOrder(this ISheetBuilder<global::Product> builder, int? value)
         => builder.Order(_ => _.Name, value);
 
-    public static void NameWidth<TStyle>(this ISheetBuilder<global::Product, TStyle> builder, int? value)
+    public static void NameWidth(this ISheetBuilder<global::Product> builder, int? value)
         => builder.Width(_ => _.Name, value);
 
-    public static void NameHeadingStyle<TStyle>(this ISheetBuilder<global::Product, TStyle> builder, Action<TStyle> value)
+    public static void NameHeadingStyle(this ISheetBuilder<global::Product> builder, Action<Excelsior.CellStyle> value)
         => builder.HeadingStyle(_ => _.Name, value);
 
-    public static void NameCellStyle<TStyle>(this ISheetBuilder<global::Product, TStyle> builder, Action<TStyle, global::Product, string> value)
+    public static void NameCellStyle(this ISheetBuilder<global::Product> builder, Action<Excelsior.CellStyle, global::Product, string> value)
         => builder.CellStyle(_ => _.Name, value);
 
-    public static void NameFormat<TStyle>(this ISheetBuilder<global::Product, TStyle> builder, string value)
+    public static void NameFormat(this ISheetBuilder<global::Product> builder, string value)
         => builder.Format(_ => _.Name, value);
 
-    public static void NameNullDisplay<TStyle>(this ISheetBuilder<global::Product, TStyle> builder, string value)
+    public static void NameNullDisplay(this ISheetBuilder<global::Product> builder, string value)
         => builder.NullDisplay(_ => _.Name, value);
 
-    public static void NameIsHtml<TStyle>(this ISheetBuilder<global::Product, TStyle> builder)
+    public static void NameIsHtml(this ISheetBuilder<global::Product> builder)
         => builder.IsHtml(_ => _.Name);
 
-    public static void NameRender<TStyle>(this ISheetBuilder<global::Product, TStyle> builder, Func<global::Product, string, string?> value)
+    public static void NameRender(this ISheetBuilder<global::Product> builder, Func<global::Product, string, string?> value)
         => builder.Render(_ => _.Name, value);
 
-    public static void NameFilter<TStyle>(this ISheetBuilder<global::Product, TStyle> builder)
+    public static void NameFilter(this ISheetBuilder<global::Product> builder)
         => builder.Filter(_ => _.Name);
 
-    public static void NameInclude<TStyle>(this ISheetBuilder<global::Product, TStyle> builder, bool value)
+    public static void NameInclude(this ISheetBuilder<global::Product> builder, bool value)
         => builder.Include(_ => _.Name, value);
 
-    public static void NameExclude<TStyle>(this ISheetBuilder<global::Product, TStyle> builder)
+    public static void NameExclude(this ISheetBuilder<global::Product> builder)
         => builder.Exclude(_ => _.Name);
 
-    public static ISheetBuilder<global::Product, TStyle> PriceColumn<TStyle>(
-        this ISheetBuilder<global::Product, TStyle> builder,
-        Action<ColumnConfig<TStyle, global::Product, decimal>> configuration)
+    public static ISheetBuilder<global::Product> PriceColumn(
+        this ISheetBuilder<global::Product> builder,
+        Action<ColumnConfig<global::Product, decimal>> configuration)
         => builder.Column(_ => _.Price, configuration);
 
-    public static void PriceHeadingText<TStyle>(this ISheetBuilder<global::Product, TStyle> builder, string value)
+    public static void PriceHeadingText(this ISheetBuilder<global::Product> builder, string value)
         => builder.HeadingText(_ => _.Price, value);
 
-    public static void PriceOrder<TStyle>(this ISheetBuilder<global::Product, TStyle> builder, int? value)
+    public static void PriceOrder(this ISheetBuilder<global::Product> builder, int? value)
         => builder.Order(_ => _.Price, value);
 
-    public static void PriceWidth<TStyle>(this ISheetBuilder<global::Product, TStyle> builder, int? value)
+    public static void PriceWidth(this ISheetBuilder<global::Product> builder, int? value)
         => builder.Width(_ => _.Price, value);
 
-    public static void PriceHeadingStyle<TStyle>(this ISheetBuilder<global::Product, TStyle> builder, Action<TStyle> value)
+    public static void PriceHeadingStyle(this ISheetBuilder<global::Product> builder, Action<Excelsior.CellStyle> value)
         => builder.HeadingStyle(_ => _.Price, value);
 
-    public static void PriceCellStyle<TStyle>(this ISheetBuilder<global::Product, TStyle> builder, Action<TStyle, global::Product, decimal> value)
+    public static void PriceCellStyle(this ISheetBuilder<global::Product> builder, Action<Excelsior.CellStyle, global::Product, decimal> value)
         => builder.CellStyle(_ => _.Price, value);
 
-    public static void PriceFormat<TStyle>(this ISheetBuilder<global::Product, TStyle> builder, string value)
+    public static void PriceFormat(this ISheetBuilder<global::Product> builder, string value)
         => builder.Format(_ => _.Price, value);
 
-    public static void PriceNullDisplay<TStyle>(this ISheetBuilder<global::Product, TStyle> builder, string value)
+    public static void PriceNullDisplay(this ISheetBuilder<global::Product> builder, string value)
         => builder.NullDisplay(_ => _.Price, value);
 
-    public static void PriceIsHtml<TStyle>(this ISheetBuilder<global::Product, TStyle> builder)
+    public static void PriceIsHtml(this ISheetBuilder<global::Product> builder)
         => builder.IsHtml(_ => _.Price);
 
-    public static void PriceRender<TStyle>(this ISheetBuilder<global::Product, TStyle> builder, Func<global::Product, decimal, string?> value)
+    public static void PriceRender(this ISheetBuilder<global::Product> builder, Func<global::Product, decimal, string?> value)
         => builder.Render(_ => _.Price, value);
 
-    public static void PriceFilter<TStyle>(this ISheetBuilder<global::Product, TStyle> builder)
+    public static void PriceFilter(this ISheetBuilder<global::Product> builder)
         => builder.Filter(_ => _.Price);
 
-    public static void PriceInclude<TStyle>(this ISheetBuilder<global::Product, TStyle> builder, bool value)
+    public static void PriceInclude(this ISheetBuilder<global::Product> builder, bool value)
         => builder.Include(_ => _.Price, value);
 
-    public static void PriceExclude<TStyle>(this ISheetBuilder<global::Product, TStyle> builder)
+    public static void PriceExclude(this ISheetBuilder<global::Product> builder)
         => builder.Exclude(_ => _.Price);
 }
 

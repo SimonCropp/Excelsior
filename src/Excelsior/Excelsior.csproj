@@ -2,8 +2,11 @@
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <PolyNullability>true</PolyNullability>
+    <PackageReadmeFile>nuget-readme.md</PackageReadmeFile>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="DocumentFormat.OpenXml" />
+    <PackageReference Include="OpenXmlHtml" />
     <PackageReference Include="Polyfill" PrivateAssets="all" />
     <PackageReference Include="ProjectDefaults" PrivateAssets="all" />
     <PackageReference Include="Microsoft.Sbom.Targets" PrivateAssets="all" Condition="'$(CI)' == 'true'" />
@@ -16,5 +19,6 @@
           Pack="true" PackagePath="analyzers/dotnet/roslyn5.3/cs" Visible="false" />
     <None Include="buildTransitive\Excelsior.props" Pack="true" PackagePath="buildTransitive\" />
     <None Include="buildTransitive\Excelsior.props" Pack="true" PackagePath="build\" />
+    <None Include="nuget-readme.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 </Project>

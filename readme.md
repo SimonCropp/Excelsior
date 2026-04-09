@@ -210,6 +210,28 @@ await builder.ToStream(stream);
 <!-- endSnippet -->
 
 
+### Grouping Column Configuration
+
+When applying multiple settings to the same column, prefer grouping them in a single `Column` call rather than using separate method calls. This makes it clearer which settings belong together.
+
+```cs
+// prefer
+sheet.Column(
+    _ => _.Name,
+    _ =>
+    {
+        _.Width = 25;
+        _.IsHtml = true;
+        _.Render = (row, _) => $"<a href='/people/{row.Id}'>{row.Name}</a>";
+    });
+
+// over
+sheet.Width(_ => _.Name, 25);
+sheet.IsHtml(_ => _.Name);
+sheet.Render(_ => _.Name, (row, _) => $"<a href='/people/{row.Id}'>{row.Name}</a>");
+```
+
+
 ### Custom Headings
 
 The heading text for a column can be overridden:

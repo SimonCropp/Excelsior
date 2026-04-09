@@ -207,6 +207,26 @@ public class GeneratorTests
     }
 
     [Test]
+    public Task NullableReferenceTypes()
+    {
+        var source = """
+            #nullable enable
+            using Excelsior;
+
+            [SheetModel]
+            public class Employee
+            {
+                public required string Name { get; init; }
+                public string? Nickname { get; init; }
+            }
+            """;
+
+        var generated = Generate(source);
+
+        return Verify(generated);
+    }
+
+    [Test]
     public void PrivateNestedTypeProducesError()
     {
         var source = """

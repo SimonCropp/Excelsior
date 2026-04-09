@@ -145,7 +145,9 @@ public class SheetBuilderGenerator : IIncrementalGenerator
                 continue;
             }
 
-            var propertyType = property.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+            var propertyType = property.Type.ToDisplayString(
+                SymbolDisplayFormat.FullyQualifiedFormat
+                    .AddMiscellaneousOptions(SymbolDisplayMiscellaneousOptions.IncludeNullableReferenceTypeModifier));
             var accessPath = parentPath.IsEmpty
                 ? property.Name
                 : string.Join(".", parentPath.Add(property.Name));

@@ -490,6 +490,12 @@ class Renderer<TModel>(
 
         foreach (var row in sheet.SheetData.Elements<Row>())
         {
+            if (row.RowIndex?.Value == 1)
+            {
+                // Header row always auto-sizes; MaxRowHeight does not apply.
+                continue;
+            }
+
             double maxLines = 1;
             for (var i = 0; i < columns.Count; i++)
             {

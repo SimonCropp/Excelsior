@@ -514,6 +514,8 @@ public class EmployeeWithMinMaxWidth
 
 Cells with wrapped or multi-line content can cause rows to grow very tall. A maximum row height (in points) can be set on the `BookBuilder` (applied to every sheet) or per sheet on `AddSheet`. Rows whose estimated content fits within the limit are left to auto-size; rows that would exceed it are capped.
 
+The header row is exempt — it always auto-sizes, regardless of `MaxRowHeight`.
+
 
 #### Per-sheet
 

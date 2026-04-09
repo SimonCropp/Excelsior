@@ -72,6 +72,18 @@ public class RowHeights
     }
 
     [Test]
+    public async Task MaxRowHeightIgnoresHeaderRow()
+    {
+        var builder = new BookBuilder();
+        builder.AddSheet(Notes(), maxRowHeight: 30)
+            .HeadingText(_ => _.Body, "A very very very very very very long header that would wrap many times in a narrow column");
+
+        var book = await builder.Build();
+
+        await Verify(book);
+    }
+
+    [Test]
     public async Task MaxRowHeightDoesNotShrinkSmallRows()
     {
         var builder = new BookBuilder();

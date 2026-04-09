@@ -125,18 +125,19 @@ class Columns<TModel>
     {
         foreach (var column in columns.Values)
         {
-            if (column.MinWidth is { } min &&
-                column.MaxWidth is { } max)
+            if (column is not { MinWidth: { } min, MaxWidth: { } max })
             {
-                if (min == max)
-                {
-                    throw new($"Column '{column.Name}': MinWidth and MaxWidth are both {min}. Use Width instead.");
-                }
+                continue;
+            }
 
-                if (min > max)
-                {
-                    throw new($"Column '{column.Name}': MinWidth ({min}) is greater than MaxWidth ({max}).");
-                }
+            if (min == max)
+            {
+                throw new($"Column '{column.Name}': MinWidth and MaxWidth are both {min}. Use Width instead.");
+            }
+
+            if (min > max)
+            {
+                throw new($"Column '{column.Name}': MinWidth ({min}) is greater than MaxWidth ({max}).");
             }
         }
 

@@ -49,6 +49,10 @@ CI uses AppVeyor (config at `src/appveyor.yml`).
 
 Tests use **NUnit** with **Verify** for snapshot testing. Verified snapshots are `.verified.png` and `.verified.txt` files alongside test classes.
 
+## Documentation
+
+The `readme.md` uses [MarkdownSnippets](https://github.com/SimonCropp/MarkdownSnippets) with `InPlaceOverwrite` convention (configured in `src/mdsnippets.json`). Code samples in the readme are pulled from test files via `#region SnippetName` / `#endregion` markers. The snippets are populated automatically during build (via `MarkdownSnippets.MsBuild`). When adding new code samples to the readme, use `<!-- snippet: SnippetName -->` / `<!-- endSnippet -->` references backed by region markers in test code rather than inline code blocks.
+
 ## Key Conventions
 
 - Target framework: `net10.0` (with `LangVersion` set to `preview`)

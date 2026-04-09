@@ -14,6 +14,8 @@ public static class GeneratedColumnAttributes
         string? Heading = null,
         int? Order = null,
         int? Width = null,
+        int? MinWidth = null,
+        int? MaxWidth = null,
         string? Format = null,
         string? NullDisplay = null,
         bool IsHtml = false,

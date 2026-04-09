@@ -34,6 +34,12 @@ public static class EmployeeSheetBuilderExtensions
     public static void IdWidth(this ISheetBuilder<global::Employee> builder, int? value)
         => builder.Width(_ => _.Id, value);
 
+    public static void IdMinWidth(this ISheetBuilder<global::Employee> builder, int? value)
+        => builder.MinWidth(_ => _.Id, value);
+
+    public static void IdMaxWidth(this ISheetBuilder<global::Employee> builder, int? value)
+        => builder.MaxWidth(_ => _.Id, value);
+
     public static void IdHeadingStyle(this ISheetBuilder<global::Employee> builder, Action<Excelsior.CellStyle> value)
         => builder.HeadingStyle(_ => _.Id, value);
 
@@ -74,6 +80,12 @@ public static class EmployeeSheetBuilderExtensions
 
     public static void NameWidth(this ISheetBuilder<global::Employee> builder, int? value)
         => builder.Width(_ => _.Name, value);
+
+    public static void NameMinWidth(this ISheetBuilder<global::Employee> builder, int? value)
+        => builder.MinWidth(_ => _.Name, value);
+
+    public static void NameMaxWidth(this ISheetBuilder<global::Employee> builder, int? value)
+        => builder.MaxWidth(_ => _.Name, value);
 
     public static void NameHeadingStyle(this ISheetBuilder<global::Employee> builder, Action<Excelsior.CellStyle> value)
         => builder.HeadingStyle(_ => _.Name, value);

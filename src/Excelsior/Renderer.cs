@@ -87,6 +87,16 @@ class Renderer<TModel>(
                 width += 5;
             }
 
+            if (columnConfig.MinWidth is { } min && width < min)
+            {
+                width = min;
+            }
+
+            if (columnConfig.MaxWidth is { } max && width > max)
+            {
+                width = max;
+            }
+
             if (width > resultMaxColumnWidth)
             {
                 width = resultMaxColumnWidth;

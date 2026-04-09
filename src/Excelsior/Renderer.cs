@@ -3,8 +3,13 @@ class Renderer<TModel>(
     IAsyncEnumerable<TModel> data,
     List<ColumnConfig<TModel>> columns,
     int? maxColumnWidth,
+    int? maxRowHeight,
     BookBuilder bookBuilder)
 {
+    const int MaxExcelRowHeight = 409;
+    const double DefaultExcelFontSize = 11;
+
+
     internal bool AutoFilter { get; set; } = true;
 
     StyleManager? styleManager;
@@ -47,6 +52,7 @@ class Renderer<TModel>(
 
         AutoSizeColumns(sheet);
         ResizeRows(sheet);
+        ApplyMaxRowHeight(sheet);
     }
 
     void CreateHeadings(SheetContext sheet)
@@ -462,6 +468,129 @@ class Renderer<TModel>(
         }
 
         sheet.Worksheet.InsertBefore(cols, sheet.SheetData);
+    }
+
+    void ApplyMaxRowHeight(SheetContext sheet)
+    {
+        var max = maxRowHeight ?? bookBuilder.MaxRowHeight;
+        if (max == null)
+        {
+            return;
+        }
+
+        var pointsPerLine = ComputePointsPerLine();
+        var minRowHeight = (int)Math.Ceiling(pointsPerLine);
+
+        if (max < minRowHeight || max > MaxExcelRowHeight)
+        {
+            throw new($"MaxRowHeight ({max}) must be between {minRowHeight} (one line at the configured font size) and {MaxExcelRowHeight}.");
+        }
+
+        var maxLinesAllowed = max.Value / pointsPerLine;
+
+        foreach (var row in sheet.SheetData.Elements<Row>())
+        {
+            if (row.RowIndex?.Value == 1)
+            {
+                // Header row always auto-sizes; MaxRowHeight does not apply.
+                continue;
+            }
+
+            double maxLines = 1;
+            for (var i = 0; i < columns.Count; i++)
+            {
+                var colLetter = SheetContext.GetColumnLetter(i);
+                var cellRef = colLetter + row.RowIndex;
+                var cell = row.Elements<Cell>()
+                    .FirstOrDefault(_ => _.CellReference?.Value == cellRef);
+                if (cell == null)
+                {
+                    continue;
+                }
+
+                var width = finalColumnWidths.GetValueOrDefault(i, 8d);
+                var lines = EstimateVisualLines(cell, width);
+                if (lines > maxLines)
+                {
+                    maxLines = lines;
+                }
+            }
+
+            if (maxLines > maxLinesAllowed)
+            {
+                row.Height = (double)max;
+                row.CustomHeight = true;
+            }
+        }
+    }
+
+    double ComputePointsPerLine()
+    {
+        var maxFontSize = DefaultExcelFontSize;
+        ProbeFontSize(bookBuilder.GlobalStyle, ref maxFontSize);
+        ProbeFontSize(bookBuilder.HeadingStyle, ref maxFontSize);
+        // Excel's row height in points is approximately font size + 4 padding (Calibri 11 → 15).
+        return maxFontSize + 4;
+    }
+
+    static void ProbeFontSize(Action<CellStyle>? styleAction, ref double maxFontSize)
+    {
+        if (styleAction == null)
+        {
+            return;
+        }
+
+        var probe = new CellStyle();
+        styleAction(probe);
+        if (probe.Font.Size is { } size && size > maxFontSize)
+        {
+            maxFontSize = size;
+        }
+    }
+
+    static double EstimateVisualLines(Cell cell, double columnWidth)
+    {
+        var charsPerLine = Math.Max(1d, (columnWidth - 2) / 1.1);
+        double lines = 0;
+        var hasContent = false;
+        foreach (var text in EnumerateCellTexts(cell))
+        {
+            hasContent = true;
+            foreach (var line in text.Split('\n'))
+            {
+                lines += Math.Max(1d, Math.Ceiling(line.Length / charsPerLine));
+            }
+        }
+
+        return hasContent ? lines : 1;
+    }
+
+    static IEnumerable<string> EnumerateCellTexts(Cell cell)
+    {
+        if (cell.InlineString != null)
+        {
+            var hasRuns = false;
+            foreach (var run in cell.InlineString.Elements<Run>())
+            {
+                hasRuns = true;
+                if (run.Text?.Text is { } runText)
+                {
+                    yield return runText;
+                }
+            }
+
+            if (!hasRuns && cell.InlineString.Text?.Text is { } inlineText)
+            {
+                yield return inlineText;
+            }
+
+            yield break;
+        }
+
+        if (cell.CellValue?.Text is { } cellValueText)
+        {
+            yield return cellValueText;
+        }
     }
 
     static void SetCellValue(

@@ -1,5 +1,4 @@
 using Excelsior;
-using ExcelsiorClosedXml;
 
 [TestFixture]
 public class ConsumeTests
@@ -21,7 +20,7 @@ public class ConsumeTests
         sheet.NameOrder(2);
         sheet.AgeWidth(15);
 
-        using var book = await builder.Build();
+        using var stream = await builder.Build();
     }
 }
 

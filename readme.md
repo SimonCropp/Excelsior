@@ -1487,7 +1487,7 @@ public record Address(int StreetNumber, string Street, string City, State State,
 
 #### Result
 
-<img src="/src/Excelsior.Tests/ComplexTypeWithSplitter.Test%23Sheet1.verified.png">
+<img src="/src/Excelsior.Tests/ComplexTypeWithSplitter.Test_Sheet1.png">
 
 
 #### UseHierachyForName
@@ -1510,7 +1510,7 @@ public record Address(int Number, string Street, string City, State State, ushor
 
 #### Result
 
-<img src="/src/Excelsior.Tests/ComplexTypeWithSplitterUseHierachyForName.Test%23Sheet1.verified.png">
+<img src="/src/Excelsior.Tests/ComplexTypeWithSplitterUseHierachyForName.Test_Sheet1.png">
 
 
 ### Source Generated Extensions

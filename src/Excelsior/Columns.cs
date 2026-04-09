@@ -26,6 +26,8 @@ class Columns<TModel>
                 DeclarationIndex = index,
                 Heading = property.DisplayName,
                 Width = property.Width,
+                MinWidth = property.MinWidth,
+                MaxWidth = property.MaxWidth,
                 HeadingStyle = null,
                 CellStyle = null,
                 Format = property.Format,
@@ -66,6 +68,16 @@ class Columns<TModel>
         if (config.Width != null)
         {
             column.Width = config.Width;
+        }
+
+        if (config.MinWidth != null)
+        {
+            column.MinWidth = config.MinWidth;
+        }
+
+        if (config.MaxWidth != null)
+        {
+            column.MaxWidth = config.MaxWidth;
         }
 
         if (config.HeadingStyle != null)

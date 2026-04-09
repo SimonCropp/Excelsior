@@ -24,6 +24,16 @@ class SheetBuilder<TModel>(Columns<TModel> columns) :
         int? value) =>
         Column(property, _ => _.Width = value);
 
+    public void MinWidth<TProperty>(
+        Expression<Func<TModel, TProperty>> property,
+        int? value) =>
+        Column(property, _ => _.MinWidth = value);
+
+    public void MaxWidth<TProperty>(
+        Expression<Func<TModel, TProperty>> property,
+        int? value) =>
+        Column(property, _ => _.MaxWidth = value);
+
     public void HeadingStyle<TProperty>(
         Expression<Func<TModel, TProperty>> property,
         Action<CellStyle> value) =>

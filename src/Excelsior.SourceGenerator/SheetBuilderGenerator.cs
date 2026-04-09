@@ -216,6 +216,8 @@ public class SheetBuilderGenerator : IIncrementalGenerator
         string? heading = null;
         int? order = null;
         int? width = null;
+        int? minWidth = null;
+        int? maxWidth = null;
         string? format = null;
         string? nullDisplay = null;
         var isHtml = false;
@@ -243,6 +245,20 @@ public class SheetBuilderGenerator : IIncrementalGenerator
                     }
 
                     break;
+                case "MinWidth":
+                    if (arg.Value.Value is int minW and > -1)
+                    {
+                        minWidth = minW;
+                    }
+
+                    break;
+                case "MaxWidth":
+                    if (arg.Value.Value is int maxW and > -1)
+                    {
+                        maxWidth = maxW;
+                    }
+
+                    break;
                 case "Format":
                     format = arg.Value.Value as string;
                     break;
@@ -261,7 +277,7 @@ public class SheetBuilderGenerator : IIncrementalGenerator
             }
         }
 
-        return new(heading, order, width, format, nullDisplay, isHtml, filter, include);
+        return new(heading, order, width, minWidth, maxWidth, format, nullDisplay, isHtml, filter, include);
     }
 
     static string GenerateExtensions(ModelInfo model)
@@ -305,6 +321,12 @@ public class SheetBuilderGenerator : IIncrementalGenerator
 
                      public static void {prefix}Width(this ISheetBuilder<{modelType}> builder, int? value)
                          => builder.Width(_ => _.{access}, value);
+
+                     public static void {prefix}MinWidth(this ISheetBuilder<{modelType}> builder, int? value)
+                         => builder.MinWidth(_ => _.{access}, value);
+
+                     public static void {prefix}MaxWidth(this ISheetBuilder<{modelType}> builder, int? value)
+                         => builder.MaxWidth(_ => _.{access}, value);
 
                      public static void {prefix}HeadingStyle(this ISheetBuilder<{modelType}> builder, Action<Excelsior.CellStyle> value)
                          => builder.HeadingStyle(_ => _.{access}, value);
@@ -379,6 +401,16 @@ public class SheetBuilderGenerator : IIncrementalGenerator
             if (col.Width is { } width)
             {
                 args.Add($"Width: {width}");
+            }
+
+            if (col.MinWidth is { } minWidth)
+            {
+                args.Add($"MinWidth: {minWidth}");
+            }
+
+            if (col.MaxWidth is { } maxWidth)
+            {
+                args.Add($"MaxWidth: {maxWidth}");
             }
 
             if (col.Format is { } format)

@@ -18,6 +18,8 @@
             var column = info.Attribute<ColumnAttribute>() ?? constructorParameter?.Attribute<ColumnAttribute>();
             Order = GetOrder(column, display);
             Width = GetWidth(column);
+            MinWidth = GetMinWidth(column);
+            MaxWidth = GetMaxWidth(column);
             Format = column?.Format;
             NullDisplay = column?.NullDisplay;
             IsHtml = column?.IsHtml ?? false;
@@ -28,6 +30,8 @@
         {
             Order = generated.Order ?? display?.Order;
             Width = generated.Width;
+            MinWidth = generated.MinWidth;
+            MaxWidth = generated.MaxWidth;
             Format = generated.Format;
             NullDisplay = generated.NullDisplay;
             IsHtml = generated.IsHtml;
@@ -59,6 +63,26 @@
         return null;
     }
 
+    static int? GetMinWidth(ColumnAttribute? column)
+    {
+        if (column is { MinWidth: > -1 })
+        {
+            return column.MinWidth;
+        }
+
+        return null;
+    }
+
+    static int? GetMaxWidth(ColumnAttribute? column)
+    {
+        if (column is { MaxWidth: > -1 })
+        {
+            return column.MaxWidth;
+        }
+
+        return null;
+    }
+
     public Func<T, object?> Get { get; }
     public string DisplayName { get; }
     public string Name { get; }
@@ -66,6 +90,8 @@
     public Type Type { get; }
     public bool IsNumber { get; }
     public int? Width { get; }
+    public int? MinWidth { get; }
+    public int? MaxWidth { get; }
     public string? Format { get; }
     public string? NullDisplay { get; }
     public bool IsHtml { get; }

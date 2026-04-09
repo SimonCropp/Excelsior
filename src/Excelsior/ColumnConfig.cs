@@ -4,6 +4,8 @@ class ColumnConfig<TModel>
     public required int? Order { get; set; }
     public required int DeclarationIndex { get; init; }
     public required int? Width { get; set; }
+    public required int? MinWidth { get; set; }
+    public required int? MaxWidth { get; set; }
     public required Action<CellStyle>? HeadingStyle { get; set; }
     public required Action<CellStyle, TModel, object?>? CellStyle { get; set; }
     public required string? Format { get; set; }
@@ -36,6 +38,8 @@ public class ColumnConfig<TModel, TProperty>
     public string? Heading { get; set; }
     public int? Order { get; set; }
     public int? Width { get; set; }
+    public int? MinWidth { get; set; }
+    public int? MaxWidth { get; set; }
     public Action<CellStyle>? HeadingStyle { get; set; }
     public Action<CellStyle, TModel, TProperty>? CellStyle { get; set; }
     public string? Format { get; set; }

@@ -450,6 +450,66 @@ public class Employee
  1. `ColumnAttribute`
 
 
+### Column Min/Max Widths
+
+Columns can be constrained to a minimum or maximum width while still auto-sizing based on content.
+
+When `Width` is explicitly set, `MinWidth`/`MaxWidth` are ignored.
+
+
+#### MinWidth
+
+<!-- snippet: ColumnMinWidth -->
+<a id='snippet-ColumnMinWidth'></a>
+```cs
+var builder = new BookBuilder();
+builder.AddSheet(employees)
+    .Column(_ => _.Name, _ => _.MinWidth = 40);
+```
+<sup><a href='/src/Excelsior.Tests/ColumnWidths.cs#L29-L35' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnMinWidth' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+
+#### MaxWidth
+
+<!-- snippet: ColumnMaxWidth -->
+<a id='snippet-ColumnMaxWidth'></a>
+```cs
+var builder = new BookBuilder();
+builder.AddSheet(employees)
+    .Column(_ => _.Name, _ => _.MaxWidth = 5);
+```
+<sup><a href='/src/Excelsior.Tests/ColumnWidths.cs#L47-L53' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnMaxWidth' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+
+#### Standalone methods
+
+```cs
+var sheet = builder.AddSheet(employees);
+sheet.MinWidth(_ => _.Name, 40);
+sheet.MaxWidth(_ => _.Email, 20);
+```
+
+
+#### ColumnAttribute
+
+<!-- snippet: ColumnMinMaxWidthModel -->
+<a id='snippet-ColumnMinMaxWidthModel'></a>
+```cs
+public class EmployeeWithMinMaxWidth
+{
+    [Column(MinWidth = 40)]
+    public required string Name { get; init; }
+
+    [Column(MaxWidth = 20)]
+    public required string Email { get; init; }
+}
+```
+<sup><a href='/src/Excelsior.Tests/ColumnWidths.cs#L60-L71' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnMinMaxWidthModel' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+
 ### Complex Types
 
 For complex types, by default is to render via `.ToString()`.
@@ -791,6 +851,8 @@ public sealed class ColumnAttribute :
     public string? Heading { get; set; }
     public int Order { get; set; } = -1;
     public int Width { get; set; } = -1;
+    public int MinWidth { get; set; } = -1;
+    public int MaxWidth { get; set; } = -1;
     public string? Format { get; set; }
     public string? NullDisplay { get; set; }
     public bool IsHtml { get; set; }
@@ -820,7 +882,7 @@ public sealed class ColumnAttribute :
     internal bool IncludeHasValue { get; private set; }
 }
 ```
-<sup><a href='/src/Excelsior/Attributes/ColumnAttribute.cs#L1-L37' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnAttribute.cs' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior/Attributes/ColumnAttribute.cs#L1-L39' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnAttribute.cs' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 

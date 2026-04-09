@@ -22,6 +22,14 @@ public interface ISheetBuilder<TModel>
         Expression<Func<TModel, TProperty>> property,
         int? value);
 
+    public void MinWidth<TProperty>(
+        Expression<Func<TModel, TProperty>> property,
+        int? value);
+
+    public void MaxWidth<TProperty>(
+        Expression<Func<TModel, TProperty>> property,
+        int? value);
+
     public void HeadingStyle<TProperty>(
         Expression<Func<TModel, TProperty>> property,
         Action<CellStyle> value);

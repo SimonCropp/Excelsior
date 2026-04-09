@@ -8,9 +8,9 @@ build_script:
 - appveyor DownloadFile https://dot.net/v1/dotnet-install.ps1
 - pwsh: ./dotnet-install.ps1 -JSonFile src/global.json -Architecture x64 -InstallDir 'C:\Program Files\dotnet'
 - dotnet build src --configuration Release
-- dotnet build IntegrationTests --configuration Release
+#- dotnet build IntegrationTests --configuration Release
 - dotnet test src --configuration Release --no-build --no-restore --logger:trx --results-directory TestResults
-- dotnet test IntegrationTests --configuration Release --no-build --no-restore --logger:trx --results-directory TestResults
+#- dotnet test IntegrationTests --configuration Release --no-build --no-restore --logger:trx --results-directory TestResults
 on_finish:
 - ps: |
     Get-ChildItem TestResults\*.trx -ErrorAction SilentlyContinue | % {

@@ -228,53 +228,54 @@ public class SheetBuilderGenerator : IIncrementalGenerator
 
         foreach (var arg in attr.NamedArguments)
         {
+            var value = arg.Value.Value;
             switch (arg.Key)
             {
                 case "Heading":
-                    heading = arg.Value.Value as string;
+                    heading = value as string;
                     break;
                 case "Order":
-                    if (arg.Value.Value is int o and > -1)
+                    if (value is int o and > -1)
                     {
                         order = o;
                     }
 
                     break;
                 case "Width":
-                    if (arg.Value.Value is int w and > -1)
+                    if (value is int w and > -1)
                     {
                         width = w;
                     }
 
                     break;
                 case "MinWidth":
-                    if (arg.Value.Value is int minW and > -1)
+                    if (value is int minW and > -1)
                     {
                         minWidth = minW;
                     }
 
                     break;
                 case "MaxWidth":
-                    if (arg.Value.Value is int maxW and > -1)
+                    if (value is int maxW and > -1)
                     {
                         maxWidth = maxW;
                     }
 
                     break;
                 case "Format":
-                    format = arg.Value.Value as string;
+                    format = value as string;
                     break;
                 case "NullDisplay":
-                    nullDisplay = arg.Value.Value as string;
+                    nullDisplay = value as string;
                     break;
                 case "IsHtml":
-                    isHtml = arg.Value.Value is true;
+                    isHtml = value is true;
                     break;
                 case "Filter":
-                    filter = arg.Value.Value as bool?;
+                    filter = value as bool?;
                     break;
                 case "Include":
-                    include = arg.Value.Value as bool?;
+                    include = value as bool?;
                     break;
             }
         }

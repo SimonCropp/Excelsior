@@ -2,6 +2,7 @@ class Renderer<TModel>(
     string name,
     IAsyncEnumerable<TModel> data,
     List<ColumnConfig<TModel>> columns,
+    int? minColumnWidth,
     int? maxColumnWidth,
     int? maxRowHeight,
     BookBuilder bookBuilder)
@@ -79,6 +80,7 @@ class Renderer<TModel>(
 
     void ResizeColumn(SheetContext sheet, int index, ColumnConfig<TModel> columnConfig)
     {
+        var resultMinColumnWidth = minColumnWidth ?? bookBuilder.DefaultMinColumnWidth;
         var resultMaxColumnWidth = maxColumnWidth ?? bookBuilder.DefaultMaxColumnWidth;
         var column = new ColumnRef(index);
         int width;
@@ -93,7 +95,8 @@ class Renderer<TModel>(
                 width += 5;
             }
 
-            if (columnConfig.MinWidth is { } min && width < min)
+            var effectiveMin = columnConfig.MinWidth ?? resultMinColumnWidth;
+            if (effectiveMin is { } min && width < min)
             {
                 width = min;
             }

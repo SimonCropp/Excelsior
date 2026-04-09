@@ -134,6 +134,54 @@ public class ColumnWidths
     }
 
     [Test]
+    public async Task DefaultMinColumnWidthSheet()
+    {
+        var employees = SampleData.Employees();
+
+        #region SheetDefaultMinColumnWidth
+
+        var builder = new BookBuilder();
+        builder.AddSheet(employees, defaultMinColumnWidth: 25);
+
+        #endregion
+
+        var book = await builder.Build();
+
+        await Verify(book);
+    }
+
+    [Test]
+    public async Task DefaultMinColumnWidthBook()
+    {
+        var employees = SampleData.Employees();
+
+        #region BookDefaultMinColumnWidth
+
+        var builder = new BookBuilder(defaultMinColumnWidth: 25);
+        builder.AddSheet(employees);
+
+        #endregion
+
+        var book = await builder.Build();
+
+        await Verify(book);
+    }
+
+    [Test]
+    public async Task DefaultMinColumnWidthOverriddenByColumnMinWidth()
+    {
+        var employees = SampleData.Employees();
+
+        var builder = new BookBuilder(defaultMinColumnWidth: 25);
+        builder.AddSheet(employees)
+            .Column(_ => _.Name, _ => _.MinWidth = 40);
+
+        var book = await builder.Build();
+
+        await Verify(book);
+    }
+
+    [Test]
     public void MinWidthEqualsMaxWidthThrows()
     {
         var employees = SampleData.Employees();

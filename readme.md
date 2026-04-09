@@ -510,6 +510,35 @@ public class EmployeeWithMinMaxWidth
 <!-- endSnippet -->
 
 
+### Max Row Height
+
+Cells with wrapped or multi-line content can cause rows to grow very tall. A maximum row height (in points) can be set on the `BookBuilder` (applied to every sheet) or per sheet on `AddSheet`. Rows whose estimated content fits within the limit are left to auto-size; rows that would exceed it are capped.
+
+
+#### Per-sheet
+
+<!-- snippet: MaxRowHeight -->
+<a id='snippet-MaxRowHeight'></a>
+```cs
+var builder = new BookBuilder();
+builder.AddSheet(notes, maxRowHeight: 60);
+```
+<sup><a href='/src/Excelsior.Tests/RowHeights.cs#L34-L39' title='Snippet source file'>snippet source</a> | <a href='#snippet-MaxRowHeight' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+
+#### Book-wide
+
+<!-- snippet: BookMaxRowHeight -->
+<a id='snippet-BookMaxRowHeight'></a>
+```cs
+var builder = new BookBuilder(maxRowHeight: 60);
+builder.AddSheet(notes);
+```
+<sup><a href='/src/Excelsior.Tests/RowHeights.cs#L51-L56' title='Snippet source file'>snippet source</a> | <a href='#snippet-BookMaxRowHeight' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+
 ### Complex Types
 
 For complex types, by default is to render via `.ToString()`.

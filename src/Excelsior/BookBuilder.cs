@@ -7,7 +7,8 @@ public class BookBuilder
         string? alternateRowColor = null,
         Action<CellStyle>? headingStyle = null,
         Action<CellStyle>? globalStyle = null,
-        int defaultMaxColumnWidth = 50)
+        int defaultMaxColumnWidth = 50,
+        int? maxRowHeight = null)
     {
         ValueRenderer.SetBookBuilderUsed();
         UseAlternatingRowColors = useAlternatingRowColors;
@@ -15,12 +16,14 @@ public class BookBuilder
         HeadingStyle = headingStyle;
         GlobalStyle = globalStyle;
         DefaultMaxColumnWidth = defaultMaxColumnWidth;
+        MaxRowHeight = maxRowHeight;
     }
 
     public bool UseAlternatingRowColors { get; }
 
     List<Func<SpreadsheetDocument, Cancel, Task>> actions = [];
     public int DefaultMaxColumnWidth { get; }
+    public int? MaxRowHeight { get; }
     public string? AlternateRowColor { get; }
     public Action<CellStyle>? HeadingStyle { get; }
     public Action<CellStyle>? GlobalStyle { get; }
@@ -30,13 +33,15 @@ public class BookBuilder
     public ISheetBuilder<TModel> AddSheet<TModel>(
         IEnumerable<TModel> data,
         string? name = null,
-        int? defaultMaxColumnWidth = null) =>
-        AddSheet(data.ToAsyncEnumerable(), name, defaultMaxColumnWidth);
+        int? defaultMaxColumnWidth = null,
+        int? maxRowHeight = null) =>
+        AddSheet(data.ToAsyncEnumerable(), name, defaultMaxColumnWidth, maxRowHeight);
 
     public ISheetBuilder<TModel> AddSheet<TModel>(
         IAsyncEnumerable<TModel> data,
         string? name = null,
-        int? defaultMaxColumnWidth = null)
+        int? defaultMaxColumnWidth = null,
+        int? maxRowHeight = null)
     {
         name ??= $"Sheet{actions.Count + 1}";
         var columns = new Columns<TModel>();
@@ -49,6 +54,7 @@ public class BookBuilder
                 data,
                 columns.OrderedColumns(),
                 defaultMaxColumnWidth,
+                maxRowHeight,
                 this)
             {
                 AutoFilter = columns.AutoFilter

@@ -1,16 +1,9 @@
-using VerifyTests.DiffPlex;
-
-[assembly: NonParallelizable]
-
 public static class ModuleInitializer
 {
     [ModuleInitializer]
     public static void Init()
     {
         VerifyDiffPlex.Initialize(OutputType.Compact);
-        VerifierSettings.DontScrubDateTimes();
-        VerifierSettings.DontScrubGuids();
         VerifierSettings.InitializePlugins();
-
     }
 }

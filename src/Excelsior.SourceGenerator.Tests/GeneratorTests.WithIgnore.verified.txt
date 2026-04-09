@@ -20,6 +20,12 @@ public static class EmployeeSheetBuilderExtensions
     public static void EmailWidth(this ISheetBuilder<global::Employee> builder, int? value)
         => builder.Width(_ => _.Email, value);
 
+    public static void EmailMinWidth(this ISheetBuilder<global::Employee> builder, int? value)
+        => builder.MinWidth(_ => _.Email, value);
+
+    public static void EmailMaxWidth(this ISheetBuilder<global::Employee> builder, int? value)
+        => builder.MaxWidth(_ => _.Email, value);
+
     public static void EmailHeadingStyle(this ISheetBuilder<global::Employee> builder, Action<Excelsior.CellStyle> value)
         => builder.HeadingStyle(_ => _.Email, value);
 
@@ -61,6 +67,12 @@ public static class EmployeeSheetBuilderExtensions
     public static void AgeWidth(this ISheetBuilder<global::Employee> builder, int? value)
         => builder.Width(_ => _.Age, value);
 
+    public static void AgeMinWidth(this ISheetBuilder<global::Employee> builder, int? value)
+        => builder.MinWidth(_ => _.Age, value);
+
+    public static void AgeMaxWidth(this ISheetBuilder<global::Employee> builder, int? value)
+        => builder.MaxWidth(_ => _.Age, value);
+
     public static void AgeHeadingStyle(this ISheetBuilder<global::Employee> builder, Action<Excelsior.CellStyle> value)
         => builder.HeadingStyle(_ => _.Age, value);
 
@@ -101,6 +113,12 @@ public static class EmployeeSheetBuilderExtensions
 
     public static void NameWidth(this ISheetBuilder<global::Employee> builder, int? value)
         => builder.Width(_ => _.Name, value);
+
+    public static void NameMinWidth(this ISheetBuilder<global::Employee> builder, int? value)
+        => builder.MinWidth(_ => _.Name, value);
+
+    public static void NameMaxWidth(this ISheetBuilder<global::Employee> builder, int? value)
+        => builder.MaxWidth(_ => _.Name, value);
 
     public static void NameHeadingStyle(this ISheetBuilder<global::Employee> builder, Action<Excelsior.CellStyle> value)
         => builder.HeadingStyle(_ => _.Name, value);

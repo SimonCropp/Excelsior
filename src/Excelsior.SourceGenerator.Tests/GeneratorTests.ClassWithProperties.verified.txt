@@ -20,6 +20,12 @@ public static class ProductSheetBuilderExtensions
     public static void NameWidth(this ISheetBuilder<global::Product> builder, int? value)
         => builder.Width(_ => _.Name, value);
 
+    public static void NameMinWidth(this ISheetBuilder<global::Product> builder, int? value)
+        => builder.MinWidth(_ => _.Name, value);
+
+    public static void NameMaxWidth(this ISheetBuilder<global::Product> builder, int? value)
+        => builder.MaxWidth(_ => _.Name, value);
+
     public static void NameHeadingStyle(this ISheetBuilder<global::Product> builder, Action<Excelsior.CellStyle> value)
         => builder.HeadingStyle(_ => _.Name, value);
 
@@ -60,6 +66,12 @@ public static class ProductSheetBuilderExtensions
 
     public static void PriceWidth(this ISheetBuilder<global::Product> builder, int? value)
         => builder.Width(_ => _.Price, value);
+
+    public static void PriceMinWidth(this ISheetBuilder<global::Product> builder, int? value)
+        => builder.MinWidth(_ => _.Price, value);
+
+    public static void PriceMaxWidth(this ISheetBuilder<global::Product> builder, int? value)
+        => builder.MaxWidth(_ => _.Price, value);
 
     public static void PriceHeadingStyle(this ISheetBuilder<global::Product> builder, Action<Excelsior.CellStyle> value)
         => builder.HeadingStyle(_ => _.Price, value);

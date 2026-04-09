@@ -20,6 +20,12 @@ public static class GroupARowSheetBuilderExtensions
     public static void NameWidth(this ISheetBuilder<global::GroupA.Row> builder, int? value)
         => builder.Width(_ => _.Name, value);
 
+    public static void NameMinWidth(this ISheetBuilder<global::GroupA.Row> builder, int? value)
+        => builder.MinWidth(_ => _.Name, value);
+
+    public static void NameMaxWidth(this ISheetBuilder<global::GroupA.Row> builder, int? value)
+        => builder.MaxWidth(_ => _.Name, value);
+
     public static void NameHeadingStyle(this ISheetBuilder<global::GroupA.Row> builder, Action<Excelsior.CellStyle> value)
         => builder.HeadingStyle(_ => _.Name, value);
 
@@ -60,6 +66,12 @@ public static class GroupARowSheetBuilderExtensions
 
     public static void AgeWidth(this ISheetBuilder<global::GroupA.Row> builder, int? value)
         => builder.Width(_ => _.Age, value);
+
+    public static void AgeMinWidth(this ISheetBuilder<global::GroupA.Row> builder, int? value)
+        => builder.MinWidth(_ => _.Age, value);
+
+    public static void AgeMaxWidth(this ISheetBuilder<global::GroupA.Row> builder, int? value)
+        => builder.MaxWidth(_ => _.Age, value);
 
     public static void AgeHeadingStyle(this ISheetBuilder<global::GroupA.Row> builder, Action<Excelsior.CellStyle> value)
         => builder.HeadingStyle(_ => _.Age, value);
@@ -110,6 +122,12 @@ public static class GroupBRowSheetBuilderExtensions
     public static void EmailWidth(this ISheetBuilder<global::GroupB.Row> builder, int? value)
         => builder.Width(_ => _.Email, value);
 
+    public static void EmailMinWidth(this ISheetBuilder<global::GroupB.Row> builder, int? value)
+        => builder.MinWidth(_ => _.Email, value);
+
+    public static void EmailMaxWidth(this ISheetBuilder<global::GroupB.Row> builder, int? value)
+        => builder.MaxWidth(_ => _.Email, value);
+
     public static void EmailHeadingStyle(this ISheetBuilder<global::GroupB.Row> builder, Action<Excelsior.CellStyle> value)
         => builder.HeadingStyle(_ => _.Email, value);
 
@@ -150,6 +168,12 @@ public static class GroupBRowSheetBuilderExtensions
 
     public static void SalaryWidth(this ISheetBuilder<global::GroupB.Row> builder, int? value)
         => builder.Width(_ => _.Salary, value);
+
+    public static void SalaryMinWidth(this ISheetBuilder<global::GroupB.Row> builder, int? value)
+        => builder.MinWidth(_ => _.Salary, value);
+
+    public static void SalaryMaxWidth(this ISheetBuilder<global::GroupB.Row> builder, int? value)
+        => builder.MaxWidth(_ => _.Salary, value);
 
     public static void SalaryHeadingStyle(this ISheetBuilder<global::GroupB.Row> builder, Action<Excelsior.CellStyle> value)
         => builder.HeadingStyle(_ => _.Salary, value);

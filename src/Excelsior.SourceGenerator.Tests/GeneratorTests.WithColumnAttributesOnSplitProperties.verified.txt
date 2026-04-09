@@ -33,6 +33,12 @@ public static class EmployeeSheetBuilderExtensions
     public static void NameWidth(this ISheetBuilder<global::Employee> builder, int? value)
         => builder.Width(_ => _.Name, value);
 
+    public static void NameMinWidth(this ISheetBuilder<global::Employee> builder, int? value)
+        => builder.MinWidth(_ => _.Name, value);
+
+    public static void NameMaxWidth(this ISheetBuilder<global::Employee> builder, int? value)
+        => builder.MaxWidth(_ => _.Name, value);
+
     public static void NameHeadingStyle(this ISheetBuilder<global::Employee> builder, Action<Excelsior.CellStyle> value)
         => builder.HeadingStyle(_ => _.Name, value);
 
@@ -74,6 +80,12 @@ public static class EmployeeSheetBuilderExtensions
     public static void StreetWidth(this ISheetBuilder<global::Employee> builder, int? value)
         => builder.Width(_ => _.Address.Street, value);
 
+    public static void StreetMinWidth(this ISheetBuilder<global::Employee> builder, int? value)
+        => builder.MinWidth(_ => _.Address.Street, value);
+
+    public static void StreetMaxWidth(this ISheetBuilder<global::Employee> builder, int? value)
+        => builder.MaxWidth(_ => _.Address.Street, value);
+
     public static void StreetHeadingStyle(this ISheetBuilder<global::Employee> builder, Action<Excelsior.CellStyle> value)
         => builder.HeadingStyle(_ => _.Address.Street, value);
 
@@ -114,6 +126,12 @@ public static class EmployeeSheetBuilderExtensions
 
     public static void CityWidth(this ISheetBuilder<global::Employee> builder, int? value)
         => builder.Width(_ => _.Address.City, value);
+
+    public static void CityMinWidth(this ISheetBuilder<global::Employee> builder, int? value)
+        => builder.MinWidth(_ => _.Address.City, value);
+
+    public static void CityMaxWidth(this ISheetBuilder<global::Employee> builder, int? value)
+        => builder.MaxWidth(_ => _.Address.City, value);
 
     public static void CityHeadingStyle(this ISheetBuilder<global::Employee> builder, Action<Excelsior.CellStyle> value)
         => builder.HeadingStyle(_ => _.Address.City, value);

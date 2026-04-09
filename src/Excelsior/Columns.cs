@@ -121,10 +121,29 @@ class Columns<TModel>
         }
     }
 
-    public List<ColumnConfig<TModel>> OrderedColumns() =>
-        columns.Values
+    public List<ColumnConfig<TModel>> OrderedColumns()
+    {
+        foreach (var column in columns.Values)
+        {
+            if (column.MinWidth is { } min &&
+                column.MaxWidth is { } max)
+            {
+                if (min == max)
+                {
+                    throw new($"Column '{column.Name}': MinWidth and MaxWidth are both {min}. Use Width instead.");
+                }
+
+                if (min > max)
+                {
+                    throw new($"Column '{column.Name}': MinWidth ({min}) is greater than MaxWidth ({max}).");
+                }
+            }
+        }
+
+        return columns.Values
             .Where(_ => _.Include)
             .OrderBy(_ => _.Order.HasValue ? 0 : 1)
             .ThenBy(_ => _.Order ?? _.DeclarationIndex)
             .ToList();
+    }
 }

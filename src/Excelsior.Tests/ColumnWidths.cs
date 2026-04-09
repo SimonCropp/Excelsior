@@ -57,6 +57,40 @@ public class ColumnWidths
         await Verify(book);
     }
 
+    [Test]
+    public void MinWidthEqualsMaxWidthThrows()
+    {
+        var employees = SampleData.Employees();
+
+        var builder = new BookBuilder();
+        builder.AddSheet(employees)
+            .Column(_ => _.Name, _ =>
+            {
+                _.MinWidth = 25;
+                _.MaxWidth = 25;
+            });
+
+        var exception = Assert.ThrowsAsync<Exception>(async () => await builder.Build());
+        Assert.That(exception!.Message, Does.Contain("Use Width instead"));
+    }
+
+    [Test]
+    public void MinWidthGreaterThanMaxWidthThrows()
+    {
+        var employees = SampleData.Employees();
+
+        var builder = new BookBuilder();
+        builder.AddSheet(employees)
+            .Column(_ => _.Name, _ =>
+            {
+                _.MinWidth = 30;
+                _.MaxWidth = 10;
+            });
+
+        var exception = Assert.ThrowsAsync<Exception>(async () => await builder.Build());
+        Assert.That(exception!.Message, Does.Contain("MinWidth (30) is greater than MaxWidth (10)"));
+    }
+
     #region ColumnMinMaxWidthModel
 
     public class EmployeeWithMinMaxWidth

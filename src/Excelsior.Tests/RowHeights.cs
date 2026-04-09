@@ -89,7 +89,7 @@ public class RowHeights
         builder.AddSheet(Notes(), maxRowHeight: 14);
 
         var exception = Assert.ThrowsAsync<Exception>(async () => await builder.Build());
-        Assert.That(exception!.Message, Does.Contain("MaxRowHeight (14) must be between 15 (the Excel default row height) and 409"));
+        Assert.That(exception!.Message, Does.Contain("MaxRowHeight (14) must be between 15 (one line at the configured font size) and 409"));
     }
 
     [Test]
@@ -99,6 +99,28 @@ public class RowHeights
         builder.AddSheet(Notes(), maxRowHeight: 410);
 
         var exception = Assert.ThrowsAsync<Exception>(async () => await builder.Build());
-        Assert.That(exception!.Message, Does.Contain("MaxRowHeight (410) must be between 15 (the Excel default row height) and 409"));
+        Assert.That(exception!.Message, Does.Contain("MaxRowHeight (410) must be between 15 (one line at the configured font size) and 409"));
+    }
+
+    [Test]
+    public void MaxRowHeightBelowGlobalFontLineHeightThrows()
+    {
+        var builder = new BookBuilder(globalStyle: _ => _.Font.Size = 20);
+        // 20pt font → ~24 points/line. 20 was fine for 11pt default but now too small.
+        builder.AddSheet(Notes(), maxRowHeight: 20);
+
+        var exception = Assert.ThrowsAsync<Exception>(async () => await builder.Build());
+        Assert.That(exception!.Message, Does.Contain("MaxRowHeight (20) must be between 24 (one line at the configured font size) and 409"));
+    }
+
+    [Test]
+    public void MaxRowHeightBelowHeadingFontLineHeightThrows()
+    {
+        var builder = new BookBuilder(headingStyle: _ => _.Font.Size = 18);
+        // 18pt heading → ~22 points/line.
+        builder.AddSheet(Notes(), maxRowHeight: 20);
+
+        var exception = Assert.ThrowsAsync<Exception>(async () => await builder.Build());
+        Assert.That(exception!.Message, Does.Contain("MaxRowHeight (20) must be between 22 (one line at the configured font size) and 409"));
     }
 }

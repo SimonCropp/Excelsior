@@ -7,7 +7,7 @@ class Renderer<TModel>(
     BookBuilder bookBuilder)
 {
     const int MaxExcelRowHeight = 409;
-    const int DefaultExcelRowHeight = 15;
+    const double DefaultExcelFontSize = 11;
 
 
     internal bool AutoFilter { get; set; } = true;
@@ -478,12 +478,15 @@ class Renderer<TModel>(
             return;
         }
 
-        if (max < DefaultExcelRowHeight || max > MaxExcelRowHeight)
+        var pointsPerLine = ComputePointsPerLine();
+        var minRowHeight = (int)Math.Ceiling(pointsPerLine);
+
+        if (max < minRowHeight || max > MaxExcelRowHeight)
         {
-            throw new($"MaxRowHeight ({max}) must be between {DefaultExcelRowHeight} (the Excel default row height) and {MaxExcelRowHeight}.");
+            throw new($"MaxRowHeight ({max}) must be between {minRowHeight} (one line at the configured font size) and {MaxExcelRowHeight}.");
         }
 
-        var maxLinesAllowed = max.Value / (double)DefaultExcelRowHeight;
+        var maxLinesAllowed = max.Value / pointsPerLine;
 
         foreach (var row in sheet.SheetData.Elements<Row>())
         {
@@ -512,6 +515,30 @@ class Renderer<TModel>(
                 row.Height = (double)max;
                 row.CustomHeight = true;
             }
+        }
+    }
+
+    double ComputePointsPerLine()
+    {
+        var maxFontSize = DefaultExcelFontSize;
+        ProbeFontSize(bookBuilder.GlobalStyle, ref maxFontSize);
+        ProbeFontSize(bookBuilder.HeadingStyle, ref maxFontSize);
+        // Excel's row height in points is approximately font size + 4 padding (Calibri 11 → 15).
+        return maxFontSize + 4;
+    }
+
+    static void ProbeFontSize(Action<CellStyle>? styleAction, ref double maxFontSize)
+    {
+        if (styleAction == null)
+        {
+            return;
+        }
+
+        var probe = new CellStyle();
+        styleAction(probe);
+        if (probe.Font.Size is { } size && size > maxFontSize)
+        {
+            maxFontSize = size;
         }
     }
 

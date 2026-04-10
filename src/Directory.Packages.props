@@ -11,7 +11,7 @@
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.5" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.4.0" />
     <PackageVersion Include="Microsoft.Office.Interop.Excel" Version="15.0.4795.1001" Pinned="true" />
-    <PackageVersion Include="Polyfill" Version="10.1.1" />
+    <PackageVersion Include="Polyfill" Version="10.2.0" />
     <PackageVersion Include="ProjectDefaults" Version="1.0.172" />
     <PackageVersion Include="ProjectFiles" Version="1.1.1" />
     <PackageVersion Include="System.ComponentModel.Annotations" Version="5.0.0" />

@@ -57,6 +57,12 @@ public static class EmployeeSheetBuilderExtensions
     public static void NameRender(this ISheetBuilder<global::Employee> builder, Func<global::Employee, string, string?> value)
         => builder.Render(_ => _.Name, value);
 
+    public static void NameFormula(this ISheetBuilder<global::Employee> builder, Func<global::Employee, FormulaContext<global::Employee>, string> value)
+        => builder.Formula(_ => _.Name, value);
+
+    public static void NameFormula(this ISheetBuilder<global::Employee> builder, Func<FormulaContext<global::Employee>, string> value)
+        => builder.Formula(_ => _.Name, value);
+
     public static void NameFilter(this ISheetBuilder<global::Employee> builder)
         => builder.Filter(_ => _.Name);
 
@@ -104,6 +110,12 @@ public static class EmployeeSheetBuilderExtensions
     public static void StreetRender(this ISheetBuilder<global::Employee> builder, Func<global::Employee, string, string?> value)
         => builder.Render(_ => _.Address.Street, value);
 
+    public static void StreetFormula(this ISheetBuilder<global::Employee> builder, Func<global::Employee, FormulaContext<global::Employee>, string> value)
+        => builder.Formula(_ => _.Address.Street, value);
+
+    public static void StreetFormula(this ISheetBuilder<global::Employee> builder, Func<FormulaContext<global::Employee>, string> value)
+        => builder.Formula(_ => _.Address.Street, value);
+
     public static void StreetFilter(this ISheetBuilder<global::Employee> builder)
         => builder.Filter(_ => _.Address.Street);
 
@@ -150,6 +162,12 @@ public static class EmployeeSheetBuilderExtensions
 
     public static void CityRender(this ISheetBuilder<global::Employee> builder, Func<global::Employee, string, string?> value)
         => builder.Render(_ => _.Address.City, value);
+
+    public static void CityFormula(this ISheetBuilder<global::Employee> builder, Func<global::Employee, FormulaContext<global::Employee>, string> value)
+        => builder.Formula(_ => _.Address.City, value);
+
+    public static void CityFormula(this ISheetBuilder<global::Employee> builder, Func<FormulaContext<global::Employee>, string> value)
+        => builder.Formula(_ => _.Address.City, value);
 
     public static void CityFilter(this ISheetBuilder<global::Employee> builder)
         => builder.Filter(_ => _.Address.City);

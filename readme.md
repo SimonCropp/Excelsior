@@ -411,6 +411,51 @@ builder.AddSheet(employees)
 <img src="/src/Excelsior.Tests/Render.Fluent_Sheet1.png">
 
 
+### Formula
+
+A column can emit an Excel formula per row instead of a computed value. The
+callback receives a `FormulaContext<TModel>` that exposes the current
+1-based Excel `Row` number and helpers to build cell references to other
+columns in the same row:
+
+ * `Ref(_ => _.OtherProperty)` — full cell reference (e.g. `B5`).
+ * `Column(_ => _.OtherProperty)` — column letter only (e.g. `B`).
+
+Formulas take precedence over the normal value rendering, and may still use
+`Format` for number formatting and `CellStyle` for styling.
+
+<!-- snippet: FormulaFluent -->
+<a id='snippet-FormulaFluent'></a>
+```cs
+var builder = new BookBuilder();
+builder.AddSheet(employees)
+    .Column(
+        _ => _.Salary,
+        _ =>
+        {
+            _.Formula = (employee, context) =>
+                $"={context.Ref(_ => _.Id)} * 10000";
+            _.Format = "#,##0";
+        });
+```
+<sup><a href='/src/Excelsior.Tests/FormulaTests.cs#L10-L23' title='Snippet source file'>snippet source</a> | <a href='#snippet-FormulaFluent' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+The shorter `Formula()` overload on `ISheetBuilder<TModel>` can be used when
+the formula does not depend on the model:
+
+```cs
+builder.AddSheet(employees)
+    .Formula(
+        _ => _.Salary,
+        context => $"={context.Ref(_ => _.Id)} * 1000");
+```
+
+#### Result:
+
+<img src="/src/Excelsior.Tests/FormulaTests.Fluent_Sheet1.png">
+
+
 ### Column Widths
 
 

@@ -127,6 +127,12 @@ class Renderer<TModel>(
 
     async Task PopulateData(SheetContext sheet, Cancel cancel)
     {
+        var columnIndexesByName = new Dictionary<string, int>(columns.Count);
+        for (var i = 0; i < columns.Count; i++)
+        {
+            columnIndexesByName[columns[i].Name] = i;
+        }
+
         var itemIndex = 0;
         await foreach (var item in data.WithCancellation(cancel))
         {
@@ -141,7 +147,20 @@ class Renderer<TModel>(
                 style.Alignment.Horizontal = HorizontalAlignmentValues.Left;
                 style.Alignment.Vertical = VerticalAlignmentValues.Top;
                 style.Alignment.WrapText = true;
-                SetCellValue(cell, sheet, style, value, column, item);
+                if (column.Formula != null)
+                {
+                    var context = new FormulaContext<TModel>(columnIndexesByName, rowIndex + 1);
+                    var formula = column.Formula(item, context);
+                    SetCellFormula(cell, formula);
+                    if (column.Format != null)
+                    {
+                        style.NumberFormat = column.Format;
+                    }
+                }
+                else
+                {
+                    SetCellValue(cell, sheet, style, value, column, item);
+                }
 
                 if (bookBuilder.UseAlternatingRowColors &&
                     rowIndex % 2 == 1)
@@ -229,6 +248,12 @@ class Renderer<TModel>(
                     });
                 break;
         }
+    }
+
+    static void SetCellFormula(Cell cell, string formula)
+    {
+        var text = formula.StartsWith('=') ? formula[1..] : formula;
+        cell.CellFormula = new(text);
     }
 
     static void SetCellValue(Cell cell, string value)

@@ -11,6 +11,7 @@ class ColumnConfig<TModel>
     public required string? Format { get; set; }
     public required string? NullDisplay { get; set; }
     public required Func<TModel, object, string?>? Render { get; set; }
+    public required Func<TModel, FormulaContext<TModel>, string>? Formula { get; set; }
     public required bool IsHtml { get; set; }
     public required bool? Filter { get; set; }
     public required bool Include { get; set; }
@@ -45,6 +46,16 @@ public class ColumnConfig<TModel, TProperty>
     public string? Format { get; set; }
     public string? NullDisplay { get; set; }
     public Func<TModel, TProperty, string?>? Render { get; set; }
+
+    /// <summary>
+    /// An Excel formula for this cell. The callback is invoked per-row and
+    /// receives the current model and a <see cref="FormulaContext{TModel}"/>
+    /// for resolving cell references. Returning a string like
+    /// <c>"=A2*B2"</c> or <c>"A2*B2"</c> sets the cell formula. When set,
+    /// this takes precedence over the normal value rendering.
+    /// </summary>
+    public Func<TModel, FormulaContext<TModel>, string>? Formula { get; set; }
+
     public bool? IsHtml { get; set; }
 
     /// <summary>

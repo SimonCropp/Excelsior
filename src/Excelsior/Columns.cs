@@ -33,6 +33,7 @@ class Columns<TModel>
                 Format = property.Format,
                 NullDisplay = property.NullDisplay ?? ValueRenderer.GetNullDisplay(type),
                 Render = isEnumerable ? null : render == null ? null : (_, value) => render(value),
+                Formula = null,
                 IsHtml = property.IsHtml,
                 Filter = property.Filter,
                 Include = property.Include ?? true,
@@ -103,6 +104,11 @@ class Columns<TModel>
         if (config.Render != null)
         {
             column.Render = (model, value) => config.Render.Invoke(model, (TProperty)value);
+        }
+
+        if (config.Formula != null)
+        {
+            column.Formula = config.Formula;
         }
 
         if (config.IsHtml != null)

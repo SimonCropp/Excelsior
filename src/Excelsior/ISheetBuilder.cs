@@ -62,6 +62,24 @@ public interface ISheetBuilder<TModel>
         Func<TProperty, string?> value);
 
     /// <summary>
+    /// Configures the column to emit an Excel formula per row. The callback
+    /// receives the current model and a <see cref="FormulaContext{TModel}"/>
+    /// that can build cell references to other columns.
+    /// </summary>
+    public void Formula<TProperty>(
+        Expression<Func<TModel, TProperty>> property,
+        Func<TModel, FormulaContext<TModel>, string> value);
+
+    /// <summary>
+    /// Configures the column to emit an Excel formula per row. The callback
+    /// receives a <see cref="FormulaContext{TModel}"/> that can build cell
+    /// references to other columns.
+    /// </summary>
+    public void Formula<TProperty>(
+        Expression<Func<TModel, TProperty>> property,
+        Func<FormulaContext<TModel>, string> value);
+
+    /// <summary>
     /// Enable auto-filter for a specific column. Overrides the sheet-level default.
     /// </summary>
     public void Filter<TProperty>(

@@ -7,6 +7,7 @@ public class BookBuilder
         string? alternateRowColor = null,
         Action<CellStyle>? headingStyle = null,
         Action<CellStyle>? globalStyle = null,
+        int? defaultMinColumnWidth = null,
         int defaultMaxColumnWidth = 50,
         int? maxRowHeight = null)
     {
@@ -15,6 +16,7 @@ public class BookBuilder
         AlternateRowColor = alternateRowColor;
         HeadingStyle = headingStyle;
         GlobalStyle = globalStyle;
+        DefaultMinColumnWidth = defaultMinColumnWidth;
         DefaultMaxColumnWidth = defaultMaxColumnWidth;
         MaxRowHeight = maxRowHeight;
     }
@@ -22,6 +24,7 @@ public class BookBuilder
     public bool UseAlternatingRowColors { get; }
 
     List<Func<SpreadsheetDocument, Cancel, Task>> actions = [];
+    public int? DefaultMinColumnWidth { get; }
     public int DefaultMaxColumnWidth { get; }
     public int? MaxRowHeight { get; }
     public string? AlternateRowColor { get; }
@@ -33,13 +36,15 @@ public class BookBuilder
     public ISheetBuilder<TModel> AddSheet<TModel>(
         IEnumerable<TModel> data,
         string? name = null,
+        int? defaultMinColumnWidth = null,
         int? defaultMaxColumnWidth = null,
         int? maxRowHeight = null) =>
-        AddSheet(data.ToAsyncEnumerable(), name, defaultMaxColumnWidth, maxRowHeight);
+        AddSheet(data.ToAsyncEnumerable(), name, defaultMinColumnWidth, defaultMaxColumnWidth, maxRowHeight);
 
     public ISheetBuilder<TModel> AddSheet<TModel>(
         IAsyncEnumerable<TModel> data,
         string? name = null,
+        int? defaultMinColumnWidth = null,
         int? defaultMaxColumnWidth = null,
         int? maxRowHeight = null)
     {
@@ -53,6 +58,7 @@ public class BookBuilder
                 name,
                 data,
                 columns.OrderedColumns(),
+                defaultMinColumnWidth,
                 defaultMaxColumnWidth,
                 maxRowHeight,
                 this)

@@ -203,22 +203,22 @@ static class WordTableRenderer<TModel>
 
         if (value is DateTime dateTime)
         {
-            return dateTime.ToString(column.Format ?? ValueRenderer.DefaultDateTimeFormat, CultureInfo.InvariantCulture);
+            return dateTime.ToString(column.Format ?? ValueRenderer.DefaultDateTimeFormat, ValueRenderer.Culture);
         }
 
         if (value is DateTimeOffset dateTimeOffset)
         {
-            return dateTimeOffset.ToString(column.Format ?? ValueRenderer.DefaultDateTimeOffsetFormat, CultureInfo.InvariantCulture);
+            return dateTimeOffset.ToString(column.Format ?? ValueRenderer.DefaultDateTimeOffsetFormat, ValueRenderer.Culture);
         }
 
         if (value is Date date)
         {
-            return date.ToDateTime(new(0, 0)).ToString(column.Format ?? ValueRenderer.DefaultDateFormat, CultureInfo.InvariantCulture);
+            return date.ToDateTime(new(0, 0)).ToString(column.Format ?? ValueRenderer.DefaultDateFormat, ValueRenderer.Culture);
         }
 
         if (column.Format != null && value is IFormattable formattable)
         {
-            return formattable.ToString(column.Format, CultureInfo.InvariantCulture);
+            return formattable.ToString(column.Format, ValueRenderer.Culture);
         }
 
         var asString = value.ToString() ?? string.Empty;

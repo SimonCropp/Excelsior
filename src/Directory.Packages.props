@@ -30,5 +30,6 @@
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="5.3.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="5.3.0" />
     <PackageVersion Include="Verify.SourceGenerators" Version="2.5.0" />
+    <PackageVersion Include="NaughtyStrings" Version="3.0.0" />
   </ItemGroup>
 </Project>

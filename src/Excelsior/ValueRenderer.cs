@@ -3,6 +3,15 @@
 public static partial class ValueRenderer
 {
     internal static bool TrimWhitespace { get; private set; } = true;
+
+    /// <summary>
+    /// Culture used by the Word table renderer when formatting <see cref="IFormattable"/> values
+    /// (currency, dates, percentages, etc.) via a <c>[Column(Format = ...)]</c> string. Defaults
+    /// to <see cref="CultureInfo.CurrentCulture"/> so symbols like <c>$</c> / <c>£</c> match the
+    /// host environment. The Excel renderer doesn't consult this — Excel applies its own number
+    /// formats client-side based on the spreadsheet's locale.
+    /// </summary>
+    public static CultureInfo Culture { get; set; } = CultureInfo.CurrentCulture;
     static bool bookBuilderUsed;
     static Dictionary<Type, Func<object, string>> renders =[];
     static Dictionary<Type, Func<object, string>> itemRenders = [];
@@ -156,6 +165,7 @@ public static partial class ValueRenderer
         DefaultDateFormat = "yyyy-MM-dd";
         DefaultDateTimeFormat = "yyyy-MM-dd HH:mm:ss";
         DefaultDateTimeOffsetFormat = "yyyy-MM-dd HH:mm:ss z";
+        Culture = CultureInfo.CurrentCulture;
     }
 
     internal static void SetBookBuilderUsed() => bookBuilderUsed = true;

@@ -5,12 +5,19 @@ public static partial class ValueRenderer
     internal static bool TrimWhitespace { get; private set; } = true;
 
     /// <summary>
-    /// Culture used by the Word table renderer when formatting <see cref="IFormattable"/> values
-    /// (currency, dates, percentages, etc.) via a <c>[Column(Format = ...)]</c> string. Defaults
-    /// to <see cref="CultureInfo.CurrentCulture"/> so symbols like <c>$</c> / <c>£</c> match the
-    /// host environment. The Excel renderer doesn't consult this — Excel applies its own number
-    /// formats client-side based on the spreadsheet's locale.
+    /// Culture used when Excelsior pre-formats values to a display string before handing them to
+    /// the OOXML writer. Defaults to <see cref="CultureInfo.CurrentCulture"/>.
     /// </summary>
+    /// <remarks>
+    /// <para>The Word table renderer uses this for every <see cref="IFormattable"/>-via-format-string
+    /// path: currency (<c>C</c>), numbers (<c>N</c>), percentages (<c>P</c>), dates with custom
+    /// patterns, etc.</para>
+    /// <para>The Excel renderer mostly ignores it — Excel applies number formats client-side based
+    /// on the spreadsheet's locale, so values like <see cref="DateTime"/> and numeric types are
+    /// stored as raw doubles. The one exception is <see cref="DateTimeOffset"/>, which has no
+    /// native Excel cell type and must be pre-formatted as an inline string; that string is built
+    /// using this culture.</para>
+    /// </remarks>
     public static CultureInfo Culture { get; set; } = CultureInfo.CurrentCulture;
     static bool bookBuilderUsed;
     static Dictionary<Type, Func<object, string>> renders =[];

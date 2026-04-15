@@ -720,7 +720,7 @@ class Renderer<TModel>(
 
             var format = column.Format ?? ValueRenderer.DefaultDateTimeOffsetFormat;
             style.NumberFormat = format;
-            SetCellValue(cell, dateTimeOffset.ToString(format, CultureInfo.InvariantCulture));
+            SetCellValue(cell, dateTimeOffset.ToString(format, ValueRenderer.Culture));
 
             return;
         }

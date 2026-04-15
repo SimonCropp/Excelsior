@@ -18,8 +18,9 @@ public class WordTableBuilderTests
             mainPart.Document = new(new Body());
 
             var table = builder.Build(mainPart);
-            mainPart.Document.Body!.Append(table);
-            mainPart.Document.Body.Append(new SectionProperties(
+            var body = mainPart.Document.Body!;
+            body.Append(table);
+            body.Append(new SectionProperties(
                 new PageSize
                 {
                     Width = 12240,

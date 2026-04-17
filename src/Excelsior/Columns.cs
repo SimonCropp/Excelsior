@@ -35,6 +35,7 @@ class Columns<TModel>
                 Render = isEnumerable ? null : render == null ? null : (_, value) => render(value),
                 Formula = null,
                 IsHtml = property.IsHtml,
+                IsHtmlExplicit = property.IsHtmlExplicit,
                 Filter = property.Filter,
                 Include = property.Include ?? true,
                 IsNumber = property.IsNumber,
@@ -111,9 +112,15 @@ class Columns<TModel>
             column.Formula = config.Formula;
         }
 
-        if (config.IsHtml != null)
+        if (config.IsHtml is { } fluentIsHtml)
         {
-            column.IsHtml = config.IsHtml.Value;
+            if (column.IsHtmlExplicit && column.IsHtml != fluentIsHtml)
+            {
+                throw new($"Column '{column.Name}': mismatched IsHtml — attribute says {column.IsHtml}, fluent configuration says {fluentIsHtml}.");
+            }
+
+            column.IsHtml = fluentIsHtml;
+            column.IsHtmlExplicit = true;
         }
 
         if (config.Filter != null)

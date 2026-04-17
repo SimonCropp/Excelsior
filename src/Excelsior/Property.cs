@@ -22,7 +22,7 @@
             MaxWidth = GetMaxWidth(column);
             Format = column?.Format;
             NullDisplay = column?.NullDisplay;
-            IsHtml = column?.IsHtml ?? false;
+            (IsHtml, IsHtmlExplicit) = ResolveIsHtml(info, constructorParameter, column);
             Filter = column is {FilterHasValue: true} ? column.Filter : null;
             Include = column is {IncludeHasValue: true} ? column.Include : null;
         }
@@ -35,12 +35,43 @@
             Format = generated.Format;
             NullDisplay = generated.NullDisplay;
             IsHtml = generated.IsHtml;
+            IsHtmlExplicit = generated.IsHtml;
             Filter = generated.Filter;
             Include = generated.Include;
         }
 
         Type = info.PropertyType;
         IsNumber = info.PropertyType.IsNumericType();
+    }
+
+    static (bool isHtml, bool isExplicit) ResolveIsHtml(PropertyInfo info, ParameterInfo? constructorParameter, ColumnAttribute? column)
+    {
+        var columnExplicit = column is {IsHtmlHasValue: true} ? column.IsHtml : (bool?)null;
+        var hasHtmlSyntax = HasHtmlStringSyntax(info, constructorParameter);
+
+        if (columnExplicit == false && hasHtmlSyntax)
+        {
+            throw new($"Property '{info.DeclaringType!.Name}.{info.Name}': mismatched IsHtml — [Column(IsHtml = false)] contradicts [StringSyntax(\"html\")].");
+        }
+
+        if (columnExplicit is { } explicitValue)
+        {
+            return (explicitValue, true);
+        }
+
+        if (hasHtmlSyntax)
+        {
+            return (true, true);
+        }
+
+        return (false, false);
+    }
+
+    static bool HasHtmlStringSyntax(PropertyInfo info, ParameterInfo? constructorParameter)
+    {
+        var syntax = info.Attribute<StringSyntaxAttribute>() ?? constructorParameter?.Attribute<StringSyntaxAttribute>();
+        return syntax is not null &&
+               string.Equals(syntax.Syntax, "html", StringComparison.OrdinalIgnoreCase);
     }
 
     static int? GetOrder(ColumnAttribute? column, DisplayAttribute? display)
@@ -95,6 +126,7 @@
     public string? Format { get; }
     public string? NullDisplay { get; }
     public bool IsHtml { get; }
+    internal readonly bool IsHtmlExplicit;
     public bool? Filter { get; }
     public bool? Include { get; }
 

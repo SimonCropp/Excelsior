@@ -1,0 +1,14 @@
+﻿{
+  Sheets: [
+    {
+      Name: Sheet1,
+      Columns: [
+        {
+          Name: Value,
+          Width: 9.0
+        }
+      ]
+    }
+  ],
+  WorksheetCount: 1
+}

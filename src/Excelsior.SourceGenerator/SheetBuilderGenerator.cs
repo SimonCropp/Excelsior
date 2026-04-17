@@ -209,8 +209,9 @@ public class SheetBuilderGenerator : IIncrementalGenerator
     static ColumnData? GetColumnData(IPropertySymbol property)
     {
         var attr = FindColumnAttribute(property);
+        var hasHtmlSyntax = HasHtmlStringSyntax(property);
 
-        if (attr is null)
+        if (attr is null && !hasHtmlSyntax)
         {
             return null;
         }
@@ -226,61 +227,129 @@ public class SheetBuilderGenerator : IIncrementalGenerator
         bool? filter = null;
         bool? include = null;
 
-        foreach (var arg in attr.NamedArguments)
+        if (attr is not null)
         {
-            var value = arg.Value.Value;
-            switch (arg.Key)
+            foreach (var arg in attr.NamedArguments)
             {
-                case "Heading":
-                    heading = value as string;
-                    break;
-                case "Order":
-                    if (value is int o and > -1)
-                    {
-                        order = o;
-                    }
+                var value = arg.Value.Value;
+                switch (arg.Key)
+                {
+                    case "Heading":
+                        heading = value as string;
+                        break;
+                    case "Order":
+                        if (value is int o and > -1)
+                        {
+                            order = o;
+                        }
 
-                    break;
-                case "Width":
-                    if (value is int w and > -1)
-                    {
-                        width = w;
-                    }
+                        break;
+                    case "Width":
+                        if (value is int w and > -1)
+                        {
+                            width = w;
+                        }
 
-                    break;
-                case "MinWidth":
-                    if (value is int minW and > -1)
-                    {
-                        minWidth = minW;
-                    }
+                        break;
+                    case "MinWidth":
+                        if (value is int minW and > -1)
+                        {
+                            minWidth = minW;
+                        }
 
-                    break;
-                case "MaxWidth":
-                    if (value is int maxW and > -1)
-                    {
-                        maxWidth = maxW;
-                    }
+                        break;
+                    case "MaxWidth":
+                        if (value is int maxW and > -1)
+                        {
+                            maxWidth = maxW;
+                        }
 
-                    break;
-                case "Format":
-                    format = value as string;
-                    break;
-                case "NullDisplay":
-                    nullDisplay = value as string;
-                    break;
-                case "IsHtml":
-                    isHtml = value is true;
-                    break;
-                case "Filter":
-                    filter = value as bool?;
-                    break;
-                case "Include":
-                    include = value as bool?;
-                    break;
+                        break;
+                    case "Format":
+                        format = value as string;
+                        break;
+                    case "NullDisplay":
+                        nullDisplay = value as string;
+                        break;
+                    case "IsHtml":
+                        isHtml = value is true;
+                        break;
+                    case "Filter":
+                        filter = value as bool?;
+                        break;
+                    case "Include":
+                        include = value as bool?;
+                        break;
+                }
             }
         }
 
+        if (hasHtmlSyntax)
+        {
+            isHtml = true;
+        }
+
         return new(heading, order, width, minWidth, maxWidth, format, nullDisplay, isHtml, filter, include);
+    }
+
+    static bool HasHtmlStringSyntax(IPropertySymbol property)
+    {
+        if (HasHtmlStringSyntax(property.GetAttributes()))
+        {
+            return true;
+        }
+
+        if (property.ContainingType is { } type)
+        {
+            foreach (var constructor in type.Constructors)
+            {
+                foreach (var parameter in constructor.Parameters)
+                {
+                    if (parameter.Name != property.Name)
+                    {
+                        continue;
+                    }
+
+                    if (HasHtmlStringSyntax(parameter.GetAttributes()))
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    static bool HasHtmlStringSyntax(ImmutableArray<AttributeData> attributes)
+    {
+        foreach (var attribute in attributes)
+        {
+            var attrClass = attribute.AttributeClass;
+            if (attrClass is null)
+            {
+                continue;
+            }
+
+            if (attrClass.Name != "StringSyntaxAttribute" ||
+                attrClass.ContainingNamespace?.ToDisplayString() != "System.Diagnostics.CodeAnalysis")
+            {
+                continue;
+            }
+
+            if (attribute.ConstructorArguments.Length == 0)
+            {
+                continue;
+            }
+
+            if (attribute.ConstructorArguments[0].Value is string syntax &&
+                string.Equals(syntax, "html", StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     static string GenerateExtensions(ModelInfo model)

@@ -12,6 +12,7 @@ class ColumnConfig<TModel>
     public required string? NullDisplay { get; set; }
     public required Func<TModel, object, string?>? Render { get; set; }
     public required bool IsHtml { get; set; }
+    public required bool IsHtmlExplicit { get; set; }
     public required bool? Filter { get; set; }
     public required bool Include { get; set; }
     public required bool IsNumber { get; init; }

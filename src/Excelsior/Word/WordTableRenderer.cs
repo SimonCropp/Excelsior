@@ -117,6 +117,13 @@ static class WordTableRenderer<TModel>
         object? value,
         MainDocumentPart? mainPart)
     {
+        // Excel formulas (=A2*B2 etc.) have no equivalent in Word tables. Fail loudly so the
+        // caller knows the column must be restructured rather than silently dropping the formula.
+        if (column.Formula != null)
+        {
+            throw new($"Column '{column.Heading}' has a Formula, which is not supported in Word tables.");
+        }
+
         // A live MainDocumentPart is required to register the hyperlink relationship; without one,
         // fall through to the plain-text path which renders link.Text ?? link.Url.
         if (value is Link link && mainPart != null)

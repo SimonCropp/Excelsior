@@ -9,6 +9,9 @@ public class WordTableBuilderTests
     public async Task RendersTableFromAttributedModel()
     {
         var employees = SampleData.Employees();
+
+        #region WordTableUsage
+
         var builder = new WordTableBuilder<Employee>(employees);
 
         using var stream = new MemoryStream();
@@ -20,6 +23,8 @@ public class WordTableBuilderTests
             var table = builder.Build(mainPart);
             var body = mainPart.Document.Body!;
             body.Append(table);
+
+            #endregion
             body.Append(new SectionProperties(
                 new PageSize
                 {
@@ -142,6 +147,21 @@ public class WordTableBuilderTests
 
         var run = paragraph.GetFirstChild<Run>()!;
         AreEqual("Home", run.GetFirstChild<Text>()!.Text);
+    }
+
+    [Test]
+    public void FormulaColumnThrows()
+    {
+        var employees = SampleData.Employees();
+        var builder = new WordTableBuilder<Employee>(employees)
+            .Column(
+                _ => _.Salary,
+                _ => _.Formula = (employee, context) =>
+                    $"={context.Ref(_ => _.Id)} * 10000");
+
+        var exception = Assert.Throws<Exception>(() => builder.Build());
+        Assert.That(exception!.Message, Does.Contain("Formula"));
+        Assert.That(exception.Message, Does.Contain("not supported in Word tables"));
     }
 
     [Test]

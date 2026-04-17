@@ -455,6 +455,8 @@ builder.AddSheet(employees)
 
 <img src="/src/Excelsior.Tests/FormulaTests.Fluent_Sheet1.png">
 
+**Note:** Formulas are an Excel-only feature. They are not supported in [Word tables](#word-tables) and will throw when `Build()` is called.
+
 
 ### Column Widths
 
@@ -1660,6 +1662,45 @@ For each public property, the following extension methods are generated:
  * `{Property}Exclude` — exclude the column from the output
 
 Properties with `[Ignore]` are skipped. Properties with `[Split]` (or types with `[Split]`) are recursed into, generating methods for the nested properties.
+
+
+## Word Tables
+
+`WordTableBuilder<TModel>` renders model data into a Word `<w:tbl>` element that can be appended to an existing Word document. It reuses the same property discovery, column ordering, and per-column configuration as `BookBuilder`.
+
+<!-- snippet: WordTableUsage -->
+<a id='snippet-WordTableUsage'></a>
+```cs
+var builder = new WordTableBuilder<Employee>(employees);
+
+using var stream = new MemoryStream();
+using (var doc = WordprocessingDocument.Create(stream, WordprocessingDocumentType.Document))
+{
+    var mainPart = doc.AddMainDocumentPart();
+    mainPart.Document = new(new Body());
+
+    var table = builder.Build(mainPart);
+    var body = mainPart.Document.Body!;
+    body.Append(table);
+```
+<sup><a href='/src/Excelsior.Tests/Word/WordTableBuilderTests.cs#L13-L27' title='Snippet source file'>snippet source</a> | <a href='#snippet-WordTableUsage' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+Column configuration (headings, ordering, render, etc.) works the same as with `BookBuilder`:
+
+```cs
+var builder = new WordTableBuilder<Employee>(employees)
+    .Column(
+        _ => _.Name,
+        _ => _.Heading = "Person");
+```
+
+When a `MainDocumentPart` is passed to `Build()`, `Link`-typed properties produce real `<w:hyperlink>` elements. When omitted, links fall back to their display text.
+
+
+### Limitations
+
+Formula columns are not supported in Word tables. Word has no equivalent of Excel cell formulas, so configuring a `Formula` on a column used with `WordTableBuilder` will throw when `Build()` is called. Use `Render` or a computed property instead.
 
 
 ## Icon

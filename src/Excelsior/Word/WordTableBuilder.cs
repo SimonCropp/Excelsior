@@ -18,6 +18,11 @@ public class WordTableBuilder<TModel>(IEnumerable<TModel> data)
     /// Configure a single column. Mirrors <c>ISheetBuilder&lt;TModel&gt;.Column</c>: any settings
     /// not overridden fall back to <see cref="ColumnAttribute"/> on the model property.
     /// </summary>
+    /// <remarks>
+    /// <see cref="ColumnConfig{TModel,TProperty}.Formula"/> is not supported in Word tables and
+    /// will throw at build time. Restructure formula columns as computed properties or use
+    /// <see cref="ColumnConfig{TModel,TProperty}.Render"/> instead.
+    /// </remarks>
     public WordTableBuilder<TModel> Column<TProperty>(
         Expression<Func<TModel, TProperty>> property,
         Action<ColumnConfig<TModel, TProperty>> configuration)

@@ -418,6 +418,12 @@ public class SheetBuilderGenerator : IIncrementalGenerator
                      public static void {prefix}Render(this ISheetBuilder<{modelType}> builder, Func<{modelType}, {propType}, string?> value)
                          => builder.Render(_ => _.{access}, value);
 
+                     public static void {prefix}Formula(this ISheetBuilder<{modelType}> builder, Func<{modelType}, FormulaContext<{modelType}>, string> value)
+                         => builder.Formula(_ => _.{access}, value);
+
+                     public static void {prefix}Formula(this ISheetBuilder<{modelType}> builder, Func<FormulaContext<{modelType}>, string> value)
+                         => builder.Formula(_ => _.{access}, value);
+
                      public static void {prefix}Filter(this ISheetBuilder<{modelType}> builder)
                          => builder.Filter(_ => _.{access});
 

@@ -44,6 +44,12 @@ public static class EmployeeSheetBuilderExtensions
     public static void EmailRender(this ISheetBuilder<global::Employee> builder, Func<global::Employee, string, string?> value)
         => builder.Render(_ => _.Email, value);
 
+    public static void EmailFormula(this ISheetBuilder<global::Employee> builder, Func<global::Employee, FormulaContext<global::Employee>, string> value)
+        => builder.Formula(_ => _.Email, value);
+
+    public static void EmailFormula(this ISheetBuilder<global::Employee> builder, Func<FormulaContext<global::Employee>, string> value)
+        => builder.Formula(_ => _.Email, value);
+
     public static void EmailFilter(this ISheetBuilder<global::Employee> builder)
         => builder.Filter(_ => _.Email);
 
@@ -90,6 +96,12 @@ public static class EmployeeSheetBuilderExtensions
 
     public static void AddressRender(this ISheetBuilder<global::Employee> builder, Func<global::Employee, global::Address, string?> value)
         => builder.Render(_ => _.Address, value);
+
+    public static void AddressFormula(this ISheetBuilder<global::Employee> builder, Func<global::Employee, FormulaContext<global::Employee>, string> value)
+        => builder.Formula(_ => _.Address, value);
+
+    public static void AddressFormula(this ISheetBuilder<global::Employee> builder, Func<FormulaContext<global::Employee>, string> value)
+        => builder.Formula(_ => _.Address, value);
 
     public static void AddressFilter(this ISheetBuilder<global::Employee> builder)
         => builder.Filter(_ => _.Address);

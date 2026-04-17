@@ -411,6 +411,53 @@ builder.AddSheet(employees)
 <img src="/src/Excelsior.Tests/Render.Fluent_Sheet1.png">
 
 
+### Formula
+
+A column can emit an Excel formula per row instead of a computed value. The
+callback receives a `FormulaContext<TModel>` that exposes the current
+1-based Excel `Row` number and helpers to build cell references to other
+columns in the same row:
+
+ * `Ref(_ => _.OtherProperty)` — full cell reference (e.g. `B5`).
+ * `Column(_ => _.OtherProperty)` — column letter only (e.g. `B`).
+
+Formulas take precedence over the normal value rendering, and may still use
+`Format` for number formatting and `CellStyle` for styling.
+
+<!-- snippet: FormulaFluent -->
+<a id='snippet-FormulaFluent'></a>
+```cs
+var builder = new BookBuilder();
+builder.AddSheet(employees)
+    .Column(
+        _ => _.Salary,
+        _ =>
+        {
+            _.Formula = (employee, context) =>
+                $"={context.Ref(_ => _.Id)} * 10000";
+            _.Format = "#,##0";
+        });
+```
+<sup><a href='/src/Excelsior.Tests/FormulaTests.cs#L10-L23' title='Snippet source file'>snippet source</a> | <a href='#snippet-FormulaFluent' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+The shorter `Formula()` overload on `ISheetBuilder<TModel>` can be used when
+the formula does not depend on the model:
+
+```cs
+builder.AddSheet(employees)
+    .Formula(
+        _ => _.Salary,
+        context => $"={context.Ref(_ => _.Id)} * 1000");
+```
+
+#### Result:
+
+<img src="/src/Excelsior.Tests/FormulaTests.Fluent_Sheet1.png">
+
+**Note:** Formulas are an Excel-only feature. They are not supported in [Word tables](#word-tables) and will throw when `Build()` is called.
+
+
 ### Column Widths
 
 
@@ -1658,6 +1705,45 @@ For each public property, the following extension methods are generated:
  * `{Property}Exclude` — exclude the column from the output
 
 Properties with `[Ignore]` are skipped. Properties with `[Split]` (or types with `[Split]`) are recursed into, generating methods for the nested properties.
+
+
+## Word Tables
+
+`WordTableBuilder<TModel>` renders model data into a Word `<w:tbl>` element that can be appended to an existing Word document. It reuses the same property discovery, column ordering, and per-column configuration as `BookBuilder`.
+
+<!-- snippet: WordTableUsage -->
+<a id='snippet-WordTableUsage'></a>
+```cs
+var builder = new WordTableBuilder<Employee>(employees);
+
+using var stream = new MemoryStream();
+using (var doc = WordprocessingDocument.Create(stream, WordprocessingDocumentType.Document))
+{
+    var mainPart = doc.AddMainDocumentPart();
+    mainPart.Document = new(new Body());
+
+    var table = builder.Build(mainPart);
+    var body = mainPart.Document.Body!;
+    body.Append(table);
+```
+<sup><a href='/src/Excelsior.Tests/Word/WordTableBuilderTests.cs#L13-L27' title='Snippet source file'>snippet source</a> | <a href='#snippet-WordTableUsage' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+Column configuration (headings, ordering, render, etc.) works the same as with `BookBuilder`:
+
+```cs
+var builder = new WordTableBuilder<Employee>(employees)
+    .Column(
+        _ => _.Name,
+        _ => _.Heading = "Person");
+```
+
+When a `MainDocumentPart` is passed to `Build()`, `Link`-typed properties produce real `<w:hyperlink>` elements. When omitted, links fall back to their display text.
+
+
+### Limitations
+
+Formula columns are not supported in Word tables. Word has no equivalent of Excel cell formulas, so configuring a `Formula` on a column used with `WordTableBuilder` will throw when `Build()` is called. Use `Render` or a computed property instead.
 
 
 ## Icon

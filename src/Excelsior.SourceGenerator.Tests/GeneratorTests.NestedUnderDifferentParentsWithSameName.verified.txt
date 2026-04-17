@@ -44,6 +44,12 @@ public static class GroupARowSheetBuilderExtensions
     public static void NameRender(this ISheetBuilder<global::GroupA.Row> builder, Func<global::GroupA.Row, string, string?> value)
         => builder.Render(_ => _.Name, value);
 
+    public static void NameFormula(this ISheetBuilder<global::GroupA.Row> builder, Func<global::GroupA.Row, FormulaContext<global::GroupA.Row>, string> value)
+        => builder.Formula(_ => _.Name, value);
+
+    public static void NameFormula(this ISheetBuilder<global::GroupA.Row> builder, Func<FormulaContext<global::GroupA.Row>, string> value)
+        => builder.Formula(_ => _.Name, value);
+
     public static void NameFilter(this ISheetBuilder<global::GroupA.Row> builder)
         => builder.Filter(_ => _.Name);
 
@@ -90,6 +96,12 @@ public static class GroupARowSheetBuilderExtensions
 
     public static void AgeRender(this ISheetBuilder<global::GroupA.Row> builder, Func<global::GroupA.Row, int, string?> value)
         => builder.Render(_ => _.Age, value);
+
+    public static void AgeFormula(this ISheetBuilder<global::GroupA.Row> builder, Func<global::GroupA.Row, FormulaContext<global::GroupA.Row>, string> value)
+        => builder.Formula(_ => _.Age, value);
+
+    public static void AgeFormula(this ISheetBuilder<global::GroupA.Row> builder, Func<FormulaContext<global::GroupA.Row>, string> value)
+        => builder.Formula(_ => _.Age, value);
 
     public static void AgeFilter(this ISheetBuilder<global::GroupA.Row> builder)
         => builder.Filter(_ => _.Age);
@@ -146,6 +158,12 @@ public static class GroupBRowSheetBuilderExtensions
     public static void EmailRender(this ISheetBuilder<global::GroupB.Row> builder, Func<global::GroupB.Row, string, string?> value)
         => builder.Render(_ => _.Email, value);
 
+    public static void EmailFormula(this ISheetBuilder<global::GroupB.Row> builder, Func<global::GroupB.Row, FormulaContext<global::GroupB.Row>, string> value)
+        => builder.Formula(_ => _.Email, value);
+
+    public static void EmailFormula(this ISheetBuilder<global::GroupB.Row> builder, Func<FormulaContext<global::GroupB.Row>, string> value)
+        => builder.Formula(_ => _.Email, value);
+
     public static void EmailFilter(this ISheetBuilder<global::GroupB.Row> builder)
         => builder.Filter(_ => _.Email);
 
@@ -192,6 +210,12 @@ public static class GroupBRowSheetBuilderExtensions
 
     public static void SalaryRender(this ISheetBuilder<global::GroupB.Row> builder, Func<global::GroupB.Row, decimal, string?> value)
         => builder.Render(_ => _.Salary, value);
+
+    public static void SalaryFormula(this ISheetBuilder<global::GroupB.Row> builder, Func<global::GroupB.Row, FormulaContext<global::GroupB.Row>, string> value)
+        => builder.Formula(_ => _.Salary, value);
+
+    public static void SalaryFormula(this ISheetBuilder<global::GroupB.Row> builder, Func<FormulaContext<global::GroupB.Row>, string> value)
+        => builder.Formula(_ => _.Salary, value);
 
     public static void SalaryFilter(this ISheetBuilder<global::GroupB.Row> builder)
         => builder.Filter(_ => _.Salary);

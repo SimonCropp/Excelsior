@@ -73,6 +73,16 @@ class SheetBuilder<TModel>(Columns<TModel> columns) :
         Func<TProperty, string?> value) =>
         Column(property, _ => _.Render = (_, property) => value(property));
 
+    public void Formula<TProperty>(
+        Expression<Func<TModel, TProperty>> property,
+        Func<TModel, FormulaContext<TModel>, string> value) =>
+        Column(property, _ => _.Formula = value);
+
+    public void Formula<TProperty>(
+        Expression<Func<TModel, TProperty>> property,
+        Func<FormulaContext<TModel>, string> value) =>
+        Column(property, _ => _.Formula = (_, ctx) => value(ctx));
+
     public void Filter<TProperty>(
         Expression<Func<TModel, TProperty>> property) =>
         Column(property, _ => _.Filter = true);

@@ -63,6 +63,12 @@ public static class EmployeeSheetBuilderExtensions
     public static void IdRender(this ISheetBuilder<global::Employee> builder, Func<global::Employee, int, string?> value)
         => builder.Render(_ => _.Id, value);
 
+    public static void IdFormula(this ISheetBuilder<global::Employee> builder, Func<global::Employee, FormulaContext<global::Employee>, string> value)
+        => builder.Formula(_ => _.Id, value);
+
+    public static void IdFormula(this ISheetBuilder<global::Employee> builder, Func<FormulaContext<global::Employee>, string> value)
+        => builder.Formula(_ => _.Id, value);
+
     public static void IdFilter(this ISheetBuilder<global::Employee> builder)
         => builder.Filter(_ => _.Id);
 
@@ -109,6 +115,12 @@ public static class EmployeeSheetBuilderExtensions
 
     public static void NameRender(this ISheetBuilder<global::Employee> builder, Func<global::Employee, string, string?> value)
         => builder.Render(_ => _.Name, value);
+
+    public static void NameFormula(this ISheetBuilder<global::Employee> builder, Func<global::Employee, FormulaContext<global::Employee>, string> value)
+        => builder.Formula(_ => _.Name, value);
+
+    public static void NameFormula(this ISheetBuilder<global::Employee> builder, Func<FormulaContext<global::Employee>, string> value)
+        => builder.Formula(_ => _.Name, value);
 
     public static void NameFilter(this ISheetBuilder<global::Employee> builder)
         => builder.Filter(_ => _.Name);
@@ -157,6 +169,12 @@ public static class EmployeeSheetBuilderExtensions
     public static void EmailRender(this ISheetBuilder<global::Employee> builder, Func<global::Employee, string, string?> value)
         => builder.Render(_ => _.Email, value);
 
+    public static void EmailFormula(this ISheetBuilder<global::Employee> builder, Func<global::Employee, FormulaContext<global::Employee>, string> value)
+        => builder.Formula(_ => _.Email, value);
+
+    public static void EmailFormula(this ISheetBuilder<global::Employee> builder, Func<FormulaContext<global::Employee>, string> value)
+        => builder.Formula(_ => _.Email, value);
+
     public static void EmailFilter(this ISheetBuilder<global::Employee> builder)
         => builder.Filter(_ => _.Email);
 
@@ -203,6 +221,12 @@ public static class EmployeeSheetBuilderExtensions
 
     public static void HireDateRender(this ISheetBuilder<global::Employee> builder, Func<global::Employee, string, string?> value)
         => builder.Render(_ => _.HireDate, value);
+
+    public static void HireDateFormula(this ISheetBuilder<global::Employee> builder, Func<global::Employee, FormulaContext<global::Employee>, string> value)
+        => builder.Formula(_ => _.HireDate, value);
+
+    public static void HireDateFormula(this ISheetBuilder<global::Employee> builder, Func<FormulaContext<global::Employee>, string> value)
+        => builder.Formula(_ => _.HireDate, value);
 
     public static void HireDateFilter(this ISheetBuilder<global::Employee> builder)
         => builder.Filter(_ => _.HireDate);
@@ -251,6 +275,12 @@ public static class EmployeeSheetBuilderExtensions
     public static void NotesRender(this ISheetBuilder<global::Employee> builder, Func<global::Employee, string, string?> value)
         => builder.Render(_ => _.Notes, value);
 
+    public static void NotesFormula(this ISheetBuilder<global::Employee> builder, Func<global::Employee, FormulaContext<global::Employee>, string> value)
+        => builder.Formula(_ => _.Notes, value);
+
+    public static void NotesFormula(this ISheetBuilder<global::Employee> builder, Func<FormulaContext<global::Employee>, string> value)
+        => builder.Formula(_ => _.Notes, value);
+
     public static void NotesFilter(this ISheetBuilder<global::Employee> builder)
         => builder.Filter(_ => _.Notes);
 
@@ -297,6 +327,12 @@ public static class EmployeeSheetBuilderExtensions
 
     public static void DepartmentRender(this ISheetBuilder<global::Employee> builder, Func<global::Employee, string, string?> value)
         => builder.Render(_ => _.Department, value);
+
+    public static void DepartmentFormula(this ISheetBuilder<global::Employee> builder, Func<global::Employee, FormulaContext<global::Employee>, string> value)
+        => builder.Formula(_ => _.Department, value);
+
+    public static void DepartmentFormula(this ISheetBuilder<global::Employee> builder, Func<FormulaContext<global::Employee>, string> value)
+        => builder.Formula(_ => _.Department, value);
 
     public static void DepartmentFilter(this ISheetBuilder<global::Employee> builder)
         => builder.Filter(_ => _.Department);
@@ -345,6 +381,12 @@ public static class EmployeeSheetBuilderExtensions
     public static void InternalRender(this ISheetBuilder<global::Employee> builder, Func<global::Employee, string, string?> value)
         => builder.Render(_ => _.Internal, value);
 
+    public static void InternalFormula(this ISheetBuilder<global::Employee> builder, Func<global::Employee, FormulaContext<global::Employee>, string> value)
+        => builder.Formula(_ => _.Internal, value);
+
+    public static void InternalFormula(this ISheetBuilder<global::Employee> builder, Func<FormulaContext<global::Employee>, string> value)
+        => builder.Formula(_ => _.Internal, value);
+
     public static void InternalFilter(this ISheetBuilder<global::Employee> builder)
         => builder.Filter(_ => _.Internal);
 
@@ -391,6 +433,12 @@ public static class EmployeeSheetBuilderExtensions
 
     public static void AgeRender(this ISheetBuilder<global::Employee> builder, Func<global::Employee, int, string?> value)
         => builder.Render(_ => _.Age, value);
+
+    public static void AgeFormula(this ISheetBuilder<global::Employee> builder, Func<global::Employee, FormulaContext<global::Employee>, string> value)
+        => builder.Formula(_ => _.Age, value);
+
+    public static void AgeFormula(this ISheetBuilder<global::Employee> builder, Func<FormulaContext<global::Employee>, string> value)
+        => builder.Formula(_ => _.Age, value);
 
     public static void AgeFilter(this ISheetBuilder<global::Employee> builder)
         => builder.Filter(_ => _.Age);

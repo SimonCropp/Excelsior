@@ -17,34 +17,42 @@ public class RedundantColumnHeadingAnalyzer : DiagnosticAnalyzer
     {
         context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
         context.EnableConcurrentExecution();
-        context.RegisterSymbolAction(AnalyzeProperty, SymbolKind.Property);
-        context.RegisterSymbolAction(AnalyzeParameter, SymbolKind.Parameter);
+
+        context.RegisterCompilationStartAction(start =>
+        {
+            var columnAttributeType = start.Compilation
+                .GetTypeByMetadataName("Excelsior.ColumnAttribute");
+            if (columnAttributeType is null)
+            {
+                return;
+            }
+
+            start.RegisterSymbolAction(
+                ctx => AnalyzeProperty(ctx, columnAttributeType),
+                SymbolKind.Property);
+            start.RegisterSymbolAction(
+                ctx => AnalyzeParameter(ctx, columnAttributeType),
+                SymbolKind.Parameter);
+        });
     }
 
-    static void AnalyzeProperty(SymbolAnalysisContext context)
+    static void AnalyzeProperty(SymbolAnalysisContext context, INamedTypeSymbol columnAttributeType)
     {
         var property = (IPropertySymbol)context.Symbol;
-        AnalyzeSymbol(context, property.Name);
+        AnalyzeSymbol(context, property.Name, columnAttributeType);
     }
 
-    static void AnalyzeParameter(SymbolAnalysisContext context)
+    static void AnalyzeParameter(SymbolAnalysisContext context, INamedTypeSymbol columnAttributeType)
     {
         var parameter = (IParameterSymbol)context.Symbol;
-        AnalyzeSymbol(context, parameter.Name);
+        AnalyzeSymbol(context, parameter.Name, columnAttributeType);
     }
 
-    static void AnalyzeSymbol(SymbolAnalysisContext context, string memberName)
+    static void AnalyzeSymbol(SymbolAnalysisContext context, string memberName, INamedTypeSymbol columnAttributeType)
     {
         foreach (var attribute in context.Symbol.GetAttributes())
         {
-            var attrClass = attribute.AttributeClass;
-            if (attrClass is null)
-            {
-                continue;
-            }
-
-            if (attrClass.Name != "ColumnAttribute" ||
-                attrClass.ContainingNamespace?.ToDisplayString() != "Excelsior")
+            if (!SymbolEqualityComparer.Default.Equals(attribute.AttributeClass, columnAttributeType))
             {
                 continue;
             }

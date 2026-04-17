@@ -63,6 +63,77 @@ public class HtmlTests
         await Verify(book);
     }
 
+    public record StringSyntaxTarget([StringSyntax("html")] string Value);
+    public record MixedCaseTarget([StringSyntax("HTML")] string Value);
+
+    [Test]
+    public async Task StringSyntaxAttributeMarksHtml()
+    {
+        var bookBuilder = new BookBuilder();
+
+        List<StringSyntaxTarget> data = [new("<b>bold</b>")];
+        bookBuilder.AddSheet(data);
+        var book = await bookBuilder.Build();
+
+        await Verify(book);
+    }
+
+#pragma warning disable EXCEL003
+    public record ColumnFalseSyntaxHtmlTarget([Column(IsHtml = false), StringSyntax("html")] string Value);
+#pragma warning restore EXCEL003
+
+    [Test]
+    public void AttributeAndStringSyntaxMismatchThrows()
+    {
+        var bookBuilder = new BookBuilder();
+        var ex = Assert.Catch(() => bookBuilder.AddSheet(new List<ColumnFalseSyntaxHtmlTarget>()));
+
+        var inner = ex is TypeInitializationException tie ? tie.InnerException! : ex;
+        Assert.That(inner!.Message, Does.Contain("mismatched IsHtml"));
+    }
+
+    public record AttributeHtmlTrueTarget([Column(IsHtml = true)] string Value);
+
+    [Test]
+    public void AttributeTrueFluentFalseThrows()
+    {
+        var bookBuilder = new BookBuilder();
+        var sheetBuilder = bookBuilder.AddSheet(new List<AttributeHtmlTrueTarget>());
+
+        var ex = Assert.Catch(() =>
+            sheetBuilder.Column(
+                _ => _.Value,
+                _ => _.IsHtml = false));
+        Assert.That(ex!.Message, Does.Contain("mismatched IsHtml"));
+    }
+
+    [Test]
+    public async Task AttributeTrueFluentTrueAgrees()
+    {
+        var bookBuilder = new BookBuilder();
+
+        List<AttributeHtmlTrueTarget> data = [new("<i>italic</i>")];
+        var sheetBuilder = bookBuilder.AddSheet(data);
+        sheetBuilder.Column(
+            _ => _.Value,
+            _ => _.IsHtml = true);
+        var book = await bookBuilder.Build();
+
+        await Verify(book);
+    }
+
+    [Test]
+    public async Task StringSyntaxCaseInsensitive()
+    {
+        var bookBuilder = new BookBuilder();
+
+        List<MixedCaseTarget> data = [new("<em>em</em>")];
+        bookBuilder.AddSheet(data);
+        var book = await bookBuilder.Build();
+
+        await Verify(book);
+    }
+
     [Test]
     public async Task RichHtml()
     {

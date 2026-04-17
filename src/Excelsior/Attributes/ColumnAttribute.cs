@@ -11,7 +11,18 @@ public sealed class ColumnAttribute :
     public int MaxWidth { get; set; } = -1;
     public string? Format { get; set; }
     public string? NullDisplay { get; set; }
-    public bool IsHtml { get; set; }
+
+    public bool IsHtml
+    {
+        get;
+        set
+        {
+            field = value;
+            IsHtmlHasValue = true;
+        }
+    }
+
+    internal bool IsHtmlHasValue { get; private set; }
 
     public bool Filter
     {

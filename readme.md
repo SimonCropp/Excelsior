@@ -720,6 +720,38 @@ builder.AddSheet(data);
 <img src="/src/Excelsior.Tests/LinkTests.Test_Sheet1.png">
 
 
+### HTML Cells
+
+A column can be marked as HTML so its string values are parsed and rendered as rich text via [OpenXmlHtml](https://github.com/SimonCropp/OpenXmlHtml).
+
+There are three equivalent ways to opt in:
+
+```cs
+// ColumnAttribute
+public class Employee
+{
+    [Column(IsHtml = true)]
+    public required string Notes { get; init; }
+}
+
+// StringSyntax attribute (case-insensitive match on "html")
+public class Employee
+{
+    [StringSyntax("html")]
+    public required string Notes { get; init; }
+}
+
+// Fluent
+sheet.Column(
+    _ => _.Notes,
+    _ => _.IsHtml = true);
+```
+
+`[StringSyntax("html")]` is useful when the property is already being annotated for IDE/analyzer support and you want to avoid adding a second attribute.
+
+If any two of these opt-in paths disagree — for example `[Column(IsHtml = false)]` combined with `[StringSyntax("html")]`, or a fluent `IsHtml = false` on a column where the attribute says `true` — Excelsior throws at runtime. The `EXCEL003` analyzer catches the attribute-level form of this mismatch at compile time.
+
+
 ### Whitespace
 
 By default whitespace is trimmed
@@ -912,7 +944,18 @@ public sealed class ColumnAttribute :
     public int MaxWidth { get; set; } = -1;
     public string? Format { get; set; }
     public string? NullDisplay { get; set; }
-    public bool IsHtml { get; set; }
+
+    public bool IsHtml
+    {
+        get;
+        set
+        {
+            field = value;
+            IsHtmlHasValue = true;
+        }
+    }
+
+    internal bool IsHtmlHasValue { get; private set; }
 
     public bool Filter
     {
@@ -939,7 +982,7 @@ public sealed class ColumnAttribute :
     internal bool IncludeHasValue { get; private set; }
 }
 ```
-<sup><a href='/src/Excelsior/Attributes/ColumnAttribute.cs#L1-L39' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnAttribute.cs' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior/Attributes/ColumnAttribute.cs#L1-L50' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnAttribute.cs' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 

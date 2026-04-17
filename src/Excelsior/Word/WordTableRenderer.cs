@@ -58,7 +58,12 @@ static class WordTableRenderer<TModel>
                 {
                     Val = W.BorderValues.Single,
                     Size = 4
-                }));
+                }),
+            new W.TableCellMarginDefault(
+                new W.TopMargin { Width = "0", Type = W.TableWidthUnitValues.Dxa },
+                new W.StartMargin { Width = "108", Type = W.TableWidthUnitValues.Dxa },
+                new W.BottomMargin { Width = "0", Type = W.TableWidthUnitValues.Dxa },
+                new W.EndMargin { Width = "108", Type = W.TableWidthUnitValues.Dxa }));
 
     static W.TableGrid BuildGrid(int columnCount)
     {

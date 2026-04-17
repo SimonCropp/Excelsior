@@ -501,6 +501,32 @@ Columns can be constrained to a minimum or maximum width while still auto-sizing
 
 When `Width` is explicitly set, `MinWidth`/`MaxWidth` are ignored.
 
+A book-wide or per-sheet `defaultMinColumnWidth` can also be set; it applies to every auto-sized column that does not have its own `MinWidth`. This pairs with the existing `defaultMaxColumnWidth` (default `50`).
+
+
+#### Per-sheet default min width
+
+<!-- snippet: SheetDefaultMinColumnWidth -->
+<a id='snippet-SheetDefaultMinColumnWidth'></a>
+```cs
+var builder = new BookBuilder();
+builder.AddSheet(employees, defaultMinColumnWidth: 25);
+```
+<sup><a href='/src/Excelsior.Tests/ColumnWidths.cs#L141-L146' title='Snippet source file'>snippet source</a> | <a href='#snippet-SheetDefaultMinColumnWidth' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+
+#### Book-wide default min width
+
+<!-- snippet: BookDefaultMinColumnWidth -->
+<a id='snippet-BookDefaultMinColumnWidth'></a>
+```cs
+var builder = new BookBuilder(defaultMinColumnWidth: 25);
+builder.AddSheet(employees);
+```
+<sup><a href='/src/Excelsior.Tests/ColumnWidths.cs#L158-L163' title='Snippet source file'>snippet source</a> | <a href='#snippet-BookDefaultMinColumnWidth' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
 
 #### MinWidth
 
@@ -551,7 +577,7 @@ public class EmployeeWithMinMaxWidth
     public required string Email { get; init; }
 }
 ```
-<sup><a href='/src/Excelsior.Tests/ColumnWidths.cs#L251-L262' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnMinMaxWidthModel' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/ColumnWidths.cs#L299-L310' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnMinMaxWidthModel' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 

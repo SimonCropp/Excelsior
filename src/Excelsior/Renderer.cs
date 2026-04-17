@@ -2,6 +2,7 @@ class Renderer<TModel>(
     string name,
     IAsyncEnumerable<TModel> data,
     List<ColumnConfig<TModel>> columns,
+    int? minColumnWidth,
     int? maxColumnWidth,
     int? maxRowHeight,
     BookBuilder bookBuilder)
@@ -79,6 +80,7 @@ class Renderer<TModel>(
 
     void ResizeColumn(SheetContext sheet, int index, ColumnConfig<TModel> columnConfig)
     {
+        var resultMinColumnWidth = minColumnWidth ?? bookBuilder.DefaultMinColumnWidth;
         var resultMaxColumnWidth = maxColumnWidth ?? bookBuilder.DefaultMaxColumnWidth;
         var column = new ColumnRef(index);
         int width;
@@ -93,7 +95,8 @@ class Renderer<TModel>(
                 width += 5;
             }
 
-            if (columnConfig.MinWidth is { } min && width < min)
+            var effectiveMin = columnConfig.MinWidth ?? resultMinColumnWidth;
+            if (effectiveMin is { } min && width < min)
             {
                 width = min;
             }
@@ -241,11 +244,7 @@ class Renderer<TModel>(
                 break;
             default:
                 cell.DataType = CellValues.InlineString;
-                cell.InlineString = new(
-                    new Text(value.ToString() ?? "")
-                    {
-                        Space = SpaceProcessingModeValues.Preserve
-                    });
+                cell.InlineString = new(BuildText(value.ToString() ?? ""));
                 break;
         }
     }
@@ -259,11 +258,71 @@ class Renderer<TModel>(
     static void SetCellValue(Cell cell, string value)
     {
         cell.DataType = CellValues.InlineString;
-        cell.InlineString = new(
-            new Text(value)
+        cell.InlineString = new(BuildText(value));
+    }
+
+    static Text BuildText(string value) =>
+        new(StripInvalidXmlChars(value))
+        {
+            Space = SpaceProcessingModeValues.Preserve
+        };
+
+    // Strips characters that XML 1.0 forbids (most C0 controls, lone surrogates,
+    // 0xFFFE/0xFFFF). Without this, any such char in a cell value crashes
+    // OpenXml's serializer with InvalidXmlChar at save time.
+    // TODO: revert once https://github.com/dotnet/Open-XML-SDK/issues/1532 ships —
+    // OpenXml itself should escape these via the OOXML _xHHHH_ convention.
+    static string StripInvalidXmlChars(string value)
+    {
+        if (value.Length == 0)
+        {
+            return value;
+        }
+
+        StringBuilder? builder = null;
+        var i = 0;
+        while (i < value.Length)
+        {
+            var c = value[i];
+            int advance;
+            bool valid;
+
+            if (char.IsHighSurrogate(c) &&
+                i + 1 < value.Length &&
+                char.IsLowSurrogate(value[i + 1]))
             {
-                Space = SpaceProcessingModeValues.Preserve
-            });
+                advance = 2;
+                valid = true;
+            }
+            else if (char.IsSurrogate(c))
+            {
+                advance = 1;
+                valid = false;
+            }
+            else
+            {
+                advance = 1;
+                valid = c == '\t' ||
+                       c == '\n' ||
+                       c == '\r' ||
+                       (c >= 0x20 && c <= 0xD7FF) ||
+                       (c >= 0xE000 && c <= 0xFFFD);
+            }
+
+            if (valid)
+            {
+                builder?.Append(value, i, advance);
+            }
+            else if (builder == null)
+            {
+                builder = new(value.Length);
+                builder.Append(value, 0, i);
+            }
+
+            i += advance;
+        }
+
+        return builder?.ToString() ?? value;
     }
 
     static void SetCellHtml(Cell cell, string value) =>
@@ -277,27 +336,14 @@ class Renderer<TModel>(
         {
             if (i > 0)
             {
-                inlineString.Append(
-                    new Run(
-                        new Text("\n")
-                        {
-                            Space = SpaceProcessingModeValues.Preserve
-                        }));
+                inlineString.Append(new Run(BuildText("\n")));
             }
 
             inlineString.Append(
                 new Run(
                     new RunProperties(new Bold()),
-                    new Text("● ")
-                    {
-                        Space = SpaceProcessingModeValues.Preserve
-                    }));
-            inlineString.Append(
-                new Run(
-                    new Text(items[i])
-                    {
-                        Space = SpaceProcessingModeValues.Preserve
-                    }));
+                    BuildText("● ")));
+            inlineString.Append(new Run(BuildText(items[i])));
         }
 
         cell.InlineString = inlineString;
@@ -307,11 +353,7 @@ class Renderer<TModel>(
     {
         var display = link.Text ?? link.Url;
         cell.DataType = CellValues.InlineString;
-        cell.InlineString = new(
-            new Text(display)
-            {
-                Space = SpaceProcessingModeValues.Preserve
-            });
+        cell.InlineString = new(BuildText(display));
 
         var rel = sheet.WorksheetPart.AddHyperlinkRelationship(new(link.Url), true);
         var hyperlinks = sheet.Worksheet.GetFirstChild<Hyperlinks>();
@@ -340,21 +382,13 @@ class Renderer<TModel>(
         {
             if (i > 0)
             {
-                inlineString.Append(
-                    new Run(
-                        new Text("\n")
-                        {
-                            Space = SpaceProcessingModeValues.Preserve
-                        }));
+                inlineString.Append(new Run(BuildText("\n")));
             }
 
             inlineString.Append(
                 new Run(
                     new RunProperties(new Bold()),
-                    new Text("● ")
-                    {
-                        Space = SpaceProcessingModeValues.Preserve
-                    }));
+                    BuildText("● ")));
             inlineString.Append(
                 new Run(
                     new RunProperties(
@@ -363,10 +397,7 @@ class Renderer<TModel>(
                         {
                             Rgb = "0563C1"
                         }),
-                    new Text(items[i])
-                    {
-                        Space = SpaceProcessingModeValues.Preserve
-                    }));
+                    BuildText(items[i])));
         }
 
         cell.InlineString = inlineString;
@@ -745,7 +776,7 @@ class Renderer<TModel>(
 
             var format = column.Format ?? ValueRenderer.DefaultDateTimeOffsetFormat;
             style.NumberFormat = format;
-            SetCellValue(cell, dateTimeOffset.ToString(format, CultureInfo.InvariantCulture));
+            SetCellValue(cell, dateTimeOffset.ToString(format, ValueRenderer.Culture));
 
             return;
         }

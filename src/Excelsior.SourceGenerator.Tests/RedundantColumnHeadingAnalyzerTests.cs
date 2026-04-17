@@ -95,6 +95,30 @@ public class RedundantColumnHeadingAnalyzerTests
     }
 
     [Test]
+    public void ColumnAttributeInDifferentNamespace_NoDiagnostic()
+    {
+        var source = """
+            namespace Other;
+
+            [System.AttributeUsage(System.AttributeTargets.Property)]
+            public sealed class ColumnAttribute : System.Attribute
+            {
+                public string? Heading { get; set; }
+            }
+
+            public class Order
+            {
+                [Column(Heading = "ReferenceNumber")]
+                public string ReferenceNumber { get; set; }
+            }
+            """;
+
+        var diagnostics = GetDiagnostics(source);
+
+        AreEqual(0, diagnostics.Length);
+    }
+
+    [Test]
     public void NoColumnAttribute_NoDiagnostic()
     {
         var source = """

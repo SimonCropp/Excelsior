@@ -210,8 +210,9 @@ public class SheetBuilderGenerator : IIncrementalGenerator
     {
         var attr = FindColumnAttribute(property);
         var hasHtmlSyntax = HasHtmlStringSyntax(property);
+        var hasHtmlAttribute = HasHtmlAttribute(property);
 
-        if (attr is null && !hasHtmlSyntax)
+        if (attr is null && !hasHtmlSyntax && !hasHtmlAttribute)
         {
             return null;
         }
@@ -289,7 +290,55 @@ public class SheetBuilderGenerator : IIncrementalGenerator
             isHtml = true;
         }
 
+        if (hasHtmlAttribute &&
+            !(attr is not null && attr.NamedArguments.Any(_ => _.Key == "IsHtml")))
+        {
+            isHtml = true;
+        }
+
         return new(heading, order, width, minWidth, maxWidth, format, nullDisplay, isHtml, filter, include);
+    }
+
+    static bool HasHtmlAttribute(IPropertySymbol property)
+    {
+        if (HasHtmlAttribute(property.GetAttributes()))
+        {
+            return true;
+        }
+
+        if (property.ContainingType is { } type)
+        {
+            foreach (var constructor in type.Constructors)
+            {
+                foreach (var parameter in constructor.Parameters)
+                {
+                    if (parameter.Name != property.Name)
+                    {
+                        continue;
+                    }
+
+                    if (HasHtmlAttribute(parameter.GetAttributes()))
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    static bool HasHtmlAttribute(ImmutableArray<AttributeData> attributes)
+    {
+        foreach (var attribute in attributes)
+        {
+            if (attribute.AttributeClass?.Name == "HtmlAttribute")
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     static bool HasHtmlStringSyntax(IPropertySymbol property)

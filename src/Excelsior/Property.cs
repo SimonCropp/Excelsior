@@ -64,6 +64,11 @@
             return (true, true);
         }
 
+        if (HasHtmlAttribute(info, constructorParameter))
+        {
+            return (true, true);
+        }
+
         return (false, false);
     }
 
@@ -72,6 +77,19 @@
         var syntax = info.Attribute<StringSyntaxAttribute>() ?? constructorParameter?.Attribute<StringSyntaxAttribute>();
         return syntax is not null &&
                string.Equals(syntax.Syntax, "html", StringComparison.OrdinalIgnoreCase);
+    }
+
+    static bool HasHtmlAttribute(PropertyInfo info, ParameterInfo? constructorParameter)
+    {
+        if (info.GetCustomAttributes(true).Any(IsHtmlAttribute))
+        {
+            return true;
+        }
+
+        return constructorParameter?.GetCustomAttributes(true).Any(IsHtmlAttribute) == true;
+
+        static bool IsHtmlAttribute(object attribute) =>
+            attribute.GetType().Name == "HtmlAttribute";
     }
 
     static int? GetOrder(ColumnAttribute? column, DisplayAttribute? display)

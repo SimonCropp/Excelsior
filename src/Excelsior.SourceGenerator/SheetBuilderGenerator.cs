@@ -424,10 +424,7 @@ public class SheetBuilderGenerator :
                 builder.AppendLine();
             }
 
-            var prop = model.Properties[i];
-            var prefix = prop.Name;
-            var propType = prop.TypeFullName;
-            var access = prop.AccessPath;
+            var (prefix, propType, access, _, _) = model.Properties[i];
             var modelType = model.TypeFullName;
 
             builder.Append(

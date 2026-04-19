@@ -74,7 +74,7 @@ public class CultureFormatting
             new TimestampedItem
             {
                 Name = "Sample",
-                RecordedAt = new DateTimeOffset(2026, 1, 15, 0, 0, 0, TimeSpan.Zero)
+                RecordedAt = new(2026, 1, 15, 0, 0, 0, TimeSpan.Zero)
             }
         };
 

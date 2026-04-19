@@ -134,9 +134,10 @@ public class HtmlTests
         await Verify(book);
     }
 
-    public sealed class HtmlAttribute : Attribute;
+    sealed class HtmlAttribute : Attribute;
 
-    public record HtmlAttributeTarget([HtmlTests.HtmlAttribute] string Value);
+    // ReSharper disable once NotAccessedPositionalProperty.Local
+    record HtmlAttributeTarget([Html] string Value);
 
     [Test]
     public async Task HtmlAttributeMarksHtml()

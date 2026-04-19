@@ -1,3 +1,4 @@
+// ReSharper disable NotAccessedPositionalProperty.Local
 [TestFixture]
 public class NaughtyStringsTests
 {

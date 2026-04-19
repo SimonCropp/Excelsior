@@ -48,7 +48,7 @@ public class MismatchedIsHtmlAnalyzer : DiagnosticAnalyzer
                 columnAttribute = attribute;
                 foreach (var named in attribute.NamedArguments)
                 {
-                    if (named.Key == "IsHtml" && named.Value.Value is false)
+                    if (named is { Key: "IsHtml", Value.Value: false })
                     {
                         explicitIsHtmlFalse = true;
                     }
@@ -61,7 +61,7 @@ public class MismatchedIsHtmlAnalyzer : DiagnosticAnalyzer
                 attrClass.ContainingNamespace?.ToDisplayString() == "System.Diagnostics.CodeAnalysis" &&
                 attribute.ConstructorArguments.Length > 0 &&
                 attribute.ConstructorArguments[0].Value is string syntax &&
-                string.Equals(syntax, "html", System.StringComparison.OrdinalIgnoreCase))
+                string.Equals(syntax, "html", StringComparison.OrdinalIgnoreCase))
             {
                 hasHtmlSyntax = true;
                 htmlSyntaxAttribute = attribute;

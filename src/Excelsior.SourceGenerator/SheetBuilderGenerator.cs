@@ -1,7 +1,8 @@
 namespace Excelsior.SourceGenerator;
 
 [Generator]
-public class SheetBuilderGenerator : IIncrementalGenerator
+public class SheetBuilderGenerator :
+    IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
@@ -61,7 +62,7 @@ public class SheetBuilderGenerator : IIncrementalGenerator
                 new(type.Name, type.Locations.FirstOrDefault()));
         }
 
-        var properties = new EquatableArray<PropertyInfo>(GetProperties(type).ToImmutableArray());
+        var properties = new EquatableArray<PropertyInfo>([..GetProperties(type)]);
 
         if (properties.Length == 0)
         {
@@ -208,11 +209,13 @@ public class SheetBuilderGenerator : IIncrementalGenerator
 
     static ColumnData? GetColumnData(IPropertySymbol property)
     {
-        var attr = FindColumnAttribute(property);
+        var columnAttribute = FindColumnAttribute(property);
         var hasHtmlSyntax = HasHtmlStringSyntax(property);
         var hasHtmlAttribute = HasHtmlAttribute(property);
 
-        if (attr is null && !hasHtmlSyntax && !hasHtmlAttribute)
+        if (columnAttribute is null &&
+            !hasHtmlSyntax &&
+            !hasHtmlAttribute)
         {
             return null;
         }
@@ -228,9 +231,9 @@ public class SheetBuilderGenerator : IIncrementalGenerator
         bool? filter = null;
         bool? include = null;
 
-        if (attr is not null)
+        if (columnAttribute is not null)
         {
-            foreach (var arg in attr.NamedArguments)
+            foreach (var arg in columnAttribute.NamedArguments)
             {
                 var value = arg.Value.Value;
                 switch (arg.Key)
@@ -291,7 +294,7 @@ public class SheetBuilderGenerator : IIncrementalGenerator
         }
 
         if (hasHtmlAttribute &&
-            !(attr is not null && attr.NamedArguments.Any(_ => _.Key == "IsHtml")))
+            !(columnAttribute is not null && columnAttribute.NamedArguments.Any(_ => _.Key == "IsHtml")))
         {
             isHtml = true;
         }
@@ -374,14 +377,14 @@ public class SheetBuilderGenerator : IIncrementalGenerator
     {
         foreach (var attribute in attributes)
         {
-            var attrClass = attribute.AttributeClass;
-            if (attrClass is null)
+            var attributeClass = attribute.AttributeClass;
+            if (attributeClass is null)
             {
                 continue;
             }
 
-            if (attrClass.Name != "StringSyntaxAttribute" ||
-                attrClass.ContainingNamespace?.ToDisplayString() != "System.Diagnostics.CodeAnalysis")
+            if (attributeClass.Name != "StringSyntaxAttribute" ||
+                attributeClass.ContainingNamespace?.ToDisplayString() != "System.Diagnostics.CodeAnalysis")
             {
                 continue;
             }

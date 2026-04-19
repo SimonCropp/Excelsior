@@ -134,6 +134,22 @@ public class HtmlTests
         await Verify(book);
     }
 
+    public sealed class HtmlAttribute : Attribute;
+
+    public record HtmlAttributeTarget([HtmlTests.HtmlAttribute] string Value);
+
+    [Test]
+    public async Task HtmlAttributeMarksHtml()
+    {
+        var bookBuilder = new BookBuilder();
+
+        List<HtmlAttributeTarget> data = [new("<b>bold</b>")];
+        bookBuilder.AddSheet(data);
+        var book = await bookBuilder.Build();
+
+        await Verify(book);
+    }
+
     [Test]
     public async Task RichHtml()
     {

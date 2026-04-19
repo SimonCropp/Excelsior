@@ -771,7 +771,7 @@ builder.AddSheet(data);
 
 A column can be marked as HTML so its string values are parsed and rendered as rich text via [OpenXmlHtml](https://github.com/SimonCropp/OpenXmlHtml).
 
-There are three equivalent ways to opt in:
+There are four equivalent ways to opt in:
 
 ```cs
 // ColumnAttribute
@@ -788,6 +788,13 @@ public class Employee
     public required string Notes { get; init; }
 }
 
+// Any attribute whose type name is `HtmlAttribute` (namespace ignored, matched by name)
+public class Employee
+{
+    [Html]
+    public required string Notes { get; init; }
+}
+
 // Fluent
 sheet.Column(
     _ => _.Notes,
@@ -795,6 +802,8 @@ sheet.Column(
 ```
 
 `[StringSyntax("html")]` is useful when the property is already being annotated for IDE/analyzer support and you want to avoid adding a second attribute.
+
+`[Html]` detection is provided as a convenience for codebases that already define their own `HtmlAttribute` for other purposes (e.g. sanitization, templating). Excelsior does not ship this attribute — it simply matches any attribute whose type name is `HtmlAttribute`, regardless of namespace. This path has the lowest precedence: both `[Column(IsHtml = ...)]` and `[StringSyntax("html")]` override it.
 
 If any two of these opt-in paths disagree — for example `[Column(IsHtml = false)]` combined with `[StringSyntax("html")]`, or a fluent `IsHtml = false` on a column where the attribute says `true` — Excelsior throws at runtime. The `EXCEL003` analyzer catches the attribute-level form of this mismatch at compile time.
 

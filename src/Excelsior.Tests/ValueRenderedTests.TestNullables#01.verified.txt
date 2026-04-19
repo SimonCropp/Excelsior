@@ -5,15 +5,18 @@
       Columns: [
         {
           Name: String,
-          Width: 15.0
+          Width: 15.0,
+          ContainsRichText: false
         },
         {
           Name: Enum,
-          Width: 29.0
+          Width: 29.0,
+          ContainsRichText: false
         },
         {
           Name: Nested,
-          Width: 29.0
+          Width: 29.0,
+          ContainsRichText: false
         }
       ]
     }

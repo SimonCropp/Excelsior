@@ -5,11 +5,13 @@
       Columns: [
         {
           Name: Property,
-          Width: 16.0
+          Width: 16.0,
+          ContainsRichText: false
         },
         {
           Name: Custom,
-          Width: 23.0
+          Width: 23.0,
+          ContainsRichText: false
         }
       ]
     }

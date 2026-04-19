@@ -5,7 +5,8 @@
       Columns: [
         {
           Name: Value,
-          Width: 9.0
+          Width: 9.0,
+          ContainsRichText: true
         }
       ]
     }

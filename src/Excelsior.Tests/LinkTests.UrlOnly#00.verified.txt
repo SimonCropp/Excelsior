@@ -5,27 +5,33 @@
       Columns: [
         {
           Name: Name,
-          Width: 9.0
+          Width: 9.0,
+          ContainsRichText: false
         },
         {
           Name: Link,
-          Width: 23.0
+          Width: 23.0,
+          ContainsRichText: false
         },
         {
           Name: Nullable Link,
-          Width: 23.0
+          Width: 23.0,
+          ContainsRichText: false
         },
         {
           Name: Links,
-          Width: 50.0
+          Width: 50.0,
+          ContainsRichText: true
         },
         {
           Name: Nullable Links,
-          Width: 23.0
+          Width: 23.0,
+          ContainsRichText: false
         },
         {
           Name: Links With Nulls,
-          Width: 30.0
+          Width: 30.0,
+          ContainsRichText: true
         }
       ]
     }

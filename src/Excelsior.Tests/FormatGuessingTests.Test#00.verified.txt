@@ -5,15 +5,18 @@
       Columns: [
         {
           Name: Date,
-          Width: 12.0
+          Width: 12.0,
+          ContainsRichText: false
         },
         {
           Name: Number,
-          Width: 10.0
+          Width: 10.0,
+          ContainsRichText: false
         },
         {
           Name: Bool,
-          Width: 9.0
+          Width: 9.0,
+          ContainsRichText: false
         }
       ]
     }

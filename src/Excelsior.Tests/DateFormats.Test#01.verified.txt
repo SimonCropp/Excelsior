@@ -5,15 +5,18 @@
       Columns: [
         {
           Name: Date Property,
-          Width: 17.0
+          Width: 17.0,
+          ContainsRichText: false
         },
         {
           Name: Date Time Property,
-          Width: 23.0
+          Width: 23.0,
+          ContainsRichText: false
         },
         {
           Name: Date Time Offset Property,
-          Width: 31.0
+          Width: 31.0,
+          ContainsRichText: false
         }
       ]
     }

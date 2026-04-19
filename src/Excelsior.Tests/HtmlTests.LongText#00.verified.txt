@@ -5,11 +5,13 @@
       Columns: [
         {
           Name: Value1,
-          Width: 50.0
+          Width: 50.0,
+          ContainsRichText: true
         },
         {
           Name: Value2,
-          Width: 10.0
+          Width: 10.0,
+          ContainsRichText: false
         }
       ]
     }

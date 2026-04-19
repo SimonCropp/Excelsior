@@ -5,11 +5,13 @@
       Columns: [
         {
           Name: Age,
-          Width: 15.0
+          Width: 15.0,
+          ContainsRichText: false
         },
         {
           Name: Full Name,
-          Width: 13.0
+          Width: 13.0,
+          ContainsRichText: false
         }
       ]
     }

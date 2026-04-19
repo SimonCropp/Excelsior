@@ -5,27 +5,33 @@
       Columns: [
         {
           Name: Number,
-          Width: 15.0
+          Width: 15.0,
+          ContainsRichText: false
         },
         {
           Name: String,
-          Width: 15.0
+          Width: 15.0,
+          ContainsRichText: false
         },
         {
           Name: Date Time,
-          Width: 23.0
+          Width: 23.0,
+          ContainsRichText: false
         },
         {
           Name: Date,
-          Width: 13.0
+          Width: 13.0,
+          ContainsRichText: false
         },
         {
           Name: Enum,
-          Width: 13.0
+          Width: 13.0,
+          ContainsRichText: false
         },
         {
           Name: Bool,
-          Width: 13.0
+          Width: 13.0,
+          ContainsRichText: false
         }
       ]
     }

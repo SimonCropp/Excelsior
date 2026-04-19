@@ -5,27 +5,33 @@
       Columns: [
         {
           Name: Name,
-          Width: 12.0
+          Width: 12.0,
+          ContainsRichText: false
         },
         {
           Name: Address Number,
-          Width: 18.0
+          Width: 18.0,
+          ContainsRichText: false
         },
         {
           Name: Address Street,
-          Width: 19.0
+          Width: 19.0,
+          ContainsRichText: false
         },
         {
           Name: Address City,
-          Width: 16.0
+          Width: 16.0,
+          ContainsRichText: false
         },
         {
           Name: Address State,
-          Width: 17.0
+          Width: 17.0,
+          ContainsRichText: false
         },
         {
           Name: Address Post Code,
-          Width: 22.0
+          Width: 22.0,
+          ContainsRichText: false
         }
       ]
     }

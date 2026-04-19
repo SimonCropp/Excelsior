@@ -5,15 +5,18 @@
       Columns: [
         {
           Name: Property,
-          Width: 16.0
+          Width: 16.0,
+          ContainsRichText: false
         },
         {
           Name: Nested Property,
-          Width: 25.0
+          Width: 25.0,
+          ContainsRichText: false
         },
         {
           Name: Nested Property,
-          Width: 25.0
+          Width: 25.0,
+          ContainsRichText: false
         }
       ]
     }

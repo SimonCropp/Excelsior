@@ -5,31 +5,38 @@
       Columns: [
         {
           Name: Employee ID,
-          Width: 15.0
+          Width: 15.0,
+          ContainsRichText: false
         },
         {
           Name: Full Name,
-          Width: 40.0
+          Width: 40.0,
+          ContainsRichText: false
         },
         {
           Name: Email Address,
-          Width: 22.0
+          Width: 22.0,
+          ContainsRichText: false
         },
         {
           Name: Hire Date,
-          Width: 13.0
+          Width: 13.0,
+          ContainsRichText: false
         },
         {
           Name: Annual Salary,
-          Width: 17.0
+          Width: 17.0,
+          ContainsRichText: false
         },
         {
           Name: Is Active,
-          Width: 13.0
+          Width: 13.0,
+          ContainsRichText: false
         },
         {
           Name: Status,
-          Width: 13.0
+          Width: 13.0,
+          ContainsRichText: false
         }
       ]
     }

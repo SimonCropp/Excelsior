@@ -5,15 +5,18 @@
       Columns: [
         {
           Name: Name,
-          Width: 9.0
+          Width: 9.0,
+          ContainsRichText: false
         },
         {
           Name: Color,
-          Width: 17.0
+          Width: 17.0,
+          ContainsRichText: false
         },
         {
           Name: Manufacturer,
-          Width: 21.0
+          Width: 21.0,
+          ContainsRichText: false
         }
       ]
     }

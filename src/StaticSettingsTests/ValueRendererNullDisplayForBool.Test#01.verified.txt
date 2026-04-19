@@ -5,11 +5,13 @@
       Columns: [
         {
           Name: Name,
-          Width: 11.0
+          Width: 11.0,
+          ContainsRichText: false
         },
         {
           Name: Is Active,
-          Width: 13.0
+          Width: 13.0,
+          ContainsRichText: false
         }
       ]
     }

@@ -5,15 +5,18 @@
       Columns: [
         {
           Name: Manufacturer,
-          Width: 18.0
+          Width: 18.0,
+          ContainsRichText: false
         },
         {
           Name: Color,
-          Width: 16.0
+          Width: 16.0,
+          ContainsRichText: false
         },
         {
           Name: Nullable Color,
-          Width: 18.0
+          Width: 18.0,
+          ContainsRichText: false
         }
       ]
     }

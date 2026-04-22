@@ -26,6 +26,7 @@ public class SourceGeneratorIntegrationTests
 
         await Verify(book);
     }
+
     [Test]
     public async Task ColumnAttributesAppliedAutomatically()
     {

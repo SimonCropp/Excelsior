@@ -21,6 +21,7 @@ public class HtmlTests
 
         await Verify(book);
     }
+
     [Test]
     public async Task LongText()
     {
@@ -86,9 +87,9 @@ public class HtmlTests
     public void AttributeAndStringSyntaxMismatchThrows()
     {
         var bookBuilder = new BookBuilder();
-        var ex = Assert.Catch(() => bookBuilder.AddSheet(new List<ColumnFalseSyntaxHtmlTarget>()));
+        var exception = Assert.Catch(() => bookBuilder.AddSheet(new List<ColumnFalseSyntaxHtmlTarget>()));
 
-        var inner = ex is TypeInitializationException tie ? tie.InnerException! : ex;
+        var inner = exception is TypeInitializationException tie ? tie.InnerException! : exception;
         Assert.That(inner!.Message, Does.Contain("mismatched IsHtml"));
     }
 
@@ -100,11 +101,11 @@ public class HtmlTests
         var bookBuilder = new BookBuilder();
         var sheetBuilder = bookBuilder.AddSheet(new List<AttributeHtmlTrueTarget>());
 
-        var ex = Assert.Catch(() =>
+        var exception = Assert.Catch(() =>
             sheetBuilder.Column(
                 _ => _.Value,
                 _ => _.IsHtml = false));
-        Assert.That(ex!.Message, Does.Contain("mismatched IsHtml"));
+        Assert.That(exception!.Message, Does.Contain("mismatched IsHtml"));
     }
 
     [Test]

@@ -1657,7 +1657,7 @@ public class GeneratedTestModel
     public required int Age { get; init; }
 }
 ```
-<sup><a href='/src/Excelsior.Tests/SourceGeneratorIntegrationTests.cs#L60-L69' title='Snippet source file'>snippet source</a> | <a href='#snippet-SourceGeneratedModel' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/SourceGeneratorIntegrationTests.cs#L61-L70' title='Snippet source file'>snippet source</a> | <a href='#snippet-SourceGeneratedModel' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 This generates typed extension methods for each property, such as `NameColumn`, `NameOrder`, `AgeWidth`, etc.

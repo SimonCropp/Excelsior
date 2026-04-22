@@ -3,13 +3,17 @@
     static ConcurrentDictionary<Enum, string> cache = new();
 
     public static string Humanize(this Enum value) =>
-        cache.GetOrAdd(value, static value =>
+        cache.GetOrAdd(
+            value,
+            static value =>
         {
             var type = value.GetType();
             var memberInfo = type.GetField(value.ToString());
 
             if (memberInfo is null)
+            {
                 return value.ToString();
+            }
 
             // Check for DisplayAttribute - Description takes priority over Name
             var displayAttribute = memberInfo.GetCustomAttribute<DisplayAttribute>();

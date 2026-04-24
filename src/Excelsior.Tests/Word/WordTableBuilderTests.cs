@@ -26,6 +26,7 @@ public class WordTableBuilderTests
 
             #endregion
 
+            AddCalibriDefault(mainPart);
             body.Append(
                 new SectionProperties(
                     new PageSize
@@ -225,6 +226,7 @@ public class WordTableBuilderTests
             var table = builder.Build(mainPart);
             var body = mainPart.Document.Body!;
             body.Append(table);
+            AddCalibriDefault(mainPart);
             body.Append(
                 new SectionProperties(
                     new PageSize
@@ -245,6 +247,23 @@ public class WordTableBuilderTests
 
         stream.Position = 0;
         await Verify(stream, "docx");
+    }
+
+    // Morph.Skia (used by verify-openxml for PNG rendering) has no font fallback and errors out
+    // when the implicit default (Aptos in Office 2024+) is missing on the CI agent. Pinning
+    // DocDefaults to Calibri keeps rendering deterministic across environments.
+    static void AddCalibriDefault(MainDocumentPart mainPart)
+    {
+        var stylesPart = mainPart.AddNewPart<StyleDefinitionsPart>();
+        stylesPart.Styles = new(
+            new DocDefaults(
+                new RunPropertiesDefault(
+                    new RunPropertiesBaseStyle(
+                        new RunFonts
+                        {
+                            Ascii = "Calibri",
+                            HighAnsi = "Calibri"
+                        }))));
     }
 
     [Test]

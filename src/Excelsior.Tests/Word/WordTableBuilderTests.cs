@@ -25,21 +25,23 @@ public class WordTableBuilderTests
             body.Append(table);
 
             #endregion
-            body.Append(new SectionProperties(
-                new PageSize
-                {
-                    Width = 12240,
-                    Height = 15840
-                },
-                new PageMargin
-                {
-                    Top = 1440,
-                    Right = 1440,
-                    Bottom = 1440,
-                    Left = 1440,
-                    Header = 720,
-                    Footer = 720
-                }));
+
+            body.Append(
+                new SectionProperties(
+                    new PageSize
+                    {
+                        Width = 12240,
+                        Height = 15840
+                    },
+                    new PageMargin
+                    {
+                        Top = 1440,
+                        Right = 1440,
+                        Bottom = 1440,
+                        Left = 1440,
+                        Header = 720,
+                        Footer = 720
+                    }));
         }
 
         stream.Position = 0;
@@ -162,6 +164,87 @@ public class WordTableBuilderTests
         var exception = Assert.Throws<Exception>(() => builder.Build());
         Assert.That(exception!.Message, Does.Contain("Formula"));
         Assert.That(exception.Message, Does.Contain("not supported in Word tables"));
+    }
+
+    [Test]
+    public async Task TableLevelHeadingStyleAppliesShadingAndFontToEveryHeaderCell()
+    {
+        #region WordTableHeadingStyle
+
+        var builder = new WordTableBuilder<Employee>(
+            SampleData.Employees(),
+            _ =>
+            {
+                _.BackgroundColor = "4472C4";
+                _.Font.Color = "FFFFFF";
+                _.Font.Name = "Arial";
+                _.Font.Size = 12;
+                _.Font.Underline = true;
+            });
+
+        #endregion
+
+        await VerifyTable(builder);
+    }
+
+    [Test]
+    public async Task ColumnHeadingStyleOverridesTableHeadingStyle()
+    {
+        #region WordTableColumnHeadingStyle
+
+        var builder = new WordTableBuilder<Employee>(
+                SampleData.Employees(),
+                _ => _.BackgroundColor = "000000")
+            .Column(
+                _ => _.Name,
+                _ => _.HeadingStyle = cell => cell.BackgroundColor = "FF0000");
+
+        #endregion
+
+        await VerifyTable(builder);
+    }
+
+    [Test]
+    public async Task HeadingBackgroundAcceptsLeadingHash()
+    {
+        var builder = new WordTableBuilder<Employee>(
+            SampleData.Employees(),
+            _ => _.BackgroundColor = "#ABCDEF");
+
+        await VerifyTable(builder);
+    }
+
+    static async Task VerifyTable(WordTableBuilder<Employee> builder)
+    {
+        using var stream = new MemoryStream();
+        using (var doc = WordprocessingDocument.Create(stream, WordprocessingDocumentType.Document))
+        {
+            var mainPart = doc.AddMainDocumentPart();
+            mainPart.Document = new(new Body());
+
+            var table = builder.Build(mainPart);
+            var body = mainPart.Document.Body!;
+            body.Append(table);
+            body.Append(
+                new SectionProperties(
+                    new PageSize
+                    {
+                        Width = 12240,
+                        Height = 15840
+                    },
+                    new PageMargin
+                    {
+                        Top = 1440,
+                        Right = 1440,
+                        Bottom = 1440,
+                        Left = 1440,
+                        Header = 720,
+                        Footer = 720
+                    }));
+        }
+
+        stream.Position = 0;
+        await Verify(stream, "docx");
     }
 
     [Test]

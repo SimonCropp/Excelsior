@@ -194,15 +194,16 @@ class StyleManager
                 }));
         for (var i = 2; i < fills.Count; i++)
         {
-            fillsEl.Append(new Fill(
-                new PatternFill(
-                    new ForegroundColor
+            fillsEl.Append(
+                new Fill(
+                    new PatternFill(
+                        new ForegroundColor
+                        {
+                            Rgb = fills[i]
+                        })
                     {
-                        Rgb = fills[i]
-                    })
-                {
-                    PatternType = PatternValues.Solid
-                }));
+                        PatternType = PatternValues.Solid
+                    }));
         }
 
         stylesheet.Append(fillsEl);

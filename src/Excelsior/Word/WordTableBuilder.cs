@@ -10,9 +10,26 @@ namespace Excelsior;
 /// Word document part. It is intentionally not concerned with document-level concerns (sections,
 /// headers/footers, styles) — the caller owns the host document.
 /// </remarks>
-public class WordTableBuilder<TModel>(IEnumerable<TModel> data)
+public class WordTableBuilder<TModel>
 {
+    readonly IEnumerable<TModel> data;
     readonly Columns<TModel> columns = new();
+
+    public WordTableBuilder(IEnumerable<TModel> data, Action<CellStyle>? headingStyle = null)
+    {
+        this.data = data;
+        HeadingStyle = headingStyle;
+    }
+
+    /// <summary>
+    /// Table-level heading style applied to every header cell before any per-column
+    /// <see cref="ColumnConfig{TModel,TProperty}.HeadingStyle"/>. Mirrors
+    /// <see cref="BookBuilder.HeadingStyle"/> for spreadsheets. Translated to Word formatting at
+    /// build time: <see cref="CellStyle.BackgroundColor"/> becomes cell shading, <see
+    /// cref="CellFont"/> adjustments become run properties, and <see cref="CellAlignment"/>
+    /// adjustments become paragraph properties.
+    /// </summary>
+    public Action<CellStyle>? HeadingStyle { get; }
 
     /// <summary>
     /// Configure a single column. Mirrors <c>ISheetBuilder&lt;TModel&gt;.Column</c>: any settings
@@ -37,5 +54,5 @@ public class WordTableBuilder<TModel>(IEnumerable<TModel> data)
     /// the host part. When omitted, link cells fall back to their display text only.
     /// </summary>
     public DocumentFormat.OpenXml.Wordprocessing.Table Build(MainDocumentPart? mainPart = null) =>
-        WordTableRenderer<TModel>.Build(data, columns.OrderedColumns(), mainPart);
+        WordTableRenderer<TModel>.Build(data, columns.OrderedColumns(), HeadingStyle, mainPart);
 }

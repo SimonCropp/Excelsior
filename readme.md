@@ -1750,6 +1750,52 @@ var builder = new WordTableBuilder<Employee>(employees)
 When a `MainDocumentPart` is passed to `Build()`, `Link`-typed properties produce real `<w:hyperlink>` elements. When omitted, links fall back to their display text.
 
 
+### Heading styling
+
+The `WordTableBuilder<TModel>` constructor accepts an optional table-level `headingStyle` callback that styles every header cell. It mirrors `BookBuilder.HeadingStyle` and is translated at build time:
+
+- `CellStyle.BackgroundColor` → cell shading (`<w:shd>`).
+- `CellFont.Bold` / `Underline` / `Color` / `Size` / `Name` → run properties.
+- `CellAlignment.Horizontal` → paragraph justification (defaults to centered).
+- `CellAlignment.Vertical` → cell vertical alignment.
+
+The `CellStyle` is preseeded with `Font.Bold = true` and horizontal alignment `Center`, matching the default header look. Callers layer on additions, or opt out by setting `Font.Bold = false`:
+
+<!-- snippet: WordTableHeadingStyle -->
+<a id='snippet-WordTableHeadingStyle'></a>
+```cs
+var builder = new WordTableBuilder<Employee>(
+    SampleData.Employees(),
+    _ =>
+    {
+        _.BackgroundColor = "4472C4";
+        _.Font.Color = "FFFFFF";
+        _.Font.Name = "Arial";
+        _.Font.Size = 12;
+        _.Font.Underline = true;
+    });
+```
+<sup><a href='/src/Excelsior.Tests/Word/WordTableBuilderTests.cs#L172-L185' title='Snippet source file'>snippet source</a> | <a href='#snippet-WordTableHeadingStyle' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+A per-column `HeadingStyle` on `ColumnConfig` composes on top of the table-level style, so individual headers can override or extend the shared look:
+
+<!-- snippet: WordTableColumnHeadingStyle -->
+<a id='snippet-WordTableColumnHeadingStyle'></a>
+```cs
+var builder = new WordTableBuilder<Employee>(
+        SampleData.Employees(),
+        _ => _.BackgroundColor = "000000")
+    .Column(
+        _ => _.Name,
+        _ => _.HeadingStyle = cell => cell.BackgroundColor = "FF0000");
+```
+<sup><a href='/src/Excelsior.Tests/Word/WordTableBuilderTests.cs#L193-L202' title='Snippet source file'>snippet source</a> | <a href='#snippet-WordTableColumnHeadingStyle' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+Colors accept a leading `#` (e.g. `"#4472C4"`) and it will be stripped before being written to OpenXml.
+
+
 ### Limitations
 
 Formula columns are not supported in Word tables. Word has no equivalent of Excel cell formulas, so configuring a `Formula` on a column used with `WordTableBuilder` will throw when `Build()` is called. Use `Render` or a computed property instead.

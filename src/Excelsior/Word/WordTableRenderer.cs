@@ -11,12 +11,13 @@ static class WordTableRenderer<TModel>
     public static W.Table Build(
         IEnumerable<TModel> data,
         List<ColumnConfig<TModel>> columns,
+        Action<CellStyle>? tableHeadingStyle,
         MainDocumentPart? mainPart)
     {
         var table = new W.Table();
         table.Append(BuildTableProperties());
         table.Append(BuildGrid(columns.Count));
-        table.Append(BuildHeaderRow(columns));
+        table.Append(BuildHeaderRow(columns, tableHeadingStyle));
 
         foreach (var item in data)
         {
@@ -60,10 +61,26 @@ static class WordTableRenderer<TModel>
                     Size = 4
                 }),
             new W.TableCellMarginDefault(
-                new W.TopMargin { Width = "0", Type = W.TableWidthUnitValues.Dxa },
-                new W.StartMargin { Width = "108", Type = W.TableWidthUnitValues.Dxa },
-                new W.BottomMargin { Width = "0", Type = W.TableWidthUnitValues.Dxa },
-                new W.EndMargin { Width = "108", Type = W.TableWidthUnitValues.Dxa }));
+                new W.TopMargin
+                {
+                    Width = "0",
+                    Type = W.TableWidthUnitValues.Dxa
+                },
+                new W.StartMargin
+                {
+                    Width = "108",
+                    Type = W.TableWidthUnitValues.Dxa
+                },
+                new W.BottomMargin
+                {
+                    Width = "0",
+                    Type = W.TableWidthUnitValues.Dxa
+                },
+                new W.EndMargin
+                {
+                    Width = "108",
+                    Type = W.TableWidthUnitValues.Dxa
+                }));
 
     static W.TableGrid BuildGrid(int columnCount)
     {
@@ -76,28 +93,187 @@ static class WordTableRenderer<TModel>
         return grid;
     }
 
-    static W.TableRow BuildHeaderRow(List<ColumnConfig<TModel>> columns)
+    static W.TableRow BuildHeaderRow(List<ColumnConfig<TModel>> columns, Action<CellStyle>? tableHeadingStyle)
     {
         var row = new W.TableRow();
         foreach (var column in columns)
         {
-            var paragraph = new W.Paragraph(
-                new W.ParagraphProperties(
-                    new W.Justification
-                    {
-                        Val = W.JustificationValues.Center
-                    }),
-                new W.Run(
-                    new W.RunProperties(new W.Bold()),
-                    new W.Text(column.Heading)
-                    {
-                        Space = SpaceProcessingModeValues.Preserve
-                    }));
-            row.Append(new W.TableCell(paragraph));
+            row.Append(BuildHeaderCell(column, tableHeadingStyle));
         }
 
         return row;
     }
+
+    static W.TableCell BuildHeaderCell(ColumnConfig<TModel> column, Action<CellStyle>? tableHeadingStyle)
+    {
+        var style = ResolveHeadingStyle(column, tableHeadingStyle);
+
+        var run = new W.Run(BuildHeaderRunProperties(style), new W.Text(column.Heading)
+        {
+            Space = SpaceProcessingModeValues.Preserve
+        });
+
+        var paragraph = new W.Paragraph(BuildHeaderParagraphProperties(style), run);
+        var cell = new W.TableCell(paragraph);
+
+        var cellProperties = BuildHeaderCellProperties(style);
+        if (cellProperties != null)
+        {
+            cell.PrependChild(cellProperties);
+        }
+
+        return cell;
+    }
+
+    static CellStyle ResolveHeadingStyle(ColumnConfig<TModel> column, Action<CellStyle>? tableHeadingStyle)
+    {
+        // Preseed with the renderer's header defaults (bold, centered) so callers can layer on
+        // additions (background, font color, size) or opt out (set Font.Bold = false) without
+        // having to restate what they didn't want to change.
+        var style = new CellStyle
+        {
+            Alignment =
+            {
+                Horizontal = HorizontalAlignmentValues.Center
+            }
+        };
+        style.Font.Bold = true;
+
+        tableHeadingStyle?.Invoke(style);
+        column.HeadingStyle?.Invoke(style);
+        return style;
+    }
+
+    static W.RunProperties BuildHeaderRunProperties(CellStyle style)
+    {
+        var properties = new W.RunProperties();
+        if (style.Font.Bold)
+        {
+            properties.Append(new W.Bold());
+        }
+
+        if (style.Font.Underline)
+        {
+            properties.Append(
+                new W.Underline
+                {
+                    Val = W.UnderlineValues.Single
+                });
+        }
+
+        if (!string.IsNullOrEmpty(style.Font.Color))
+        {
+            properties.Append(
+                new W.Color
+                {
+                    Val = style.Font.Color
+                });
+        }
+
+        if (style.Font.Size is { } size)
+        {
+            // Word uses half-points for font size.
+            var halfPoints = ((int)Math.Round(size * 2)).ToString(CultureInfo.InvariantCulture);
+            properties.Append(
+                new W.FontSize
+                {
+                    Val = halfPoints
+                });
+            properties.Append(
+                new W.FontSizeComplexScript
+                {
+                    Val = halfPoints
+                });
+        }
+
+        if (!string.IsNullOrEmpty(style.Font.Name))
+        {
+            properties.Append(
+                new W.RunFonts
+                {
+                    Ascii = style.Font.Name,
+                    HighAnsi = style.Font.Name
+                });
+        }
+
+        return properties;
+    }
+
+    static W.ParagraphProperties BuildHeaderParagraphProperties(CellStyle style)
+    {
+        var horizontal = style.Alignment.Horizontal;
+        W.JustificationValues justification;
+        if (horizontal == HorizontalAlignmentValues.Left)
+        {
+            justification = W.JustificationValues.Left;
+        }
+        else if (horizontal == HorizontalAlignmentValues.Right)
+        {
+            justification = W.JustificationValues.Right;
+        }
+        else if (horizontal == HorizontalAlignmentValues.Justify)
+        {
+            justification = W.JustificationValues.Both;
+        }
+        else
+        {
+            // Center / General / Fill all default to centered headers, matching the pre-styling behaviour.
+            justification = W.JustificationValues.Center;
+        }
+
+        return new(
+            new W.Justification
+            {
+                Val = justification
+            });
+    }
+
+    static W.TableCellProperties? BuildHeaderCellProperties(CellStyle style)
+    {
+        var properties = new W.TableCellProperties();
+        var hasAny = false;
+
+        if (!string.IsNullOrEmpty(style.BackgroundColor))
+        {
+            properties.Append(
+                new W.Shading
+                {
+                    Val = W.ShadingPatternValues.Clear,
+                    Color = "auto",
+                    Fill = NormaliseColor(style.BackgroundColor)
+                });
+            hasAny = true;
+        }
+
+        if (style.Alignment.Vertical != VerticalAlignmentValues.Bottom)
+        {
+            W.TableVerticalAlignmentValues vertical;
+            if (style.Alignment.Vertical == VerticalAlignmentValues.Top)
+            {
+                vertical = W.TableVerticalAlignmentValues.Top;
+            }
+            else if (style.Alignment.Vertical == VerticalAlignmentValues.Center)
+            {
+                vertical = W.TableVerticalAlignmentValues.Center;
+            }
+            else
+            {
+                vertical = W.TableVerticalAlignmentValues.Bottom;
+            }
+
+            properties.Append(
+                new W.TableCellVerticalAlignment
+                {
+                    Val = vertical
+                });
+            hasAny = true;
+        }
+
+        return hasAny ? properties : null;
+    }
+
+    static string NormaliseColor(string color) =>
+        color.StartsWith('#') ? color[1..] : color;
 
     static W.TableRow BuildDataRow(List<ColumnConfig<TModel>> columns, TModel item, MainDocumentPart? mainPart)
     {

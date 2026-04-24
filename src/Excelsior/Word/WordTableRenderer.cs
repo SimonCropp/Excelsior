@@ -8,6 +8,11 @@ using W = DocumentFormat.OpenXml.Wordprocessing;
 /// </summary>
 static class WordTableRenderer<TModel>
 {
+    // Word leaves font selection to the viewer when a run has no rFonts, which means renderers
+    // like Morph.Skia fall back to Office 2024's Aptos default — unavailable on many systems.
+    // Emit Calibri explicitly so output is portable; callers can override via CellStyle.Font.Name.
+    const string DefaultFontName = "Calibri";
+
     public static W.Table Build(
         IEnumerable<TModel> data,
         List<ColumnConfig<TModel>> columns,
@@ -186,15 +191,13 @@ static class WordTableRenderer<TModel>
                 });
         }
 
-        if (!string.IsNullOrEmpty(style.Font.Name))
-        {
-            properties.Append(
-                new W.RunFonts
-                {
-                    Ascii = style.Font.Name,
-                    HighAnsi = style.Font.Name
-                });
-        }
+        var fontName = string.IsNullOrEmpty(style.Font.Name) ? DefaultFontName : style.Font.Name;
+        properties.Append(
+            new W.RunFonts
+            {
+                Ascii = fontName,
+                HighAnsi = fontName
+            });
 
         return properties;
     }

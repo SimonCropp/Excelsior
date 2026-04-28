@@ -167,7 +167,7 @@ public class WordTableBuilderTests
     }
 
     [Test]
-    public async Task TableLevelHeadingStyleAppliesShadingAndFontToEveryHeaderCell()
+    public Task TableLevelHeadingStyleAppliesShadingAndFontToEveryHeaderCell()
     {
         #region WordTableHeadingStyle
 
@@ -184,11 +184,11 @@ public class WordTableBuilderTests
 
         #endregion
 
-        await VerifyTable(builder);
+        return VerifyTable(builder);
     }
 
     [Test]
-    public async Task ColumnHeadingStyleOverridesTableHeadingStyle()
+    public Task ColumnHeadingStyleOverridesTableHeadingStyle()
     {
         #region WordTableColumnHeadingStyle
 
@@ -201,17 +201,17 @@ public class WordTableBuilderTests
 
         #endregion
 
-        await VerifyTable(builder);
+        return VerifyTable(builder);
     }
 
     [Test]
-    public async Task HeadingBackgroundAcceptsLeadingHash()
+    public Task HeadingBackgroundAcceptsLeadingHash()
     {
         var builder = new WordTableBuilder<Employee>(
             SampleData.Employees(),
             _ => _.BackgroundColor = "#ABCDEF");
 
-        await VerifyTable(builder);
+        return VerifyTable(builder);
     }
 
     static async Task VerifyTable(WordTableBuilder<Employee> builder)

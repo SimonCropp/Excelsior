@@ -135,9 +135,12 @@ static class WordTableRenderer<TModel>
             Alignment =
             {
                 Horizontal = HorizontalAlignmentValues.Center
+            },
+            Font =
+            {
+                Bold = true
             }
         };
-        style.Font.Bold = true;
 
         tableHeadingStyle?.Invoke(style);
         column.HeadingStyle?.Invoke(style);

@@ -1796,6 +1796,24 @@ var builder = new WordTableBuilder<Employee>(
 Colors accept a leading `#` (e.g. `"#4472C4"`) and it will be stripped before being written to OpenXml.
 
 
+### Style inheritance
+
+`WordTableBuilder` adapts its `<w:tblPr>` to the host document. When `Build(mainPart)` is called against a doc whose default table style (`<w:style w:type="table" w:default="1">`) defines borders, cell margins, or conditional formatting, the renderer emits **only** a `<w:tblLook>` bitmap (`firstRow=1`, `noVBand=1`) and lets the host style own the visuals — so dropping the same table into a branded template picks up that template's borders, header shading, and cell padding automatically.
+
+When there is no `MainDocumentPart`, or when the host doc only ships the bare built-in `TableNormal` (default flag set but no actual borders/margins/conditional formatting), the renderer falls back to its own opinionated defaults: single-line 4pt borders on every edge plus 108dxa start/end cell margins. This keeps standalone-built tables and tables in plain documents looking reasonable without forcing every caller to author a styles part.
+
+The `firstRow=1` bit on `<w:tblLook>` is always emitted, so any `<w:tblStylePr w:type="firstRow">` rule the host defines (e.g. coloured header band, white text) is applied to Excelsior's header row. Per-column `HeadingStyle` and the table-level `headingStyle` callback layer on top of whatever the host style provides.
+
+To force a specific look regardless of the host doc, set the heading style callback for header cells, or wrap the returned `<w:tbl>` and prepend a `<w:tblStyle w:val="...">` reference inside its `<w:tblPr>` before appending it to the body.
+
+To customize the default table style on the host document in Word itself (so Excelsior tables pick those visuals up), see Microsoft's guidance:
+
+- [Change the look of a table](https://support.microsoft.com/en-us/office/change-the-look-of-a-table-a18cbaa8-e681-455f-a99f-a2378fe5ff06) — picking, modifying, and setting a table style as default.
+- [Customize or create new styles](https://support.microsoft.com/en-us/office/customize-or-create-new-styles-d38d6e47-f6fc-48eb-a607-1eb120dec563) — covers the Modify Style dialog, including the "New documents based on this template" option that's needed to make a table style stick as the default for the document.
+- [Apply a table style](https://support.microsoft.com/en-us/office/video-apply-a-table-style-f1b798e7-fa25-496c-a434-0c2a15bed09f) — short walkthrough of the Table Design ribbon.
+- [Set or change table properties](https://support.microsoft.com/en-us/office/set-or-change-table-properties-3237de89-b287-4379-8e0c-86d94873b2e0) — borders, cell margins, alignment.
+
+
 ### Limitations
 
 Formula columns are not supported in Word tables. Word has no equivalent of Excel cell formulas, so configuring a `Formula` on a column used with `WordTableBuilder` will throw when `Build()` is called. Use `Render` or a computed property instead.

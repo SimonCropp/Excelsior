@@ -248,6 +248,134 @@ public class WordTableBuilderTests
     }
 
     [Test]
+    public void TablePropertiesCarryOpinionatedDefaultsWhenNoHostStyle()
+    {
+        // Without a MainDocumentPart (or with one whose default table style is empty), the
+        // renderer falls back to its own opinionated defaults so a standalone table still has
+        // visible borders and cell padding.
+        var table = new WordTableBuilder<Employee>([]).Build();
+        var props = table.GetFirstChild<TableProperties>()!;
+
+        IsNotNull(props.GetFirstChild<TableBorders>());
+        IsNotNull(props.GetFirstChild<TableCellMarginDefault>());
+
+        var look = props.GetFirstChild<TableLook>()!;
+        AreEqual(true, look.FirstRow?.Value);
+        AreEqual(true, look.NoVerticalBand?.Value);
+    }
+
+    [Test]
+    public void TablePropertiesDropOpinionatedDefaultsWhenHostHasCustomStyle()
+    {
+        using var stream = new MemoryStream();
+        using var doc = WordprocessingDocument.Create(stream, WordprocessingDocumentType.Document);
+        var mainPart = doc.AddMainDocumentPart();
+        mainPart.Document = new(new Body());
+        AddDefaultTableStyle(mainPart);
+
+        var table = new WordTableBuilder<Employee>([]).Build(mainPart);
+        var props = table.GetFirstChild<TableProperties>()!;
+
+        // Host owns borders + cell margins; only tblLook ships so the host's firstRow
+        // conditional formatting rule still formats the header row.
+        IsNull(props.GetFirstChild<TableBorders>());
+        IsNull(props.GetFirstChild<TableCellMarginDefault>());
+        IsNotNull(props.GetFirstChild<TableLook>());
+    }
+
+    [Test]
+    public void TablePropertiesKeepOpinionatedDefaultsWhenHostStyleIsBare()
+    {
+        // A document containing only a bare TableNormal (default but no actual properties)
+        // shouldn't suppress the opinionated defaults — there's nothing to inherit from.
+        using var stream = new MemoryStream();
+        using var doc = WordprocessingDocument.Create(stream, WordprocessingDocumentType.Document);
+        var mainPart = doc.AddMainDocumentPart();
+        mainPart.Document = new(new Body());
+        var stylesPart = mainPart.AddNewPart<StyleDefinitionsPart>();
+        stylesPart.Styles = new(
+            new Style
+            {
+                Type = StyleValues.Table,
+                StyleId = "TableNormal",
+                Default = true,
+            });
+
+        var table = new WordTableBuilder<Employee>([]).Build(mainPart);
+        var props = table.GetFirstChild<TableProperties>()!;
+
+        IsNotNull(props.GetFirstChild<TableBorders>());
+        IsNotNull(props.GetFirstChild<TableCellMarginDefault>());
+    }
+
+    [Test]
+    public Task InheritsBordersFromHostDefaultTableStyle()
+    {
+        // When the host doc has a default <w:style w:type="table" w:default="1"> with its own
+        // borders, the rendered table picks them up — the renderer no longer writes inline
+        // <w:tblBorders> that would override.
+        var builder = new WordTableBuilder<Employee>(SampleData.Employees());
+        return VerifyTableInDocWithDefaultTableStyle(builder);
+    }
+
+    static void AddDefaultTableStyle(MainDocumentPart mainPart)
+    {
+        var stylesPart = mainPart.AddNewPart<StyleDefinitionsPart>();
+        stylesPart.Styles = new(
+            new Style(
+                    new StyleName { Val = "BrandTable" },
+                    new TableProperties(
+                        new TableBorders(
+                            new TopBorder { Val = BorderValues.Double, Size = 12, Color = "1F4E79" },
+                            new BottomBorder { Val = BorderValues.Double, Size = 12, Color = "1F4E79" },
+                            new InsideHorizontalBorder { Val = BorderValues.Single, Size = 4, Color = "1F4E79" }),
+                        new TableCellMarginDefault(
+                            new TopMargin { Width = "60", Type = TableWidthUnitValues.Dxa },
+                            new BottomMargin { Width = "60", Type = TableWidthUnitValues.Dxa })),
+                    new TableStyleProperties(
+                        new RunPropertiesBaseStyle(
+                            new Bold(),
+                            new Color { Val = "FFFFFF" }),
+                        new TableStyleConditionalFormattingTableCellProperties(
+                            new Shading
+                            {
+                                Val = ShadingPatternValues.Clear,
+                                Color = "auto",
+                                Fill = "1F4E79"
+                            }))
+                        { Type = TableStyleOverrideValues.FirstRow })
+                {
+                    Type = StyleValues.Table,
+                    StyleId = "BrandTable",
+                    Default = true,
+                    CustomStyle = true,
+                });
+    }
+
+    static async Task VerifyTableInDocWithDefaultTableStyle(WordTableBuilder<Employee> builder)
+    {
+        using var stream = new MemoryStream();
+        using (var doc = WordprocessingDocument.Create(stream, WordprocessingDocumentType.Document))
+        {
+            var mainPart = doc.AddMainDocumentPart();
+            mainPart.Document = new(new Body());
+
+            AddDefaultTableStyle(mainPart);
+
+            var table = builder.Build(mainPart);
+            var body = mainPart.Document.Body!;
+            body.Append(table);
+            body.Append(
+                new SectionProperties(
+                    new PageSize { Width = 12240, Height = 15840 },
+                    new PageMargin { Top = 1440, Right = 1440, Bottom = 1440, Left = 1440, Header = 720, Footer = 720 }));
+        }
+
+        stream.Position = 0;
+        await Verify(stream, "docx");
+    }
+
+    [Test]
     public void FluentColumnConfigurationOverridesHeading()
     {
         var builder = new WordTableBuilder<Employee>([])

@@ -15,7 +15,7 @@ static class WordTableRenderer<TModel>
         MainDocumentPart? mainPart)
     {
         var table = new W.Table();
-        table.Append(BuildTableProperties());
+        table.Append(BuildTableProperties(mainPart));
         table.Append(BuildGrid(columns.Count));
         table.Append(BuildHeaderRow(columns, tableHeadingStyle));
 
@@ -27,60 +27,82 @@ static class WordTableRenderer<TModel>
         return table;
     }
 
-    static W.TableProperties BuildTableProperties() =>
-        new(
+    /// <summary>
+    /// Builds <c>&lt;w:tblPr&gt;</c>. When the host document has customized its default table
+    /// style (a <c>&lt;w:style w:type="table" w:default="1"&gt;</c> with substantive borders,
+    /// cell margins, or conditional formatting), only a <c>&lt;w:tblLook&gt;</c> is emitted so
+    /// that style wins. Otherwise — including when no <c>MainDocumentPart</c> is supplied —
+    /// the renderer falls back to its own opinionated defaults (single-line 4pt borders, 108dxa
+    /// start/end cell margins) so a standalone table still looks reasonable.
+    /// </summary>
+    static W.TableProperties BuildTableProperties(MainDocumentPart? mainPart)
+    {
+        var tblLook = new W.TableLook
+        {
+            Val = "04A0",
+            FirstRow = true,
+            LastRow = false,
+            FirstColumn = false,
+            LastColumn = false,
+            NoHorizontalBand = false,
+            NoVerticalBand = true,
+        };
+
+        if (HostHasCustomDefaultTableStyle(mainPart))
+        {
+            return new(tblLook);
+        }
+
+        return new(
             new W.TableBorders(
-                new W.TopBorder
-                {
-                    Val = W.BorderValues.Single,
-                    Size = 4
-                },
-                new W.BottomBorder
-                {
-                    Val = W.BorderValues.Single,
-                    Size = 4
-                },
-                new W.LeftBorder
-                {
-                    Val = W.BorderValues.Single,
-                    Size = 4
-                },
-                new W.RightBorder
-                {
-                    Val = W.BorderValues.Single,
-                    Size = 4
-                },
-                new W.InsideHorizontalBorder
-                {
-                    Val = W.BorderValues.Single,
-                    Size = 4
-                },
-                new W.InsideVerticalBorder
-                {
-                    Val = W.BorderValues.Single,
-                    Size = 4
-                }),
+                new W.TopBorder { Val = W.BorderValues.Single, Size = 4 },
+                new W.BottomBorder { Val = W.BorderValues.Single, Size = 4 },
+                new W.LeftBorder { Val = W.BorderValues.Single, Size = 4 },
+                new W.RightBorder { Val = W.BorderValues.Single, Size = 4 },
+                new W.InsideHorizontalBorder { Val = W.BorderValues.Single, Size = 4 },
+                new W.InsideVerticalBorder { Val = W.BorderValues.Single, Size = 4 }),
             new W.TableCellMarginDefault(
-                new W.TopMargin
-                {
-                    Width = "0",
-                    Type = W.TableWidthUnitValues.Dxa
-                },
-                new W.StartMargin
-                {
-                    Width = "108",
-                    Type = W.TableWidthUnitValues.Dxa
-                },
-                new W.BottomMargin
-                {
-                    Width = "0",
-                    Type = W.TableWidthUnitValues.Dxa
-                },
-                new W.EndMargin
-                {
-                    Width = "108",
-                    Type = W.TableWidthUnitValues.Dxa
-                }));
+                new W.TopMargin { Width = "0", Type = W.TableWidthUnitValues.Dxa },
+                new W.StartMargin { Width = "108", Type = W.TableWidthUnitValues.Dxa },
+                new W.BottomMargin { Width = "0", Type = W.TableWidthUnitValues.Dxa },
+                new W.EndMargin { Width = "108", Type = W.TableWidthUnitValues.Dxa }),
+            tblLook);
+    }
+
+    static bool HostHasCustomDefaultTableStyle(MainDocumentPart? mainPart)
+    {
+        var styles = mainPart?.StyleDefinitionsPart?.Styles;
+        if (styles == null)
+        {
+            return false;
+        }
+
+        foreach (var style in styles.Elements<W.Style>())
+        {
+            if (style.Type?.Value != W.StyleValues.Table)
+            {
+                continue;
+            }
+
+            if (style.Default?.Value != true)
+            {
+                continue;
+            }
+
+            // A bare <w:style w:default="1" w:type="table"/> (e.g. the built-in TableNormal
+            // shipped with most blank docs) carries no actual visual rules. Only treat the
+            // style as "customized" when it actually defines borders, cell margins, or a
+            // conditional-formatting block (firstRow, etc.) the renderer would clash with.
+            if (style.Descendants<W.TableBorders>().Any() ||
+                style.Descendants<W.TableCellMarginDefault>().Any() ||
+                style.Descendants<W.TableStyleProperties>().Any())
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     static W.TableGrid BuildGrid(int columnCount)
     {

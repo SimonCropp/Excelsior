@@ -614,6 +614,83 @@ builder.AddSheet(notes);
 <!-- endSnippet -->
 
 
+### Protection
+
+Pass a `SheetProtectionOptions` to produce a password-protected workbook. By default:
+
+ * data cells are editable, header cells are locked
+ * the sheet structure (add / remove / rename / reorder) is locked
+ * cell formatting, inserting, and deleting are blocked
+ * sorting and using the auto-filter remain available
+
+<!-- snippet: Protected -->
+<a id='snippet-Protected'></a>
+```cs
+var builder = new BookBuilder(
+    protection: new()
+    {
+        Password = "secret"
+    });
+builder.AddSheet(data);
+```
+<sup><a href='/src/Excelsior.Tests/ProtectionTests.cs#L9-L18' title='Snippet source file'>snippet source</a> | <a href='#snippet-Protected' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+
+#### Password is optional
+
+If `Password` is omitted, a fresh GUID is used for each `SheetProtectionOptions` instance. That produces a workbook the user cannot manually unprotect — useful when the goal is to lock structure rather than share an unlock code.
+
+<!-- snippet: ProtectedNoPassword -->
+<a id='snippet-ProtectedNoPassword'></a>
+```cs
+var builder = new BookBuilder(
+    protection: new());
+builder.AddSheet(data);
+```
+<sup><a href='/src/Excelsior.Tests/ProtectionTests.cs#L30-L36' title='Snippet source file'>snippet source</a> | <a href='#snippet-ProtectedNoPassword' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+
+#### Customizing what is allowed
+
+Every `SheetProtection` flag is exposed on `SheetProtectionOptions`. Booleans use OOXML's "disabled" semantics: `true` means the action is blocked when the sheet is protected.
+
+<!-- snippet: ProtectedCustomOptions -->
+<a id='snippet-ProtectedCustomOptions'></a>
+```cs
+var builder = new BookBuilder(
+    protection: new()
+    {
+        Password = "secret",
+        FormatCells = false,
+        Sort = true,
+        AutoFilter = true
+    });
+builder.AddSheet(data);
+```
+<sup><a href='/src/Excelsior.Tests/ProtectionTests.cs#L49-L61' title='Snippet source file'>snippet source</a> | <a href='#snippet-ProtectedCustomOptions' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+| Option | Default | When `true`, blocks |
+| --- | --- | --- |
+| `Objects` | `true` | Editing embedded objects (shapes, charts, controls) |
+| `Scenarios` | `true` | Editing saved scenarios (Data > What-If Analysis > Scenario Manager) |
+| `FormatCells` | `true` | Changing cell formatting (font, fill, number format) |
+| `FormatColumns` | `true` | Changing column width / hiding columns |
+| `FormatRows` | `true` | Changing row height / hiding rows |
+| `InsertColumns` | `true` | Inserting new columns |
+| `InsertRows` | `true` | Inserting new rows |
+| `InsertHyperlinks` | `true` | Inserting hyperlinks |
+| `DeleteColumns` | `true` | Deleting columns |
+| `DeleteRows` | `true` | Deleting rows |
+| `SelectLockedCells` | `false` | Selecting locked cells (e.g. headers) |
+| `SelectUnlockedCells` | `false` | Selecting unlocked (data) cells |
+| `Sort` | `false` | Sorting |
+| `AutoFilter` | `false` | Using the auto-filter dropdowns |
+| `PivotTables` | `true` | Editing pivot tables and pivot charts |
+
+
 ### Complex Types
 
 For complex types, by default is to render via `.ToString()`.

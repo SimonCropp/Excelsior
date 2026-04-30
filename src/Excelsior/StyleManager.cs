@@ -8,7 +8,8 @@ class StyleManager
         uint? NumberFormatId,
         HorizontalAlignmentValues HAlign,
         VerticalAlignmentValues VAlign,
-        bool WrapText);
+        bool WrapText,
+        bool Locked);
 
     List<FontKey> fonts = [new(false, false, null, null, null)];
 
@@ -26,7 +27,7 @@ class StyleManager
     uint nextNumberFormatId = 164;
 
     List<CellFormatKey> cellFormats =
-        [new(0, 0, null, HorizontalAlignmentValues.General, VerticalAlignmentValues.Bottom, false)];
+        [new(0, 0, null, HorizontalAlignmentValues.General, VerticalAlignmentValues.Bottom, false, true)];
 
     Dictionary<CellFormatKey, uint> cellFormatIndex = [];
 
@@ -50,7 +51,8 @@ class StyleManager
             nfId,
             style.Alignment.Horizontal,
             style.Alignment.Vertical,
-            style.Alignment.WrapText);
+            style.Alignment.WrapText,
+            style.Locked);
 
         if (cellFormatIndex.TryGetValue(key, out var index))
         {
@@ -253,6 +255,16 @@ class StyleManager
                         Horizontal = key.HAlign,
                         Vertical = key.VAlign,
                         WrapText = key.WrapText
+                    });
+            }
+
+            if (!key.Locked)
+            {
+                cellFormat.ApplyProtection = true;
+                cellFormat.Append(
+                    new Protection
+                    {
+                        Locked = false
                     });
             }
 

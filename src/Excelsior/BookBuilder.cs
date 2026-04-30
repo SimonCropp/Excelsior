@@ -9,7 +9,8 @@ public class BookBuilder
         Action<CellStyle>? globalStyle = null,
         int? defaultMinColumnWidth = null,
         int defaultMaxColumnWidth = 50,
-        int? maxRowHeight = null)
+        int? maxRowHeight = null,
+        SheetProtectionOptions? protection = null)
     {
         ValueRenderer.SetBookBuilderUsed();
         UseAlternatingRowColors = useAlternatingRowColors;
@@ -19,6 +20,7 @@ public class BookBuilder
         DefaultMinColumnWidth = defaultMinColumnWidth;
         DefaultMaxColumnWidth = defaultMaxColumnWidth;
         MaxRowHeight = maxRowHeight;
+        Protection = protection;
     }
 
     public bool UseAlternatingRowColors { get; }
@@ -30,6 +32,8 @@ public class BookBuilder
     public string? AlternateRowColor { get; }
     public Action<CellStyle>? HeadingStyle { get; }
     public Action<CellStyle>? GlobalStyle { get; }
+    public SheetProtectionOptions? Protection { get; }
+    internal bool IsProtected => Protection != null;
 
     internal StyleManager StyleManager { get; } = new();
 
@@ -84,7 +88,25 @@ public class BookBuilder
         }
 
         ApplyStylesheet(document);
+        ApplyWorkbookProtection(workbookPart);
         return document;
+    }
+
+    void ApplyWorkbookProtection(WorkbookPart workbookPart)
+    {
+        if (!IsProtected)
+        {
+            return;
+        }
+
+        var sheets = workbookPart.Workbook!.GetFirstChild<Sheets>()!;
+        var protection = new WorkbookProtection
+        {
+            WorkbookPassword = ProtectionPasswordHasher.Hash(Protection!.Password),
+            LockStructure = true,
+            LockWindows = false
+        };
+        workbookPart.Workbook.InsertBefore(protection, sheets);
     }
 
     void ApplyStylesheet(SpreadsheetDocument document)

@@ -7,9 +7,8 @@ class Renderer<TModel>(
     int? maxRowHeight,
     BookBuilder bookBuilder)
 {
-    const int MaxExcelRowHeight = 409;
-    const double DefaultExcelFontSize = 11;
-
+    const int maxExcelRowHeight = 409;
+    const double defaultExcelFontSize = 11;
 
     internal bool AutoFilter { get; set; } = true;
 
@@ -54,6 +53,38 @@ class Renderer<TModel>(
         AutoSizeColumns(sheet);
         ResizeRows(sheet);
         ApplyMaxRowHeight(sheet);
+        ApplySheetProtection(sheet);
+    }
+
+    void ApplySheetProtection(SheetContext sheet)
+    {
+        var options = bookBuilder.Protection;
+        if (options == null)
+        {
+            return;
+        }
+
+        var sheetProtection = new SheetProtection
+        {
+            Sheet = true,
+            Password = ProtectionPasswordHasher.Hash(options.Password),
+            Objects = options.Objects,
+            Scenarios = options.Scenarios,
+            FormatCells = options.FormatCells,
+            FormatColumns = options.FormatColumns,
+            FormatRows = options.FormatRows,
+            InsertColumns = options.InsertColumns,
+            InsertRows = options.InsertRows,
+            InsertHyperlinks = options.InsertHyperlinks,
+            DeleteColumns = options.DeleteColumns,
+            DeleteRows = options.DeleteRows,
+            SelectLockedCells = options.SelectLockedCells,
+            SelectUnlockedCells = options.SelectUnlockedCells,
+            Sort = options.Sort,
+            AutoFilter = options.AutoFilter,
+            PivotTables = options.PivotTables
+        };
+        sheet.Worksheet.InsertAfter(sheetProtection, sheet.SheetData);
     }
 
     void CreateHeadings(SheetContext sheet)
@@ -150,6 +181,10 @@ class Renderer<TModel>(
                 style.Alignment.Horizontal = HorizontalAlignmentValues.Left;
                 style.Alignment.Vertical = VerticalAlignmentValues.Top;
                 style.Alignment.WrapText = true;
+                if (bookBuilder.IsProtected)
+                {
+                    style.Locked = false;
+                }
                 if (column.Formula != null)
                 {
                     var context = new FormulaContext<TModel>(columnIndexesByName, rowIndex + 1);
@@ -537,9 +572,9 @@ class Renderer<TModel>(
         var pointsPerLine = ComputePointsPerLine();
         var minRowHeight = (int)Math.Ceiling(pointsPerLine);
 
-        if (max < minRowHeight || max > MaxExcelRowHeight)
+        if (max < minRowHeight || max > maxExcelRowHeight)
         {
-            throw new($"MaxRowHeight ({max}) must be between {minRowHeight} (one line at the configured font size) and {MaxExcelRowHeight}.");
+            throw new($"MaxRowHeight ({max}) must be between {minRowHeight} (one line at the configured font size) and {maxExcelRowHeight}.");
         }
 
         var maxLinesAllowed = max.Value / pointsPerLine;
@@ -582,7 +617,7 @@ class Renderer<TModel>(
 
     double ComputePointsPerLine()
     {
-        var maxFontSize = DefaultExcelFontSize;
+        var maxFontSize = defaultExcelFontSize;
         ProbeFontSize(bookBuilder.GlobalStyle, ref maxFontSize);
         ProbeFontSize(bookBuilder.HeadingStyle, ref maxFontSize);
         // Excel's row height in points is approximately font size + 4 padding (Calibri 11 → 15).

@@ -37,4 +37,48 @@ public class BookReaderAnonymousTests
         Assert.That(first["IsActive"], Is.EqualTo(true));
         Assert.That(first["Status"], Is.EqualTo(EmployeeStatus.FullTime));
     }
+
+    public class Department
+    {
+        public required string Name { get; init; }
+        public required int HeadCount { get; init; }
+    }
+
+    [Test]
+    public async Task Dictionary_MultipleSheets()
+    {
+        var stream = new MemoryStream();
+        var builder = new BookBuilder();
+        builder.AddSheet(SampleData.Employees(), "Staff");
+        builder.AddSheet<Department>(
+            [
+                new() { Name = "Eng", HeadCount = 12 },
+                new() { Name = "Sales", HeadCount = 7 }
+            ],
+            "Departments");
+        await builder.ToStream(stream);
+        stream.Position = 0;
+
+        #region BookReaderDictionaryMultipleSheets
+
+        var reader = new BookReader();
+
+        var staff = reader.AddSheet("Staff");
+        staff
+            .Column<int>("Employee ID")
+            .Column<string>("Full Name");
+
+        var departments = reader.AddSheet("Departments");
+        departments
+            .Column<string>("Name")
+            .Column<int>("HeadCount");
+
+        reader.Convert(stream);
+
+        Assert.That(staff.Rows[0]["Employee ID"], Is.EqualTo(1));
+        Assert.That(staff.Rows[0]["Full Name"], Is.EqualTo("John Doe"));
+        Assert.That(departments.Rows.Select(_ => _["Name"]), Is.EqualTo(new object[] { "Eng", "Sales" }));
+        Assert.That(departments.Rows.Select(_ => _["HeadCount"]), Is.EqualTo(new object[] { 12, 7 }));
+        #endregion
+    }
 }

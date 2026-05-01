@@ -243,6 +243,56 @@ var first = sheet.Rows[0];
 <!-- endSnippet -->
 
 
+#### Multiple sheets
+
+Register multiple sheets on the same `BookReader`. Pass a name to `AddSheet` to bind to a specific sheet by name; omit it to bind by registration order. Strong-typed and dictionary readers can be mixed freely.
+
+Strong-typed:
+
+<!-- snippet: BookReaderMultipleSheets -->
+<a id='snippet-BookReaderMultipleSheets'></a>
+```cs
+var reader = new BookReader();
+var staff = reader.AddSheet<Employee>("Staff");
+var departments = reader.AddSheet<Department>("Departments");
+reader.Convert(stream);
+
+var employees = staff.Rows;
+var depts = departments.Rows;
+```
+<sup><a href='/src/Excelsior.Tests/Reading/BookReaderTests.cs#L65-L75' title='Snippet source file'>snippet source</a> | <a href='#snippet-BookReaderMultipleSheets' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+Dictionary:
+
+<!-- snippet: BookReaderDictionaryMultipleSheets -->
+<a id='snippet-BookReaderDictionaryMultipleSheets'></a>
+```cs
+var reader = new BookReader();
+
+var staff = reader.AddSheet("Staff");
+staff
+    .Column<int>("Employee ID")
+    .Column<string>("Full Name");
+
+var departments = reader.AddSheet("Departments");
+departments
+    .Column<string>("Name")
+    .Column<int>("HeadCount");
+
+reader.Convert(stream);
+
+Assert.That(staff.Rows[0]["Employee ID"], Is.EqualTo(1));
+Assert.That(staff.Rows[0]["Full Name"], Is.EqualTo("John Doe"));
+Assert.That(departments.Rows.Select(_ => _["Name"]), Is.EqualTo(new object[] { "Eng", "Sales" }));
+Assert.That(departments.Rows.Select(_ => _["HeadCount"]), Is.EqualTo(new object[] { 12, 7 }));
+```
+<sup><a href='/src/Excelsior.Tests/Reading/BookReaderAnonymousTests.cs#L62-L82' title='Snippet source file'>snippet source</a> | <a href='#snippet-BookReaderDictionaryMultipleSheets' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+If a sheet's declared columns don't match what's in the file, that sheet's row parsing is skipped (one error per missing column is recorded against it), but subsequent sheets are still processed. Per-row parse errors don't have this short-circuit — they are collected per failing cell.
+
+
 #### Per-cell delegate conversion
 
 Override the default parsing for a single column with a delegate that receives the underlying OpenXml `Cell`.

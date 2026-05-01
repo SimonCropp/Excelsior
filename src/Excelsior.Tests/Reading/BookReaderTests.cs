@@ -40,4 +40,41 @@ public class BookReaderTests
 
         await Verify(sheet.Rows);
     }
+
+    public class Department
+    {
+        public required string Name { get; init; }
+        public required int HeadCount { get; init; }
+    }
+
+    [Test]
+    public async Task RoundTrip_MultipleSheets()
+    {
+        var stream = new MemoryStream();
+        var builder = new BookBuilder();
+        builder.AddSheet(SampleData.Employees(), "Staff");
+        builder.AddSheet<Department>(
+            [
+                new() { Name = "Eng", HeadCount = 12 },
+                new() { Name = "Sales", HeadCount = 7 }
+            ],
+            "Departments");
+        await builder.ToStream(stream);
+        stream.Position = 0;
+
+        #region BookReaderMultipleSheets
+
+        var reader = new BookReader();
+        var staff = reader.AddSheet<Employee>("Staff");
+        var departments = reader.AddSheet<Department>("Departments");
+        reader.Convert(stream);
+
+        var employees = staff.Rows;
+        var depts = departments.Rows;
+
+        #endregion
+
+        Assert.That(employees, Is.Not.Empty);
+        Assert.That(depts.Select(_ => _.Name), Is.EqualTo(["Eng", "Sales"]));
+    }
 }

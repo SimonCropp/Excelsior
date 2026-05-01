@@ -57,8 +57,8 @@ public class BookReaderDelegateTests
 
         #endregion
 
-        Assert.That(sheet.Rows.Select(_ => _.Priority), Is.EqualTo(new[] { Priority.Low, Priority.High, Priority.Medium }));
-        Assert.That(sheet.Rows.Select(_ => _.Code), Is.EqualTo(new[] { "A", "B", "C" }));
+        Assert.That(sheet.Rows.Select(_ => _.Priority), Is.EqualTo([Priority.Low, Priority.High, Priority.Medium]));
+        Assert.That(sheet.Rows.Select(_ => _.Code), Is.EqualTo(["A", "B", "C"]));
     }
 
     [Test]

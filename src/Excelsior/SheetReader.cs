@@ -4,7 +4,7 @@ class SheetReader<TModel> :
     ISheetReader<TModel>,
     IReaderSheet
 {
-    Dictionary<string, ColumnReadConfig<TModel>> columns = new(StringComparer.Ordinal);
+    Dictionary<string, ColumnReadState<TModel>> columns = new(StringComparer.Ordinal);
     List<TModel> rows = [];
 
     public string? Name { get; }
@@ -112,7 +112,7 @@ class SheetReader<TModel> :
 
     public ISheetReader<TModel> Column<TProperty>(
         Expression<Func<TModel, TProperty>> property,
-        Action<ColumnReadConfig<TModel, TProperty>> configuration)
+        Action<ColumnReadConfig<TProperty>> configuration)
     {
         var name = property.PropertyName();
         if (!columns.TryGetValue(name, out var column))
@@ -120,7 +120,7 @@ class SheetReader<TModel> :
             throw new($"Could not find property: {name}");
         }
 
-        var config = new ColumnReadConfig<TModel, TProperty>();
+        var config = new ColumnReadConfig<TProperty>();
         configuration(config);
 
         if (config.Heading != null)

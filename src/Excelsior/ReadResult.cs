@@ -1,11 +1,8 @@
 namespace Excelsior;
 
-public sealed class ReadResult
+public sealed class ReadResult(IReadOnlyList<ReadError> errors)
 {
-    public ReadResult(IReadOnlyList<ReadError> errors) =>
-        Errors = errors;
-
-    public IReadOnlyList<ReadError> Errors { get; }
+    public IReadOnlyList<ReadError> Errors { get; } = errors;
 
     public bool Succeeded => Errors.Count == 0;
 

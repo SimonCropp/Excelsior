@@ -69,98 +69,98 @@ static class CellConverter
 
             if (effective == typeof(byte))
             {
-                value = byte.Parse(raw!, CultureInfo.InvariantCulture);
+                value = byte.Parse(raw, CultureInfo.InvariantCulture);
                 error = null;
                 return true;
             }
 
             if (effective == typeof(sbyte))
             {
-                value = sbyte.Parse(raw!, CultureInfo.InvariantCulture);
+                value = sbyte.Parse(raw, CultureInfo.InvariantCulture);
                 error = null;
                 return true;
             }
 
             if (effective == typeof(short))
             {
-                value = short.Parse(raw!, CultureInfo.InvariantCulture);
+                value = short.Parse(raw, CultureInfo.InvariantCulture);
                 error = null;
                 return true;
             }
 
             if (effective == typeof(ushort))
             {
-                value = ushort.Parse(raw!, CultureInfo.InvariantCulture);
+                value = ushort.Parse(raw, CultureInfo.InvariantCulture);
                 error = null;
                 return true;
             }
 
             if (effective == typeof(int))
             {
-                value = int.Parse(raw!, CultureInfo.InvariantCulture);
+                value = int.Parse(raw, CultureInfo.InvariantCulture);
                 error = null;
                 return true;
             }
 
             if (effective == typeof(uint))
             {
-                value = uint.Parse(raw!, CultureInfo.InvariantCulture);
+                value = uint.Parse(raw, CultureInfo.InvariantCulture);
                 error = null;
                 return true;
             }
 
             if (effective == typeof(long))
             {
-                value = long.Parse(raw!, CultureInfo.InvariantCulture);
+                value = long.Parse(raw, CultureInfo.InvariantCulture);
                 error = null;
                 return true;
             }
 
             if (effective == typeof(ulong))
             {
-                value = ulong.Parse(raw!, CultureInfo.InvariantCulture);
+                value = ulong.Parse(raw, CultureInfo.InvariantCulture);
                 error = null;
                 return true;
             }
 
             if (effective == typeof(float))
             {
-                value = float.Parse(raw!, CultureInfo.InvariantCulture);
+                value = float.Parse(raw, CultureInfo.InvariantCulture);
                 error = null;
                 return true;
             }
 
             if (effective == typeof(double))
             {
-                value = double.Parse(raw!, CultureInfo.InvariantCulture);
+                value = double.Parse(raw, CultureInfo.InvariantCulture);
                 error = null;
                 return true;
             }
 
             if (effective == typeof(decimal))
             {
-                value = decimal.Parse(raw!, CultureInfo.InvariantCulture);
+                value = decimal.Parse(raw, CultureInfo.InvariantCulture);
                 error = null;
                 return true;
             }
 
             if (effective == typeof(DateTime))
             {
-                value = ParseDateTime(raw!);
+                value = ParseDateTime(raw);
                 error = null;
                 return true;
             }
 
             if (effective == typeof(Date))
             {
-                value = Date.FromDateTime(ParseDateTime(raw!));
+                value = Date.FromDateTime(ParseDateTime(raw));
                 error = null;
                 return true;
             }
 
             if (effective == typeof(Time))
             {
-                var dt = ParseDateTime(raw!);
+                var dt = ParseDateTime(raw);
                 value = Time.FromDateTime(dt);
                 error = null;
                 return true;
@@ -168,35 +168,35 @@ static class CellConverter
 
             if (effective == typeof(DateTimeOffset))
             {
-                value = DateTimeOffset.Parse(raw!, ValueRenderer.Culture, DateTimeStyles.AssumeLocal);
+                value = DateTimeOffset.Parse(raw, ValueRenderer.Culture, DateTimeStyles.AssumeLocal);
                 error = null;
                 return true;
             }
 
             if (effective == typeof(TimeSpan))
             {
-                if (double.TryParse(raw!, NumberStyles.Float, CultureInfo.InvariantCulture, out var days))
+                if (double.TryParse(raw, NumberStyles.Float, CultureInfo.InvariantCulture, out var days))
                 {
                     value = TimeSpan.FromDays(days);
                     error = null;
                     return true;
                 }
 
-                value = TimeSpan.Parse(raw!, CultureInfo.InvariantCulture);
+                value = TimeSpan.Parse(raw, CultureInfo.InvariantCulture);
                 error = null;
                 return true;
             }
 
             if (effective == typeof(Guid))
             {
-                value = Guid.Parse(raw!);
+                value = Guid.Parse(raw);
                 error = null;
                 return true;
             }
 
             if (effective == typeof(char))
             {
-                if (raw!.Length != 1)
+                if (raw.Length != 1)
                 {
                     value = null;
                     error = $"Could not parse '{raw}' as Char (expected single character).";
@@ -210,7 +210,7 @@ static class CellConverter
 
             if (effective.IsEnum)
             {
-                if (TryParseEnum(effective, raw!, out var enumValue))
+                if (TryParseEnum(effective, raw, out var enumValue))
                 {
                     value = enumValue;
                     error = null;
@@ -226,7 +226,11 @@ static class CellConverter
             error = $"Unsupported target type {Display(targetType)}.";
             return false;
         }
-        catch (Exception exception) when (exception is FormatException or OverflowException or ArgumentException)
+        catch (Exception exception) when
+            (exception is
+                 FormatException or
+                 OverflowException or
+                 ArgumentException)
         {
             value = null;
             error = $"Could not parse '{raw}' as {Display(targetType)}: {exception.Message}";
@@ -294,7 +298,7 @@ static class CellConverter
 
     static bool TryParseEnum(Type enumType, string raw, out object? value)
     {
-        if (Enum.TryParse(enumType, raw, ignoreCase: true, out value) && value != null)
+        if (Enum.TryParse(enumType, raw, ignoreCase: true, out value))
         {
             return true;
         }

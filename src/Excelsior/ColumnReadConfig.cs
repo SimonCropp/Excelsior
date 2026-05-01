@@ -1,6 +1,6 @@
 namespace Excelsior;
 
-class ColumnReadConfig<TModel>
+class ColumnReadState<TModel>
 {
     public required string Name { get; init; }
     public required string Heading { get; set; }
@@ -12,7 +12,7 @@ class ColumnReadConfig<TModel>
     public Func<Cell, object?>? Convert { get; set; }
 }
 
-public class ColumnReadConfig<TModel, TProperty>
+public class ColumnReadConfig<TProperty>
 {
     public string? Heading { get; set; }
     public int? Order { get; set; }

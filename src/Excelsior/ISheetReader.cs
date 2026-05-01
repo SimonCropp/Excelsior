@@ -9,7 +9,7 @@ public interface ISheetReader<TModel>
 
     ISheetReader<TModel> Column<TProperty>(
         Expression<Func<TModel, TProperty>> property,
-        Action<ColumnReadConfig<TModel, TProperty>> configuration);
+        Action<ColumnReadConfig<TProperty>> configuration);
 
     void HeadingText<TProperty>(
         Expression<Func<TModel, TProperty>> property,

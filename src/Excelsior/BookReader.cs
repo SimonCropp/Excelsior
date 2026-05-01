@@ -78,28 +78,29 @@ public class BookReader
         var workbookSheets = workbookPart.Workbook?
             .GetFirstChild<Sheets>()?
             .Elements<Sheet>()
-            .ToList() ?? [];
+            .ToList();
 
         for (var i = 0; i < sheets.Count; i++)
         {
             var sheet = sheets[i];
             var match = ResolveSheet(sheet, i, workbookSheets);
+            var name = sheet.Name;
             if (match == null)
             {
                 errors.Add(new(
-                    sheet.Name ?? $"#{i}",
+                    name ?? $"#{i}",
                     0,
                     "",
                     "",
-                    sheet.Name == null
+                    name == null
                         ? $"Workbook contains fewer than {i + 1} sheets."
-                        : $"Workbook does not contain a sheet named '{sheet.Name}'."));
+                        : $"Workbook does not contain a sheet named '{name}'."));
                 sheet.Reset();
                 continue;
             }
 
             var worksheetPart = (WorksheetPart)workbookPart.GetPartById(match.Id!.Value!);
-            var resolvedName = match.Name?.Value ?? sheet.Name ?? $"#{i}";
+            var resolvedName = match.Name?.Value ?? name ?? $"#{i}";
             metadata.TryGetValue(resolvedName, out var columnMap);
             SheetParser.Parse(sheet, resolvedName, worksheetPart, sharedStrings, columnMap, errors);
         }
@@ -107,13 +108,23 @@ public class BookReader
         return errors;
     }
 
-    static Sheet? ResolveSheet(IReaderSheet sheet, int index, List<Sheet> workbookSheets)
+    static Sheet? ResolveSheet(IReaderSheet sheet, int index, List<Sheet>? sheets)
     {
-        if (sheet.Name != null)
+        if (sheets == null)
         {
-            return workbookSheets.FirstOrDefault(_ => _.Name?.Value == sheet.Name);
+            return null;
         }
 
-        return index < workbookSheets.Count ? workbookSheets[index] : null;
+        if (sheet.Name == null)
+        {
+            if (index < sheets.Count)
+            {
+                return sheets[index];
+            }
+
+            return null;
+        }
+
+        return sheets.FirstOrDefault(_ => _.Name?.Value == sheet.Name);
     }
 }

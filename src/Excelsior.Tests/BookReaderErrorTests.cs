@@ -15,12 +15,12 @@ public class BookReaderErrorTests
     {
         var stream = new MemoryStream();
         var builder = new BookBuilder();
-        builder.AddSheet(new[]
-        {
-            new StringSource { Number = "42" },
-            new StringSource { Number = "not-a-number" },
-            new StringSource { Number = "100" }
-        });
+        builder.AddSheet<StringSource>(
+        [
+            new() { Number = "42" },
+            new() { Number = "not-a-number" },
+            new() { Number = "100" }
+        ]);
         await builder.ToStream(stream);
         stream.Position = 0;
         return stream;
@@ -35,9 +35,10 @@ public class BookReaderErrorTests
         reader.AddSheet<IntTarget>();
 
         var exception = Assert.Throws<ReadException>(() => reader.Convert(stream))!;
-        Assert.That(exception.Errors, Has.Count.EqualTo(1));
-        Assert.That(exception.Errors[0].ColumnName, Is.EqualTo("Number"));
-        Assert.That(exception.Errors[0].Message, Does.Contain("not-a-number"));
+        var errors = exception.Errors;
+        Assert.That(errors, Has.Count.EqualTo(1));
+        Assert.That(errors[0].ColumnName, Is.EqualTo("Number"));
+        Assert.That(errors[0].Message, Does.Contain("not-a-number"));
     }
 
     [Test]

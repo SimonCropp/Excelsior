@@ -314,7 +314,7 @@ if (!result)
     }
 }
 ```
-<sup><a href='/src/Excelsior.Tests/BookReaderErrorTests.cs#L46-L61' title='Snippet source file'>snippet source</a> | <a href='#snippet-BookReaderTryConvert' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/BookReaderErrorTests.cs#L47-L62' title='Snippet source file'>snippet source</a> | <a href='#snippet-BookReaderTryConvert' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 

@@ -8,7 +8,7 @@ public class BookReaderPrimitivesTests
         Gamma
     }
 
-    static async Task<IReadOnlyList<TModel>> RoundTrip<TModel>(IEnumerable<TModel> data)
+    static async Task<IReadOnlyList<TModel>> RoundTrip<TModel>(params IEnumerable<TModel> data)
     {
         var stream = new MemoryStream();
         var builder = new BookBuilder();
@@ -25,13 +25,13 @@ public class BookReaderPrimitivesTests
     [Test]
     public async Task Strings()
     {
-        var rows = await RoundTrip(new[]
-        {
-            new StringRow { Value = "alpha" },
-            new StringRow { Value = "beta" },
-            new StringRow { Value = "" }
-        });
-        Assert.That(rows.Select(_ => _.Value), Is.EqualTo(new[] { "alpha", "beta", "" }));
+        var rows = await RoundTrip<StringRow>(
+        [
+            new() { Value = "alpha" },
+            new() { Value = "beta" },
+            new() { Value = "" }
+        ]);
+        Assert.That(rows.Select(_ => _.Value), Is.EqualTo(["alpha", "beta", ""]));
     }
 
     public class StringRow
@@ -42,13 +42,11 @@ public class BookReaderPrimitivesTests
     [Test]
     public async Task Booleans()
     {
-        var rows = await RoundTrip(new[]
-        {
-            new BoolRow { Value = true, Nullable = true },
-            new BoolRow { Value = false, Nullable = false },
-            new BoolRow { Value = true, Nullable = null }
-        });
-        Assert.That(rows.Select(_ => _.Value), Is.EqualTo(new[] { true, false, true }));
+        var rows = await RoundTrip<BoolRow>(
+            new() { Value = true, Nullable = true },
+            new() { Value = false, Nullable = false },
+            new() { Value = true, Nullable = null });
+        Assert.That(rows.Select(_ => _.Value), Is.EqualTo([true, false, true]));
         Assert.That(rows.Select(_ => _.Nullable), Is.EqualTo(new bool?[] { true, false, null }));
     }
 
@@ -61,11 +59,9 @@ public class BookReaderPrimitivesTests
     [Test]
     public async Task Integers()
     {
-        var rows = await RoundTrip(new[]
-        {
-            new IntRow { Byte = 1, SByte = -1, Short = 2, UShort = 3, Int = 4, UInt = 5, Long = 6, ULong = 7 },
-            new IntRow { Byte = 250, SByte = 100, Short = -32000, UShort = 60000, Int = -1000, UInt = 4_000_000_000, Long = -50_000_000_000, ULong = 9_000_000_000 }
-        });
+        var rows = await RoundTrip<IntRow>(
+            new() { Byte = 1, SByte = -1, Short = 2, UShort = 3, Int = 4, UInt = 5, Long = 6, ULong = 7 },
+            new() { Byte = 250, SByte = 100, Short = -32000, UShort = 60000, Int = -1000, UInt = 4_000_000_000, Long = -50_000_000_000, ULong = 9_000_000_000 });
 
         Assert.That(rows[0].Byte, Is.EqualTo(1));
         Assert.That(rows[0].SByte, Is.EqualTo(-1));
@@ -101,11 +97,9 @@ public class BookReaderPrimitivesTests
     [Test]
     public async Task Floats()
     {
-        var rows = await RoundTrip(new[]
-        {
-            new FloatRow { Float = 1.5f, Double = 2.25, Decimal = 3.125m },
-            new FloatRow { Float = -0.25f, Double = 0d, Decimal = -100m }
-        });
+        var rows = await RoundTrip<FloatRow>(
+            new() { Float = 1.5f, Double = 2.25, Decimal = 3.125m },
+            new() { Float = -0.25f, Double = 0d, Decimal = -100m });
 
         Assert.That(rows[0].Float, Is.EqualTo(1.5f));
         Assert.That(rows[0].Double, Is.EqualTo(2.25));
@@ -125,11 +119,9 @@ public class BookReaderPrimitivesTests
     [Test]
     public async Task NullableInts()
     {
-        var rows = await RoundTrip(new[]
-        {
-            new NullableIntRow { Value = 42 },
-            new NullableIntRow { Value = null }
-        });
+        var rows = await RoundTrip<NullableIntRow>(
+            new() { Value = 42 },
+            new() { Value = null });
         Assert.That(rows.Select(_ => _.Value), Is.EqualTo(new int?[] { 42, null }));
     }
 
@@ -141,11 +133,9 @@ public class BookReaderPrimitivesTests
     [Test]
     public async Task DateTimes()
     {
-        var rows = await RoundTrip(new[]
-        {
-            new DateTimeRow { Value = new(2020, 1, 15, 10, 30, 45) },
-            new DateTimeRow { Value = new(1999, 12, 31, 23, 59, 59) }
-        });
+        var rows = await RoundTrip<DateTimeRow>(
+            new() { Value = new(2020, 1, 15, 10, 30, 45) },
+            new() { Value = new(1999, 12, 31, 23, 59, 59) });
         Assert.That(rows[0].Value, Is.EqualTo(new DateTime(2020, 1, 15, 10, 30, 45)));
         Assert.That(rows[1].Value, Is.EqualTo(new DateTime(1999, 12, 31, 23, 59, 59)));
     }
@@ -158,11 +148,9 @@ public class BookReaderPrimitivesTests
     [Test]
     public async Task Dates()
     {
-        var rows = await RoundTrip(new[]
-        {
-            new DateRow { Value = new(2020, 1, 15) },
-            new DateRow { Value = new(2021, 7, 4) }
-        });
+        var rows = await RoundTrip<DateRow>(
+            new() { Value = new(2020, 1, 15) },
+            new() { Value = new(2021, 7, 4) });
         Assert.That(rows[0].Value, Is.EqualTo(new Date(2020, 1, 15)));
         Assert.That(rows[1].Value, Is.EqualTo(new Date(2021, 7, 4)));
     }
@@ -176,10 +164,7 @@ public class BookReaderPrimitivesTests
     public async Task DateTimeOffsets()
     {
         var dto = new DateTimeOffset(2020, 5, 1, 12, 0, 0, TimeSpan.FromHours(0));
-        var rows = await RoundTrip(new[]
-        {
-            new DateTimeOffsetRow { Value = dto }
-        });
+        var rows = await RoundTrip(new DateTimeOffsetRow { Value = dto });
         Assert.That(rows[0].Value, Is.EqualTo(dto));
     }
 
@@ -192,10 +177,7 @@ public class BookReaderPrimitivesTests
     public async Task Guids()
     {
         var guid = Guid.Parse("11111111-2222-3333-4444-555555555555");
-        var rows = await RoundTrip(new[]
-        {
-            new GuidRow { Value = guid }
-        });
+        var rows = await RoundTrip(new GuidRow { Value = guid });
         Assert.That(rows[0].Value, Is.EqualTo(guid));
     }
 
@@ -207,11 +189,9 @@ public class BookReaderPrimitivesTests
     [Test]
     public async Task Chars()
     {
-        var rows = await RoundTrip(new[]
-        {
-            new CharRow { Value = 'A' },
-            new CharRow { Value = 'z' }
-        });
+        var rows = await RoundTrip<CharRow>(
+            new() { Value = 'A' },
+            new() { Value = 'z' });
         Assert.That(rows[0].Value, Is.EqualTo('A'));
         Assert.That(rows[1].Value, Is.EqualTo('z'));
     }
@@ -224,13 +204,11 @@ public class BookReaderPrimitivesTests
     [Test]
     public async Task Enums()
     {
-        var rows = await RoundTrip(new[]
-        {
-            new EnumRow { Value = SampleEnum.Alpha },
-            new EnumRow { Value = SampleEnum.Beta },
-            new EnumRow { Value = SampleEnum.Gamma }
-        });
-        Assert.That(rows.Select(_ => _.Value), Is.EqualTo(new[] { SampleEnum.Alpha, SampleEnum.Beta, SampleEnum.Gamma }));
+        var rows = await RoundTrip<EnumRow>(
+            new() { Value = SampleEnum.Alpha },
+            new() { Value = SampleEnum.Beta },
+            new() { Value = SampleEnum.Gamma });
+        Assert.That(rows.Select(_ => _.Value), Is.EqualTo([SampleEnum.Alpha, SampleEnum.Beta, SampleEnum.Gamma]));
     }
 
     public class EnumRow
@@ -241,11 +219,9 @@ public class BookReaderPrimitivesTests
     [Test]
     public async Task NullableEnums()
     {
-        var rows = await RoundTrip(new[]
-        {
-            new NullableEnumRow { Value = SampleEnum.Beta },
-            new NullableEnumRow { Value = null }
-        });
+        var rows = await RoundTrip<NullableEnumRow>(
+            new() { Value = SampleEnum.Beta },
+            new() { Value = null });
         Assert.That(rows.Select(_ => _.Value), Is.EqualTo(new SampleEnum?[] { SampleEnum.Beta, null }));
     }
 

@@ -9,9 +9,13 @@ public interface IDictionarySheetReader
     IReadOnlyList<IReadOnlyDictionary<string, object?>> Rows { get; }
 
     /// <summary>
-    /// Declares a column. <typeparamref name="TProperty"/> drives the default
-    /// cell parsing. Use <see cref="DictionaryColumnReadConfig.Convert"/> to
-    /// override the default with a custom delegate.
+    /// Declares a column. <paramref name="name"/> is matched against the file's
+    /// header row (case-insensitively) and is also the key under which the value
+    /// appears in each row dictionary. For round-tripped files written by
+    /// <c>BookBuilder</c>, <paramref name="name"/> can alternatively be the
+    /// underlying property name and is resolved via the workbook's metadata.
+    /// <typeparamref name="TProperty"/> drives the default cell parsing; use
+    /// <see cref="DictionaryColumnReadConfig.Convert"/> to override it.
     /// </summary>
     IDictionarySheetReader Column<TProperty>(
         string name,

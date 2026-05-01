@@ -28,7 +28,7 @@ class DictionarySheetReader(string? name) :
 
         columnInfos.Add(new(
             name,
-            config.Heading ?? name,
+            name,
             typeof(TProperty),
             config.Convert));
 

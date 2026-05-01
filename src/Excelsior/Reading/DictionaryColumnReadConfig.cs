@@ -2,8 +2,6 @@ namespace Excelsior;
 
 public class DictionaryColumnReadConfig
 {
-    public string? Heading { get; set; }
-
     /// <summary>
     /// Custom conversion delegate. Receives the underlying OpenXml <see cref="Cell"/>
     /// and returns the value to assign for this column. When set, this takes

@@ -219,17 +219,19 @@ var employees = sheet.Rows;
 
 For sheets without a backing model, declare every column explicitly. Each parsed row is an `IReadOnlyDictionary<string, object?>` keyed by the column name.
 
+The `name` you pass to `Column<T>` serves two roles: it is matched against the file's header row (case-insensitively) and it is the key under which the parsed value is exposed in each row dictionary. So pick whatever you want to read the value out as — the simplest choice is the file's heading text itself. For files written by `BookBuilder`, you may alternatively pass the underlying property name; the workbook's metadata resolves it back to the correct column.
+
 <!-- snippet: BookReaderDictionary -->
 <a id='snippet-BookReaderDictionary'></a>
 ```cs
 var reader = new BookReader();
 var sheet = reader.AddSheet();
 sheet
-    .Column<int>("Id", _ => _.Heading = "Employee ID")
-    .Column<string>("Name", _ => _.Heading = "Full Name")
-    .Column<string>("Email", _ => _.Heading = "Email Address")
-    .Column<Date?>("HireDate", _ => _.Heading = "Hire Date")
-    .Column<int>("Salary", _ => _.Heading = "Annual Salary")
+    .Column<int>("Employee ID")
+    .Column<string>("Full Name")
+    .Column<string>("Email Address")
+    .Column<Date?>("Hire Date")
+    .Column<int>("Annual Salary")
     .Column<bool>("IsActive")
     .Column<EmployeeStatus>("Status");
 

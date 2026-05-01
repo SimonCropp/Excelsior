@@ -11,7 +11,7 @@ class DictionarySheetReader(string? name) :
 
     public IDictionarySheetReader Column<TProperty>(
         string name,
-        Action<DictionaryColumnReadConfig>? configuration = null)
+        Func<Cell, TProperty>? convert = null)
     {
         if (string.IsNullOrWhiteSpace(name))
         {
@@ -23,14 +23,12 @@ class DictionarySheetReader(string? name) :
             throw new($"Sheet already contains a column named '{name}'.");
         }
 
-        var config = new DictionaryColumnReadConfig();
-        configuration?.Invoke(config);
-
+        Func<Cell, object?>? boxed = convert == null ? null : cell => convert(cell);
         columnInfos.Add(new(
             name,
             name,
             typeof(TProperty),
-            config.Convert));
+            boxed));
 
         return this;
     }

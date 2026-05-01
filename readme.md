@@ -280,18 +280,22 @@ Dictionary:
 var reader = new BookReader();
 var sheet = reader.AddSheet();
 sheet.Column<string>("Code");
-sheet.Column<int>(
+sheet.Column(
     "Priority",
-    _ => _.Convert = cell => cell.InnerText.Trim().ToLowerInvariant() switch
+    cell =>
     {
-        "low" => 1,
-        "medium" => 2,
-        "high" => 3,
-        _ => 0
+        var text = cell.InnerText;
+        return text.Trim().ToLowerInvariant() switch
+        {
+            "low" => 1,
+            "medium" => 2,
+            "high" => 3,
+            _ => 0
+        };
     });
 reader.Convert(stream);
 ```
-<sup><a href='/src/Excelsior.Tests/Reading/BookReaderDelegateTests.cs#L79-L95' title='Snippet source file'>snippet source</a> | <a href='#snippet-ReaderDictionaryDelegate' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/Reading/BookReaderDelegateTests.cs#L79-L99' title='Snippet source file'>snippet source</a> | <a href='#snippet-ReaderDictionaryDelegate' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 

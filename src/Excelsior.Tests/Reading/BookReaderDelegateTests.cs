@@ -81,14 +81,18 @@ public class BookReaderDelegateTests
         var reader = new BookReader();
         var sheet = reader.AddSheet();
         sheet.Column<string>("Code");
-        sheet.Column<int>(
+        sheet.Column(
             "Priority",
-            _ => _.Convert = cell => cell.InnerText.Trim().ToLowerInvariant() switch
+            cell =>
             {
-                "low" => 1,
-                "medium" => 2,
-                "high" => 3,
-                _ => 0
+                var text = cell.InnerText;
+                return text.Trim().ToLowerInvariant() switch
+                {
+                    "low" => 1,
+                    "medium" => 2,
+                    "high" => 3,
+                    _ => 0
+                };
             });
         reader.Convert(stream);
 

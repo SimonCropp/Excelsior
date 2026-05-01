@@ -5,38 +5,66 @@
       Columns: [
         {
           Name: Employee ID,
+          Metadata: {
+            property: Id
+          },
           Width: 15.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false
         },
         {
           Name: Full Name,
+          Metadata: {
+            property: Name
+          },
           Width: 5.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false
         },
         {
           Name: Email Address,
+          Metadata: {
+            property: Email
+          },
           Width: 17.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false
         },
         {
           Name: Hire Date,
+          Metadata: {
+            property: HireDate
+          },
           Width: 13.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false
         },
         {
           Name: Annual Salary,
+          Metadata: {
+            property: Salary
+          },
           Width: 17.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false
         },
         {
           Name: Is Active,
+          Metadata: {
+            property: IsActive
+          },
           Width: 13.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false
         },
         {
           Name: Status,
+          Metadata: {
+            property: Status
+          },
           Width: 10.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false
         }
       ]
     }

@@ -3,7 +3,7 @@ public class ValueRendererForBool
 {
     [SetUp]
     public void Setup() =>
-        ValueRenderer.For<bool>(_ => _ ? "Yes" : "No");
+        ValueRenderer.BoolDisplay("Yes", "No", "Unknown");
 
     [TearDown]
     public void Teardown() =>
@@ -11,8 +11,8 @@ public class ValueRendererForBool
 
     #region ValueRendererForBoolInit
 
-    static void CustomBoolRender() =>
-        ValueRenderer.For<bool>(_ => _ ? "Yes" : "No");
+    static void ConfigureBoolDisplay() =>
+        ValueRenderer.BoolDisplay("Yes", "No", "Unknown");
 
     #endregion
 
@@ -29,11 +29,19 @@ public class ValueRendererForBool
             {
                 Name = "Alice",
                 IsActive = true,
+                IsAdmin = true,
             },
             new()
             {
                 Name = "Bob",
                 IsActive = false,
+                IsAdmin = false,
+            },
+            new()
+            {
+                Name = "Carol",
+                IsActive = true,
+                IsAdmin = null,
             }
         ];
         builder.AddSheet(data);
@@ -49,5 +57,6 @@ public class ValueRendererForBool
     {
         public string Name { get; set; } = null!;
         public bool IsActive { get; set; }
+        public bool? IsAdmin { get; set; }
     }
 }

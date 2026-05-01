@@ -5,18 +5,43 @@
       Columns: [
         {
           Name: String,
+          Metadata: {
+            property: String
+          },
           Width: 15.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false
         },
         {
           Name: Enum,
+          Metadata: {
+            property: Enum
+          },
           Width: 29.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false,
+          Validation: {
+            Type: list,
+            AllowedValues: [
+              Rendered EnumValue1,
+              Rendered EnumValue2
+            ],
+            AllowBlank: true,
+            ShowInputMessage: false,
+            ShowErrorMessage: true,
+            ErrorTitle: Invalid value,
+            ErrorMessage: Must be one of: Rendered EnumValue1, Rendered EnumValue2.,
+            Range: 2-3
+          }
         },
         {
           Name: Nested,
+          Metadata: {
+            property: Nested
+          },
           Width: 29.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false
         }
       ]
     }

@@ -22,16 +22,52 @@ class ColumnConfig<TModel>
     public required string Name { get; set; }
     public required Func<TModel, object?> GetValue { get; init; }
 
+    public IReadOnlyList<string>? AllowedValues { get; set; }
+    public decimal? NumericMin { get; set; }
+    public decimal? NumericMax { get; set; }
+    public DateTime? DateMin { get; set; }
+    public DateTime? DateMax { get; set; }
+    public bool Required { get; set; }
+    public bool? Locked { get; set; }
+    public string? InputTitle { get; set; }
+    public string? InputMessage { get; set; }
+    public string? ErrorTitle { get; set; }
+    public string? ErrorMessage { get; set; }
+    public ValidationErrorStyle? ErrorStyle { get; set; }
+
+    public bool HasValidation =>
+        AllowedValues is { Count: > 0 } ||
+        NumericMin.HasValue ||
+        NumericMax.HasValue ||
+        DateMin.HasValue ||
+        DateMax.HasValue ||
+        HasNumericValidation ||
+        Required;
+
+    /// <summary>
+    /// True for plain numeric columns (no custom render/formula/html, not enumerable). The
+    /// renderer emits an ISNUMBER constraint so manually-typed non-numeric values are blocked.
+    /// </summary>
+    public bool HasNumericValidation =>
+        IsNumber &&
+        !IsEnumerable &&
+        Render == null &&
+        Formula == null &&
+        !IsHtml;
+
+    public bool HasInputMessage =>
+        InputMessage != null || InputTitle != null;
+
     public bool TryRender(TModel item, object value, [NotNullWhen(true)] out string? result)
     {
-        if (Render != null)
+        if (Render == null)
         {
-            result = Render(item, value);
-            return result != null;
+            result = null;
+            return false;
         }
 
-        result = null;
-        return false;
+        result = Render(item, value);
+        return result != null;
     }
 }
 
@@ -69,4 +105,94 @@ public class ColumnConfig<TModel, TProperty>
     /// Set to false to exclude the column.
     /// </summary>
     public bool? Include { get; set; }
+
+    /// <summary>
+    /// Restrict cell values to this list. Renders as an Excel data-validation dropdown.
+    /// For enum-typed columns this is auto-populated from the enum members; set explicitly to override,
+    /// or set <see cref="DisableAllowedValues"/> to <c>true</c> to suppress.
+    /// </summary>
+    public IReadOnlyList<string>? AllowedValues { get; set; }
+
+    /// <summary>
+    /// Suppresses the auto-derived <see cref="AllowedValues"/> dropdown for enum columns.
+    /// </summary>
+    public bool DisableAllowedValues { get; set; }
+
+    /// <summary>
+    /// Minimum numeric value allowed in this column. Combine with <see cref="NumericMax"/> for a range.
+    /// </summary>
+    public decimal? NumericMin { get; set; }
+
+    /// <summary>
+    /// Maximum numeric value allowed in this column. Combine with <see cref="NumericMin"/> for a range.
+    /// </summary>
+    public decimal? NumericMax { get; set; }
+
+    /// <summary>
+    /// Earliest date allowed in this column. Combine with <see cref="DateMax"/> for a range.
+    /// </summary>
+    public DateTime? DateMin { get; set; }
+
+    /// <summary>
+    /// Latest date allowed in this column. Combine with <see cref="DateMin"/> for a range.
+    /// </summary>
+    public DateTime? DateMax { get; set; }
+
+    /// <summary>
+    /// When <c>true</c>, blank cells in this column are highlighted via conditional formatting.
+    /// When <c>null</c> (default), the value is inferred from the property type if
+    /// <c>inferValidationFromTypes</c> is enabled on the sheet.
+    /// </summary>
+    public bool? Required { get; set; }
+
+    /// <summary>
+    /// Override the default cell-locking behavior under sheet protection. When <c>null</c> (default),
+    /// data cells are unlocked (editable) and the header is locked. Set to <c>true</c> to lock data
+    /// cells, or <c>false</c> to leave a column editable irrespective of protection defaults.
+    /// </summary>
+    public bool? Locked { get; set; }
+
+    /// <summary>
+    /// Title shown in the input-hint tooltip when a cell in this column is selected.
+    /// </summary>
+    public string? InputTitle { get; set; }
+
+    /// <summary>
+    /// Body text shown in the input-hint tooltip when a cell in this column is selected.
+    /// </summary>
+    public string? InputMessage { get; set; }
+
+    /// <summary>
+    /// Title for the error popup shown when an invalid value is entered.
+    /// </summary>
+    public string? ErrorTitle { get; set; }
+
+    /// <summary>
+    /// Body text for the error popup shown when an invalid value is entered.
+    /// </summary>
+    public string? ErrorMessage { get; set; }
+
+    /// <summary>
+    /// How Excel should respond to invalid input. <c>Stop</c> (default) blocks the entry;
+    /// <c>Warning</c> and <c>Information</c> let the user accept it.
+    /// </summary>
+    public ValidationErrorStyle? ErrorStyle { get; set; }
+
+    /// <summary>
+    /// Set <see cref="NumericMin"/> and <see cref="NumericMax"/> from a single call.
+    /// </summary>
+    public void Range(decimal min, decimal max)
+    {
+        NumericMin = min;
+        NumericMax = max;
+    }
+
+    /// <summary>
+    /// Set <see cref="DateMin"/> and <see cref="DateMax"/> from a single call.
+    /// </summary>
+    public void Range(DateTime min, DateTime max)
+    {
+        DateMin = min;
+        DateMax = max;
+    }
 }

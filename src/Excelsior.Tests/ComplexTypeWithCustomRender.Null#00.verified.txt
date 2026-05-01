@@ -5,13 +5,21 @@
       Columns: [
         {
           Name: Name,
+          Metadata: {
+            property: Name
+          },
           Width: 12.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false
         },
         {
           Name: Address,
+          Metadata: {
+            property: Address
+          },
           Width: 11.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false
         }
       ]
     }

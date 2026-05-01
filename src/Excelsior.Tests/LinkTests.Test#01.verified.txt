@@ -5,33 +5,57 @@
       Columns: [
         {
           Name: Name,
+          Metadata: {
+            property: Name
+          },
           Width: 9.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false
         },
         {
           Name: Link,
+          Metadata: {
+            property: Link
+          },
           Width: 10.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false
         },
         {
           Name: Nullable Link,
+          Metadata: {
+            property: NullableLink
+          },
           Width: 17.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false
         },
         {
           Name: Links,
+          Metadata: {
+            property: Links
+          },
           Width: 50.0,
-          ContainsRichText: true
+          ContainsRichText: true,
+          RequiredHighlight: false
         },
         {
           Name: Nullable Links,
+          Metadata: {
+            property: NullableLinks
+          },
           Width: 40.0,
-          ContainsRichText: true
+          ContainsRichText: true,
+          RequiredHighlight: false
         },
         {
           Name: Links With Nulls,
+          Metadata: {
+            property: LinksWithNulls
+          },
           Width: 50.0,
-          ContainsRichText: true
+          ContainsRichText: true,
+          RequiredHighlight: false
         }
       ]
     }

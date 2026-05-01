@@ -5,6 +5,7 @@ global using System.Diagnostics.CodeAnalysis;
 global using System.Globalization;
 global using System.Linq.Expressions;
 global using System.Runtime.CompilerServices;
+global using System.Xml.Linq;
 global using DocumentFormat.OpenXml;
 global using DocumentFormat.OpenXml.Packaging;
 global using DocumentFormat.OpenXml.Spreadsheet;

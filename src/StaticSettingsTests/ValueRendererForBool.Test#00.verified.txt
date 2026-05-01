@@ -5,13 +5,56 @@
       Columns: [
         {
           Name: Name,
+          Metadata: {
+            property: Name
+          },
           Width: 9.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false
         },
         {
           Name: Is Active,
+          Metadata: {
+            property: IsActive
+          },
           Width: 13.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false,
+          Validation: {
+            Type: list,
+            AllowedValues: [
+              Yes,
+              No
+            ],
+            AllowBlank: true,
+            ShowInputMessage: false,
+            ShowErrorMessage: true,
+            ErrorTitle: Invalid value,
+            ErrorMessage: Must be one of: Yes, No.,
+            Range: 2-4
+          }
+        },
+        {
+          Name: Is Admin,
+          Metadata: {
+            property: IsAdmin
+          },
+          Width: 12.0,
+          ContainsRichText: false,
+          RequiredHighlight: false,
+          Validation: {
+            Type: list,
+            AllowedValues: [
+              Yes,
+              No
+            ],
+            AllowBlank: true,
+            ShowInputMessage: false,
+            ShowErrorMessage: true,
+            ErrorTitle: Invalid value,
+            ErrorMessage: Must be one of: Yes, No.,
+            Range: 2-4
+          }
         }
       ]
     }

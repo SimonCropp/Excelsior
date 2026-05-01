@@ -5,7 +5,9 @@
     Name: Prop1,
     Type: string,
     IsNumber: false,
-    IsHtml: false
+    IsHtml: false,
+    IsNonNullable: false,
+    IsRequired: false
   },
   {
     Get: {Scrubbed},
@@ -13,7 +15,9 @@
     Name: Child1.Level2,
     Type: string,
     IsNumber: false,
-    IsHtml: false
+    IsHtml: false,
+    IsNonNullable: false,
+    IsRequired: false
   },
   {
     Get: {Scrubbed},
@@ -21,6 +25,8 @@
     Name: Child2.Level2,
     Type: string,
     IsNumber: false,
-    IsHtml: false
+    IsHtml: false,
+    IsNonNullable: false,
+    IsRequired: false
   }
 ]

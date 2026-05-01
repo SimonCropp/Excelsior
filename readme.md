@@ -1050,6 +1050,411 @@ builder.AddSheet(employees);
 <!-- endSnippet -->
 
 
+### Anonymous Types
+
+Anonymous types can be used as binding models. Type-safe column configuration via `Column(_ => _.Property, ...)` works as long as it is chained directly off `AddSheet(...)` so the compiler can infer the model type.
+
+<!-- snippet: AnonymousType -->
+<a id='snippet-AnonymousType'></a>
+```cs
+var employees = SampleData.Employees()
+    .Select(_ => new
+    {
+        _.Name,
+        _.Email,
+        _.Salary
+    });
+
+var builder = new BookBuilder();
+builder.AddSheet(employees)
+    .Column(
+        _ => _.Salary,
+        _ => _.Heading = "Annual Salary");
+
+using var book = await builder.Build();
+```
+<sup><a href='/src/Excelsior.Tests/AnonymousTypeTests.cs#L7-L25' title='Snippet source file'>snippet source</a> | <a href='#snippet-AnonymousType' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+
+### Template Sheets
+
+`AddTemplateSheet` produces an empty spreadsheet for the user to fill in — known column names, types, widths, formats, and validation but no data rows. Validation, locked-cell behavior, and conditional formatting all extend down `templateRowCount` rows below the header (defaults to 1000).
+
+<!-- snippet: TemplateSheetBasic -->
+<a id='snippet-TemplateSheetBasic'></a>
+```cs
+var builder = new BookBuilder();
+builder.AddTemplateSheet("Employees")
+    .Column<string>("Name", _ => _.Width = 25)
+    .Column<string>("Email", _ => _.Width = 30)
+    .Column<DateTime>(
+        "HireDate",
+        _ =>
+        {
+            _.Heading = "Hire Date";
+            _.Width = 15;
+        })
+    .Column<decimal>(
+        "Salary",
+        _ =>
+        {
+            _.Heading = "Annual Salary";
+            _.Format = "$#,##0.00";
+            _.Width = 18;
+        });
+
+using var book = await builder.Build();
+```
+<sup><a href='/src/Excelsior.Tests/TemplateSheetTests.cs#L7-L31' title='Snippet source file'>snippet source</a> | <a href='#snippet-TemplateSheetBasic' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+#### Type-Based Inference
+
+Template sheets infer common validation rules from the column's type:
+
+| Signal | Inferred | Gated by `inferValidationFromTypes` |
+| --- | --- | :---: |
+| `enum` / `enum?` | dropdown list of enum members | no — always on |
+| `bool` / `bool?` | dropdown of `TRUE` / `FALSE` (see [note](#bool-dropdown-vs-strict-boolean) below) | no — always on |
+| Numeric (`int`, `decimal`, `double`, etc.) | `ISNUMBER` constraint — manually-typed non-numeric values are blocked | no — always on |
+| C# `required` modifier or `[Required]` attribute | `Required = true` | no — always on |
+| Non-nullable value type (`int`, `decimal`, `DateTime`, `bool`, enum) | `Required = true` | yes |
+| Non-nullable reference type (NRT-aware, data-bound only) | `Required = true` | yes |
+
+When a column is `Required` and has no other validation type (e.g. a non-empty string), Excelsior emits a `LEN(TRIM(...))>0` custom validation with `allowBlank="0"`. Excel blocks blank entries with the default message *"This field is required."* — clearing the cell triggers the Stop popup. Set `ErrorMessage` to override.
+
+```cs
+public class Employee
+{
+    public required string Name { get; init; }   // always-on Required
+    [Required]
+    public string Email { get; init; } = "";     // always-on Required
+    public string? Notes { get; init; }          // not Required
+}
+```
+
+<!-- snippet: TemplateInferenceDefaults -->
+<a id='snippet-TemplateInferenceDefaults'></a>
+```cs
+var builder = new BookBuilder();
+builder.AddTemplateSheet("Employees", templateRowCount: 10)
+    .Column<string>("Name")
+    .Column<int>("Age")
+    .Column<bool>("IsActive")
+    .Column<DateTime>("HireDate");
+
+using var book = await builder.Build();
+```
+<sup><a href='/src/Excelsior.Tests/TypeInferenceTests.cs#L17-L28' title='Snippet source file'>snippet source</a> | <a href='#snippet-TemplateInferenceDefaults' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+Inference is **on by default for `AddTemplateSheet`** and **off by default for `AddSheet`**. Pass `inferValidationFromTypes: false` to disable on a template, or `inferValidationFromTypes: true` to opt in on a data-bound sheet:
+
+<!-- snippet: DataBoundInferenceEnabled -->
+<a id='snippet-DataBoundInferenceEnabled'></a>
+```cs
+InferenceModel[] data =
+[
+    new()
+    {
+        Name = "Alice",
+        Age = 30,
+        IsActive = true,
+        HireDate = new(2020, 1, 1)
+    }
+];
+
+var builder = new BookBuilder();
+builder.AddSheet(
+    data,
+    templateRowCount: 5,
+    inferValidationFromTypes: true);
+
+using var book = await builder.Build();
+```
+<sup><a href='/src/Excelsior.Tests/TypeInferenceTests.cs#L72-L93' title='Snippet source file'>snippet source</a> | <a href='#snippet-DataBoundInferenceEnabled' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+Per-column overrides always win — set `Required = false` or `DisableAllowedValues = true` to opt out for one column.
+
+<a id="bool-dropdown-vs-strict-boolean"></a>
+**Note on the bool dropdown.** Excel does have a native Boolean cell type (OOXML `t="b"`) and Excelsior writes `bool` values that way. The auto-derived dropdown is a *string list* of `TRUE,FALSE`, so when a user picks an entry Excel inserts the literal text — in practice it auto-coerces back to a Boolean cell on edit, but you can end up with mixed cell types in the same column (Booleans we wrote vs. strings the user picked) which can affect formulas like `=A2*1` or `COUNTIF(A:A, TRUE)`. If you need strict Boolean enforcement, set `DisableAllowedValues = true` on the column — this drops the dropdown so you can supply your own `=ISLOGICAL(A2)` constraint via a custom data validation. For typical data-entry templates the dropdown is the better UX.
+
+#### Auto-Derived Enum Dropdowns
+
+Enum-typed columns automatically render as dropdown lists (regardless of the inference flag). The list values match the same rendering used for cell content, so `[Display(Name = "Full Time")]` shows "Full Time" in the dropdown.
+
+<!-- snippet: TemplateSheetEnumDropdown -->
+<a id='snippet-TemplateSheetEnumDropdown'></a>
+```cs
+var builder = new BookBuilder(headingStyle: _ => _.Font.Bold = true);
+builder.AddTemplateSheet("Employees", templateRowCount: 50)
+    .Column<string>("Name", _ => _.Width = 25)
+    .Column<EmployeeStatus>("Status", _ => _.Width = 14);
+
+using var book = await builder.Build();
+```
+<sup><a href='/src/Excelsior.Tests/TemplateSheetTests.cs#L39-L48' title='Snippet source file'>snippet source</a> | <a href='#snippet-TemplateSheetEnumDropdown' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+This applies to data-bound sheets too — set `templateRowCount` on `AddSheet` to extend dropdowns past the data rows so users adding new rows still get validation.
+
+<!-- snippet: ValidationEnumDropdown -->
+<a id='snippet-ValidationEnumDropdown'></a>
+```cs
+var builder = new BookBuilder();
+builder.AddSheet(SampleData.Employees(), templateRowCount: 25);
+
+using var book = await builder.Build();
+```
+<sup><a href='/src/Excelsior.Tests/ValidationTests.cs#L7-L14' title='Snippet source file'>snippet source</a> | <a href='#snippet-ValidationEnumDropdown' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+To suppress the auto-derived dropdown for a specific column, set `DisableAllowedValues = true`. Setting `AllowedValues` explicitly to a list overrides the auto-derived values.
+
+#### Numeric and Date Ranges
+
+Restrict entry to a numeric or date range via `Range(min, max)`, or set `NumericMin`/`NumericMax`/`DateMin`/`DateMax` individually for one-sided constraints.
+
+<!-- snippet: TemplateSheetNumericRange -->
+<a id='snippet-TemplateSheetNumericRange'></a>
+```cs
+var builder = new BookBuilder();
+builder.AddTemplateSheet("Scorecard", templateRowCount: 25)
+    .Column<string>("Name", _ => _.Width = 25)
+    .Column<int>(
+        "Score",
+        _ =>
+        {
+            _.Width = 10;
+            _.Range(0, 100);
+            _.InputTitle = "Score";
+            _.InputMessage = "Whole number between 0 and 100.";
+            _.ErrorTitle = "Invalid score";
+            _.ErrorMessage = "Score must be between 0 and 100.";
+        });
+
+using var book = await builder.Build();
+```
+<sup><a href='/src/Excelsior.Tests/TemplateSheetTests.cs#L56-L75' title='Snippet source file'>snippet source</a> | <a href='#snippet-TemplateSheetNumericRange' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+<!-- snippet: TemplateSheetDateRange -->
+<a id='snippet-TemplateSheetDateRange'></a>
+```cs
+var builder = new BookBuilder();
+builder.AddTemplateSheet("Hires", templateRowCount: 25)
+    .Column<string>("Name", _ => _.Width = 25)
+    .Column<DateTime>(
+        "HireDate",
+        _ =>
+        {
+            _.Heading = "Hire Date";
+            _.Width = 15;
+            _.Range(new(2020, 1, 1), new DateTime(2030, 12, 31));
+        });
+
+using var book = await builder.Build();
+```
+<sup><a href='/src/Excelsior.Tests/TemplateSheetTests.cs#L83-L99' title='Snippet source file'>snippet source</a> | <a href='#snippet-TemplateSheetDateRange' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+#### Input Hints and Error Messages
+
+`InputTitle` / `InputMessage` configure the tooltip Excel shows when a cell is selected. `ErrorTitle` / `ErrorMessage` override the popup shown when invalid input is rejected.
+
+When neither is set, Excelsior fills in a sensible default based on the validation type — `"Must be one of: A, B, C."` for dropdowns, `"Must be a number between X and Y."` for ranges, `"Must be a number."` for the auto-`ISNUMBER` constraint, etc. Set `ErrorMessage` explicitly to override.
+
+`ErrorStyle` controls Excel's response to invalid input:
+
+| Style | Behavior |
+| --- | --- |
+| `Stop` (default) | Block the entry — user must enter a valid value or cancel. |
+| `Warning` | Warn the user; they can choose to keep the invalid value. |
+| `Information` | Inform the user; the value is accepted regardless. |
+
+<!-- snippet: ValidationErrorStyleWarning -->
+<a id='snippet-ValidationErrorStyleWarning'></a>
+```cs
+var builder = new BookBuilder();
+builder.AddSheet(SampleData.Employees(), templateRowCount: 5)
+    .Column(
+        _ => _.Salary,
+        _ =>
+        {
+            _.Range(0, 1_000_000);
+            _.ErrorStyle = ValidationErrorStyle.Warning;
+        });
+
+using var book = await builder.Build();
+```
+<sup><a href='/src/Excelsior.Tests/ValidationTests.cs#L85-L99' title='Snippet source file'>snippet source</a> | <a href='#snippet-ValidationErrorStyleWarning' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+#### Required Cells
+
+`Required = true` does two things:
+
+1. Highlights blank cells in the column with a soft red conditional-format fill, drawing attention to fields the user has not yet filled in.
+2. When the column has no other validation type (e.g. a free-text string), emits a `LEN(TRIM(...))>0` custom validation with `allowBlank="0"` so Excel rejects blank values typed into the cell.
+
+**Excel limitation.** Excel's data validation only fires on *typed* entry. It does **not** fire when the user clears a cell with the Delete key, pastes a blank value in, fills via drag, or writes from a macro — that's documented Excel behavior, not something Excelsior can override. So:
+
+- Typing a blank value and pressing Enter → the Stop popup fires and the entry is rejected.
+- Pressing Delete to clear an existing value → the cell goes blank silently, but the conditional-formatting highlight makes the gap visible.
+
+If you need true enforcement at save time (block save while any required cell is blank), you'll need a workbook-level VBA macro on `Workbook_BeforeSave` — that's out of scope for a template generator.
+
+<!-- snippet: TemplateSheetRequired -->
+<a id='snippet-TemplateSheetRequired'></a>
+```cs
+var builder = new BookBuilder();
+builder.AddTemplateSheet("Employees", templateRowCount: 25)
+    .Column<string>(
+        "Name",
+        _ =>
+        {
+            _.Width = 25;
+            _.Required = true;
+        })
+    .Column<string>("Email", _ => _.Width = 30)
+    .Column<DateTime>(
+        "HireDate",
+        _ =>
+        {
+            _.Heading = "Hire Date";
+            _.Width = 15;
+            _.Required = true;
+        });
+
+using var book = await builder.Build();
+```
+<sup><a href='/src/Excelsior.Tests/TemplateSheetTests.cs#L107-L130' title='Snippet source file'>snippet source</a> | <a href='#snippet-TemplateSheetRequired' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+#### Locked Cells under Protection
+
+When the workbook is built with `SheetProtectionOptions`, headings are locked and data cells are unlocked by default. Set `Locked = true` on a column to lock its data cells too — useful for read-only identifier columns or pre-filled formula results.
+
+<!-- snippet: TemplateSheetProtected -->
+<a id='snippet-TemplateSheetProtected'></a>
+```cs
+var builder = new BookBuilder(
+    protection: new()
+    {
+        Password = "secret"
+    });
+builder.AddTemplateSheet("Employees", templateRowCount: 25)
+    .Column<string>("Name", _ => _.Width = 25)
+    .Column<string>(
+        "EmployeeId",
+        _ =>
+        {
+            _.Heading = "Employee ID";
+            _.Width = 14;
+            _.Locked = true;
+        });
+
+using var book = await builder.Build();
+```
+<sup><a href='/src/Excelsior.Tests/TemplateSheetTests.cs#L138-L158' title='Snippet source file'>snippet source</a> | <a href='#snippet-TemplateSheetProtected' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+#### Combining Features
+
+A typical "data entry" workbook combines several of these features:
+
+<!-- snippet: TemplateSheetFullFeatured -->
+<a id='snippet-TemplateSheetFullFeatured'></a>
+```cs
+var builder = new BookBuilder(
+    headingStyle: _ =>
+    {
+        _.Font.Bold = true;
+        _.BackgroundColor = "FFEFEFEF";
+    });
+builder.AddTemplateSheet("Employees", templateRowCount: 100)
+    .Column<string>(
+        "Name",
+        _ =>
+        {
+            _.Width = 25;
+            _.Required = true;
+            _.InputMessage = "Full name of the employee.";
+        })
+    .Column<string>(
+        "Email",
+        _ =>
+        {
+            _.Width = 30;
+            _.Required = true;
+        })
+    .Column<DateTime>(
+        "HireDate",
+        _ =>
+        {
+            _.Heading = "Hire Date";
+            _.Width = 15;
+            _.Required = true;
+            _.Range(new(2020, 1, 1), new DateTime(2030, 12, 31));
+            _.ErrorMessage = "Hire date must be on or after 2020-01-01.";
+        })
+    .Column<decimal>(
+        "Salary",
+        _ =>
+        {
+            _.Heading = "Annual Salary";
+            _.Format = "$#,##0.00";
+            _.Width = 18;
+            _.Range(0m, 1_000_000m);
+        })
+    .Column<EmployeeStatus>(
+        "Status",
+        _ =>
+        {
+            _.Width = 14;
+            _.Required = true;
+        });
+
+using var book = await builder.Build();
+```
+<sup><a href='/src/Excelsior.Tests/TemplateSheetTests.cs#L166-L219' title='Snippet source file'>snippet source</a> | <a href='#snippet-TemplateSheetFullFeatured' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+All of the above features (`AllowedValues`, `Range`, `Required`, `Locked`, `InputMessage`, `ErrorMessage`) work the same way on the data-bound `AddSheet(...).Column(_ => _.Foo, c => ...)` API.
+
+#### Shortcut Methods
+
+The data-bound `ISheetBuilder<TModel>` exposes each validation feature as a one-line shortcut, mirroring the existing `Width`, `Format`, `Filter` etc. shortcuts.
+
+| Shortcut | Configures |
+| --- | --- |
+| `AllowedValues(p, values)` | dropdown list |
+| `DisableAllowedValues(p)` | suppress the auto-derived enum dropdown |
+| `Range(p, decimal min, decimal max)` | numeric range |
+| `Range(p, DateTime min, DateTime max)` | date range |
+| `Required(p)` | conditional-format blank highlight |
+| `Locked(p, value = true)` | per-column lock under protection |
+| `InputMessage(p, message, title = null)` | input-hint tooltip |
+| `ErrorMessage(p, message, title = null)` | error popup on invalid input |
+
+<!-- snippet: ValidationShortcuts -->
+<a id='snippet-ValidationShortcuts'></a>
+```cs
+var builder = new BookBuilder();
+var sheet = builder.AddSheet(SampleData.Employees(), templateRowCount: 25);
+sheet.Range(_ => _.Salary, 0, 1_000_000);
+sheet.Required(_ => _.Email);
+sheet.InputMessage(_ => _.Salary, "Annual salary in USD.", "Salary");
+sheet.ErrorMessage(_ => _.Salary, "Salary must be between 0 and 1,000,000.", "Invalid salary");
+
+using var book = await builder.Build();
+```
+<sup><a href='/src/Excelsior.Tests/ValidationTests.cs#L107-L118' title='Snippet source file'>snippet source</a> | <a href='#snippet-ValidationShortcuts' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+
 ### ColumnAttribute
 
 `ColumnAttribute` allows customization of rendering at the model level.
@@ -1276,7 +1681,20 @@ builder.AddSheet(data);
 
 ### ValueRenderer.For&lt;T&gt;
 
-`ValueRenderer.For<T>` can be used to control the rendering for all instances of a specific type. For example rendering `bool` as "Yes"/"No":
+`ValueRenderer.For<T>` can be used to control the rendering for all instances of a specific type. See [ValueRendererForSpecificType](/src/StaticSettingsTests/ValueRendererForSpecificType.cs) for an example with custom enums.
+
+> [!NOTE]
+> `ValueRenderer.For<bool>` and `ValueRenderer.NullDisplayFor<bool>` throw — replacing the cell value with a string would lose Excel's native boolean type, so formulas like `=IF(A2, ...)` and `COUNTIF(A:A, TRUE)` would stop working. Use [`ValueRenderer.BoolDisplay`](#valuerendererbooldisplay) instead, which keeps cells as native booleans and applies the display via a number format.
+
+
+#### Type specificity
+
+When multiple `For<T>` registrations match a property type, the most specific type wins. For example, `For<Color>(...)` takes precedence over `For<Enum>(...)` for `Color` properties, while other enum types still use the `Enum` fallback.
+
+
+### ValueRenderer.BoolDisplay
+
+`ValueRenderer.BoolDisplay` controls how `bool` and `bool?` columns render in Excel. Cells stay native booleans (`t="b"`) so Excel formulas continue to recognize them as boolean values; the display strings are applied via the number format `[=1]"trueDisplay";[=0]"falseDisplay"`. The optional third argument supplies a display for `null` cells in `bool?` columns.
 
 
 #### Config in a ModuleInitializer
@@ -1284,8 +1702,8 @@ builder.AddSheet(data);
 <!-- snippet: ValueRendererForBoolInit -->
 <a id='snippet-ValueRendererForBoolInit'></a>
 ```cs
-static void CustomBoolRender() =>
-    ValueRenderer.For<bool>(_ => _ ? "Yes" : "No");
+static void ConfigureBoolDisplay() =>
+    ValueRenderer.BoolDisplay("Yes", "No", "Unknown");
 ```
 <sup><a href='/src/StaticSettingsTests/ValueRendererForBool.cs#L12-L17' title='Snippet source file'>snippet source</a> | <a href='#snippet-ValueRendererForBoolInit' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
@@ -1304,16 +1722,24 @@ List<Target> data =
     {
         Name = "Alice",
         IsActive = true,
+        IsAdmin = true,
     },
     new()
     {
         Name = "Bob",
         IsActive = false,
+        IsAdmin = false,
+    },
+    new()
+    {
+        Name = "Carol",
+        IsActive = true,
+        IsAdmin = null,
     }
 ];
 builder.AddSheet(data);
 ```
-<sup><a href='/src/StaticSettingsTests/ValueRendererForBool.cs#L22-L41' title='Snippet source file'>snippet source</a> | <a href='#snippet-ValueRendererForBool' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/StaticSettingsTests/ValueRendererForBool.cs#L22-L49' title='Snippet source file'>snippet source</a> | <a href='#snippet-ValueRendererForBool' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -1322,35 +1748,33 @@ builder.AddSheet(data);
 <img src="/src/StaticSettingsTests/ValueRendererForBool.Test_Sheet1.png">
 
 
-#### Type specificity
-
-When multiple `For<T>` registrations match a property type, the most specific type wins. For example, `For<Color>(...)` takes precedence over `For<Enum>(...)` for `Color` properties, while other enum types still use the `Enum` fallback.
-
-
 ### ValueRenderer.NullDisplayFor&lt;T&gt;
 
-`ValueRenderer.NullDisplayFor<T>` can be used to control the display text when a nullable property is null. This combines well with `ValueRenderer.For<T>`:
+`ValueRenderer.NullDisplayFor<T>` can be used to control the display text when a nullable property is null. This combines well with `ValueRenderer.For<T>` — the rendered value is used when the property has a value, and the null display when it doesn't. Type specificity applies the same way as `For<T>`: a more specific registration wins over a less specific one for matching properties.
+
+> [!NOTE]
+> `NullDisplayFor<bool>` throws — use [`ValueRenderer.BoolDisplay`](#valuerendererbooldisplay) and pass the third (`nullDisplay`) argument.
 
 
 #### Config in a ModuleInitializer
 
-<!-- snippet: ValueRendererNullDisplayForBoolInit -->
-<a id='snippet-ValueRendererNullDisplayForBoolInit'></a>
+<!-- snippet: ValueRendererNullDisplayForTypeInit -->
+<a id='snippet-ValueRendererNullDisplayForTypeInit'></a>
 ```cs
-static void CustomBoolRender()
+static void CustomNullDisplayForType()
 {
-    ValueRenderer.For<bool>(_ => _ ? "Yes" : "No");
-    ValueRenderer.NullDisplayFor<bool>("Unknown");
+    ValueRenderer.For<Address>(_ => $"{_.Street}, {_.City}");
+    ValueRenderer.NullDisplayFor<Address>("No address on file");
 }
 ```
-<sup><a href='/src/StaticSettingsTests/ValueRendererNullDisplayForBool.cs#L15-L23' title='Snippet source file'>snippet source</a> | <a href='#snippet-ValueRendererNullDisplayForBoolInit' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/StaticSettingsTests/ValueRendererNullDisplayForType.cs#L15-L23' title='Snippet source file'>snippet source</a> | <a href='#snippet-ValueRendererNullDisplayForTypeInit' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
 #### Example use
 
-<!-- snippet: ValueRendererNullDisplayForBool -->
-<a id='snippet-ValueRendererNullDisplayForBool'></a>
+<!-- snippet: ValueRendererNullDisplayForType -->
+<a id='snippet-ValueRendererNullDisplayForType'></a>
 ```cs
 var builder = new BookBuilder();
 
@@ -1359,28 +1783,23 @@ List<Target> data =
     new()
     {
         Name = "Alice",
-        IsActive = true,
+        Address = new() { Street = "1 Park Ave", City = "Springfield" }
     },
     new()
     {
         Name = "Bob",
-        IsActive = false,
-    },
-    new()
-    {
-        Name = "Charlie",
-        IsActive = null,
+        Address = null
     }
 ];
 builder.AddSheet(data);
 ```
-<sup><a href='/src/StaticSettingsTests/ValueRendererNullDisplayForBool.cs#L28-L52' title='Snippet source file'>snippet source</a> | <a href='#snippet-ValueRendererNullDisplayForBool' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/StaticSettingsTests/ValueRendererNullDisplayForType.cs#L28-L47' title='Snippet source file'>snippet source</a> | <a href='#snippet-ValueRendererNullDisplayForType' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
 #### Result
 
-<img src="/src/StaticSettingsTests/ValueRendererNullDisplayForBool.Test_Sheet1.png">
+<img src="/src/StaticSettingsTests/ValueRendererNullDisplayForType.Test_Sheet1.png">
 
 
 ### ValueRenderer.NullDisplayFor&lt;Enum&gt;

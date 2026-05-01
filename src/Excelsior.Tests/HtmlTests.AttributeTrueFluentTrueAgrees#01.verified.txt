@@ -5,8 +5,12 @@
       Columns: [
         {
           Name: Value,
+          Metadata: {
+            property: Value
+          },
           Width: 10.0,
-          ContainsRichText: true
+          ContainsRichText: true,
+          RequiredHighlight: false
         }
       ]
     }

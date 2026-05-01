@@ -5,13 +5,21 @@
       Columns: [
         {
           Name: Property,
+          Metadata: {
+            property: Property
+          },
           Width: 16.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false
         },
         {
           Name: Custom,
+          Metadata: {
+            property: Nested.NestedProperty
+          },
           Width: 23.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false
         }
       ]
     }

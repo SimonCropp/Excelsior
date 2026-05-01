@@ -5,7 +5,9 @@
     Name: Member1,
     Type: string,
     IsNumber: false,
-    IsHtml: false
+    IsHtml: false,
+    IsNonNullable: true,
+    IsRequired: false
   },
   {
     Get: {Scrubbed},
@@ -13,6 +15,8 @@
     Name: Member2,
     Type: string,
     IsNumber: false,
-    IsHtml: false
+    IsHtml: false,
+    IsNonNullable: true,
+    IsRequired: false
   }
 ]

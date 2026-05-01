@@ -5,13 +5,31 @@
       Columns: [
         {
           Name: Name,
+          Metadata: {
+            property: Name
+          },
           Width: 9.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false
         },
         {
           Name: Age,
+          Metadata: {
+            property: Age
+          },
           Width: 9.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false,
+          Validation: {
+            Type: custom,
+            Min: ISNUMBER(B2),
+            AllowBlank: true,
+            ShowInputMessage: false,
+            ShowErrorMessage: true,
+            ErrorTitle: Invalid value,
+            ErrorMessage: Must be a number.,
+            Range: 2-3
+          }
         }
       ]
     }

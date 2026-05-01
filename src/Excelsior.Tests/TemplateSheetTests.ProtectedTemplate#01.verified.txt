@@ -6,12 +6,15 @@
         {
           Name: Name,
           Width: 25.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          Locked: false,
+          RequiredHighlight: false
         },
         {
           Name: Employee ID,
           Width: 14.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false
         }
       ],
       Protection: {

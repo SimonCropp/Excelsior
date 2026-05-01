@@ -6,37 +6,56 @@
         {
           Name: Employee ID,
           Width: 15.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false
         },
         {
           Name: Full Name,
           Width: 15.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false
         },
         {
           Name: Email Address,
           Width: 22.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false
         },
         {
           Name: Hire Date,
           Width: 13.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false
         },
         {
           Name: Annual Salary,
           Width: 17.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          NumberFormat: #,##0,
+          RequiredHighlight: false
         },
         {
           Name: Is Active,
           Width: 13.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false
         },
         {
           Name: Status,
           Width: 13.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false,
+          Validation: {
+            Type: list,
+            AllowedValues: [
+              Full Time,
+              Part Time,
+              Contract,
+              Terminated
+            ],
+            AllowBlank: true,
+            Range: 2-5
+          }
         }
       ]
     }

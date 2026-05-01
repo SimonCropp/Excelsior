@@ -6,32 +6,46 @@
         {
           Name: Number,
           Width: 15.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false
         },
         {
           Name: String,
           Width: 15.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false
         },
         {
           Name: Date Time,
           Width: 23.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false
         },
         {
           Name: Date,
           Width: 13.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false
         },
         {
           Name: Enum,
           Width: 13.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false,
+          Validation: {
+            Type: list,
+            AllowedValues: [
+              Value
+            ],
+            AllowBlank: true,
+            Range: 2-3
+          }
         },
         {
           Name: Bool,
           Width: 13.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false
         }
       ]
     }

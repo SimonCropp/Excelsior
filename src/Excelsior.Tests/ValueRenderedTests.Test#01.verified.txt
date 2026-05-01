@@ -6,17 +6,29 @@
         {
           Name: String,
           Width: 14.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false
         },
         {
           Name: Enum,
           Width: 24.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false,
+          Validation: {
+            Type: list,
+            AllowedValues: [
+              Rendered EnumValue1,
+              Rendered EnumValue2
+            ],
+            AllowBlank: true,
+            Range: 2
+          }
         },
         {
           Name: Nested,
           Width: 26.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false
         }
       ]
     }

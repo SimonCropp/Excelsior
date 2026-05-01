@@ -6,12 +6,14 @@
         {
           Name: Age,
           Width: 15.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false
         },
         {
           Name: Full Name,
           Width: 13.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false
         }
       ]
     }

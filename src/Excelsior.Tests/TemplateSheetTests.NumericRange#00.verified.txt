@@ -6,12 +6,26 @@
         {
           Name: Name,
           Width: 25.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false
         },
         {
           Name: Score,
           Width: 10.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false,
+          Validation: {
+            Type: decimal,
+            Operator: between,
+            Min: 0,
+            Max: 100,
+            AllowBlank: true,
+            InputTitle: Score,
+            InputMessage: Whole number between 0 and 100.,
+            ErrorTitle: Invalid score,
+            ErrorMessage: Score must be between 0 and 100.,
+            Range: 2-26
+          }
         }
       ]
     }

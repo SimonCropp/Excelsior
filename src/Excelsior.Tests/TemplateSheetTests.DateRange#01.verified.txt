@@ -6,12 +6,23 @@
         {
           Name: Name,
           Width: 25.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false
         },
         {
           Name: Hire Date,
           Width: 15.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          NumberFormat: yyyy-MM-dd HH:mm:ss,
+          RequiredHighlight: false,
+          Validation: {
+            Type: date,
+            Operator: between,
+            Min: 2020-01-01,
+            Max: 2030-12-31,
+            AllowBlank: true,
+            Range: 2-26
+          }
         }
       ]
     }

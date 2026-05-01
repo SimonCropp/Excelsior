@@ -6,37 +6,67 @@
         {
           Name: Employee ID,
           Width: 15.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false
         },
         {
           Name: Full Name,
           Width: 15.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false
         },
         {
           Name: Email Address,
           Width: 22.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: true
         },
         {
           Name: Hire Date,
           Width: 13.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false
         },
         {
           Name: Annual Salary,
           Width: 17.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false,
+          Validation: {
+            Type: decimal,
+            Operator: between,
+            Min: 0,
+            Max: 1000000,
+            AllowBlank: true,
+            InputTitle: Salary,
+            InputMessage: Annual salary in USD.,
+            ErrorTitle: Invalid salary,
+            ErrorMessage: Salary must be between 0 and 1,000,000.,
+            Range: 2-30
+          }
         },
         {
           Name: Is Active,
           Width: 13.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false
         },
         {
           Name: Status,
           Width: 13.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false,
+          Validation: {
+            Type: list,
+            AllowedValues: [
+              Full Time,
+              Part Time,
+              Contract,
+              Terminated
+            ],
+            AllowBlank: true,
+            Range: 2-30
+          }
         }
       ]
     }

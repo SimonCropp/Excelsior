@@ -6,12 +6,25 @@
         {
           Name: Name,
           Width: 25.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false
         },
         {
           Name: Status,
           Width: 14.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false,
+          Validation: {
+            Type: list,
+            AllowedValues: [
+              Full Time,
+              Part Time,
+              Contract,
+              Terminated
+            ],
+            AllowBlank: true,
+            Range: 2-51
+          }
         }
       ]
     }

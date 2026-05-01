@@ -8,7 +8,7 @@ class TemplateSheetBuilder :
 
     public ITemplateSheetBuilder Column<TProperty>(
         string name,
-        Action<TemplateColumnConfig<TProperty>>? configuration = null)
+        Action<TemplateColumnConfig>? configuration = null)
     {
         if (string.IsNullOrWhiteSpace(name))
         {
@@ -22,7 +22,7 @@ class TemplateSheetBuilder :
         }
 
         var type = typeof(TProperty);
-        var config = new TemplateColumnConfig<TProperty>();
+        var config = new TemplateColumnConfig();
         configuration?.Invoke(config);
 
         var allowedValues = config.DisableAllowedValues

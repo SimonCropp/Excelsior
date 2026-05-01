@@ -1,6 +1,6 @@
 namespace Excelsior;
 
-public class TemplateColumnConfig<TProperty>
+public class TemplateColumnConfig
 {
     public string? Heading { get; set; }
     public int? Order { get; set; }

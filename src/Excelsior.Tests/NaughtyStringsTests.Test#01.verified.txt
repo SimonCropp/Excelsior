@@ -6,12 +6,14 @@
         {
           Name: Value,
           Width: 50.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false
         },
         {
           Name: Html,
           Width: 50.0,
-          ContainsRichText: true
+          ContainsRichText: true,
+          RequiredHighlight: false
         }
       ]
     }

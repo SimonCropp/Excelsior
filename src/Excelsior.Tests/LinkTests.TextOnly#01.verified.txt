@@ -6,32 +6,38 @@
         {
           Name: Name,
           Width: 9.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false
         },
         {
           Name: Link,
           Width: 10.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false
         },
         {
           Name: Nullable Link,
           Width: 17.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false
         },
         {
           Name: Links,
           Width: 50.0,
-          ContainsRichText: true
+          ContainsRichText: true,
+          RequiredHighlight: false
         },
         {
           Name: Nullable Links,
           Width: 23.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false
         },
         {
           Name: Links With Nulls,
           Width: 40.0,
-          ContainsRichText: true
+          ContainsRichText: true,
+          RequiredHighlight: false
         }
       ]
     }

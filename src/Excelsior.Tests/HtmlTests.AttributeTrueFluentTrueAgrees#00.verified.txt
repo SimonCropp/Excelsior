@@ -6,7 +6,8 @@
         {
           Name: Value,
           Width: 10.0,
-          ContainsRichText: true
+          ContainsRichText: true,
+          RequiredHighlight: false
         }
       ]
     }

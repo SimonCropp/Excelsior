@@ -6,22 +6,27 @@
         {
           Name: Employee ID,
           Width: 15.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          NumberFormat: 0000,
+          RequiredHighlight: false
         },
         {
           Name: Full Name,
           Width: 20.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false
         },
         {
           Name: Hire Date,
           Width: 13.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false
         },
         {
           Name: Email Address,
           Width: 30.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false
         }
       ]
     }

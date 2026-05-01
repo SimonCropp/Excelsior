@@ -6,27 +6,67 @@
         {
           Name: Name,
           Width: 25.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: true,
+          Validation: {
+            AllowBlank: false,
+            InputMessage: Full name of the employee.,
+            Range: 2-101
+          }
         },
         {
           Name: Email,
           Width: 30.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: true
         },
         {
           Name: Hire Date,
           Width: 15.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          NumberFormat: yyyy-MM-dd HH:mm:ss,
+          RequiredHighlight: true,
+          Validation: {
+            Type: date,
+            Operator: between,
+            Min: 2020-01-01,
+            Max: 2030-12-31,
+            AllowBlank: false,
+            ErrorMessage: Hire date must be on or after 2020-01-01.,
+            Range: 2-101
+          }
         },
         {
           Name: Annual Salary,
           Width: 18.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          NumberFormat: $#,##0.00,
+          RequiredHighlight: false,
+          Validation: {
+            Type: decimal,
+            Operator: between,
+            Min: 0,
+            Max: 1000000,
+            AllowBlank: true,
+            Range: 2-101
+          }
         },
         {
           Name: Status,
           Width: 14.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: true,
+          Validation: {
+            Type: list,
+            AllowedValues: [
+              Full Time,
+              Part Time,
+              Contract,
+              Terminated
+            ],
+            AllowBlank: false,
+            Range: 2-101
+          }
         }
       ]
     }

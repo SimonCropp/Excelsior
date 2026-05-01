@@ -5,6 +5,9 @@
       Columns: [
         {
           Name: Manufacturer,
+          Metadata: {
+            property: Manufacturer
+          },
           Width: 18.0,
           ContainsRichText: false,
           RequiredHighlight: false,
@@ -14,6 +17,8 @@
               BUILDYOURDREAM
             ],
             AllowBlank: true,
+            ShowInputMessage: false,
+            ShowErrorMessage: true,
             ErrorTitle: Invalid value,
             ErrorMessage: Must be one of: BUILDYOURDREAM.,
             Range: 2-3
@@ -21,6 +26,9 @@
         },
         {
           Name: Color,
+          Metadata: {
+            property: Color
+          },
           Width: 16.0,
           ContainsRichText: false,
           RequiredHighlight: false,
@@ -30,6 +38,8 @@
               ANTIQUEWHITE
             ],
             AllowBlank: true,
+            ShowInputMessage: false,
+            ShowErrorMessage: true,
             ErrorTitle: Invalid value,
             ErrorMessage: Must be one of: ANTIQUEWHITE.,
             Range: 2-3
@@ -37,6 +47,9 @@
         },
         {
           Name: Nullable Color,
+          Metadata: {
+            property: NullableColor
+          },
           Width: 18.0,
           ContainsRichText: false,
           RequiredHighlight: false,
@@ -46,6 +59,8 @@
               ANTIQUEWHITE
             ],
             AllowBlank: true,
+            ShowInputMessage: false,
+            ShowErrorMessage: true,
             ErrorTitle: Invalid value,
             ErrorMessage: Must be one of: ANTIQUEWHITE.,
             Range: 2-3

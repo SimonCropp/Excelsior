@@ -5,6 +5,9 @@
       Columns: [
         {
           Name: Name,
+          Metadata: {
+            property: Name
+          },
           Width: 25.0,
           ContainsRichText: false,
           RequiredHighlight: true,
@@ -12,7 +15,9 @@
             Type: custom,
             Min: LEN(TRIM(A2))>0,
             AllowBlank: false,
+            ShowInputMessage: true,
             InputMessage: Full name of the employee.,
+            ShowErrorMessage: true,
             ErrorTitle: Invalid value,
             ErrorMessage: This field is required.,
             Range: 2-101
@@ -20,6 +25,9 @@
         },
         {
           Name: Email,
+          Metadata: {
+            property: Email
+          },
           Width: 30.0,
           ContainsRichText: false,
           RequiredHighlight: true,
@@ -27,6 +35,8 @@
             Type: custom,
             Min: LEN(TRIM(B2))>0,
             AllowBlank: false,
+            ShowInputMessage: false,
+            ShowErrorMessage: true,
             ErrorTitle: Invalid value,
             ErrorMessage: This field is required.,
             Range: 2-101
@@ -34,6 +44,9 @@
         },
         {
           Name: Hire Date,
+          Metadata: {
+            property: HireDate
+          },
           Width: 15.0,
           ContainsRichText: false,
           NumberFormat: yyyy-MM-dd HH:mm:ss,
@@ -44,6 +57,8 @@
             Min: 2020-01-01,
             Max: 2030-12-31,
             AllowBlank: false,
+            ShowInputMessage: false,
+            ShowErrorMessage: true,
             ErrorTitle: Invalid value,
             ErrorMessage: Hire date must be on or after 2020-01-01.,
             Range: 2-101
@@ -51,6 +66,9 @@
         },
         {
           Name: Annual Salary,
+          Metadata: {
+            property: Salary
+          },
           Width: 18.0,
           ContainsRichText: false,
           NumberFormat: $#,##0.00,
@@ -61,6 +79,8 @@
             Min: 0,
             Max: 1000000,
             AllowBlank: false,
+            ShowInputMessage: false,
+            ShowErrorMessage: true,
             ErrorTitle: Invalid value,
             ErrorMessage: Must be a number between 0 and 1000000.,
             Range: 2-101
@@ -68,6 +88,9 @@
         },
         {
           Name: Status,
+          Metadata: {
+            property: Status
+          },
           Width: 14.0,
           ContainsRichText: false,
           RequiredHighlight: true,
@@ -80,6 +103,8 @@
               Terminated
             ],
             AllowBlank: false,
+            ShowInputMessage: false,
+            ShowErrorMessage: true,
             ErrorTitle: Invalid value,
             ErrorMessage: Must be one of: Full Time, Part Time, Contract, Terminated.,
             Range: 2-101

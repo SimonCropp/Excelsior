@@ -5,12 +5,18 @@
       Columns: [
         {
           Name: Name,
+          Metadata: {
+            property: Name
+          },
           Width: 9.0,
           ContainsRichText: false,
           RequiredHighlight: false
         },
         {
           Name: Age,
+          Metadata: {
+            property: Age
+          },
           Width: 9.0,
           ContainsRichText: false,
           RequiredHighlight: true,
@@ -18,6 +24,8 @@
             Type: custom,
             Min: ISNUMBER(B2),
             AllowBlank: false,
+            ShowInputMessage: false,
+            ShowErrorMessage: true,
             ErrorTitle: Invalid value,
             ErrorMessage: Must be a number.,
             Range: 2-11
@@ -25,6 +33,9 @@
         },
         {
           Name: IsActive,
+          Metadata: {
+            property: IsActive
+          },
           Width: 12.0,
           ContainsRichText: false,
           RequiredHighlight: true,
@@ -35,6 +46,8 @@
               FALSE
             ],
             AllowBlank: false,
+            ShowInputMessage: false,
+            ShowErrorMessage: true,
             ErrorTitle: Invalid value,
             ErrorMessage: Must be one of: TRUE, FALSE.,
             Range: 2-11
@@ -42,6 +55,9 @@
         },
         {
           Name: HireDate,
+          Metadata: {
+            property: HireDate
+          },
           Width: 12.0,
           ContainsRichText: false,
           NumberFormat: yyyy-MM-dd HH:mm:ss,
@@ -50,6 +66,8 @@
             Type: custom,
             Min: LEN(TRIM(D2))>0,
             AllowBlank: false,
+            ShowInputMessage: false,
+            ShowErrorMessage: true,
             ErrorTitle: Invalid value,
             ErrorMessage: This field is required.,
             Range: 2-11

@@ -5,6 +5,9 @@
       Columns: [
         {
           Name: Name,
+          Metadata: {
+            property: Name
+          },
           Width: 9.0,
           ContainsRichText: false,
           RequiredHighlight: true,
@@ -12,6 +15,8 @@
             Type: custom,
             Min: LEN(TRIM(A2))>0,
             AllowBlank: false,
+            ShowInputMessage: false,
+            ShowErrorMessage: true,
             ErrorTitle: Invalid value,
             ErrorMessage: This field is required.,
             Range: 2-7
@@ -19,12 +24,18 @@
         },
         {
           Name: Notes,
+          Metadata: {
+            property: Notes
+          },
           Width: 9.0,
           ContainsRichText: false,
           RequiredHighlight: false
         },
         {
           Name: Age,
+          Metadata: {
+            property: Age
+          },
           Width: 9.0,
           ContainsRichText: false,
           RequiredHighlight: true,
@@ -32,6 +43,8 @@
             Type: custom,
             Min: ISNUMBER(C2),
             AllowBlank: false,
+            ShowInputMessage: false,
+            ShowErrorMessage: true,
             ErrorTitle: Invalid value,
             ErrorMessage: Must be a number.,
             Range: 2-7
@@ -39,12 +52,18 @@
         },
         {
           Name: Score,
+          Metadata: {
+            property: Score
+          },
           Width: 9.0,
           ContainsRichText: false,
           RequiredHighlight: false
         },
         {
           Name: Is Active,
+          Metadata: {
+            property: IsActive
+          },
           Width: 13.0,
           ContainsRichText: false,
           RequiredHighlight: true,
@@ -55,6 +74,8 @@
               FALSE
             ],
             AllowBlank: false,
+            ShowInputMessage: false,
+            ShowErrorMessage: true,
             ErrorTitle: Invalid value,
             ErrorMessage: Must be one of: TRUE, FALSE.,
             Range: 2-7
@@ -62,6 +83,9 @@
         },
         {
           Name: Hire Date,
+          Metadata: {
+            property: HireDate
+          },
           Width: 13.0,
           ContainsRichText: false,
           RequiredHighlight: true,
@@ -69,6 +93,8 @@
             Type: custom,
             Min: LEN(TRIM(F2))>0,
             AllowBlank: false,
+            ShowInputMessage: false,
+            ShowErrorMessage: true,
             ErrorTitle: Invalid value,
             ErrorMessage: This field is required.,
             Range: 2-7

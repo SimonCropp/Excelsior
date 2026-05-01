@@ -5,6 +5,9 @@
       Columns: [
         {
           Name: Name,
+          Metadata: {
+            property: Name
+          },
           Width: 25.0,
           ContainsRichText: false,
           Locked: false,
@@ -12,6 +15,9 @@
         },
         {
           Name: Employee ID,
+          Metadata: {
+            property: EmployeeId
+          },
           Width: 14.0,
           ContainsRichText: false,
           RequiredHighlight: false

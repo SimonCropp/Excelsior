@@ -5,12 +5,18 @@
       Columns: [
         {
           Name: Name,
+          Metadata: {
+            property: Name
+          },
           Width: 9.0,
           ContainsRichText: false,
           RequiredHighlight: false
         },
         {
           Name: Color,
+          Metadata: {
+            property: Color
+          },
           Width: 13.0,
           ContainsRichText: false,
           RequiredHighlight: false,
@@ -20,6 +26,8 @@
               White-ish
             ],
             AllowBlank: true,
+            ShowInputMessage: false,
+            ShowErrorMessage: true,
             ErrorTitle: Invalid value,
             ErrorMessage: Must be one of: White-ish.,
             Range: 2
@@ -27,6 +35,9 @@
         },
         {
           Name: Manufacturer,
+          Metadata: {
+            property: Manufacturer
+          },
           Width: 18.0,
           ContainsRichText: false,
           RequiredHighlight: false,
@@ -36,6 +47,8 @@
               BUILDYOURDREAM
             ],
             AllowBlank: true,
+            ShowInputMessage: false,
+            ShowErrorMessage: true,
             ErrorTitle: Invalid value,
             ErrorMessage: Must be one of: BUILDYOURDREAM.,
             Range: 2

@@ -5,18 +5,27 @@
       Columns: [
         {
           Name: Date Property,
+          Metadata: {
+            property: DateProperty
+          },
           Width: 17.0,
           ContainsRichText: false,
           RequiredHighlight: false
         },
         {
           Name: Date Time Property,
+          Metadata: {
+            property: DateTimeProperty
+          },
           Width: 23.0,
           ContainsRichText: false,
           RequiredHighlight: false
         },
         {
           Name: Date Time Offset Property,
+          Metadata: {
+            property: DateTimeOffsetProperty
+          },
           Width: 31.0,
           ContainsRichText: false,
           RequiredHighlight: false

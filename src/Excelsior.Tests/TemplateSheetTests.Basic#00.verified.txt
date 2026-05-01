@@ -5,18 +5,27 @@
       Columns: [
         {
           Name: Name,
+          Metadata: {
+            property: Name
+          },
           Width: 25.0,
           ContainsRichText: false,
           RequiredHighlight: false
         },
         {
           Name: Email,
+          Metadata: {
+            property: Email
+          },
           Width: 30.0,
           ContainsRichText: false,
           RequiredHighlight: false
         },
         {
           Name: Hire Date,
+          Metadata: {
+            property: HireDate
+          },
           Width: 15.0,
           ContainsRichText: false,
           NumberFormat: yyyy-MM-dd HH:mm:ss,
@@ -25,6 +34,8 @@
             Type: custom,
             Min: LEN(TRIM(C2))>0,
             AllowBlank: false,
+            ShowInputMessage: false,
+            ShowErrorMessage: true,
             ErrorTitle: Invalid value,
             ErrorMessage: This field is required.,
             Range: 2-1001
@@ -32,6 +43,9 @@
         },
         {
           Name: Annual Salary,
+          Metadata: {
+            property: Salary
+          },
           Width: 18.0,
           ContainsRichText: false,
           NumberFormat: $#,##0.00,
@@ -40,6 +54,8 @@
             Type: custom,
             Min: ISNUMBER(D2),
             AllowBlank: false,
+            ShowInputMessage: false,
+            ShowErrorMessage: true,
             ErrorTitle: Invalid value,
             ErrorMessage: Must be a number.,
             Range: 2-1001

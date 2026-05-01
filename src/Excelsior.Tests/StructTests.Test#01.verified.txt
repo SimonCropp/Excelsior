@@ -5,6 +5,9 @@
       Columns: [
         {
           Name: Name,
+          Metadata: {
+            property: Name
+          },
           Width: 12.0,
           ContainsRichText: false,
           RequiredHighlight: true,
@@ -12,6 +15,8 @@
             Type: custom,
             Min: LEN(TRIM(A2))>0,
             AllowBlank: false,
+            ShowInputMessage: false,
+            ShowErrorMessage: true,
             ErrorTitle: Invalid value,
             ErrorMessage: This field is required.,
             Range: 2

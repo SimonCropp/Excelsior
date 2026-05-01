@@ -5,6 +5,9 @@
       Columns: [
         {
           Name: Title,
+          Metadata: {
+            property: Title
+          },
           Width: 13.0,
           ContainsRichText: false,
           RequiredHighlight: true,
@@ -12,6 +15,8 @@
             Type: custom,
             Min: LEN(TRIM(A2))>0,
             AllowBlank: false,
+            ShowInputMessage: false,
+            ShowErrorMessage: true,
             ErrorTitle: Invalid value,
             ErrorMessage: This field is required.,
             Range: 2-4
@@ -19,6 +24,9 @@
         },
         {
           Name: A very very very very very very long header that would wrap many times in a narrow column,
+          Metadata: {
+            property: Body
+          },
           Width: 50.0,
           ContainsRichText: false,
           RequiredHighlight: true,
@@ -26,6 +34,8 @@
             Type: custom,
             Min: LEN(TRIM(B2))>0,
             AllowBlank: false,
+            ShowInputMessage: false,
+            ShowErrorMessage: true,
             ErrorTitle: Invalid value,
             ErrorMessage: This field is required.,
             Range: 2-4

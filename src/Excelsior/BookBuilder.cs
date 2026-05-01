@@ -37,6 +37,17 @@ public class BookBuilder
 
     internal StyleManager StyleManager { get; } = new();
 
+    // Custom XML part that maps each sheet's column index to the originating C# property name.
+    // Any OOXML reader that walks <sheet name="..."><column index="N" property="..."/></sheet>
+    // can pick this up — Verify.OpenXml does so automatically and surfaces it on ColumnInfo.Metadata.
+    internal const string MetadataNamespace = "https://github.com/SimonCropp/Excelsior/columnMetadata/v1";
+
+    record SheetMetadata(string SheetName, IReadOnlyList<(int Index, string PropertyName)> Columns);
+    List<SheetMetadata> sheetMetadata = [];
+
+    internal void RegisterSheetMetadata(string sheetName, IReadOnlyList<(int Index, string PropertyName)> columns) =>
+        sheetMetadata.Add(new(sheetName, columns));
+
     public ISheetBuilder<TModel> AddSheet<TModel>(
         IEnumerable<TModel> data,
         string? name = null,
@@ -137,7 +148,34 @@ public class BookBuilder
 
         ApplyStylesheet(document);
         ApplyWorkbookProtection(workbookPart);
+        WriteSheetMetadata(workbookPart);
         return document;
+    }
+
+    void WriteSheetMetadata(WorkbookPart workbookPart)
+    {
+        if (sheetMetadata.Count == 0)
+        {
+            return;
+        }
+
+        XNamespace ns = MetadataNamespace;
+        var doc = new XDocument(
+            new XElement(
+                ns + "columnMetadata",
+                sheetMetadata.Select(sheet =>
+                    new XElement(
+                        ns + "sheet",
+                        new XAttribute("name", sheet.SheetName),
+                        sheet.Columns.Select(column =>
+                            new XElement(
+                                ns + "column",
+                                new XAttribute("index", column.Index),
+                                new XAttribute("property", column.PropertyName)))))));
+
+        var customPart = workbookPart.AddCustomXmlPart(CustomXmlPartType.CustomXml);
+        using var stream = customPart.GetStream(FileMode.Create);
+        doc.Save(stream);
     }
 
     void ApplyWorkbookProtection(WorkbookPart workbookPart)

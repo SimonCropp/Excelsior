@@ -5,6 +5,9 @@
       Columns: [
         {
           Name: Employee ID,
+          Metadata: {
+            property: Id
+          },
           Width: 15.0,
           ContainsRichText: false,
           RequiredHighlight: true,
@@ -12,6 +15,8 @@
             Type: custom,
             Min: ISNUMBER(A2),
             AllowBlank: false,
+            ShowInputMessage: false,
+            ShowErrorMessage: true,
             ErrorTitle: Invalid value,
             ErrorMessage: Must be a number.,
             Range: 2-15
@@ -19,6 +24,9 @@
         },
         {
           Name: Full Name,
+          Metadata: {
+            property: Name
+          },
           Width: 15.0,
           ContainsRichText: false,
           RequiredHighlight: true,
@@ -26,6 +34,8 @@
             Type: custom,
             Min: LEN(TRIM(B2))>0,
             AllowBlank: false,
+            ShowInputMessage: false,
+            ShowErrorMessage: true,
             ErrorTitle: Invalid value,
             ErrorMessage: This field is required.,
             Range: 2-15
@@ -33,6 +43,9 @@
         },
         {
           Name: Email Address,
+          Metadata: {
+            property: Email
+          },
           Width: 22.0,
           ContainsRichText: false,
           RequiredHighlight: true,
@@ -40,6 +53,8 @@
             Type: custom,
             Min: LEN(TRIM(C2))>0,
             AllowBlank: false,
+            ShowInputMessage: false,
+            ShowErrorMessage: true,
             ErrorTitle: Invalid value,
             ErrorMessage: This field is required.,
             Range: 2-15
@@ -47,12 +62,18 @@
         },
         {
           Name: Hire Date,
+          Metadata: {
+            property: HireDate
+          },
           Width: 13.0,
           ContainsRichText: false,
           RequiredHighlight: false
         },
         {
           Name: Annual Salary,
+          Metadata: {
+            property: Salary
+          },
           Width: 17.0,
           ContainsRichText: false,
           RequiredHighlight: false,
@@ -62,7 +83,9 @@
             Min: 0,
             Max: 1000000,
             AllowBlank: true,
+            ShowInputMessage: true,
             InputMessage: Annual salary in USD.,
+            ShowErrorMessage: true,
             ErrorTitle: Invalid value,
             ErrorMessage: Salary must be between 0 and 1,000,000.,
             Range: 2-15
@@ -70,6 +93,9 @@
         },
         {
           Name: Is Active,
+          Metadata: {
+            property: IsActive
+          },
           Width: 13.0,
           ContainsRichText: false,
           RequiredHighlight: false,
@@ -80,6 +106,8 @@
               FALSE
             ],
             AllowBlank: true,
+            ShowInputMessage: false,
+            ShowErrorMessage: true,
             ErrorTitle: Invalid value,
             ErrorMessage: Must be one of: TRUE, FALSE.,
             Range: 2-15
@@ -87,6 +115,9 @@
         },
         {
           Name: Status,
+          Metadata: {
+            property: Status
+          },
           Width: 13.0,
           ContainsRichText: false,
           RequiredHighlight: false,
@@ -99,6 +130,8 @@
               Terminated
             ],
             AllowBlank: true,
+            ShowInputMessage: false,
+            ShowErrorMessage: true,
             ErrorTitle: Invalid value,
             ErrorMessage: Must be one of: Full Time, Part Time, Contract, Terminated.,
             Range: 2-15

@@ -5,12 +5,18 @@
       Columns: [
         {
           Name: Name,
+          Metadata: {
+            property: Name
+          },
           Width: 12.0,
           ContainsRichText: false,
           RequiredHighlight: false
         },
         {
           Name: Street Number,
+          Metadata: {
+            property: Address.StreetNumber
+          },
           Width: 17.0,
           ContainsRichText: false,
           RequiredHighlight: false,
@@ -18,6 +24,8 @@
             Type: custom,
             Min: ISNUMBER(B2),
             AllowBlank: true,
+            ShowInputMessage: false,
+            ShowErrorMessage: true,
             ErrorTitle: Invalid value,
             ErrorMessage: Must be a number.,
             Range: 2
@@ -25,18 +33,27 @@
         },
         {
           Name: Street,
+          Metadata: {
+            property: Address.Street
+          },
           Width: 19.0,
           ContainsRichText: false,
           RequiredHighlight: false
         },
         {
           Name: City,
+          Metadata: {
+            property: Address.City
+          },
           Width: 12.0,
           ContainsRichText: false,
           RequiredHighlight: false
         },
         {
           Name: State,
+          Metadata: {
+            property: Address.State
+          },
           Width: 9.0,
           ContainsRichText: false,
           RequiredHighlight: false,
@@ -46,6 +63,8 @@
               SA
             ],
             AllowBlank: true,
+            ShowInputMessage: false,
+            ShowErrorMessage: true,
             ErrorTitle: Invalid value,
             ErrorMessage: Must be one of: SA.,
             Range: 2
@@ -53,6 +72,9 @@
         },
         {
           Name: Post Code,
+          Metadata: {
+            property: Address.PostCode
+          },
           Width: 13.0,
           ContainsRichText: false,
           RequiredHighlight: false,
@@ -60,6 +82,8 @@
             Type: custom,
             Min: ISNUMBER(F2),
             AllowBlank: true,
+            ShowInputMessage: false,
+            ShowErrorMessage: true,
             ErrorTitle: Invalid value,
             ErrorMessage: Must be a number.,
             Range: 2

@@ -60,6 +60,18 @@ class Renderer<TModel>(
         ApplySheetProtection(sheet);
         EmitConditionalFormatting(sheet);
         EmitDataValidations(sheet);
+        RegisterMetadata();
+    }
+
+    void RegisterMetadata()
+    {
+        var metadata = new List<(int Index, string PropertyName)>(columns.Count);
+        for (var i = 0; i < columns.Count; i++)
+        {
+            metadata.Add((i + 1, columns[i].Name));
+        }
+
+        bookBuilder.RegisterSheetMetadata(name, metadata);
     }
 
     void ApplySheetProtection(SheetContext sheet)

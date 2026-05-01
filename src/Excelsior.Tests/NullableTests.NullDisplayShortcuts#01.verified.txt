@@ -5,6 +5,9 @@
       Columns: [
         {
           Name: Number,
+          Metadata: {
+            property: Number
+          },
           Width: 15.0,
           ContainsRichText: false,
           RequiredHighlight: true,
@@ -12,6 +15,8 @@
             Type: custom,
             Min: LEN(TRIM(A2))>0,
             AllowBlank: false,
+            ShowInputMessage: false,
+            ShowErrorMessage: true,
             ErrorTitle: Invalid value,
             ErrorMessage: This field is required.,
             Range: 2-3
@@ -19,6 +24,9 @@
         },
         {
           Name: String,
+          Metadata: {
+            property: String
+          },
           Width: 15.0,
           ContainsRichText: false,
           RequiredHighlight: true,
@@ -26,6 +34,8 @@
             Type: custom,
             Min: LEN(TRIM(B2))>0,
             AllowBlank: false,
+            ShowInputMessage: false,
+            ShowErrorMessage: true,
             ErrorTitle: Invalid value,
             ErrorMessage: This field is required.,
             Range: 2-3
@@ -33,6 +43,9 @@
         },
         {
           Name: Date Time,
+          Metadata: {
+            property: DateTime
+          },
           Width: 23.0,
           ContainsRichText: false,
           RequiredHighlight: true,
@@ -40,6 +53,8 @@
             Type: custom,
             Min: LEN(TRIM(C2))>0,
             AllowBlank: false,
+            ShowInputMessage: false,
+            ShowErrorMessage: true,
             ErrorTitle: Invalid value,
             ErrorMessage: This field is required.,
             Range: 2-3
@@ -47,6 +62,9 @@
         },
         {
           Name: Date,
+          Metadata: {
+            property: Date
+          },
           Width: 13.0,
           ContainsRichText: false,
           RequiredHighlight: true,
@@ -54,6 +72,8 @@
             Type: custom,
             Min: LEN(TRIM(D2))>0,
             AllowBlank: false,
+            ShowInputMessage: false,
+            ShowErrorMessage: true,
             ErrorTitle: Invalid value,
             ErrorMessage: This field is required.,
             Range: 2-3
@@ -61,6 +81,9 @@
         },
         {
           Name: Enum,
+          Metadata: {
+            property: Enum
+          },
           Width: 13.0,
           ContainsRichText: false,
           RequiredHighlight: true,
@@ -70,6 +93,8 @@
               Value
             ],
             AllowBlank: false,
+            ShowInputMessage: false,
+            ShowErrorMessage: true,
             ErrorTitle: Invalid value,
             ErrorMessage: Must be one of: Value.,
             Range: 2-3
@@ -77,6 +102,9 @@
         },
         {
           Name: Bool,
+          Metadata: {
+            property: Bool
+          },
           Width: 13.0,
           ContainsRichText: false,
           RequiredHighlight: true,
@@ -87,6 +115,8 @@
               FALSE
             ],
             AllowBlank: false,
+            ShowInputMessage: false,
+            ShowErrorMessage: true,
             ErrorTitle: Invalid value,
             ErrorMessage: Must be one of: TRUE, FALSE.,
             Range: 2-3

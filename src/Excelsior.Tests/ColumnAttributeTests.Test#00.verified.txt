@@ -5,6 +5,9 @@
       Columns: [
         {
           Name: Employee ID,
+          Metadata: {
+            property: Id
+          },
           Width: 15.0,
           ContainsRichText: false,
           NumberFormat: 0000,
@@ -13,6 +16,8 @@
             Type: custom,
             Min: ISNUMBER(A2),
             AllowBlank: false,
+            ShowInputMessage: false,
+            ShowErrorMessage: true,
             ErrorTitle: Invalid value,
             ErrorMessage: Must be a number.,
             Range: 2-3
@@ -20,6 +25,9 @@
         },
         {
           Name: Full Name,
+          Metadata: {
+            property: Name
+          },
           Width: 20.0,
           ContainsRichText: false,
           RequiredHighlight: true,
@@ -27,6 +35,8 @@
             Type: custom,
             Min: LEN(TRIM(B2))>0,
             AllowBlank: false,
+            ShowInputMessage: false,
+            ShowErrorMessage: true,
             ErrorTitle: Invalid value,
             ErrorMessage: This field is required.,
             Range: 2-3
@@ -34,12 +44,18 @@
         },
         {
           Name: Hire Date,
+          Metadata: {
+            property: HireDate
+          },
           Width: 13.0,
           ContainsRichText: false,
           RequiredHighlight: false
         },
         {
           Name: Email Address,
+          Metadata: {
+            property: Email
+          },
           Width: 30.0,
           ContainsRichText: false,
           RequiredHighlight: true,
@@ -47,6 +63,8 @@
             Type: custom,
             Min: LEN(TRIM(D2))>0,
             AllowBlank: false,
+            ShowInputMessage: false,
+            ShowErrorMessage: true,
             ErrorTitle: Invalid value,
             ErrorMessage: This field is required.,
             Range: 2-3

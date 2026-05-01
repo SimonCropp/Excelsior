@@ -97,6 +97,11 @@ class TemplateSheetBuilder :
             return ValueRenderer.DefaultDateFormat;
         }
 
+        if (underlying == typeof(bool))
+        {
+            return ValueRenderer.BoolFormat;
+        }
+
         return null;
     }
 

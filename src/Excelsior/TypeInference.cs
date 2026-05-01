@@ -2,24 +2,20 @@ namespace Excelsior;
 
 static class TypeInference
 {
-    static readonly IReadOnlyList<string> boolAllowedValues = ["TRUE", "FALSE"];
-
     /// <summary>
-    /// Returns the auto-derived dropdown list for a column type, or <c>null</c>. Always-on: the
-    /// values are produced by the same renderer that writes cells, so a custom
-    /// <see cref="ValueRenderer.For{T}"/> registration (or the enum humanizer) flows through to the
-    /// dropdown — e.g. <c>ValueRenderer.For&lt;bool&gt;(_ =&gt; _ ? "Yes" : "No")</c> yields a
-    /// <c>Yes</c> / <c>No</c> dropdown that matches the cell content.
+    /// Returns the auto-derived dropdown list for a column type, or <c>null</c>. For bool columns
+    /// the dropdown matches what's displayed in cells: by default <c>TRUE</c>/<c>FALSE</c>, or the
+    /// strings supplied via <see cref="ValueRenderer.BoolDisplay"/>. For enums the dropdown is
+    /// produced by the same renderer that writes cells, so a custom
+    /// <see cref="ValueRenderer.For{T}"/> registration (or the enum humanizer) flows through.
     /// </summary>
     public static IReadOnlyList<string>? DeriveAllowedValues(Type type)
     {
         var underlying = Nullable.GetUnderlyingType(type) ?? type;
         if (underlying == typeof(bool))
         {
-            var (_, render) = ValueRenderer.GetRender(underlying);
-            return render != null
-                ? [render(true), render(false)]
-                : boolAllowedValues;
+            var (trueDisplay, falseDisplay) = ValueRenderer.GetBoolDisplayValues();
+            return [trueDisplay, falseDisplay];
         }
 
         if (!underlying.IsEnum)

@@ -1,4 +1,4 @@
 ﻿Name,Is Active,Is Admin
-Alice,Yes,Yes
-Bob,No,No
-Carol,Yes,
+Alice,true,true
+Bob,false,false
+Carol,true,Unknown

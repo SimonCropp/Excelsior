@@ -45,10 +45,58 @@ public static partial class ValueRenderer
     public static void For<T>(Func<T, string> func)
         where T : notnull
     {
+        if (typeof(T) == typeof(bool))
+        {
+            throw new("Cannot register a custom render for bool. Use ValueRenderer.BoolDisplay(...) instead — that keeps cells as native Excel booleans (so formulas like IF/AND/COUNTIF still work) and applies the display via a number format.");
+        }
+
         ThrowIfBookBuilderUsed();
 
         renders[typeof(T)] = _ => func((T) _);
         itemRenders[typeof(T)] = _ => func((T) _);
+    }
+
+    static (string trueDisplay, string falseDisplay, string? nullDisplay)? boolDisplay;
+
+    /// <summary>
+    /// Configure how <c>bool</c> and <c>bool?</c> columns display in Excel. Cells remain
+    /// native booleans (<c>t="b"</c>) so formulas like <c>IF</c>, <c>AND</c>, and
+    /// <c>COUNTIF(...,TRUE)</c> continue to work; the display strings are applied via the
+    /// Excel number format <c>[=1]"trueDisplay";[=0]"falseDisplay"</c>.
+    /// </summary>
+    /// <param name="trueDisplay">Text shown in cells whose value is <c>true</c>.</param>
+    /// <param name="falseDisplay">Text shown in cells whose value is <c>false</c>.</param>
+    /// <param name="nullDisplay">Optional text written into <c>bool?</c> cells whose value is
+    /// <c>null</c>. Null cells are written as inline strings rather than booleans (since
+    /// <c>null</c> is not a boolean value), so this text is the literal display.</param>
+    public static void BoolDisplay(string trueDisplay, string falseDisplay, string? nullDisplay = null)
+    {
+        ThrowIfBookBuilderUsed();
+
+        boolDisplay = (trueDisplay, falseDisplay, nullDisplay);
+    }
+
+    internal static string? BoolFormat
+    {
+        get
+        {
+            if (boolDisplay is not { } d)
+            {
+                return null;
+            }
+
+            return $"[=1]\"{d.trueDisplay}\";[=0]\"{d.falseDisplay}\"";
+        }
+    }
+
+    internal static (string trueDisplay, string falseDisplay) GetBoolDisplayValues()
+    {
+        if (boolDisplay is { } d)
+        {
+            return (d.trueDisplay, d.falseDisplay);
+        }
+
+        return ("TRUE", "FALSE");
     }
 
     static void ThrowIfBookBuilderUsed()
@@ -169,6 +217,7 @@ public static partial class ValueRenderer
         enumRender = EnumExtensions.Humanize;
         renderCache = [];
         nullDisplay = [];
+        boolDisplay = null;
         DefaultDateFormat = "yyyy-MM-dd";
         DefaultDateTimeFormat = "yyyy-MM-dd HH:mm:ss";
         DefaultDateTimeOffsetFormat = "yyyy-MM-dd HH:mm:ss z";

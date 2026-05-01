@@ -3,7 +3,7 @@ public class ValueRendererForBool
 {
     [SetUp]
     public void Setup() =>
-        ValueRenderer.For<bool>(_ => _ ? "Yes" : "No");
+        ValueRenderer.BoolDisplay("Yes", "No", "Unknown");
 
     [TearDown]
     public void Teardown() =>
@@ -11,8 +11,8 @@ public class ValueRendererForBool
 
     #region ValueRendererForBoolInit
 
-    static void CustomBoolRender() =>
-        ValueRenderer.For<bool>(_ => _ ? "Yes" : "No");
+    static void ConfigureBoolDisplay() =>
+        ValueRenderer.BoolDisplay("Yes", "No", "Unknown");
 
     #endregion
 

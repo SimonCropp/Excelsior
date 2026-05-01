@@ -1681,7 +1681,20 @@ builder.AddSheet(data);
 
 ### ValueRenderer.For&lt;T&gt;
 
-`ValueRenderer.For<T>` can be used to control the rendering for all instances of a specific type. For example rendering `bool` as "Yes"/"No":
+`ValueRenderer.For<T>` can be used to control the rendering for all instances of a specific type. See [ValueRendererForSpecificType](/src/StaticSettingsTests/ValueRendererForSpecificType.cs) for an example with custom enums.
+
+> [!NOTE]
+> `ValueRenderer.For<bool>` and `ValueRenderer.NullDisplayFor<bool>` throw — replacing the cell value with a string would lose Excel's native boolean type, so formulas like `=IF(A2, ...)` and `COUNTIF(A:A, TRUE)` would stop working. Use [`ValueRenderer.BoolDisplay`](#valuerendererbooldisplay) instead, which keeps cells as native booleans and applies the display via a number format.
+
+
+#### Type specificity
+
+When multiple `For<T>` registrations match a property type, the most specific type wins. For example, `For<Color>(...)` takes precedence over `For<Enum>(...)` for `Color` properties, while other enum types still use the `Enum` fallback.
+
+
+### ValueRenderer.BoolDisplay
+
+`ValueRenderer.BoolDisplay` controls how `bool` and `bool?` columns render in Excel. Cells stay native booleans (`t="b"`) so Excel formulas continue to recognize them as boolean values; the display strings are applied via the number format `[=1]"trueDisplay";[=0]"falseDisplay"`. The optional third argument supplies a display for `null` cells in `bool?` columns.
 
 
 #### Config in a ModuleInitializer
@@ -1689,8 +1702,8 @@ builder.AddSheet(data);
 <!-- snippet: ValueRendererForBoolInit -->
 <a id='snippet-ValueRendererForBoolInit'></a>
 ```cs
-static void CustomBoolRender() =>
-    ValueRenderer.For<bool>(_ => _ ? "Yes" : "No");
+static void ConfigureBoolDisplay() =>
+    ValueRenderer.BoolDisplay("Yes", "No", "Unknown");
 ```
 <sup><a href='/src/StaticSettingsTests/ValueRendererForBool.cs#L12-L17' title='Snippet source file'>snippet source</a> | <a href='#snippet-ValueRendererForBoolInit' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
@@ -1735,35 +1748,33 @@ builder.AddSheet(data);
 <img src="/src/StaticSettingsTests/ValueRendererForBool.Test_Sheet1.png">
 
 
-#### Type specificity
-
-When multiple `For<T>` registrations match a property type, the most specific type wins. For example, `For<Color>(...)` takes precedence over `For<Enum>(...)` for `Color` properties, while other enum types still use the `Enum` fallback.
-
-
 ### ValueRenderer.NullDisplayFor&lt;T&gt;
 
-`ValueRenderer.NullDisplayFor<T>` can be used to control the display text when a nullable property is null. This combines well with `ValueRenderer.For<T>`:
+`ValueRenderer.NullDisplayFor<T>` can be used to control the display text when a nullable property is null. This combines well with `ValueRenderer.For<T>` — the rendered value is used when the property has a value, and the null display when it doesn't. Type specificity applies the same way as `For<T>`: a more specific registration wins over a less specific one for matching properties.
+
+> [!NOTE]
+> `NullDisplayFor<bool>` throws — use [`ValueRenderer.BoolDisplay`](#valuerendererbooldisplay) and pass the third (`nullDisplay`) argument.
 
 
 #### Config in a ModuleInitializer
 
-<!-- snippet: ValueRendererNullDisplayForBoolInit -->
-<a id='snippet-ValueRendererNullDisplayForBoolInit'></a>
+<!-- snippet: ValueRendererNullDisplayForTypeInit -->
+<a id='snippet-ValueRendererNullDisplayForTypeInit'></a>
 ```cs
-static void CustomBoolRender()
+static void CustomNullDisplayForType()
 {
-    ValueRenderer.For<bool>(_ => _ ? "Yes" : "No");
-    ValueRenderer.NullDisplayFor<bool>("Unknown");
+    ValueRenderer.For<Address>(_ => $"{_.Street}, {_.City}");
+    ValueRenderer.NullDisplayFor<Address>("No address on file");
 }
 ```
-<sup><a href='/src/StaticSettingsTests/ValueRendererNullDisplayForBool.cs#L15-L23' title='Snippet source file'>snippet source</a> | <a href='#snippet-ValueRendererNullDisplayForBoolInit' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/StaticSettingsTests/ValueRendererNullDisplayForType.cs#L15-L23' title='Snippet source file'>snippet source</a> | <a href='#snippet-ValueRendererNullDisplayForTypeInit' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
 #### Example use
 
-<!-- snippet: ValueRendererNullDisplayForBool -->
-<a id='snippet-ValueRendererNullDisplayForBool'></a>
+<!-- snippet: ValueRendererNullDisplayForType -->
+<a id='snippet-ValueRendererNullDisplayForType'></a>
 ```cs
 var builder = new BookBuilder();
 
@@ -1772,28 +1783,23 @@ List<Target> data =
     new()
     {
         Name = "Alice",
-        IsActive = true,
+        Address = new() { Street = "1 Park Ave", City = "Springfield" }
     },
     new()
     {
         Name = "Bob",
-        IsActive = false,
-    },
-    new()
-    {
-        Name = "Charlie",
-        IsActive = null,
+        Address = null
     }
 ];
 builder.AddSheet(data);
 ```
-<sup><a href='/src/StaticSettingsTests/ValueRendererNullDisplayForBool.cs#L28-L52' title='Snippet source file'>snippet source</a> | <a href='#snippet-ValueRendererNullDisplayForBool' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/StaticSettingsTests/ValueRendererNullDisplayForType.cs#L28-L47' title='Snippet source file'>snippet source</a> | <a href='#snippet-ValueRendererNullDisplayForType' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
 #### Result
 
-<img src="/src/StaticSettingsTests/ValueRendererNullDisplayForBool.Test_Sheet1.png">
+<img src="/src/StaticSettingsTests/ValueRendererNullDisplayForType.Test_Sheet1.png">
 
 
 ### ValueRenderer.NullDisplayFor&lt;Enum&gt;

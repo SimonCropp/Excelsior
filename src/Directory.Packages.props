@@ -11,7 +11,7 @@
     <PackageVersion Include="MarkdownSnippets.MsBuild" Version="28.2.0" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.7" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.5.1" />
-    <PackageVersion Include="Microsoft.Office.Interop.Excel" Version="16.0.18925.20022" Pinned="true" />
+    <PackageVersion Include="Microsoft.Office.Interop.Excel" Version="15.0.4795.1001" Pinned="true" />
     <PackageVersion Include="Polyfill" Version="10.3.0" />
     <PackageVersion Include="ProjectDefaults" Version="1.0.173" />
     <PackageVersion Include="ProjectFiles" Version="1.1.1" />

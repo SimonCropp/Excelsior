@@ -288,7 +288,10 @@ class Renderer<TModel>(
         {
             case bool b:
                 cell.DataType = CellValues.Boolean;
-                cell.CellValue = new(b);
+                // Excel's spec for t="b" cells requires "1"/"0"; OpenXml's CellValue(bool)
+                // ctor writes "true"/"false" (XmlConvert.ToString), which Excel itself
+                // tolerates but downstream readers (and formulas like COUNTIF) may not.
+                cell.CellValue = new(b ? "1" : "0");
                 break;
             case DateTime dt:
                 cell.CellValue = new(dt.ToOADate().ToString(CultureInfo.InvariantCulture));
@@ -1170,6 +1173,12 @@ class Renderer<TModel>(
         if (value is bool boolean)
         {
             ThrowIfHtml();
+            var format = column.Format ?? ValueRenderer.BoolFormat;
+            if (format != null)
+            {
+                style.NumberFormat = format;
+            }
+
             SetCellValue(cell, boolean);
             return;
         }

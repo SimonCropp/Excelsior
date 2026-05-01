@@ -215,6 +215,48 @@ var employees = sheet.Rows;
 <!-- endSnippet -->
 
 
+##### Model construction
+
+Strong-typed rows are instantiated in one of two ways:
+
+1. **Parameterless constructor (preferred)** — public or non-public. After construction, every parsed column value is applied via its property setter. `init` setters and `required` members are honoured: construction goes through `ConstructorInfo.Invoke`, which bypasses the runtime `required`-members check that `Activator.CreateInstance` would enforce.
+2. **Longest matching public constructor (fallback)** — used when no parameterless constructor exists. Constructor parameters are filled by name from the parsed column values; any column whose name does not match a constructor parameter is then applied via its property setter.
+
+This means records, primary-constructor classes, and other immutable models work without extra configuration as long as constructor parameter names match the property names.
+
+<!-- snippet: BookReaderPositionalRecord -->
+<a id='snippet-BookReaderPositionalRecord'></a>
+```cs
+public record PersonRecord(string Name, int Age);
+
+[Test]
+public async Task PositionalRecord()
+{
+    var stream = await Write(
+        new PersonRecord("Alice", 30),
+        new PersonRecord("Bob", 25));
+
+    var reader = new BookReader();
+    var sheet = reader.AddSheet<PersonRecord>();
+    reader.Convert(stream);
+
+    Assert.That(sheet.Rows, Is.EqualTo(new[]
+    {
+        new PersonRecord("Alice", 30),
+        new PersonRecord("Bob", 25)
+    }));
+}
+```
+<sup><a href='/src/Excelsior.Tests/Reading/BookReaderConstructionTests.cs#L15-L37' title='Snippet source file'>snippet source</a> | <a href='#snippet-BookReaderPositionalRecord' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+Limitations:
+
+- Parameter matching is case-sensitive — a constructor parameter `name` will not bind to property `Name`.
+- Only properties are bound; fields are ignored.
+- A type with no public constructors and no parameterless constructor (public or non-public) throws on the first row.
+
+
 #### Anonymous / dictionary
 
 For sheets without a backing model, declare every column explicitly. Each parsed row is an `IReadOnlyDictionary<string, object?>` keyed by the column name.

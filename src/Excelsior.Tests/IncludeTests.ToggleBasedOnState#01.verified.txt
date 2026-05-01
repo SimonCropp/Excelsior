@@ -18,6 +18,8 @@
             Type: custom,
             Min: ISNUMBER(B2),
             AllowBlank: true,
+            ErrorTitle: Invalid value,
+            ErrorMessage: Must be a number.,
             Range: 2-3
           }
         }

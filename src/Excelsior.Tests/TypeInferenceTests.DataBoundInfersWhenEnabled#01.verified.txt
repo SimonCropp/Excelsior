@@ -24,6 +24,8 @@
             Type: custom,
             Min: ISNUMBER(C2),
             AllowBlank: false,
+            ErrorTitle: Invalid value,
+            ErrorMessage: Must be a number.,
             Range: 2-7
           }
         },
@@ -45,6 +47,8 @@
               FALSE
             ],
             AllowBlank: false,
+            ErrorTitle: Invalid value,
+            ErrorMessage: Must be one of: TRUE, FALSE.,
             Range: 2-7
           }
         },

@@ -12,6 +12,8 @@
             Type: custom,
             Min: ISNUMBER(A2),
             AllowBlank: true,
+            ErrorTitle: Invalid value,
+            ErrorMessage: Must be a number.,
             Range: 2-15
           }
         },
@@ -45,6 +47,7 @@
             Max: 1000000,
             AllowBlank: true,
             InputMessage: Annual salary in USD.,
+            ErrorTitle: Invalid value,
             ErrorMessage: Salary must be between 0 and 1,000,000.,
             Range: 2-15
           }
@@ -61,6 +64,8 @@
               FALSE
             ],
             AllowBlank: true,
+            ErrorTitle: Invalid value,
+            ErrorMessage: Must be one of: TRUE, FALSE.,
             Range: 2-15
           }
         },
@@ -78,6 +83,8 @@
               Terminated
             ],
             AllowBlank: true,
+            ErrorTitle: Invalid value,
+            ErrorMessage: Must be one of: Full Time, Part Time, Contract, Terminated.,
             Range: 2-15
           }
         }

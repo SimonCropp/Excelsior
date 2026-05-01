@@ -80,6 +80,28 @@ public class ValidationTests
     }
 
     [Test]
+    public async Task ErrorStyleWarning()
+    {
+        #region ValidationErrorStyleWarning
+
+        var builder = new BookBuilder();
+        builder.AddSheet(SampleData.Employees(), templateRowCount: 5)
+            .Column(
+                _ => _.Salary,
+                _ =>
+                {
+                    _.Range(0, 1_000_000);
+                    _.ErrorStyle = ValidationErrorStyle.Warning;
+                });
+
+        using var book = await builder.Build();
+
+        #endregion
+
+        await Verify(book);
+    }
+
+    [Test]
     public async Task ShortcutMethods()
     {
         #region ValidationShortcuts

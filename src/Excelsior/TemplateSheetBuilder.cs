@@ -70,7 +70,8 @@ class TemplateSheetBuilder :
             InputTitle = config.InputTitle,
             InputMessage = config.InputMessage,
             ErrorTitle = config.ErrorTitle,
-            ErrorMessage = config.ErrorMessage
+            ErrorMessage = config.ErrorMessage,
+            ErrorStyle = config.ErrorStyle
         };
         Columns.Add(column);
         return this;

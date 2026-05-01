@@ -1248,6 +1248,34 @@ using var book = await builder.Build();
 
 `InputTitle` / `InputMessage` configure the tooltip Excel shows when a cell is selected. `ErrorTitle` / `ErrorMessage` override the popup shown when invalid input is rejected.
 
+When neither is set, Excelsior fills in a sensible default based on the validation type — `"Must be one of: A, B, C."` for dropdowns, `"Must be a number between X and Y."` for ranges, `"Must be a number."` for the auto-`ISNUMBER` constraint, etc. Set `ErrorMessage` explicitly to override.
+
+`ErrorStyle` controls Excel's response to invalid input:
+
+| Style | Behavior |
+| --- | --- |
+| `Stop` (default) | Block the entry — user must enter a valid value or cancel. |
+| `Warning` | Warn the user; they can choose to keep the invalid value. |
+| `Information` | Inform the user; the value is accepted regardless. |
+
+<!-- snippet: ValidationErrorStyleWarning -->
+<a id='snippet-ValidationErrorStyleWarning'></a>
+```cs
+var builder = new BookBuilder();
+builder.AddSheet(SampleData.Employees(), templateRowCount: 5)
+    .Column(
+        _ => _.Salary,
+        _ =>
+        {
+            _.Range(0, 1_000_000);
+            _.ErrorStyle = ValidationErrorStyle.Warning;
+        });
+
+using var book = await builder.Build();
+```
+<sup><a href='/src/Excelsior.Tests/ValidationTests.cs#L85-L99' title='Snippet source file'>snippet source</a> | <a href='#snippet-ValidationErrorStyleWarning' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
 #### Required Cells
 
 `Required = true` highlights blank cells in the column with a soft red conditional-format fill, drawing attention to fields the user has not yet filled in.
@@ -1397,7 +1425,7 @@ sheet.ErrorMessage(_ => _.Salary, "Salary must be between 0 and 1,000,000.", "In
 
 using var book = await builder.Build();
 ```
-<sup><a href='/src/Excelsior.Tests/ValidationTests.cs#L85-L96' title='Snippet source file'>snippet source</a> | <a href='#snippet-ValidationShortcuts' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/ValidationTests.cs#L107-L118' title='Snippet source file'>snippet source</a> | <a href='#snippet-ValidationShortcuts' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 

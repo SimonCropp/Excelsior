@@ -14,6 +14,8 @@
               Build your dream
             ],
             AllowBlank: true,
+            ErrorTitle: Invalid value,
+            ErrorMessage: Must be one of: Build your dream.,
             Range: 2-3
           }
         },
@@ -28,6 +30,8 @@
               Antique white
             ],
             AllowBlank: true,
+            ErrorTitle: Invalid value,
+            ErrorMessage: Must be one of: Antique white.,
             Range: 2-3
           }
         },
@@ -42,6 +46,8 @@
               Antique white
             ],
             AllowBlank: true,
+            ErrorTitle: Invalid value,
+            ErrorMessage: Must be one of: Antique white.,
             Range: 2-3
           }
         }

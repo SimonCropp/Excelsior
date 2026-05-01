@@ -759,17 +759,14 @@ class Renderer<TModel>(
         {
             validation.AllowBlank = !column.Required;
             // Without ShowErrorMessage, Excel renders the dropdown but silently
-            // accepts manually-typed invalid values. Force it on so the default
-            // "Stop" error popup actually blocks bad input.
+            // accepts manually-typed invalid values. Force it on so the configured
+            // (or default Stop) error popup actually fires.
             validation.ShowErrorMessage = true;
-            if (column.ErrorTitle != null)
+            validation.ErrorTitle = column.ErrorTitle ?? "Invalid value";
+            validation.Error = column.ErrorMessage ?? BuildDefaultErrorMessage(column);
+            if (column.ErrorStyle is { } errorStyle)
             {
-                validation.ErrorTitle = column.ErrorTitle;
-            }
-
-            if (column.ErrorMessage != null)
-            {
-                validation.Error = column.ErrorMessage;
+                validation.ErrorStyle = ToOpenXmlErrorStyle(errorStyle);
             }
         }
 
@@ -788,6 +785,75 @@ class Renderer<TModel>(
         }
 
         return validation;
+    }
+
+    static DataValidationErrorStyleValues ToOpenXmlErrorStyle(ValidationErrorStyle style) =>
+        style switch
+        {
+            ValidationErrorStyle.Warning => DataValidationErrorStyleValues.Warning,
+            ValidationErrorStyle.Information => DataValidationErrorStyleValues.Information,
+            _ => DataValidationErrorStyleValues.Stop
+        };
+
+    static string BuildDefaultErrorMessage(ColumnConfig<TModel> column)
+    {
+        if (column.AllowedValues is { Count: > 0 } values)
+        {
+            const int previewCount = 5;
+            string preview;
+            if (values.Count <= previewCount)
+            {
+                preview = string.Join(", ", values);
+            }
+            else
+            {
+                preview = string.Join(", ", values.Take(previewCount)) + ", …";
+            }
+            return $"Must be one of: {preview}.";
+        }
+
+        if (column.NumericMin.HasValue && column.NumericMax.HasValue)
+        {
+            return $"Must be a number between {Num(column.NumericMin.Value)} and {Num(column.NumericMax.Value)}.";
+        }
+
+        if (column.NumericMin.HasValue)
+        {
+            return $"Must be a number greater than or equal to {Num(column.NumericMin.Value)}.";
+        }
+
+        if (column.NumericMax.HasValue)
+        {
+            return $"Must be a number less than or equal to {Num(column.NumericMax.Value)}.";
+        }
+
+        if (column.DateMin.HasValue && column.DateMax.HasValue)
+        {
+            return $"Must be a date between {Day(column.DateMin.Value)} and {Day(column.DateMax.Value)}.";
+        }
+
+        if (column.DateMin.HasValue)
+        {
+            return $"Must be a date on or after {Day(column.DateMin.Value)}.";
+        }
+
+        if (column.DateMax.HasValue)
+        {
+            return $"Must be a date on or before {Day(column.DateMax.Value)}.";
+        }
+
+        if (column.HasNumericValidation)
+        {
+            return "Must be a number.";
+        }
+
+        return "Invalid value.";
+
+        static string Num(decimal value) =>
+            value.ToString(CultureInfo.InvariantCulture);
+
+        static string Day(DateTime value) =>
+            value.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
     }
 
     static void ApplyRangeOperator(DataValidation validation, decimal? min, decimal? max)

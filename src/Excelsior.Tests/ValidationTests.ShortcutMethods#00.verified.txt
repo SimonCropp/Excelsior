@@ -12,6 +12,8 @@
             Type: custom,
             Min: ISNUMBER(A2),
             AllowBlank: true,
+            ErrorTitle: Invalid value,
+            ErrorMessage: Must be a number.,
             Range: 2-30
           }
         },
@@ -63,6 +65,8 @@
               FALSE
             ],
             AllowBlank: true,
+            ErrorTitle: Invalid value,
+            ErrorMessage: Must be one of: TRUE, FALSE.,
             Range: 2-30
           }
         },
@@ -80,6 +84,8 @@
               Terminated
             ],
             AllowBlank: true,
+            ErrorTitle: Invalid value,
+            ErrorMessage: Must be one of: Full Time, Part Time, Contract, Terminated.,
             Range: 2-30
           }
         }

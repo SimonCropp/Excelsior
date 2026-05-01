@@ -20,6 +20,8 @@
               Antique white
             ],
             AllowBlank: true,
+            ErrorTitle: Invalid value,
+            ErrorMessage: Must be one of: Antique white.,
             Range: 2-3
           }
         }

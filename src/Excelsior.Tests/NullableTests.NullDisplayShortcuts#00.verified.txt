@@ -38,6 +38,8 @@
               Value
             ],
             AllowBlank: true,
+            ErrorTitle: Invalid value,
+            ErrorMessage: Must be one of: Value.,
             Range: 2-3
           }
         },
@@ -53,6 +55,8 @@
               FALSE
             ],
             AllowBlank: true,
+            ErrorTitle: Invalid value,
+            ErrorMessage: Must be one of: TRUE, FALSE.,
             Range: 2-3
           }
         }

@@ -14,6 +14,8 @@
               BUILDYOURDREAM
             ],
             AllowBlank: true,
+            ErrorTitle: Invalid value,
+            ErrorMessage: Must be one of: BUILDYOURDREAM.,
             Range: 2-3
           }
         },
@@ -28,6 +30,8 @@
               ANTIQUEWHITE
             ],
             AllowBlank: true,
+            ErrorTitle: Invalid value,
+            ErrorMessage: Must be one of: ANTIQUEWHITE.,
             Range: 2-3
           }
         },
@@ -42,6 +46,8 @@
               ANTIQUEWHITE
             ],
             AllowBlank: true,
+            ErrorTitle: Invalid value,
+            ErrorMessage: Must be one of: ANTIQUEWHITE.,
             Range: 2-3
           }
         }

@@ -208,6 +208,11 @@ class Columns<TModel>
         {
             column.ErrorMessage = config.ErrorMessage;
         }
+
+        if (config.ErrorStyle.HasValue)
+        {
+            column.ErrorStyle = config.ErrorStyle;
+        }
     }
 
     const int maxExcelColumnWidth = 255;

@@ -21,6 +21,8 @@
               Rendered EnumValue2
             ],
             AllowBlank: true,
+            ErrorTitle: Invalid value,
+            ErrorMessage: Must be one of: Rendered EnumValue1, Rendered EnumValue2.,
             Range: 2-3
           }
         },

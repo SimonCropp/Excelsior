@@ -33,6 +33,7 @@ class ColumnConfig<TModel>
     public string? InputMessage { get; set; }
     public string? ErrorTitle { get; set; }
     public string? ErrorMessage { get; set; }
+    public ValidationErrorStyle? ErrorStyle { get; set; }
 
     public bool HasValidation =>
         AllowedValues is { Count: > 0 } ||
@@ -169,6 +170,12 @@ public class ColumnConfig<TModel, TProperty>
     /// Body text for the error popup shown when an invalid value is entered.
     /// </summary>
     public string? ErrorMessage { get; set; }
+
+    /// <summary>
+    /// How Excel should respond to invalid input. <c>Stop</c> (default) blocks the entry;
+    /// <c>Warning</c> and <c>Information</c> let the user accept it.
+    /// </summary>
+    public ValidationErrorStyle? ErrorStyle { get; set; }
 
     /// <summary>
     /// Set <see cref="NumericMin"/> and <see cref="NumericMax"/> from a single call.

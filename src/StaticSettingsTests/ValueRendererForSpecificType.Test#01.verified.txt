@@ -20,6 +20,8 @@
               White-ish
             ],
             AllowBlank: true,
+            ErrorTitle: Invalid value,
+            ErrorMessage: Must be one of: White-ish.,
             Range: 2
           }
         },
@@ -34,6 +36,8 @@
               BUILDYOURDREAM
             ],
             AllowBlank: true,
+            ErrorTitle: Invalid value,
+            ErrorMessage: Must be one of: BUILDYOURDREAM.,
             Range: 2
           }
         }

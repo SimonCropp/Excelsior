@@ -18,6 +18,8 @@
             Type: custom,
             Min: ISNUMBER(B2),
             AllowBlank: true,
+            ErrorTitle: Invalid value,
+            ErrorMessage: Must be a number.,
             Range: 2
           }
         },
@@ -44,6 +46,8 @@
               SA
             ],
             AllowBlank: true,
+            ErrorTitle: Invalid value,
+            ErrorMessage: Must be one of: SA.,
             Range: 2
           }
         },
@@ -56,6 +60,8 @@
             Type: custom,
             Min: ISNUMBER(F2),
             AllowBlank: true,
+            ErrorTitle: Invalid value,
+            ErrorMessage: Must be a number.,
             Range: 2
           }
         }

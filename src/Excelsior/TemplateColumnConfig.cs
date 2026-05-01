@@ -51,6 +51,12 @@ public class TemplateColumnConfig
     public string? ErrorTitle { get; set; }
     public string? ErrorMessage { get; set; }
 
+    /// <summary>
+    /// How Excel should respond to invalid input. <c>Stop</c> (default) blocks the entry;
+    /// <c>Warning</c> and <c>Information</c> let the user accept it.
+    /// </summary>
+    public ValidationErrorStyle? ErrorStyle { get; set; }
+
     public void Range(decimal min, decimal max)
     {
         NumericMin = min;

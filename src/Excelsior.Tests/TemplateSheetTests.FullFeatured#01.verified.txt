@@ -32,6 +32,7 @@
             Min: 2020-01-01,
             Max: 2030-12-31,
             AllowBlank: false,
+            ErrorTitle: Invalid value,
             ErrorMessage: Hire date must be on or after 2020-01-01.,
             Range: 2-101
           }
@@ -48,6 +49,8 @@
             Min: 0,
             Max: 1000000,
             AllowBlank: false,
+            ErrorTitle: Invalid value,
+            ErrorMessage: Must be a number between 0 and 1000000.,
             Range: 2-101
           }
         },
@@ -65,6 +68,8 @@
               Terminated
             ],
             AllowBlank: false,
+            ErrorTitle: Invalid value,
+            ErrorMessage: Must be one of: Full Time, Part Time, Contract, Terminated.,
             Range: 2-101
           }
         }

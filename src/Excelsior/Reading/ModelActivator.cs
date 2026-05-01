@@ -1,11 +1,9 @@
-namespace Excelsior;
-
 static class ModelActivator<T>
 {
-    static readonly ConstructorInfo? parameterlessCtor;
-    static readonly ConstructorInfo? matchingCtor;
-    static readonly string[] ctorParamNames;
-    static readonly Dictionary<string, Action<T, object?>> setters;
+    static ConstructorInfo? parameterlessCtor;
+    static ConstructorInfo? matchingCtor;
+    static string[] ctorParamNames;
+    static Dictionary<string, Action<T, object?>> setters;
 
     static ModelActivator()
     {
@@ -83,7 +81,8 @@ static class ModelActivator<T>
 
         foreach (var (name, value) in values)
         {
-            if (parameterlessCtor == null && Array.IndexOf(ctorParamNames, name) >= 0)
+            if (parameterlessCtor == null &&
+                Array.IndexOf(ctorParamNames, name) >= 0)
             {
                 continue;
             }

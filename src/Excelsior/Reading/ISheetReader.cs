@@ -15,13 +15,6 @@ public interface ISheetReader<TModel>
         Expression<Func<TModel, TProperty>> property,
         string value);
 
-    void Include<TProperty>(
-        Expression<Func<TModel, TProperty>> property,
-        bool value);
-
-    void Exclude<TProperty>(
-        Expression<Func<TModel, TProperty>> property);
-
     /// <summary>
     /// Provide a custom converter for a specific column. The delegate receives
     /// the underlying OpenXml <see cref="Cell"/> and returns the value to assign.

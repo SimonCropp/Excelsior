@@ -6,7 +6,7 @@ public sealed record ReadError(
     string ColumnName,
     string CellReference,
     string Message,
-    Exception? Inner = null)
+    Exception? Exception = null)
 {
     public override string ToString() =>
         $"{SheetName}!{CellReference} ({ColumnName}, row {RowIndex}): {Message}";

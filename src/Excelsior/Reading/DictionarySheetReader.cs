@@ -1,5 +1,3 @@
-namespace Excelsior;
-
 class DictionarySheetReader(string? name) :
     IDictionarySheetReader,
     IReaderSheet

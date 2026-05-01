@@ -3,7 +3,6 @@ namespace Excelsior;
 public class ColumnReadConfig<TProperty>
 {
     public string? Heading { get; set; }
-    public bool? Include { get; set; }
 
     /// <summary>
     /// Custom conversion delegate. Receives the underlying OpenXml <see cref="Cell"/>

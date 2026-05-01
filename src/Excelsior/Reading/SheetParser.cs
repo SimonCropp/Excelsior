@@ -243,9 +243,8 @@ static class SheetParser
 
         var index = 0;
         var length = 0;
-        for (var i = 0; i < cellReference.Length; i++)
+        foreach (var c in cellReference)
         {
-            var c = cellReference[i];
             if (c is >= 'A' and <= 'Z')
             {
                 index = index * 26 + (c - 'A' + 1);

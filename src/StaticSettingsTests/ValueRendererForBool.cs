@@ -29,11 +29,19 @@ public class ValueRendererForBool
             {
                 Name = "Alice",
                 IsActive = true,
+                IsAdmin = true,
             },
             new()
             {
                 Name = "Bob",
                 IsActive = false,
+                IsAdmin = false,
+            },
+            new()
+            {
+                Name = "Carol",
+                IsActive = true,
+                IsAdmin = null,
             }
         ];
         builder.AddSheet(data);
@@ -49,5 +57,6 @@ public class ValueRendererForBool
     {
         public string Name { get; set; } = null!;
         public bool IsActive { get; set; }
+        public bool? IsAdmin { get; set; }
     }
 }

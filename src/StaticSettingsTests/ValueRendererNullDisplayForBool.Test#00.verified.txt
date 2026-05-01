@@ -23,14 +23,14 @@
           Validation: {
             Type: list,
             AllowedValues: [
-              TRUE,
-              FALSE
+              Yes,
+              No
             ],
             AllowBlank: true,
             ShowInputMessage: false,
             ShowErrorMessage: true,
             ErrorTitle: Invalid value,
-            ErrorMessage: Must be one of: TRUE, FALSE.,
+            ErrorMessage: Must be one of: Yes, No.,
             Range: 2-4
           }
         }

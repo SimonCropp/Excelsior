@@ -5,17 +5,21 @@ static class TypeInference
     static readonly IReadOnlyList<string> boolAllowedValues = ["TRUE", "FALSE"];
 
     /// <summary>
-    /// Returns the auto-derived dropdown list for a column type, or <c>null</c>. Enum columns yield
-    /// the rendered enum members; <c>bool</c> / <c>bool?</c> columns yield <c>TRUE</c> / <c>FALSE</c>.
-    /// Always-on: the values match what the renderer writes to cells, so the dropdown safely
-    /// constrains edits without rejecting legitimate written values.
+    /// Returns the auto-derived dropdown list for a column type, or <c>null</c>. Always-on: the
+    /// values are produced by the same renderer that writes cells, so a custom
+    /// <see cref="ValueRenderer.For{T}"/> registration (or the enum humanizer) flows through to the
+    /// dropdown — e.g. <c>ValueRenderer.For&lt;bool&gt;(_ =&gt; _ ? "Yes" : "No")</c> yields a
+    /// <c>Yes</c> / <c>No</c> dropdown that matches the cell content.
     /// </summary>
     public static IReadOnlyList<string>? DeriveAllowedValues(Type type)
     {
         var underlying = Nullable.GetUnderlyingType(type) ?? type;
         if (underlying == typeof(bool))
         {
-            return boolAllowedValues;
+            var (_, render) = ValueRenderer.GetRender(underlying);
+            return render != null
+                ? [render(true), render(false)]
+                : boolAllowedValues;
         }
 
         if (!underlying.IsEnum)
@@ -23,12 +27,12 @@ static class TypeInference
             return null;
         }
 
-        var (_, render) = ValueRenderer.GetRender(underlying);
+        var (_, enumRender) = ValueRenderer.GetRender(underlying);
         var values = Enum.GetValues(underlying);
         var list = new List<string>(values.Length);
         foreach (var value in values)
         {
-            list.Add(render?.Invoke(value!) ?? value!.ToString()!);
+            list.Add(enumRender?.Invoke(value!) ?? value!.ToString()!);
         }
 
         return list;

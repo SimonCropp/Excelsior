@@ -19,7 +19,7 @@
             ShowErrorMessage: true,
             ErrorTitle: Invalid value,
             ErrorMessage: This field is required.,
-            Range: 2-3
+            Range: 2-4
           }
         },
         {
@@ -38,7 +38,7 @@
             ShowErrorMessage: true,
             ErrorTitle: Invalid value,
             ErrorMessage: This field is required.,
-            Range: 2-3
+            Range: 2-4
           }
         },
         {
@@ -57,7 +57,7 @@
             ShowErrorMessage: true,
             ErrorTitle: Invalid value,
             ErrorMessage: This field is required.,
-            Range: 2-3
+            Range: 2-4
           }
         },
         {
@@ -76,7 +76,7 @@
             ShowErrorMessage: true,
             ErrorTitle: Invalid value,
             ErrorMessage: This field is required.,
-            Range: 2-3
+            Range: 2-4
           }
         },
         {
@@ -95,7 +95,7 @@
             ShowErrorMessage: true,
             ErrorTitle: Invalid value,
             ErrorMessage: This field is required.,
-            Range: 2-3
+            Range: 2-4
           }
         },
         {
@@ -114,7 +114,7 @@
             ShowErrorMessage: true,
             ErrorTitle: Invalid value,
             ErrorMessage: This field is required.,
-            Range: 2-3
+            Range: 2-4
           }
         }
       ]

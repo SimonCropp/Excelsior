@@ -136,7 +136,7 @@ class Renderer<TModel>(
         if (columnConfig.Width == null)
         {
             var doubleWidth = AdjustColumnWidth(sheet, column);
-            width = (int) Math.Round(doubleWidth);
+            width = (int)Math.Round(doubleWidth);
             width += 1;
 
             if (columnConfig.IsEnumerable)
@@ -203,6 +203,7 @@ class Renderer<TModel>(
                 {
                     style.Locked = column.Locked ?? false;
                 }
+
                 if (column.Formula != null)
                 {
                     var context = new FormulaContext<TModel>(columnIndexesByName, rowIndex + 1);
@@ -356,10 +357,10 @@ class Renderer<TModel>(
             {
                 advance = 1;
                 valid = c == '\t' ||
-                       c == '\n' ||
-                       c == '\r' ||
-                       (c >= 0x20 && c <= 0xD7FF) ||
-                       (c >= 0xE000 && c <= 0xFFFD);
+                        c == '\n' ||
+                        c == '\r' ||
+                        (c >= 0x20 && c <= 0xD7FF) ||
+                        (c >= 0xE000 && c <= 0xFFFD);
             }
 
             if (valid)
@@ -829,10 +830,11 @@ class Renderer<TModel>(
             {
                 preview = string.Join(", ", values.Take(previewCount)) + ", …";
             }
+
             return $"Must be one of: {preview}.";
         }
 
-        if (column.NumericMin.HasValue && column.NumericMax.HasValue)
+        if (column is { NumericMin: not null, NumericMax: not null })
         {
             return $"Must be a number between {Num(column.NumericMin.Value)} and {Num(column.NumericMax.Value)}.";
         }
@@ -847,7 +849,7 @@ class Renderer<TModel>(
             return $"Must be a number less than or equal to {Num(column.NumericMax.Value)}.";
         }
 
-        if (column.DateMin.HasValue && column.DateMax.HasValue)
+        if (column is { DateMin: not null, DateMax: not null })
         {
             return $"Must be a date between {Day(column.DateMin.Value)} and {Day(column.DateMax.Value)}.";
         }

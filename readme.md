@@ -1709,16 +1709,24 @@ List<Target> data =
     {
         Name = "Alice",
         IsActive = true,
+        IsAdmin = true,
     },
     new()
     {
         Name = "Bob",
         IsActive = false,
+        IsAdmin = false,
+    },
+    new()
+    {
+        Name = "Carol",
+        IsActive = true,
+        IsAdmin = null,
     }
 ];
 builder.AddSheet(data);
 ```
-<sup><a href='/src/StaticSettingsTests/ValueRendererForBool.cs#L22-L41' title='Snippet source file'>snippet source</a> | <a href='#snippet-ValueRendererForBool' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/StaticSettingsTests/ValueRendererForBool.cs#L22-L49' title='Snippet source file'>snippet source</a> | <a href='#snippet-ValueRendererForBool' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 

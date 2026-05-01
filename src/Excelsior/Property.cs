@@ -48,7 +48,7 @@
 
     static bool ResolveIsRequired(PropertyInfo info, ParameterInfo? constructorParameter)
     {
-        if (info.GetCustomAttribute<System.Runtime.CompilerServices.RequiredMemberAttribute>() != null)
+        if (info.GetCustomAttribute<RequiredMemberAttribute>() != null)
         {
             return true;
         }

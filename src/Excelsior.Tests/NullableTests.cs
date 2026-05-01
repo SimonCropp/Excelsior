@@ -94,6 +94,15 @@ public class NullableTests
             Enum = AnEnum.Value,
             Bool = true
         },
+        new()
+        {
+            Number = 2,
+            String = "other",
+            DateTime = new DateTime(2021, 2, 2, 11, 16, 6),
+            Date = new Date(2021, 2, 2),
+            Enum = AnEnum.Value,
+            Bool = false
+        },
     ];
 
     class NullableTargets

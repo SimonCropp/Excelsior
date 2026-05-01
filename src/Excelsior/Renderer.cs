@@ -1153,9 +1153,9 @@ class Renderer<TModel>(
         if (value is DateTimeOffset dateTimeOffset)
         {
             ThrowIfHtml();
-
+            // Excel cells can't represent a timezone offset — written as a string
+            // so the offset round-trips. Cell is text, not a date, so no NumberFormat.
             var format = column.Format ?? ValueRenderer.DefaultDateTimeOffsetFormat;
-            style.NumberFormat = format;
             SetCellValue(cell, dateTimeOffset.ToString(format, ValueRenderer.Culture));
 
             return;

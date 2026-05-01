@@ -7,7 +7,15 @@
           Name: Name,
           Width: 25.0,
           ContainsRichText: false,
-          RequiredHighlight: true
+          RequiredHighlight: true,
+          Validation: {
+            Type: custom,
+            Min: LEN(TRIM(A2))>0,
+            AllowBlank: false,
+            ErrorTitle: Invalid value,
+            ErrorMessage: This field is required.,
+            Range: 2-26
+          }
         },
         {
           Name: Email,
@@ -20,7 +28,15 @@
           Width: 15.0,
           ContainsRichText: false,
           NumberFormat: yyyy-MM-dd HH:mm:ss,
-          RequiredHighlight: true
+          RequiredHighlight: true,
+          Validation: {
+            Type: custom,
+            Min: LEN(TRIM(C2))>0,
+            AllowBlank: false,
+            ErrorTitle: Invalid value,
+            ErrorMessage: This field is required.,
+            Range: 2-26
+          }
         }
       ]
     }

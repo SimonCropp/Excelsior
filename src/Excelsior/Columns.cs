@@ -20,7 +20,11 @@ class Columns<TModel>
         var (isEnumerable, render) = ValueRenderer.GetRender(type);
 
         var allowedValues = TypeInference.DeriveAllowedValues(type);
-        var required = inferValidationFromTypes && property.IsNonNullable && !isEnumerable;
+        // `required` keyword and [Required] are explicit author signals — always honored.
+        // NRT non-nullable inference is gated behind the flag.
+        var required = !isEnumerable &&
+                       (property.IsRequired ||
+                        (inferValidationFromTypes && property.IsNonNullable));
 
         columns.Add(
             property.Name,

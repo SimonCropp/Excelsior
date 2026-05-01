@@ -7,37 +7,69 @@
           Name: Number,
           Width: 10.0,
           ContainsRichText: false,
-          RequiredHighlight: false
+          RequiredHighlight: true,
+          Validation: {
+            Type: custom,
+            Min: LEN(TRIM(A2))>0,
+            AllowBlank: false,
+            ErrorTitle: Invalid value,
+            ErrorMessage: This field is required.,
+            Range: 2-3
+          }
         },
         {
           Name: String,
           Width: 10.0,
           ContainsRichText: false,
-          RequiredHighlight: false
+          RequiredHighlight: true,
+          Validation: {
+            Type: custom,
+            Min: LEN(TRIM(B2))>0,
+            AllowBlank: false,
+            ErrorTitle: Invalid value,
+            ErrorMessage: This field is required.,
+            Range: 2-3
+          }
         },
         {
           Name: Date Time,
           Width: 23.0,
           ContainsRichText: false,
-          RequiredHighlight: false
+          RequiredHighlight: true,
+          Validation: {
+            Type: custom,
+            Min: LEN(TRIM(C2))>0,
+            AllowBlank: false,
+            ErrorTitle: Invalid value,
+            ErrorMessage: This field is required.,
+            Range: 2-3
+          }
         },
         {
           Name: Date,
           Width: 9.0,
           ContainsRichText: false,
-          RequiredHighlight: false
+          RequiredHighlight: true,
+          Validation: {
+            Type: custom,
+            Min: LEN(TRIM(D2))>0,
+            AllowBlank: false,
+            ErrorTitle: Invalid value,
+            ErrorMessage: This field is required.,
+            Range: 2-3
+          }
         },
         {
           Name: Enum,
           Width: 9.0,
           ContainsRichText: false,
-          RequiredHighlight: false,
+          RequiredHighlight: true,
           Validation: {
             Type: list,
             AllowedValues: [
               Value
             ],
-            AllowBlank: true,
+            AllowBlank: false,
             ErrorTitle: Invalid value,
             ErrorMessage: Must be one of: Value.,
             Range: 2-3
@@ -47,14 +79,14 @@
           Name: Bool,
           Width: 9.0,
           ContainsRichText: false,
-          RequiredHighlight: false,
+          RequiredHighlight: true,
           Validation: {
             Type: list,
             AllowedValues: [
               TRUE,
               FALSE
             ],
-            AllowBlank: true,
+            AllowBlank: false,
             ErrorTitle: Invalid value,
             ErrorMessage: Must be one of: TRUE, FALSE.,
             Range: 2-3

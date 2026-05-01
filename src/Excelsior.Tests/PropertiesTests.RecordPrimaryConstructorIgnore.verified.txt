@@ -6,6 +6,7 @@
     Type: string,
     IsNumber: false,
     IsHtml: false,
-    IsNonNullable: false
+    IsNonNullable: false,
+    IsRequired: false
   }
 ]

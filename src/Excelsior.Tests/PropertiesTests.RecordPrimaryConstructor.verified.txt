@@ -6,7 +6,8 @@
     Type: string,
     IsNumber: false,
     IsHtml: false,
-    IsNonNullable: true
+    IsNonNullable: true,
+    IsRequired: false
   },
   {
     Get: {Scrubbed},
@@ -15,6 +16,7 @@
     Type: string,
     IsNumber: false,
     IsHtml: false,
-    IsNonNullable: true
+    IsNonNullable: true,
+    IsRequired: false
   }
 ]

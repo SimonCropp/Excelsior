@@ -749,6 +749,14 @@ class Renderer<TModel>(
             validation.Type = DataValidationValues.Custom;
             validation.Formula1 = new($"ISNUMBER({firstCell})");
         }
+        else if (column.Required)
+        {
+            // No type-specific constraint, but the column is required — block blank entries
+            // (empty or whitespace-only) via a custom validation.
+            hasValidation = true;
+            validation.Type = DataValidationValues.Custom;
+            validation.Formula1 = new($"LEN(TRIM({firstCell}))>0");
+        }
 
         if (!hasValidation && !column.HasInputMessage)
         {
@@ -845,6 +853,11 @@ class Renderer<TModel>(
         if (column.HasNumericValidation)
         {
             return "Must be a number.";
+        }
+
+        if (column.Required)
+        {
+            return "This field is required.";
         }
 
         return "Invalid value.";

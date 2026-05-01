@@ -7,13 +7,29 @@
           Name: Title,
           Width: 13.0,
           ContainsRichText: false,
-          RequiredHighlight: false
+          RequiredHighlight: true,
+          Validation: {
+            Type: custom,
+            Min: LEN(TRIM(A2))>0,
+            AllowBlank: false,
+            ErrorTitle: Invalid value,
+            ErrorMessage: This field is required.,
+            Range: 2-4
+          }
         },
         {
           Name: Body,
           Width: 50.0,
           ContainsRichText: false,
-          RequiredHighlight: false
+          RequiredHighlight: true,
+          Validation: {
+            Type: custom,
+            Min: LEN(TRIM(B2))>0,
+            AllowBlank: false,
+            ErrorTitle: Invalid value,
+            ErrorMessage: This field is required.,
+            Range: 2-4
+          }
         }
       ]
     }

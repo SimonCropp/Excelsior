@@ -43,6 +43,22 @@
         Type = info.PropertyType;
         IsNumber = info.PropertyType.IsNumericType();
         IsNonNullable = ResolveIsNonNullable(info);
+        IsRequired = ResolveIsRequired(info, constructorParameter);
+    }
+
+    static bool ResolveIsRequired(PropertyInfo info, ParameterInfo? constructorParameter)
+    {
+        if (info.GetCustomAttribute<System.Runtime.CompilerServices.RequiredMemberAttribute>() != null)
+        {
+            return true;
+        }
+
+        if (info.Attribute<RequiredAttribute>() != null)
+        {
+            return true;
+        }
+
+        return constructorParameter?.Attribute<RequiredAttribute>() != null;
     }
 
     static bool ResolveIsNonNullable(PropertyInfo info)
@@ -162,6 +178,7 @@
     public bool? Filter { get; }
     public bool? Include { get; }
     public bool IsNonNullable { get; }
+    public bool IsRequired { get; }
 
     static string GetHeading(IReadOnlyList<(PropertyInfo property, ParameterInfo? parameter)> infos, bool useHierachyForName)
     {

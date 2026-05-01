@@ -1113,13 +1113,26 @@ using var book = await builder.Build();
 
 Template sheets infer common validation rules from the column's type:
 
-| Type | Inferred | Gated by `inferValidationFromTypes` |
+| Signal | Inferred | Gated by `inferValidationFromTypes` |
 | --- | --- | :---: |
 | `enum` / `enum?` | dropdown list of enum members | no — always on |
-| `bool` / `bool?` | dropdown of `TRUE` / `FALSE` | no — always on |
+| `bool` / `bool?` | dropdown of `TRUE` / `FALSE` (see [note](#bool-dropdown-vs-strict-boolean) below) | no — always on |
 | Numeric (`int`, `decimal`, `double`, etc.) | `ISNUMBER` constraint — manually-typed non-numeric values are blocked | no — always on |
+| C# `required` modifier or `[Required]` attribute | `Required = true` | no — always on |
 | Non-nullable value type (`int`, `decimal`, `DateTime`, `bool`, enum) | `Required = true` | yes |
 | Non-nullable reference type (NRT-aware, data-bound only) | `Required = true` | yes |
+
+When a column is `Required` and has no other validation type (e.g. a non-empty string), Excelsior emits a `LEN(TRIM(...))>0` custom validation with `allowBlank="0"`. Excel blocks blank entries with the default message *"This field is required."* — clearing the cell triggers the Stop popup. Set `ErrorMessage` to override.
+
+```cs
+public class Employee
+{
+    public required string Name { get; init; }   // always-on Required
+    [Required]
+    public string Email { get; init; } = "";     // always-on Required
+    public string? Notes { get; init; }          // not Required
+}
+```
 
 <!-- snippet: TemplateInferenceDefaults -->
 <a id='snippet-TemplateInferenceDefaults'></a>
@@ -1164,6 +1177,9 @@ using var book = await builder.Build();
 <!-- endSnippet -->
 
 Per-column overrides always win — set `Required = false` or `DisableAllowedValues = true` to opt out for one column.
+
+<a id="bool-dropdown-vs-strict-boolean"></a>
+**Note on the bool dropdown.** Excel does have a native Boolean cell type (OOXML `t="b"`) and Excelsior writes `bool` values that way. The auto-derived dropdown is a *string list* of `TRUE,FALSE`, so when a user picks an entry Excel inserts the literal text — in practice it auto-coerces back to a Boolean cell on edit, but you can end up with mixed cell types in the same column (Booleans we wrote vs. strings the user picked) which can affect formulas like `=A2*1` or `COUNTIF(A:A, TRUE)`. If you need strict Boolean enforcement, set `DisableAllowedValues = true` on the column — this drops the dropdown so you can supply your own `=ISLOGICAL(A2)` constraint via a custom data validation. For typical data-entry templates the dropdown is the better UX.
 
 #### Auto-Derived Enum Dropdowns
 
@@ -1278,7 +1294,17 @@ using var book = await builder.Build();
 
 #### Required Cells
 
-`Required = true` highlights blank cells in the column with a soft red conditional-format fill, drawing attention to fields the user has not yet filled in.
+`Required = true` does two things:
+
+1. Highlights blank cells in the column with a soft red conditional-format fill, drawing attention to fields the user has not yet filled in.
+2. When the column has no other validation type (e.g. a free-text string), emits a `LEN(TRIM(...))>0` custom validation with `allowBlank="0"` so Excel rejects blank values typed into the cell.
+
+**Excel limitation.** Excel's data validation only fires on *typed* entry. It does **not** fire when the user clears a cell with the Delete key, pastes a blank value in, fills via drag, or writes from a macro — that's documented Excel behavior, not something Excelsior can override. So:
+
+- Typing a blank value and pressing Enter → the Stop popup fires and the entry is rejected.
+- Pressing Delete to clear an existing value → the cell goes blank silently, but the conditional-formatting highlight makes the gap visible.
+
+If you need true enforcement at save time (block save while any required cell is blank), you'll need a workbook-level VBA macro on `Workbook_BeforeSave` — that's out of scope for a template generator.
 
 <!-- snippet: TemplateSheetRequired -->
 <a id='snippet-TemplateSheetRequired'></a>

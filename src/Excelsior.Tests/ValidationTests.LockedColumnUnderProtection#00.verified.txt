@@ -7,11 +7,11 @@
           Name: Employee ID,
           Width: 15.0,
           ContainsRichText: false,
-          RequiredHighlight: false,
+          RequiredHighlight: true,
           Validation: {
             Type: custom,
             Min: ISNUMBER(A2),
-            AllowBlank: true,
+            AllowBlank: false,
             ErrorTitle: Invalid value,
             ErrorMessage: Must be a number.,
             Range: 2-5
@@ -22,14 +22,30 @@
           Width: 15.0,
           ContainsRichText: false,
           Locked: false,
-          RequiredHighlight: false
+          RequiredHighlight: true,
+          Validation: {
+            Type: custom,
+            Min: LEN(TRIM(B2))>0,
+            AllowBlank: false,
+            ErrorTitle: Invalid value,
+            ErrorMessage: This field is required.,
+            Range: 2-5
+          }
         },
         {
           Name: Email Address,
           Width: 22.0,
           ContainsRichText: false,
           Locked: false,
-          RequiredHighlight: false
+          RequiredHighlight: true,
+          Validation: {
+            Type: custom,
+            Min: LEN(TRIM(C2))>0,
+            AllowBlank: false,
+            ErrorTitle: Invalid value,
+            ErrorMessage: This field is required.,
+            Range: 2-5
+          }
         },
         {
           Name: Hire Date,

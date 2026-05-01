@@ -41,7 +41,8 @@ class ColumnConfig<TModel>
         NumericMax.HasValue ||
         DateMin.HasValue ||
         DateMax.HasValue ||
-        HasNumericValidation;
+        HasNumericValidation ||
+        Required;
 
     /// <summary>
     /// True for plain numeric columns (no custom render/formula/html, not enumerable). The

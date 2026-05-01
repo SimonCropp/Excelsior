@@ -7,7 +7,15 @@
           Name: Name,
           Width: 9.0,
           ContainsRichText: false,
-          RequiredHighlight: true
+          RequiredHighlight: true,
+          Validation: {
+            Type: custom,
+            Min: LEN(TRIM(A2))>0,
+            AllowBlank: false,
+            ErrorTitle: Invalid value,
+            ErrorMessage: This field is required.,
+            Range: 2-7
+          }
         },
         {
           Name: Notes,
@@ -56,7 +64,15 @@
           Name: Hire Date,
           Width: 13.0,
           ContainsRichText: false,
-          RequiredHighlight: true
+          RequiredHighlight: true,
+          Validation: {
+            Type: custom,
+            Min: LEN(TRIM(F2))>0,
+            AllowBlank: false,
+            ErrorTitle: Invalid value,
+            ErrorMessage: This field is required.,
+            Range: 2-7
+          }
         }
       ]
     }

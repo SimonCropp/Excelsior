@@ -20,7 +20,15 @@
           Width: 15.0,
           ContainsRichText: false,
           NumberFormat: yyyy-MM-dd HH:mm:ss,
-          RequiredHighlight: true
+          RequiredHighlight: true,
+          Validation: {
+            Type: custom,
+            Min: LEN(TRIM(C2))>0,
+            AllowBlank: false,
+            ErrorTitle: Invalid value,
+            ErrorMessage: This field is required.,
+            Range: 2-1001
+          }
         },
         {
           Name: Annual Salary,

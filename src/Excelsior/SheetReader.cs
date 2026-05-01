@@ -1,0 +1,201 @@
+namespace Excelsior;
+
+class SheetReader<TModel> :
+    ISheetReader<TModel>,
+    IReaderSheet
+{
+    Dictionary<string, ColumnReadConfig<TModel>> columns = new(StringComparer.Ordinal);
+    List<TModel> rows = [];
+
+    public string? Name { get; }
+    public IReadOnlyList<TModel> Rows => rows;
+
+    public SheetReader(string? name)
+    {
+        Name = name;
+
+        var index = 0;
+        foreach (var info in GetReadableProperties(typeof(TModel)))
+        {
+            var setter = BuildSetter(info);
+            columns[info.Name] = new()
+            {
+                Name = info.Name,
+                Heading = ResolveHeading(info),
+                Type = info.PropertyType,
+                Order = ResolveOrder(info),
+                DeclarationIndex = index++,
+                Include = ResolveInclude(info),
+                SetValue = setter,
+                Convert = null
+            };
+        }
+    }
+
+    static IEnumerable<PropertyInfo> GetReadableProperties(Type type)
+    {
+        foreach (var property in type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
+        {
+            if (!property.CanRead)
+            {
+                continue;
+            }
+
+            if (property.GetIndexParameters().Length > 0)
+            {
+                continue;
+            }
+
+            if (property.Attribute<IgnoreAttribute>() != null)
+            {
+                continue;
+            }
+
+            yield return property;
+        }
+    }
+
+    static string ResolveHeading(PropertyInfo info)
+    {
+        var column = info.Attribute<ColumnAttribute>();
+        if (column?.Heading != null)
+        {
+            return column.Heading;
+        }
+
+        var display = info.Attribute<DisplayAttribute>();
+        if (display?.Name != null)
+        {
+            return display.Name;
+        }
+
+        var displayName = info.Attribute<DisplayNameAttribute>();
+        if (displayName != null)
+        {
+            return displayName.DisplayName;
+        }
+
+        return CamelCase.Split(info.Name);
+    }
+
+    static int? ResolveOrder(PropertyInfo info)
+    {
+        var column = info.Attribute<ColumnAttribute>();
+        if (column is { Order: > -1 })
+        {
+            return column.Order;
+        }
+
+        return info.Attribute<DisplayAttribute>()?.Order;
+    }
+
+    static bool ResolveInclude(PropertyInfo info)
+    {
+        var column = info.Attribute<ColumnAttribute>();
+        if (column is { IncludeHasValue: true })
+        {
+            return column.Include;
+        }
+
+        return true;
+    }
+
+    static Action<TModel, object?> BuildSetter(PropertyInfo info)
+    {
+        if (info.SetMethod == null)
+        {
+            return (_, _) => { };
+        }
+
+        return (target, value) => info.SetValue(target, value);
+    }
+
+    public ISheetReader<TModel> Column<TProperty>(
+        Expression<Func<TModel, TProperty>> property,
+        Action<ColumnReadConfig<TModel, TProperty>> configuration)
+    {
+        var name = property.PropertyName();
+        if (!columns.TryGetValue(name, out var column))
+        {
+            throw new($"Could not find property: {name}");
+        }
+
+        var config = new ColumnReadConfig<TModel, TProperty>();
+        configuration(config);
+
+        if (config.Heading != null)
+        {
+            column.Heading = config.Heading;
+        }
+
+        if (config.Order != null)
+        {
+            column.Order = config.Order;
+        }
+
+        if (config.Include != null)
+        {
+            column.Include = config.Include.Value;
+        }
+
+        if (config.Convert != null)
+        {
+            var convert = config.Convert;
+            column.Convert = cell => convert(cell);
+        }
+
+        return this;
+    }
+
+    public void HeadingText<TProperty>(Expression<Func<TModel, TProperty>> property, string value) =>
+        Column(property, _ => _.Heading = value);
+
+    public void Order<TProperty>(Expression<Func<TModel, TProperty>> property, int? value) =>
+        Column(property, _ => _.Order = value);
+
+    public void Include<TProperty>(Expression<Func<TModel, TProperty>> property, bool value) =>
+        Column(property, _ => _.Include = value);
+
+    public void Exclude<TProperty>(Expression<Func<TModel, TProperty>> property) =>
+        Column(property, _ => _.Include = false);
+
+    public void Convert<TProperty>(Expression<Func<TModel, TProperty>> property, Func<Cell, TProperty> convert) =>
+        Column(property, _ => _.Convert = convert);
+
+    IReadOnlyList<ColumnReadInfo> IReaderSheet.OrderedColumns()
+    {
+        var result = new List<ColumnReadInfo>();
+        var ordered = columns
+            .Values
+            .Where(_ => _.Include)
+            .OrderBy(_ => _.Order.HasValue ? 0 : 1)
+            .ThenBy(_ => _.Order ?? _.DeclarationIndex);
+
+        foreach (var c in ordered)
+        {
+            result.Add(new(c.Name, c.Heading, c.Type, c.Convert));
+        }
+
+        return result;
+    }
+
+    void IReaderSheet.Receive(IReadOnlyDictionary<string, object?> rowValues) =>
+        rows.Add(ModelActivator<TModel>.Create(rowValues));
+
+    void IReaderSheet.Reset() =>
+        rows.Clear();
+}
+
+interface IReaderSheet
+{
+    string? Name { get; }
+    IReadOnlyList<ColumnReadInfo> OrderedColumns();
+    void Receive(IReadOnlyDictionary<string, object?> rowValues);
+    void Reset();
+}
+
+sealed record ColumnReadInfo(
+    string Name,
+    string Heading,
+    Type Type,
+    Func<Cell, object?>? Convert);

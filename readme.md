@@ -187,6 +187,144 @@ await builder.ToStream(stream);
 <!-- endSnippet -->
 
 
+### Reading xlsx
+
+`BookReader` is the inverse of `BookBuilder`: register the sheets you want, then `Convert` (throws on failure) or `TryConvert` (returns a result).
+
+#### Strong-typed
+
+The same property-discovery pipeline that drives writes also drives reads — `[Column]`, `[Display]`, `[DisplayName]`, ordering, and inclusion all carry over. When the workbook was produced by Excelsior, the column→property mapping is recovered from a custom XML metadata part written at build time, so renaming a heading on either side does not break the round-trip.
+
+<!-- snippet: BookReaderUsage -->
+<a id='snippet-BookReaderUsage'></a>
+```cs
+var stream = new MemoryStream();
+var builder = new BookBuilder();
+builder.AddSheet(SampleData.Employees());
+await builder.ToStream(stream);
+stream.Position = 0;
+
+var reader = new BookReader();
+var sheet = reader.AddSheet<Employee>();
+reader.Convert(stream);
+
+var employees = sheet.Rows;
+```
+<sup><a href='/src/Excelsior.Tests/BookReaderTests.cs#L7-L21' title='Snippet source file'>snippet source</a> | <a href='#snippet-BookReaderUsage' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+
+#### Anonymous / dictionary
+
+For sheets without a backing model, declare every column explicitly. Each parsed row is an `IReadOnlyDictionary<string, object?>` keyed by the column name.
+
+<!-- snippet: BookReaderDictionary -->
+<a id='snippet-BookReaderDictionary'></a>
+```cs
+var reader = new BookReader();
+var sheet = reader.AddSheet();
+sheet
+    .Column<int>("Id", _ => _.Heading = "Employee ID")
+    .Column<string>("Name", _ => _.Heading = "Full Name")
+    .Column<string>("Email", _ => _.Heading = "Email Address")
+    .Column<Date?>("HireDate", _ => _.Heading = "Hire Date")
+    .Column<int>("Salary", _ => _.Heading = "Annual Salary")
+    .Column<bool>("IsActive")
+    .Column<EmployeeStatus>("Status");
+
+reader.Convert(stream);
+
+var first = sheet.Rows[0];
+```
+<sup><a href='/src/Excelsior.Tests/BookReaderAnonymousTests.cs#L13-L30' title='Snippet source file'>snippet source</a> | <a href='#snippet-BookReaderDictionary' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+
+#### Per-cell delegate conversion
+
+Override the default parsing for a single column with a delegate that receives the underlying OpenXml `Cell`.
+
+Strong-typed:
+
+<!-- snippet: ReaderDelegate -->
+<a id='snippet-ReaderDelegate'></a>
+```cs
+var reader = new BookReader();
+var sheet = reader.AddSheet<Target>();
+sheet.Convert(
+    _ => _.Priority,
+    cell =>
+    {
+        var raw = cell.InnerText.Trim().ToLowerInvariant();
+        return raw switch
+        {
+            "low" => Priority.Low,
+            "medium" => Priority.Medium,
+            "high" => Priority.High,
+            _ => Priority.Low
+        };
+    });
+reader.Convert(stream);
+```
+<sup><a href='/src/Excelsior.Tests/BookReaderDelegateTests.cs#L39-L58' title='Snippet source file'>snippet source</a> | <a href='#snippet-ReaderDelegate' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+Dictionary:
+
+<!-- snippet: ReaderDictionaryDelegate -->
+<a id='snippet-ReaderDictionaryDelegate'></a>
+```cs
+var reader = new BookReader();
+var sheet = reader.AddSheet();
+sheet.Column<string>("Code");
+sheet.Column<int>(
+    "Priority",
+    _ => _.Convert = cell => cell.InnerText.Trim().ToLowerInvariant() switch
+    {
+        "low" => 1,
+        "medium" => 2,
+        "high" => 3,
+        _ => 0
+    });
+reader.Convert(stream);
+```
+<sup><a href='/src/Excelsior.Tests/BookReaderDelegateTests.cs#L79-L95' title='Snippet source file'>snippet source</a> | <a href='#snippet-ReaderDictionaryDelegate' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+
+#### Convert vs TryConvert
+
+`Convert` throws `ReadException` on the first batch of conversion failures. The exception's `Errors` property is the same collection that `TryConvert` exposes.
+
+`TryConvert` never throws on data errors. It returns a `ReadResult` that is implicitly convertible to `bool` (success) and to `ReadError[]`.
+
+<!-- snippet: BookReaderTryConvert -->
+<a id='snippet-BookReaderTryConvert'></a>
+```cs
+var stream = await WriteStringNumber();
+var reader = new BookReader();
+var sheet = reader.AddSheet<IntTarget>();
+
+var result = reader.TryConvert(stream);
+if (!result)
+{
+    foreach (var error in result.Errors)
+    {
+        Console.WriteLine(error);
+    }
+}
+```
+<sup><a href='/src/Excelsior.Tests/BookReaderErrorTests.cs#L46-L61' title='Snippet source file'>snippet source</a> | <a href='#snippet-BookReaderTryConvert' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+
+#### Supported types
+
+`BookReader` understands all standard .NET primitives and their nullable variants:
+
+`bool`, `byte`, `sbyte`, `short`, `ushort`, `int`, `uint`, `long`, `ulong`, `float`, `double`, `decimal`, `string`, `char`, `Guid`, `DateTime`, `DateOnly` (`Date`), `TimeOnly` (`Time`), `TimeSpan`, `DateTimeOffset`, and any `enum` (matched against the humanised display string used by the writer).
+
+
 ### Grouping Column Configuration
 
 When applying multiple settings to the same column, prefer grouping them in a single `Column` call rather than using separate method calls. This makes it clearer which settings belong together.

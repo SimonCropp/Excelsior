@@ -7,7 +7,13 @@
           Name: Employee ID,
           Width: 15.0,
           ContainsRichText: false,
-          RequiredHighlight: false
+          RequiredHighlight: false,
+          Validation: {
+            Type: custom,
+            Min: ISNUMBER(A2),
+            AllowBlank: true,
+            Range: 2-30
+          }
         },
         {
           Name: Full Name,
@@ -49,7 +55,16 @@
           Name: Is Active,
           Width: 13.0,
           ContainsRichText: false,
-          RequiredHighlight: false
+          RequiredHighlight: false,
+          Validation: {
+            Type: list,
+            AllowedValues: [
+              TRUE,
+              FALSE
+            ],
+            AllowBlank: true,
+            Range: 2-30
+          }
         },
         {
           Name: Status,

@@ -42,6 +42,20 @@
 
         Type = info.PropertyType;
         IsNumber = info.PropertyType.IsNumericType();
+        IsNonNullable = ResolveIsNonNullable(info);
+    }
+
+    static bool ResolveIsNonNullable(PropertyInfo info)
+    {
+        var type = info.PropertyType;
+        if (type.IsValueType)
+        {
+            return Nullable.GetUnderlyingType(type) == null;
+        }
+
+        var context = new NullabilityInfoContext();
+        var nullability = context.Create(info);
+        return nullability.ReadState == NullabilityState.NotNull;
     }
 
     static (bool isHtml, bool isExplicit) ResolveIsHtml(PropertyInfo info, ParameterInfo? constructorParameter, ColumnAttribute? column)
@@ -147,6 +161,7 @@
     internal readonly bool IsHtmlExplicit;
     public bool? Filter { get; }
     public bool? Include { get; }
+    public bool IsNonNullable { get; }
 
     static string GetHeading(IReadOnlyList<(PropertyInfo property, ParameterInfo? parameter)> infos, bool useHierachyForName)
     {

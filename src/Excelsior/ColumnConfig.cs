@@ -39,7 +39,19 @@ class ColumnConfig<TModel>
         NumericMin.HasValue ||
         NumericMax.HasValue ||
         DateMin.HasValue ||
-        DateMax.HasValue;
+        DateMax.HasValue ||
+        HasNumericValidation;
+
+    /// <summary>
+    /// True for plain numeric columns (no custom render/formula/html, not enumerable). The
+    /// renderer emits an ISNUMBER constraint so manually-typed non-numeric values are blocked.
+    /// </summary>
+    public bool HasNumericValidation =>
+        IsNumber &&
+        !IsEnumerable &&
+        Render == null &&
+        Formula == null &&
+        !IsHtml;
 
     public bool HasInputMessage =>
         InputMessage != null || InputTitle != null;
@@ -126,8 +138,10 @@ public class ColumnConfig<TModel, TProperty>
 
     /// <summary>
     /// When <c>true</c>, blank cells in this column are highlighted via conditional formatting.
+    /// When <c>null</c> (default), the value is inferred from the property type if
+    /// <c>inferValidationFromTypes</c> is enabled on the sheet.
     /// </summary>
-    public bool Required { get; set; }
+    public bool? Required { get; set; }
 
     /// <summary>
     /// Override the default cell-locking behavior under sheet protection. When <c>null</c> (default),

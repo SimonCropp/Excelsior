@@ -43,8 +43,9 @@ public class BookBuilder
         int? defaultMinColumnWidth = null,
         int? defaultMaxColumnWidth = null,
         int? maxRowHeight = null,
-        int templateRowCount = 0) =>
-        AddSheet(data.ToAsyncEnumerable(), name, defaultMinColumnWidth, defaultMaxColumnWidth, maxRowHeight, templateRowCount);
+        int templateRowCount = 0,
+        bool inferValidationFromTypes = false) =>
+        AddSheet(data.ToAsyncEnumerable(), name, defaultMinColumnWidth, defaultMaxColumnWidth, maxRowHeight, templateRowCount, inferValidationFromTypes);
 
     public ISheetBuilder<TModel> AddSheet<TModel>(
         IAsyncEnumerable<TModel> data,
@@ -52,10 +53,11 @@ public class BookBuilder
         int? defaultMinColumnWidth = null,
         int? defaultMaxColumnWidth = null,
         int? maxRowHeight = null,
-        int templateRowCount = 0)
+        int templateRowCount = 0,
+        bool inferValidationFromTypes = false)
     {
         name ??= $"Sheet{actions.Count + 1}";
-        var columns = new Columns<TModel>();
+        var columns = new Columns<TModel>(inferValidationFromTypes);
         var builder = new SheetBuilder<TModel>(columns);
 
         actions.Add((book, cancel) =>
@@ -89,7 +91,8 @@ public class BookBuilder
         int templateRowCount = 1000,
         int? defaultMinColumnWidth = null,
         int? defaultMaxColumnWidth = null,
-        int? maxRowHeight = null)
+        int? maxRowHeight = null,
+        bool inferValidationFromTypes = true)
     {
         if (templateRowCount < 0)
         {
@@ -97,7 +100,7 @@ public class BookBuilder
         }
 
         name ??= $"Sheet{actions.Count + 1}";
-        var builder = new TemplateSheetBuilder();
+        var builder = new TemplateSheetBuilder(inferValidationFromTypes);
 
         actions.Add((book, cancel) =>
         {

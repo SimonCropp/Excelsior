@@ -7,7 +7,13 @@
           Name: Employee ID,
           Width: 15.0,
           ContainsRichText: false,
-          RequiredHighlight: false
+          RequiredHighlight: false,
+          Validation: {
+            Type: custom,
+            Min: ISNUMBER(A2),
+            AllowBlank: true,
+            Range: 2-5
+          }
         },
         {
           Name: Email Address,
@@ -25,7 +31,13 @@
           Name: Annual Salary,
           Width: 17.0,
           ContainsRichText: false,
-          RequiredHighlight: false
+          RequiredHighlight: false,
+          Validation: {
+            Type: custom,
+            Min: ISNUMBER(D2),
+            AllowBlank: true,
+            Range: 2-5
+          }
         },
         {
           Name: Hire Date,
@@ -37,7 +49,16 @@
           Name: Is Active,
           Width: 13.0,
           ContainsRichText: false,
-          RequiredHighlight: false
+          RequiredHighlight: false,
+          Validation: {
+            Type: list,
+            AllowedValues: [
+              TRUE,
+              FALSE
+            ],
+            AllowBlank: true,
+            Range: 2-5
+          }
         },
         {
           Name: Status,

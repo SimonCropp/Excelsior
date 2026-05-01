@@ -13,7 +13,13 @@
           Name: Age,
           Width: 9.0,
           ContainsRichText: false,
-          RequiredHighlight: false
+          RequiredHighlight: false,
+          Validation: {
+            Type: custom,
+            Min: ISNUMBER(B2),
+            AllowBlank: true,
+            Range: 2-3
+          }
         },
         {
           Name: Email,

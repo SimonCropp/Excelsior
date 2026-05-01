@@ -6,17 +6,44 @@
         {
           Name: Manufacturer,
           Width: 18.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false,
+          Validation: {
+            Type: list,
+            AllowedValues: [
+              BUILDYOURDREAM
+            ],
+            AllowBlank: true,
+            Range: 2-3
+          }
         },
         {
           Name: Color,
           Width: 16.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false,
+          Validation: {
+            Type: list,
+            AllowedValues: [
+              ANTIQUEWHITE
+            ],
+            AllowBlank: true,
+            Range: 2-3
+          }
         },
         {
           Name: Nullable Color,
           Width: 18.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false,
+          Validation: {
+            Type: list,
+            AllowedValues: [
+              ANTIQUEWHITE
+            ],
+            AllowBlank: true,
+            Range: 2-3
+          }
         }
       ]
     }

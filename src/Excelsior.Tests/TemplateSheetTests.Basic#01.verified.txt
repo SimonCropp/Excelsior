@@ -20,14 +20,20 @@
           Width: 15.0,
           ContainsRichText: false,
           NumberFormat: yyyy-MM-dd HH:mm:ss,
-          RequiredHighlight: false
+          RequiredHighlight: true
         },
         {
           Name: Annual Salary,
           Width: 18.0,
           ContainsRichText: false,
           NumberFormat: $#,##0.00,
-          RequiredHighlight: false
+          RequiredHighlight: true,
+          Validation: {
+            Type: custom,
+            Min: ISNUMBER(D2),
+            AllowBlank: false,
+            Range: 2-1001
+          }
         }
       ]
     }

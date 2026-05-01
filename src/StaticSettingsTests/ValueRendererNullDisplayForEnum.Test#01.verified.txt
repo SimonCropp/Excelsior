@@ -6,12 +6,22 @@
         {
           Name: Name,
           Width: 9.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false
         },
         {
           Name: Color,
           Width: 17.0,
-          ContainsRichText: false
+          ContainsRichText: false,
+          RequiredHighlight: false,
+          Validation: {
+            Type: list,
+            AllowedValues: [
+              Antique white
+            ],
+            AllowBlank: true,
+            Range: 2-3
+          }
         }
       ]
     }

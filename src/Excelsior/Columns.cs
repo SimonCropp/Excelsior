@@ -1,10 +1,12 @@
 class Columns<TModel>
 {
     Dictionary<string, ColumnConfig<TModel>> columns = [];
+    bool inferValidationFromTypes;
     public bool AutoFilter { get; set; } = true;
 
-    public Columns()
+    public Columns(bool inferValidationFromTypes = false)
     {
+        this.inferValidationFromTypes = inferValidationFromTypes;
         var index = 0;
         foreach (var property in Properties<TModel>.Items)
         {
@@ -17,7 +19,8 @@ class Columns<TModel>
         var type = property.Type;
         var (isEnumerable, render) = ValueRenderer.GetRender(type);
 
-        var allowedValues = DeriveEnumAllowedValues(type);
+        var allowedValues = TypeInference.DeriveAllowedValues(type);
+        var required = inferValidationFromTypes && property.IsNonNullable && !isEnumerable;
 
         columns.Add(
             property.Name,
@@ -44,27 +47,9 @@ class Columns<TModel>
                 IsEnumerable = isEnumerable,
                 ItemRender = isEnumerable ? render : null,
                 GetValue = property.Get,
-                AllowedValues = allowedValues
+                AllowedValues = allowedValues,
+                Required = required
             });
-    }
-
-    static IReadOnlyList<string>? DeriveEnumAllowedValues(Type type)
-    {
-        var underlying = Nullable.GetUnderlyingType(type) ?? type;
-        if (!underlying.IsEnum)
-        {
-            return null;
-        }
-
-        var (_, render) = ValueRenderer.GetRender(underlying);
-        var values = Enum.GetValues(underlying);
-        var list = new List<string>(values.Length);
-        foreach (var value in values)
-        {
-            list.Add(render?.Invoke(value!) ?? value!.ToString()!);
-        }
-
-        return list;
     }
 
     public void Add<TProperty>(
@@ -194,9 +179,9 @@ class Columns<TModel>
             column.DateMax = config.DateMax;
         }
 
-        if (config.Required)
+        if (config.Required.HasValue)
         {
-            column.Required = true;
+            column.Required = config.Required.Value;
         }
 
         if (config.Locked.HasValue)

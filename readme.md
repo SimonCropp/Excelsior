@@ -1109,9 +1109,65 @@ using var book = await builder.Build();
 <sup><a href='/src/Excelsior.Tests/TemplateSheetTests.cs#L7-L31' title='Snippet source file'>snippet source</a> | <a href='#snippet-TemplateSheetBasic' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
+#### Type-Based Inference
+
+Template sheets infer common validation rules from the column's type:
+
+| Type | Inferred | Gated by `inferValidationFromTypes` |
+| --- | --- | :---: |
+| `enum` / `enum?` | dropdown list of enum members | no — always on |
+| `bool` / `bool?` | dropdown of `TRUE` / `FALSE` | no — always on |
+| Numeric (`int`, `decimal`, `double`, etc.) | `ISNUMBER` constraint — manually-typed non-numeric values are blocked | no — always on |
+| Non-nullable value type (`int`, `decimal`, `DateTime`, `bool`, enum) | `Required = true` | yes |
+| Non-nullable reference type (NRT-aware, data-bound only) | `Required = true` | yes |
+
+<!-- snippet: TemplateInferenceDefaults -->
+<a id='snippet-TemplateInferenceDefaults'></a>
+```cs
+var builder = new BookBuilder();
+builder.AddTemplateSheet("Employees", templateRowCount: 10)
+    .Column<string>("Name")
+    .Column<int>("Age")
+    .Column<bool>("IsActive")
+    .Column<DateTime>("HireDate");
+
+using var book = await builder.Build();
+```
+<sup><a href='/src/Excelsior.Tests/TypeInferenceTests.cs#L17-L28' title='Snippet source file'>snippet source</a> | <a href='#snippet-TemplateInferenceDefaults' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+Inference is **on by default for `AddTemplateSheet`** and **off by default for `AddSheet`**. Pass `inferValidationFromTypes: false` to disable on a template, or `inferValidationFromTypes: true` to opt in on a data-bound sheet:
+
+<!-- snippet: DataBoundInferenceEnabled -->
+<a id='snippet-DataBoundInferenceEnabled'></a>
+```cs
+InferenceModel[] data =
+[
+    new()
+    {
+        Name = "Alice",
+        Age = 30,
+        IsActive = true,
+        HireDate = new(2020, 1, 1)
+    }
+];
+
+var builder = new BookBuilder();
+builder.AddSheet(
+    data,
+    templateRowCount: 5,
+    inferValidationFromTypes: true);
+
+using var book = await builder.Build();
+```
+<sup><a href='/src/Excelsior.Tests/TypeInferenceTests.cs#L72-L93' title='Snippet source file'>snippet source</a> | <a href='#snippet-DataBoundInferenceEnabled' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+Per-column overrides always win — set `Required = false` or `DisableAllowedValues = true` to opt out for one column.
+
 #### Auto-Derived Enum Dropdowns
 
-Enum-typed columns automatically render as dropdown lists. The list values match the same rendering used for cell content, so `[Display(Name = "Full Time")]` shows "Full Time" in the dropdown.
+Enum-typed columns automatically render as dropdown lists (regardless of the inference flag). The list values match the same rendering used for cell content, so `[Display(Name = "Full Time")]` shows "Full Time" in the dropdown.
 
 <!-- snippet: TemplateSheetEnumDropdown -->
 <a id='snippet-TemplateSheetEnumDropdown'></a>

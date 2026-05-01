@@ -14,13 +14,13 @@
           Width: 15.0,
           ContainsRichText: false,
           NumberFormat: yyyy-MM-dd HH:mm:ss,
-          RequiredHighlight: false,
+          RequiredHighlight: true,
           Validation: {
             Type: date,
             Operator: between,
             Min: 2020-01-01,
             Max: 2030-12-31,
-            AllowBlank: true,
+            AllowBlank: false,
             Range: 2-26
           }
         }

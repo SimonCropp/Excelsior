@@ -13,7 +13,13 @@
           Name: Address Number,
           Width: 18.0,
           ContainsRichText: false,
-          RequiredHighlight: false
+          RequiredHighlight: false,
+          Validation: {
+            Type: custom,
+            Min: ISNUMBER(B2),
+            AllowBlank: true,
+            Range: 2
+          }
         },
         {
           Name: Address Street,
@@ -45,7 +51,13 @@
           Name: Address Post Code,
           Width: 22.0,
           ContainsRichText: false,
-          RequiredHighlight: false
+          RequiredHighlight: false,
+          Validation: {
+            Type: custom,
+            Min: ISNUMBER(F2),
+            AllowBlank: true,
+            Range: 2
+          }
         }
       ]
     }

@@ -19,7 +19,13 @@
           Name: Annual Salary,
           Width: 17.0,
           ContainsRichText: false,
-          RequiredHighlight: false
+          RequiredHighlight: false,
+          Validation: {
+            Type: custom,
+            Min: ISNUMBER(C2),
+            AllowBlank: true,
+            Range: 2-5
+          }
         }
       ]
     }

@@ -45,7 +45,16 @@
           Name: Bool,
           Width: 13.0,
           ContainsRichText: false,
-          RequiredHighlight: false
+          RequiredHighlight: false,
+          Validation: {
+            Type: list,
+            AllowedValues: [
+              TRUE,
+              FALSE
+            ],
+            AllowBlank: true,
+            Range: 2-3
+          }
         }
       ]
     }

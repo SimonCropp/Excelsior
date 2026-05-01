@@ -3,8 +3,12 @@ namespace Excelsior;
 class TemplateSheetBuilder :
     ITemplateSheetBuilder
 {
+    bool inferValidationFromTypes;
     public List<ColumnConfig<TemplateRow>> Columns { get; } = [];
     public bool AutoFilter { get; private set; } = true;
+
+    public TemplateSheetBuilder(bool inferValidationFromTypes = true) =>
+        this.inferValidationFromTypes = inferValidationFromTypes;
 
     public ITemplateSheetBuilder Column<TProperty>(
         string name,
@@ -27,7 +31,10 @@ class TemplateSheetBuilder :
 
         var allowedValues = config.DisableAllowedValues
             ? null
-            : config.AllowedValues ?? DeriveEnumAllowedValues(type);
+            : config.AllowedValues ?? TypeInference.DeriveAllowedValues(type);
+
+        var required = config.Required ?? (
+            inferValidationFromTypes && TypeInference.IsNonNullableValueType(type));
 
         var column = new ColumnConfig<TemplateRow>
         {
@@ -58,7 +65,7 @@ class TemplateSheetBuilder :
             NumericMax = config.NumericMax,
             DateMin = config.DateMin,
             DateMax = config.DateMax,
-            Required = config.Required,
+            Required = required,
             Locked = config.Locked,
             InputTitle = config.InputTitle,
             InputMessage = config.InputMessage,
@@ -70,25 +77,6 @@ class TemplateSheetBuilder :
     }
 
     public void DisableFilter() => AutoFilter = false;
-
-    static IReadOnlyList<string>? DeriveEnumAllowedValues(Type type)
-    {
-        var underlying = Nullable.GetUnderlyingType(type) ?? type;
-        if (!underlying.IsEnum)
-        {
-            return null;
-        }
-
-        var (_, render) = ValueRenderer.GetRender(underlying);
-        var values = Enum.GetValues(underlying);
-        var list = new List<string>(values.Length);
-        foreach (var value in values)
-        {
-            list.Add(render?.Invoke(value!) ?? value!.ToString()!);
-        }
-
-        return list;
-    }
 
     static string? DeriveDefaultFormat(Type type)
     {

@@ -8,7 +8,13 @@
           Width: 15.0,
           ContainsRichText: false,
           Locked: false,
-          RequiredHighlight: false
+          RequiredHighlight: false,
+          Validation: {
+            Type: custom,
+            Min: ISNUMBER(A2),
+            AllowBlank: true,
+            Range: 2-5
+          }
         },
         {
           Name: Full Name,
@@ -36,14 +42,29 @@
           Width: 17.0,
           ContainsRichText: false,
           Locked: false,
-          RequiredHighlight: false
+          RequiredHighlight: false,
+          Validation: {
+            Type: custom,
+            Min: ISNUMBER(E2),
+            AllowBlank: true,
+            Range: 2-5
+          }
         },
         {
           Name: Is Active,
           Width: 13.0,
           ContainsRichText: false,
           Locked: false,
-          RequiredHighlight: false
+          RequiredHighlight: false,
+          Validation: {
+            Type: list,
+            AllowedValues: [
+              TRUE,
+              FALSE
+            ],
+            AllowBlank: true,
+            Range: 2-5
+          }
         },
         {
           Name: Status,

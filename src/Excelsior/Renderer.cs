@@ -674,8 +674,9 @@ class Renderer<TModel>(
             }
 
             var letter = SheetContext.GetColumnLetter(i);
-            var sqref = $"{letter}{validationFirstRow}:{letter}{validationLastRow}";
-            var validation = BuildDataValidation(column, sqref);
+            var firstCell = $"{letter}{validationFirstRow}";
+            var sqref = $"{firstCell}:{letter}{validationLastRow}";
+            var validation = BuildDataValidation(column, sqref, firstCell);
             if (validation == null)
             {
                 continue;
@@ -706,7 +707,7 @@ class Renderer<TModel>(
         return 1 + dataRowCount + templateRowCount;
     }
 
-    static DataValidation? BuildDataValidation(ColumnConfig<TModel> column, string sqref)
+    static DataValidation? BuildDataValidation(ColumnConfig<TModel> column, string sqref, string firstCell)
     {
         var validation = new DataValidation
         {
@@ -742,6 +743,12 @@ class Renderer<TModel>(
                 column.DateMin?.ToOADate() is { } min ? (decimal)min : null,
                 column.DateMax?.ToOADate() is { } max ? (decimal)max : null);
         }
+        else if (column.HasNumericValidation)
+        {
+            hasValidation = true;
+            validation.Type = DataValidationValues.Custom;
+            validation.Formula1 = new($"ISNUMBER({firstCell})");
+        }
 
         if (!hasValidation && !column.HasInputMessage)
         {
@@ -751,6 +758,19 @@ class Renderer<TModel>(
         if (hasValidation)
         {
             validation.AllowBlank = !column.Required;
+            // Without ShowErrorMessage, Excel renders the dropdown but silently
+            // accepts manually-typed invalid values. Force it on so the default
+            // "Stop" error popup actually blocks bad input.
+            validation.ShowErrorMessage = true;
+            if (column.ErrorTitle != null)
+            {
+                validation.ErrorTitle = column.ErrorTitle;
+            }
+
+            if (column.ErrorMessage != null)
+            {
+                validation.Error = column.ErrorMessage;
+            }
         }
 
         if (column.HasInputMessage)
@@ -764,21 +784,6 @@ class Renderer<TModel>(
             if (column.InputMessage != null)
             {
                 validation.Prompt = column.InputMessage;
-            }
-        }
-
-        if (hasValidation && (column.ErrorTitle != null ||
-                              column.ErrorMessage != null))
-        {
-            validation.ShowErrorMessage = true;
-            if (column.ErrorTitle != null)
-            {
-                validation.ErrorTitle = column.ErrorTitle;
-            }
-
-            if (column.ErrorMessage != null)
-            {
-                validation.Error = column.ErrorMessage;
             }
         }
 

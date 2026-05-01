@@ -41,13 +41,13 @@
           Width: 18.0,
           ContainsRichText: false,
           NumberFormat: $#,##0.00,
-          RequiredHighlight: false,
+          RequiredHighlight: true,
           Validation: {
             Type: decimal,
             Operator: between,
             Min: 0,
             Max: 1000000,
-            AllowBlank: true,
+            AllowBlank: false,
             Range: 2-101
           }
         },

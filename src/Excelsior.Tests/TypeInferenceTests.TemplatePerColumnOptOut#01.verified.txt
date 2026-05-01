@@ -1,0 +1,28 @@
+﻿{
+  Sheets: [
+    {
+      Name: Employees,
+      Columns: [
+        {
+          Name: Age,
+          Width: 9.0,
+          ContainsRichText: false,
+          RequiredHighlight: false,
+          Validation: {
+            Type: custom,
+            Min: ISNUMBER(A2),
+            AllowBlank: true,
+            Range: 2-6
+          }
+        },
+        {
+          Name: IsActive,
+          Width: 12.0,
+          ContainsRichText: false,
+          RequiredHighlight: true
+        }
+      ]
+    }
+  ],
+  WorksheetCount: 1
+}

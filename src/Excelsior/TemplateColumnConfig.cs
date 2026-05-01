@@ -34,8 +34,10 @@ public class TemplateColumnConfig
 
     /// <summary>
     /// When <c>true</c>, blank cells in this column are highlighted via conditional formatting.
+    /// When <c>null</c> (default), the value is inferred from the property type if
+    /// <c>inferValidationFromTypes</c> is enabled on the sheet.
     /// </summary>
-    public bool Required { get; set; }
+    public bool? Required { get; set; }
 
     /// <summary>
     /// Override the default cell-locking behavior under sheet protection. When <c>null</c> (default),

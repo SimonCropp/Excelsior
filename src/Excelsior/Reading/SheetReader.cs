@@ -103,20 +103,20 @@ class SheetReader<TModel> :
     public void Convert<TProperty>(Expression<Func<TModel, TProperty>> property, Func<Cell, TProperty> convert) =>
         Column(property, _ => _.Convert = convert);
 
-    IReadOnlyList<ColumnReadInfo> IReaderSheet.Columns()
+    public List<ColumnReadInfo> Columns()
     {
         var result = new List<ColumnReadInfo>(columns.Count);
-        foreach (var c in columns.Values)
+        foreach (var column in columns.Values)
         {
-            result.Add(new(c.Name, c.Heading, c.Type, c.Convert));
+            result.Add(new(column.Name, column.Heading, column.Type, column.Convert));
         }
 
         return result;
     }
 
-    void IReaderSheet.Receive(IReadOnlyDictionary<string, object?> rowValues) =>
+    public void Receive(IReadOnlyDictionary<string, object?> rowValues) =>
         rows.Add(ModelActivator<TModel>.Create(rowValues));
 
-    void IReaderSheet.Reset() =>
+    public void Reset() =>
         rows.Clear();
 }

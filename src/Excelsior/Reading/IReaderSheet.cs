@@ -1,7 +1,7 @@
 ﻿interface IReaderSheet
 {
     string? Name { get; }
-    IReadOnlyList<ColumnReadInfo> Columns();
+    List<ColumnReadInfo> Columns();
     void Receive(IReadOnlyDictionary<string, object?> rowValues);
     void Reset();
 }

@@ -108,15 +108,44 @@ static class SheetParser
             byName,
             byHeading);
 
+        var resolvedNames = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var info in columnByIndex.Values)
+        {
+            resolvedNames.Add(info.Name);
+        }
+
+        var beforeCount = errors.Count;
+        foreach (var declared in columns)
+        {
+            if (resolvedNames.Contains(declared.Name))
+            {
+                continue;
+            }
+
+            errors.Add(
+                new(
+                    resolvedSheetName,
+                    RowIndex: 0,
+                    declared.Name,
+                    CellReference: "",
+                    $"Column '{declared.Name}' (heading '{declared.Heading}') was not found in the sheet header row.",
+                    null));
+        }
+
+        if (errors.Count > beforeCount)
+        {
+            return;
+        }
+
         foreach (var row in dataRows)
         {
             var cellByIndex = new Dictionary<int, Cell>();
             foreach (var cell in row.Elements<Cell>())
             {
-                var idx = ParseColumnIndex(cell.CellReference?.Value);
-                if (idx >= 0)
+                var index = ParseColumnIndex(cell.CellReference?.Value);
+                if (index >= 0)
                 {
-                    cellByIndex[idx] = cell;
+                    cellByIndex[index] = cell;
                 }
             }
 
@@ -198,7 +227,8 @@ static class SheetParser
         var cellRef = cell?.CellReference?.Value
                       ?? $"{SheetContext.GetColumnLetter(columnIndex)}{row.RowIndex?.Value ?? 0}";
 
-        if (column.Convert != null && cell != null)
+        if (column.Convert != null &&
+            cell != null)
         {
             try
             {

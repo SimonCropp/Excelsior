@@ -113,15 +113,15 @@ public class ValueRendererTests
     [Test]
     public void For_Bool_Throws()
     {
-        var ex = Assert.Throws<Exception>(() => ValueRenderer.For<bool>(_ => _ ? "Yes" : "No"));
-        Assert.That(ex!.Message, Does.Contain("BoolDisplay"));
+        var exception = Assert.Throws<Exception>(() => ValueRenderer.For<bool>(_ => _ ? "Yes" : "No"));
+        Assert.That(exception!.Message, Does.Contain("BoolDisplay"));
     }
 
     [Test]
     public void NullDisplayFor_Bool_Throws()
     {
-        var ex = Assert.Throws<Exception>(() => ValueRenderer.NullDisplayFor<bool>("Unknown"));
-        Assert.That(ex!.Message, Does.Contain("BoolDisplay"));
+        var exception = Assert.Throws<Exception>(() => ValueRenderer.NullDisplayFor<bool>("Unknown"));
+        Assert.That(exception!.Message, Does.Contain("BoolDisplay"));
     }
 
     [Test]

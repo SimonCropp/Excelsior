@@ -33,12 +33,12 @@ class DictionarySheetReader(string? name) :
         return this;
     }
 
-    IReadOnlyList<ColumnReadInfo> IReaderSheet.Columns() =>
+    public List<ColumnReadInfo> Columns() =>
         columnInfos;
 
-    void IReaderSheet.Receive(IReadOnlyDictionary<string, object?> rowValues) =>
+    public void Receive(IReadOnlyDictionary<string, object?> rowValues) =>
         rows.Add(rowValues);
 
-    void IReaderSheet.Reset() =>
+    public void Reset() =>
         rows.Clear();
 }

@@ -88,4 +88,148 @@ public class BookReaderErrorTests
 
         Assert.That(exception.Errors.Select(_ => _.Message), Is.EqualTo(tryResult.Errors.Select(_ => _.Message)));
     }
+
+    public class OneCol
+    {
+        public required string A { get; init; }
+    }
+
+    public class TwoCols
+    {
+        public required string A { get; init; }
+        public required string B { get; init; }
+    }
+
+    public class ThreeCols
+    {
+        public required string A { get; init; }
+        public required string B { get; init; }
+        public required string C { get; init; }
+    }
+
+    static async Task<MemoryStream> Write<T>(params IEnumerable<T> rows)
+    {
+        var stream = new MemoryStream();
+        var builder = new BookBuilder();
+        builder.AddSheet(rows);
+        await builder.ToStream(stream);
+        stream.Position = 0;
+        return stream;
+    }
+
+    [Test]
+    public async Task ColumnMismatch_StrongTyped_OneMissing()
+    {
+        var stream = await Write([new OneCol { A = "x" }]);
+
+        var reader = new BookReader();
+        reader.AddSheet<TwoCols>();
+
+        var exception = Assert.Throws<ReadException>(() => reader.Convert(stream))!;
+        Assert.That(exception.Errors, Has.Count.EqualTo(1));
+        Assert.That(exception.Errors[0].ColumnName, Is.EqualTo("B"));
+        Assert.That(exception.Errors[0].Message, Does.Contain("not found"));
+    }
+
+    [Test]
+    public async Task ColumnMismatch_StrongTyped_MultipleMissingProduceMultipleErrors()
+    {
+        var stream = await Write([new OneCol { A = "x" }]);
+
+        var reader = new BookReader();
+        reader.AddSheet<ThreeCols>();
+
+        var exception = Assert.Throws<ReadException>(() => reader.Convert(stream))!;
+        Assert.That(exception.Errors, Has.Count.EqualTo(2));
+        Assert.That(exception.Errors.Select(_ => _.ColumnName), Is.EquivalentTo(["B", "C"]));
+    }
+
+    [Test]
+    public async Task ColumnMismatch_Dictionary_HeadingNotInFile()
+    {
+        var stream = await Write(new OneCol { A = "x" });
+
+        var reader = new BookReader();
+        var sheet = reader.AddSheet();
+        sheet.Column<string>("Nope");
+
+        var exception = Assert.Throws<ReadException>(() => reader.Convert(stream))!;
+        Assert.That(exception.Errors, Has.Count.EqualTo(1));
+        Assert.That(exception.Errors[0].ColumnName, Is.EqualTo("Nope"));
+    }
+
+    [Test]
+    public async Task ColumnMismatch_StopsBeforeRowParsing_NoPerCellErrors()
+    {
+        // OneCol writes string "x"; reader expects an int "Value" column that
+        // doesn't exist. Should produce exactly one column-mismatch error and
+        // skip row parsing entirely.
+        var stream = await Write<OneCol>(
+            new() { A = "x" },
+            new() { A = "y" },
+            new() { A = "z" });
+
+        var reader = new BookReader();
+        var sheet = reader.AddSheet();
+        sheet.Column<int>("Value");
+
+        var exception = Assert.Throws<ReadException>(() => reader.Convert(stream))!;
+        Assert.That(exception.Errors, Has.Count.EqualTo(1));
+        Assert.That(exception.Errors[0].ColumnName, Is.EqualTo("Value"));
+        Assert.That(sheet.Rows, Is.Empty);
+    }
+
+    public class StringRow
+    {
+        public required string Value { get; init; }
+    }
+
+    public class IntRow
+    {
+        public int Value { get; set; }
+    }
+
+    [Test]
+    public async Task ColumnMismatch_DoesNotStopSubsequentSheets()
+    {
+        var stream = new MemoryStream();
+        var builder = new BookBuilder();
+        builder.AddSheet([new OneCol { A = "x" }], "First");
+        builder.AddSheet([new OneCol { A = "y" }], "Second");
+        await builder.ToStream(stream);
+        stream.Position = 0;
+
+        var reader = new BookReader();
+        var first = reader.AddSheet<TwoCols>("First");
+        var second = reader.AddSheet<OneCol>("Second");
+
+        var exception = Assert.Throws<ReadException>(() => reader.Convert(stream))!;
+        // Mismatch in "First" emits one error and skips its rows;
+        // "Second" still parses successfully.
+        Assert.That(exception.Errors, Has.Count.EqualTo(1));
+        Assert.That(exception.Errors[0].SheetName, Is.EqualTo("First"));
+        Assert.That(exception.Errors[0].ColumnName, Is.EqualTo("B"));
+        Assert.That(first.Rows, Is.Empty);
+        Assert.That(second.Rows, Has.Count.EqualTo(1));
+        Assert.That(second.Rows[0].A, Is.EqualTo("y"));
+    }
+
+    [Test]
+    public async Task PerCellErrors_AreNotDeduppedAfterColumnsResolve()
+    {
+        // Column "Value" matches in both; per-cell parse failures must surface
+        // as one error per failing row — no deduplication.
+        var stream = await Write<StringRow>(
+            new() { Value = "x" },
+            new() { Value = "y" },
+            new() { Value = "z" });
+
+        var reader = new BookReader();
+        reader.AddSheet<IntRow>();
+
+        var exception = Assert.Throws<ReadException>(() => reader.Convert(stream))!;
+        Assert.That(exception.Errors, Has.Count.EqualTo(3));
+        Assert.That(exception.Errors.Select(_ => _.ColumnName), Is.EqualTo(["Value", "Value", "Value"]));
+        Assert.That(exception.Errors.Select(_ => _.RowIndex), Is.EqualTo([2, 3, 4]));
+    }
 }

@@ -211,7 +211,7 @@ reader.Convert(stream);
 
 var employees = sheet.Rows;
 ```
-<sup><a href='/src/Excelsior.Tests/BookReaderTests.cs#L7-L22' title='Snippet source file'>snippet source</a> | <a href='#snippet-BookReaderUsage' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/Reading/BookReaderTests.cs#L7-L22' title='Snippet source file'>snippet source</a> | <a href='#snippet-BookReaderUsage' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -237,7 +237,7 @@ reader.Convert(stream);
 
 var first = sheet.Rows[0];
 ```
-<sup><a href='/src/Excelsior.Tests/BookReaderAnonymousTests.cs#L13-L30' title='Snippet source file'>snippet source</a> | <a href='#snippet-BookReaderDictionary' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/Reading/BookReaderAnonymousTests.cs#L13-L30' title='Snippet source file'>snippet source</a> | <a href='#snippet-BookReaderDictionary' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -267,7 +267,7 @@ sheet.Convert(
     });
 reader.Convert(stream);
 ```
-<sup><a href='/src/Excelsior.Tests/BookReaderDelegateTests.cs#L39-L58' title='Snippet source file'>snippet source</a> | <a href='#snippet-ReaderDelegate' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/Reading/BookReaderDelegateTests.cs#L39-L58' title='Snippet source file'>snippet source</a> | <a href='#snippet-ReaderDelegate' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 Dictionary:
@@ -289,7 +289,7 @@ sheet.Column<int>(
     });
 reader.Convert(stream);
 ```
-<sup><a href='/src/Excelsior.Tests/BookReaderDelegateTests.cs#L79-L95' title='Snippet source file'>snippet source</a> | <a href='#snippet-ReaderDictionaryDelegate' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/Reading/BookReaderDelegateTests.cs#L79-L95' title='Snippet source file'>snippet source</a> | <a href='#snippet-ReaderDictionaryDelegate' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -315,7 +315,7 @@ if (!result)
     }
 }
 ```
-<sup><a href='/src/Excelsior.Tests/BookReaderErrorTests.cs#L47-L62' title='Snippet source file'>snippet source</a> | <a href='#snippet-BookReaderTryConvert' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/Reading/BookReaderErrorTests.cs#L47-L62' title='Snippet source file'>snippet source</a> | <a href='#snippet-BookReaderTryConvert' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 

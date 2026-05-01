@@ -67,10 +67,10 @@ static class SheetParser
     {
         sheet.Reset();
 
-        var ordered = sheet.OrderedColumns();
-        var byName = new Dictionary<string, ColumnReadInfo>(ordered.Count, StringComparer.Ordinal);
-        var byHeading = new Dictionary<string, ColumnReadInfo>(ordered.Count, StringComparer.OrdinalIgnoreCase);
-        foreach (var info in ordered)
+        var columns = sheet.Columns();
+        var byName = new Dictionary<string, ColumnReadInfo>(columns.Count, StringComparer.Ordinal);
+        var byHeading = new Dictionary<string, ColumnReadInfo>(columns.Count, StringComparer.OrdinalIgnoreCase);
+        foreach (var info in columns)
         {
             byName[info.Name] = info;
             byHeading[info.Heading] = info;

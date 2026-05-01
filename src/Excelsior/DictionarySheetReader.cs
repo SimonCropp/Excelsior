@@ -5,7 +5,6 @@ class DictionarySheetReader(string? name) :
     IReaderSheet
 {
     List<ColumnReadInfo> columnInfos = [];
-    List<int?> orders = [];
     List<IReadOnlyDictionary<string, object?>> rows = [];
     HashSet<string> names = new(StringComparer.Ordinal);
 
@@ -34,26 +33,12 @@ class DictionarySheetReader(string? name) :
             config.Heading ?? name,
             typeof(TProperty),
             config.Convert));
-        orders.Add(config.Order);
 
         return this;
     }
 
-    IReadOnlyList<ColumnReadInfo> IReaderSheet.OrderedColumns()
-    {
-        var indexed = columnInfos
-            .Select((info, i) => (info, order: orders[i], declared: i))
-            .OrderBy(_ => _.order.HasValue ? 0 : 1)
-            .ThenBy(_ => _.order ?? _.declared);
-
-        var result = new List<ColumnReadInfo>(columnInfos.Count);
-        foreach (var (info, _, _) in indexed)
-        {
-            result.Add(info);
-        }
-
-        return result;
-    }
+    IReadOnlyList<ColumnReadInfo> IReaderSheet.Columns() =>
+        columnInfos;
 
     void IReaderSheet.Receive(IReadOnlyDictionary<string, object?> rowValues) =>
         rows.Add(rowValues);

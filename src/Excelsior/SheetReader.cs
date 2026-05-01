@@ -14,7 +14,6 @@ class SheetReader<TModel> :
     {
         Name = name;
 
-        var index = 0;
         foreach (var info in GetReadableProperties(typeof(TModel)))
         {
             var setter = BuildSetter(info);
@@ -23,8 +22,6 @@ class SheetReader<TModel> :
                 Name = info.Name,
                 Heading = ResolveHeading(info),
                 Type = info.PropertyType,
-                Order = ResolveOrder(info),
-                DeclarationIndex = index++,
                 Include = ResolveInclude(info),
                 SetValue = setter,
                 Convert = null
@@ -78,17 +75,6 @@ class SheetReader<TModel> :
         return CamelCase.Split(info.Name);
     }
 
-    static int? ResolveOrder(PropertyInfo info)
-    {
-        var column = info.Attribute<ColumnAttribute>();
-        if (column is { Order: > -1 })
-        {
-            return column.Order;
-        }
-
-        return info.Attribute<DisplayAttribute>()?.Order;
-    }
-
     static bool ResolveInclude(PropertyInfo info)
     {
         var column = info.Attribute<ColumnAttribute>();
@@ -128,11 +114,6 @@ class SheetReader<TModel> :
             column.Heading = config.Heading;
         }
 
-        if (config.Order != null)
-        {
-            column.Order = config.Order;
-        }
-
         if (config.Include != null)
         {
             column.Include = config.Include.Value;
@@ -150,9 +131,6 @@ class SheetReader<TModel> :
     public void HeadingText<TProperty>(Expression<Func<TModel, TProperty>> property, string value) =>
         Column(property, _ => _.Heading = value);
 
-    public void Order<TProperty>(Expression<Func<TModel, TProperty>> property, int? value) =>
-        Column(property, _ => _.Order = value);
-
     public void Include<TProperty>(Expression<Func<TModel, TProperty>> property, bool value) =>
         Column(property, _ => _.Include = value);
 
@@ -162,18 +140,15 @@ class SheetReader<TModel> :
     public void Convert<TProperty>(Expression<Func<TModel, TProperty>> property, Func<Cell, TProperty> convert) =>
         Column(property, _ => _.Convert = convert);
 
-    IReadOnlyList<ColumnReadInfo> IReaderSheet.OrderedColumns()
+    IReadOnlyList<ColumnReadInfo> IReaderSheet.Columns()
     {
         var result = new List<ColumnReadInfo>();
-        var ordered = columns
-            .Values
-            .Where(_ => _.Include)
-            .OrderBy(_ => _.Order.HasValue ? 0 : 1)
-            .ThenBy(_ => _.Order ?? _.DeclarationIndex);
-
-        foreach (var c in ordered)
+        foreach (var c in columns.Values)
         {
-            result.Add(new(c.Name, c.Heading, c.Type, c.Convert));
+            if (c.Include)
+            {
+                result.Add(new(c.Name, c.Heading, c.Type, c.Convert));
+            }
         }
 
         return result;
@@ -189,7 +164,7 @@ class SheetReader<TModel> :
 interface IReaderSheet
 {
     string? Name { get; }
-    IReadOnlyList<ColumnReadInfo> OrderedColumns();
+    IReadOnlyList<ColumnReadInfo> Columns();
     void Receive(IReadOnlyDictionary<string, object?> rowValues);
     void Reset();
 }

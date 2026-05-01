@@ -3,7 +3,6 @@ namespace Excelsior;
 public class DictionaryColumnReadConfig
 {
     public string? Heading { get; set; }
-    public int? Order { get; set; }
 
     /// <summary>
     /// Custom conversion delegate. Receives the underlying OpenXml <see cref="Cell"/>

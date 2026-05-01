@@ -3,7 +3,6 @@ namespace Excelsior;
 public class ColumnReadConfig<TProperty>
 {
     public string? Heading { get; set; }
-    public int? Order { get; set; }
     public bool? Include { get; set; }
 
     /// <summary>

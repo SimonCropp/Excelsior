@@ -15,10 +15,6 @@ public interface ISheetReader<TModel>
         Expression<Func<TModel, TProperty>> property,
         string value);
 
-    void Order<TProperty>(
-        Expression<Func<TModel, TProperty>> property,
-        int? value);
-
     void Include<TProperty>(
         Expression<Func<TModel, TProperty>> property,
         bool value);

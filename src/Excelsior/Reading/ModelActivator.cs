@@ -1,5 +1,6 @@
 static class ModelActivator<T>
 {
+    static Func<IReadOnlyDictionary<string, object?>, T>? generatedFactory;
     static ConstructorInfo? parameterlessCtor;
     static ConstructorInfo? matchingCtor;
     static string[] ctorParamNames;
@@ -7,6 +8,14 @@ static class ModelActivator<T>
 
     static ModelActivator()
     {
+        generatedFactory = GeneratedActivators.TryGet<T>();
+        if (generatedFactory != null)
+        {
+            ctorParamNames = [];
+            setters = new();
+            return;
+        }
+
         var type = typeof(T);
 
         parameterlessCtor = type.GetConstructor(
@@ -51,14 +60,28 @@ static class ModelActivator<T>
                 continue;
             }
 
-            result[property.Name] = (target, value) => property.SetValue(target, value);
+            result[property.Name] = BuildSetter(property, setter);
         }
 
         return result;
     }
 
+    static Action<T, object?> BuildSetter(PropertyInfo property, MethodInfo setter)
+    {
+        var target = Expression.Parameter(typeof(T), "target");
+        var value = Expression.Parameter(typeof(object), "value");
+        var converted = Expression.Convert(value, property.PropertyType);
+        var call = Expression.Call(target, setter, converted);
+        return Expression.Lambda<Action<T, object?>>(call, target, value).Compile();
+    }
+
     public static T Create(IReadOnlyDictionary<string, object?> values)
     {
+        if (generatedFactory != null)
+        {
+            return generatedFactory(values);
+        }
+
         T instance;
         if (parameterlessCtor != null)
         {

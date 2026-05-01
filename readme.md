@@ -256,6 +256,10 @@ Limitations:
 - Only properties are bound; fields are ignored.
 - A type with no public constructors and no parameterless constructor (public or non-public) throws on the first row.
 
+##### Source-generated activators
+
+Types marked with `[SheetModel]` get a source-generated factory that replaces the reflection path at row time. The generator follows the same parameterless-preferred / longest-matching-public-ctor rules and emits direct constructor calls and setter assignments — no reflection per row. Registration happens via a `[ModuleInitializer]` in the consuming assembly, so the fast path is automatic.
+
 
 #### Anonymous / dictionary
 

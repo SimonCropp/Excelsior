@@ -34,4 +34,15 @@ public static partial class ValueRenderer
             field = value;
         }
     } = "yyyy-MM-dd HH:mm:ss z";
+
+    [StringSyntax(StringSyntaxAttribute.TimeOnlyFormat)]
+    public static string DefaultTimeFormat
+    {
+        internal get;
+        set
+        {
+            ThrowIfBookBuilderUsed();
+            field = value;
+        }
+    } = "HH:mm:ss";
 }

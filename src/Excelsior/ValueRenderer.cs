@@ -221,6 +221,7 @@ public static partial class ValueRenderer
         DefaultDateFormat = "yyyy-MM-dd";
         DefaultDateTimeFormat = "yyyy-MM-dd HH:mm:ss";
         DefaultDateTimeOffsetFormat = "yyyy-MM-dd HH:mm:ss z";
+        DefaultTimeFormat = "HH:mm:ss";
         Culture = CultureInfo.CurrentCulture;
     }
 

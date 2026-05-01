@@ -174,6 +174,40 @@ public class BookReaderPrimitivesTests
     }
 
     [Test]
+    public async Task Times()
+    {
+        var rows = await RoundTrip<TimeRow>(
+            new() { Value = new(10, 30, 45) },
+            new() { Value = new(0, 0, 0) },
+            new() { Value = new(23, 59, 59) });
+        Assert.That(rows[0].Value, Is.EqualTo(new Time(10, 30, 45)));
+        Assert.That(rows[1].Value, Is.EqualTo(new Time(0, 0, 0)));
+        Assert.That(rows[2].Value, Is.EqualTo(new Time(23, 59, 59)));
+    }
+
+    public class TimeRow
+    {
+        public Time Value { get; set; }
+    }
+
+    [Test]
+    public async Task TimeSpans()
+    {
+        var rows = await RoundTrip<TimeSpanRow>(
+            new() { Value = new(1, 2, 30, 45) },
+            new() { Value = TimeSpan.Zero },
+            new() { Value = new(0, 0, 5, 30) });
+        Assert.That(rows[0].Value, Is.EqualTo(new TimeSpan(1, 2, 30, 45)));
+        Assert.That(rows[1].Value, Is.EqualTo(TimeSpan.Zero));
+        Assert.That(rows[2].Value, Is.EqualTo(new TimeSpan(0, 0, 5, 30)));
+    }
+
+    public class TimeSpanRow
+    {
+        public TimeSpan Value { get; set; }
+    }
+
+    [Test]
     public async Task Guids()
     {
         var guid = Guid.Parse("11111111-2222-3333-4444-555555555555");

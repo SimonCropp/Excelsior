@@ -1170,6 +1170,15 @@ class Renderer<TModel>(
             return;
         }
 
+        if (value is Time time)
+        {
+            ThrowIfHtml();
+            style.NumberFormat = column.Format ?? ValueRenderer.DefaultTimeFormat;
+            SetCellValue(cell, DateTime.FromOADate(0).Add(time.ToTimeSpan()));
+
+            return;
+        }
+
         if (value is bool boolean)
         {
             ThrowIfHtml();

@@ -97,6 +97,11 @@ class TemplateSheetBuilder :
             return ValueRenderer.DefaultDateFormat;
         }
 
+        if (underlying == typeof(Time))
+        {
+            return ValueRenderer.DefaultTimeFormat;
+        }
+
         if (underlying == typeof(bool))
         {
             return ValueRenderer.BoolFormat;

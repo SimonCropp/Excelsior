@@ -10,6 +10,7 @@ public class BookReaderTests
         var builder = new BookBuilder();
         builder.AddSheet(SampleData.Employees());
         await builder.ToStream(stream);
+
         stream.Position = 0;
 
         var reader = new BookReader();
@@ -30,6 +31,7 @@ public class BookReaderTests
         var builder = new BookBuilder();
         builder.AddSheet(SampleData.Employees(), "Staff");
         await builder.ToStream(stream);
+
         stream.Position = 0;
 
         var reader = new BookReader();

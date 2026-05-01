@@ -202,6 +202,7 @@ var stream = new MemoryStream();
 var builder = new BookBuilder();
 builder.AddSheet(SampleData.Employees());
 await builder.ToStream(stream);
+
 stream.Position = 0;
 
 var reader = new BookReader();
@@ -210,7 +211,7 @@ reader.Convert(stream);
 
 var employees = sheet.Rows;
 ```
-<sup><a href='/src/Excelsior.Tests/BookReaderTests.cs#L7-L21' title='Snippet source file'>snippet source</a> | <a href='#snippet-BookReaderUsage' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/BookReaderTests.cs#L7-L22' title='Snippet source file'>snippet source</a> | <a href='#snippet-BookReaderUsage' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -1991,12 +1992,13 @@ The same type specificity applies to `NullDisplayFor<T>`: `NullDisplayFor<Color>
 
 ### Date formats
 
-`DateTime` and `DateOnly` are passed directly in to the respective library.
+`DateTime`, `DateOnly`, and `TimeOnly` are passed directly in to the respective library.
 
 Excel is directed (using a format string) to render the value using the following:
 
  * `yyyy-MM-dd HH:mm:ss` for `DateTime`s
  * `yyyy-MM-dd` for `DateOnly`s
+ * `HH:mm:ss` for `TimeOnly`s
 
 Excel has no direct support for `DateTimeOffset` — a cell is either a number (formatted as a date) or a string, and the offset cannot be represented natively. So `DateTimeOffset`s are stored as strings using the `yyyy-MM-dd HH:mm:ss z` format and `CultureInfo.InvariantCulture`. This preserves the offset on round-trip, but the cell is plain text — Excel will not treat it as a date for sorting, filtering, or arithmetic, and the format string is applied at write time rather than via Excel's cell number format.
 
@@ -2013,9 +2015,10 @@ static void CustomDateFormats()
     ValueRenderer.DefaultDateFormat = "yyyy/MM/dd" ;
     ValueRenderer.DefaultDateTimeFormat = "yyyy/MM/dd HH:mm:ss" ;
     ValueRenderer.DefaultDateTimeOffsetFormat = "yyyy/MM/dd HH:mm:ss z" ;
+    ValueRenderer.DefaultTimeFormat = "HH:mm:ss" ;
 }
 ```
-<sup><a href='/src/StaticSettingsTests/DateFormats.cs#L17-L26' title='Snippet source file'>snippet source</a> | <a href='#snippet-DateFormatsInit' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/StaticSettingsTests/DateFormats.cs#L18-L28' title='Snippet source file'>snippet source</a> | <a href='#snippet-DateFormatsInit' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 

@@ -1,0 +1,45 @@
+﻿{
+  Sheets: [
+    {
+      Name: Sheet1,
+      Columns: [
+        {
+          Name: Employee ID,
+          Width: 15.0,
+          ContainsRichText: false
+        },
+        {
+          Name: Full Name,
+          Width: 15.0,
+          ContainsRichText: false
+        },
+        {
+          Name: Email Address,
+          Width: 22.0,
+          ContainsRichText: false
+        },
+        {
+          Name: Hire Date,
+          Width: 13.0,
+          ContainsRichText: false
+        },
+        {
+          Name: Annual Salary,
+          Width: 17.0,
+          ContainsRichText: false
+        },
+        {
+          Name: Is Active,
+          Width: 13.0,
+          ContainsRichText: false
+        },
+        {
+          Name: Status,
+          Width: 13.0,
+          ContainsRichText: false
+        }
+      ]
+    }
+  ],
+  WorksheetCount: 1
+}

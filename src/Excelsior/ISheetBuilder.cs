@@ -103,4 +103,62 @@ public interface ISheetBuilder<TModel>
     /// </summary>
     public void Exclude<TProperty>(
         Expression<Func<TModel, TProperty>> property);
+
+    /// <summary>
+    /// Restrict the column to the supplied dropdown list. Overrides any auto-derived enum values.
+    /// </summary>
+    public void AllowedValues<TProperty>(
+        Expression<Func<TModel, TProperty>> property,
+        IReadOnlyList<string> values);
+
+    /// <summary>
+    /// Suppresses the auto-derived enum dropdown for this column.
+    /// </summary>
+    public void DisableAllowedValues<TProperty>(
+        Expression<Func<TModel, TProperty>> property);
+
+    /// <summary>
+    /// Restrict the column to a numeric range.
+    /// </summary>
+    public void Range<TProperty>(
+        Expression<Func<TModel, TProperty>> property,
+        decimal min,
+        decimal max);
+
+    /// <summary>
+    /// Restrict the column to a date range.
+    /// </summary>
+    public void Range<TProperty>(
+        Expression<Func<TModel, TProperty>> property,
+        DateTime min,
+        DateTime max);
+
+    /// <summary>
+    /// Mark the column required. Blank cells are highlighted via conditional formatting.
+    /// </summary>
+    public void Required<TProperty>(
+        Expression<Func<TModel, TProperty>> property);
+
+    /// <summary>
+    /// Override the default cell-locking behavior under sheet protection.
+    /// </summary>
+    public void Locked<TProperty>(
+        Expression<Func<TModel, TProperty>> property,
+        bool value = true);
+
+    /// <summary>
+    /// Set the input-hint tooltip shown when a cell in this column is selected.
+    /// </summary>
+    public void InputMessage<TProperty>(
+        Expression<Func<TModel, TProperty>> property,
+        string message,
+        string? title = null);
+
+    /// <summary>
+    /// Set the error popup shown when an invalid value is entered into this column.
+    /// </summary>
+    public void ErrorMessage<TProperty>(
+        Expression<Func<TModel, TProperty>> property,
+        string message,
+        string? title = null);
 }

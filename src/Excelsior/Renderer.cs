@@ -5,16 +5,19 @@ class Renderer<TModel>(
     int? minColumnWidth,
     int? maxColumnWidth,
     int? maxRowHeight,
-    BookBuilder bookBuilder)
+    BookBuilder bookBuilder,
+    int templateRowCount = 0)
 {
     const int maxExcelRowHeight = 409;
     const double defaultExcelFontSize = 11;
+    const string requiredHighlightColor = "FFFFC7CE";
 
     internal bool AutoFilter { get; set; } = true;
 
     StyleManager? styleManager;
     Dictionary<Cell, CellStyle> cellStyles = [];
     Dictionary<int, double> finalColumnWidths = [];
+    Dictionary<int, uint> columnLevelStyles = [];
 
     internal async Task AddSheet(SpreadsheetDocument book, Cancel cancel)
     {
@@ -51,9 +54,12 @@ class Renderer<TModel>(
         }
 
         AutoSizeColumns(sheet);
+        BuildColumnLevelStyles();
         ResizeRows(sheet);
         ApplyMaxRowHeight(sheet);
         ApplySheetProtection(sheet);
+        EmitConditionalFormatting(sheet);
+        EmitDataValidations(sheet);
     }
 
     void ApplySheetProtection(SheetContext sheet)
@@ -183,7 +189,7 @@ class Renderer<TModel>(
                 style.Alignment.WrapText = true;
                 if (bookBuilder.IsProtected)
                 {
-                    style.Locked = false;
+                    style.Locked = column.Locked ?? false;
                 }
                 if (column.Formula != null)
                 {
@@ -540,25 +546,263 @@ class Renderer<TModel>(
 
     void ResizeRows(SheetContext sheet)
     {
-        if (finalColumnWidths.Count <= 0)
+        if (finalColumnWidths.Count <= 0 && columnLevelStyles.Count <= 0)
         {
             return;
         }
 
+        var indices = finalColumnWidths.Keys
+            .Concat(columnLevelStyles.Keys)
+            .Distinct()
+            .OrderBy(_ => _);
+
         var cols = new Columns();
-        foreach (var (index, width) in finalColumnWidths.OrderBy(_ => _.Key))
+        foreach (var index in indices)
         {
-            cols.Append(
-                new Column
-                {
-                    Min = (uint)(index + 1),
-                    Max = (uint)(index + 1),
-                    Width = width,
-                    CustomWidth = true
-                });
+            var col = new Column
+            {
+                Min = (uint)(index + 1),
+                Max = (uint)(index + 1),
+            };
+
+            if (finalColumnWidths.TryGetValue(index, out var width))
+            {
+                col.Width = width;
+                col.CustomWidth = true;
+            }
+
+            if (columnLevelStyles.TryGetValue(index, out var styleIndex))
+            {
+                col.Style = styleIndex;
+            }
+
+            cols.Append(col);
         }
 
         sheet.Worksheet.InsertBefore(cols, sheet.SheetData);
+    }
+
+    void BuildColumnLevelStyles()
+    {
+        for (var i = 0; i < columns.Count; i++)
+        {
+            var column = columns[i];
+            var hasFormat = column.Format != null;
+            var hasLockOverride = bookBuilder.IsProtected;
+
+            if (!hasFormat && !hasLockOverride)
+            {
+                continue;
+            }
+
+            var style = new CellStyle();
+            if (hasFormat)
+            {
+                style.NumberFormat = column.Format;
+            }
+
+            if (hasLockOverride)
+            {
+                style.Locked = column.Locked ?? false;
+            }
+
+            columnLevelStyles[i] = styleManager!.GetOrCreateStyleIndex(style);
+        }
+    }
+
+    void EmitConditionalFormatting(SheetContext sheet)
+    {
+        var validationFirstRow = 2;
+        var validationLastRow = ComputeValidationLastRow(sheet);
+        if (validationLastRow < validationFirstRow)
+        {
+            return;
+        }
+
+        uint? dxfId = null;
+        var priority = 1;
+        for (var i = 0; i < columns.Count; i++)
+        {
+            var column = columns[i];
+            if (!column.Required)
+            {
+                continue;
+            }
+
+            dxfId ??= styleManager!.GetOrCreateDxfFillIndex(requiredHighlightColor);
+            var letter = SheetContext.GetColumnLetter(i);
+            var sqref = $"{letter}{validationFirstRow}:{letter}{validationLastRow}";
+            var cf = new ConditionalFormatting
+            {
+                SequenceOfReferences = new()
+                {
+                    InnerText = sqref
+                }
+            };
+            var rule = new ConditionalFormattingRule
+            {
+                Type = ConditionalFormatValues.ContainsBlanks,
+                Priority = priority++,
+                FormatId = dxfId
+            };
+            rule.Append(new Formula($"LEN(TRIM({letter}{validationFirstRow}))=0"));
+            cf.Append(rule);
+            sheet.Worksheet.Append(cf);
+        }
+    }
+
+    void EmitDataValidations(SheetContext sheet)
+    {
+        var validationFirstRow = 2;
+        var validationLastRow = ComputeValidationLastRow(sheet);
+        if (validationLastRow < validationFirstRow)
+        {
+            return;
+        }
+
+        DataValidations? validations = null;
+        for (var i = 0; i < columns.Count; i++)
+        {
+            var column = columns[i];
+            if (column is
+                {
+                    HasValidation: false,
+                    HasInputMessage: false
+                })
+            {
+                continue;
+            }
+
+            var letter = SheetContext.GetColumnLetter(i);
+            var sqref = $"{letter}{validationFirstRow}:{letter}{validationLastRow}";
+            var validation = BuildDataValidation(column, sqref);
+            if (validation == null)
+            {
+                continue;
+            }
+
+            validations ??= new();
+            validations.Append(validation);
+        }
+
+        if (validations == null)
+        {
+            return;
+        }
+
+        var count = 0u;
+        foreach (var _ in validations.Elements<DataValidation>())
+        {
+            count++;
+        }
+
+        validations.Count = count;
+        sheet.Worksheet.Append(validations);
+    }
+
+    int ComputeValidationLastRow(SheetContext sheet)
+    {
+        var dataRowCount = Math.Max(0, sheet.RowCount - 1);
+        return 1 + dataRowCount + templateRowCount;
+    }
+
+    static DataValidation? BuildDataValidation(ColumnConfig<TModel> column, string sqref)
+    {
+        var validation = new DataValidation
+        {
+            SequenceOfReferences = new()
+            {
+                InnerText = sqref
+            }
+        };
+
+        var hasValidation = false;
+
+        if (column.AllowedValues is { Count: > 0 } values)
+        {
+            hasValidation = true;
+            validation.Type = DataValidationValues.List;
+            var list = string.Join(",", values);
+            validation.Formula1 = new($"\"{list}\"");
+        }
+        else if (column.NumericMin.HasValue ||
+                 column.NumericMax.HasValue)
+        {
+            hasValidation = true;
+            validation.Type = DataValidationValues.Decimal;
+            ApplyRangeOperator(validation, column.NumericMin, column.NumericMax);
+        }
+        else if (column.DateMin.HasValue ||
+                 column.DateMax.HasValue)
+        {
+            hasValidation = true;
+            validation.Type = DataValidationValues.Date;
+            ApplyRangeOperator(
+                validation,
+                column.DateMin?.ToOADate() is { } min ? (decimal)min : null,
+                column.DateMax?.ToOADate() is { } max ? (decimal)max : null);
+        }
+
+        if (!hasValidation && !column.HasInputMessage)
+        {
+            return null;
+        }
+
+        if (hasValidation)
+        {
+            validation.AllowBlank = !column.Required;
+        }
+
+        if (column.HasInputMessage)
+        {
+            validation.ShowInputMessage = true;
+            if (column.InputTitle != null)
+            {
+                validation.PromptTitle = column.InputTitle;
+            }
+
+            if (column.InputMessage != null)
+            {
+                validation.Prompt = column.InputMessage;
+            }
+        }
+
+        if (hasValidation && (column.ErrorTitle != null ||
+                              column.ErrorMessage != null))
+        {
+            validation.ShowErrorMessage = true;
+            if (column.ErrorTitle != null)
+            {
+                validation.ErrorTitle = column.ErrorTitle;
+            }
+
+            if (column.ErrorMessage != null)
+            {
+                validation.Error = column.ErrorMessage;
+            }
+        }
+
+        return validation;
+    }
+
+    static void ApplyRangeOperator(DataValidation validation, decimal? min, decimal? max)
+    {
+        if (min.HasValue && max.HasValue)
+        {
+            validation.Operator = DataValidationOperatorValues.Between;
+            validation.Formula1 = new(min.Value.ToString(CultureInfo.InvariantCulture));
+            validation.Formula2 = new(max.Value.ToString(CultureInfo.InvariantCulture));
+        }
+        else if (min.HasValue)
+        {
+            validation.Operator = DataValidationOperatorValues.GreaterThanOrEqual;
+            validation.Formula1 = new(min.Value.ToString(CultureInfo.InvariantCulture));
+        }
+        else
+        {
+            validation.Operator = DataValidationOperatorValues.LessThanOrEqual;
+            validation.Formula1 = new(max!.Value.ToString(CultureInfo.InvariantCulture));
+        }
     }
 
     void ApplyMaxRowHeight(SheetContext sheet)

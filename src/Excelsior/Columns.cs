@@ -17,6 +17,8 @@ class Columns<TModel>
         var type = property.Type;
         var (isEnumerable, render) = ValueRenderer.GetRender(type);
 
+        var allowedValues = DeriveEnumAllowedValues(type);
+
         columns.Add(
             property.Name,
             new()
@@ -41,8 +43,28 @@ class Columns<TModel>
                 IsNumber = property.IsNumber,
                 IsEnumerable = isEnumerable,
                 ItemRender = isEnumerable ? render : null,
-                GetValue = property.Get
+                GetValue = property.Get,
+                AllowedValues = allowedValues
             });
+    }
+
+    static IReadOnlyList<string>? DeriveEnumAllowedValues(Type type)
+    {
+        var underlying = Nullable.GetUnderlyingType(type) ?? type;
+        if (!underlying.IsEnum)
+        {
+            return null;
+        }
+
+        var (_, render) = ValueRenderer.GetRender(underlying);
+        var values = Enum.GetValues(underlying);
+        var list = new List<string>(values.Length);
+        foreach (var value in values)
+        {
+            list.Add(render?.Invoke(value!) ?? value!.ToString()!);
+        }
+
+        return list;
     }
 
     public void Add<TProperty>(
@@ -105,11 +127,21 @@ class Columns<TModel>
         if (config.Render != null)
         {
             column.Render = (model, value) => config.Render.Invoke(model, (TProperty)value);
+            // A custom render produces cell values that won't match the auto-derived enum
+            // dropdown list, so suppress it unless the caller has supplied an explicit list.
+            if (config.AllowedValues == null && !config.DisableAllowedValues)
+            {
+                column.AllowedValues = null;
+            }
         }
 
         if (config.Formula != null)
         {
             column.Formula = config.Formula;
+            if (config.AllowedValues == null && !config.DisableAllowedValues)
+            {
+                column.AllowedValues = null;
+            }
         }
 
         if (config.IsHtml is { } fluentIsHtml)
@@ -131,6 +163,65 @@ class Columns<TModel>
         if (config.Include != null)
         {
             column.Include = config.Include.Value;
+        }
+
+        if (config.DisableAllowedValues)
+        {
+            column.AllowedValues = null;
+        }
+        else if (config.AllowedValues != null)
+        {
+            column.AllowedValues = config.AllowedValues;
+        }
+
+        if (config.NumericMin.HasValue)
+        {
+            column.NumericMin = config.NumericMin;
+        }
+
+        if (config.NumericMax.HasValue)
+        {
+            column.NumericMax = config.NumericMax;
+        }
+
+        if (config.DateMin.HasValue)
+        {
+            column.DateMin = config.DateMin;
+        }
+
+        if (config.DateMax.HasValue)
+        {
+            column.DateMax = config.DateMax;
+        }
+
+        if (config.Required)
+        {
+            column.Required = true;
+        }
+
+        if (config.Locked.HasValue)
+        {
+            column.Locked = config.Locked;
+        }
+
+        if (config.InputTitle != null)
+        {
+            column.InputTitle = config.InputTitle;
+        }
+
+        if (config.InputMessage != null)
+        {
+            column.InputMessage = config.InputMessage;
+        }
+
+        if (config.ErrorTitle != null)
+        {
+            column.ErrorTitle = config.ErrorTitle;
+        }
+
+        if (config.ErrorMessage != null)
+        {
+            column.ErrorMessage = config.ErrorMessage;
         }
     }
 

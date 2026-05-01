@@ -31,6 +31,22 @@ class StyleManager
 
     Dictionary<CellFormatKey, uint> cellFormatIndex = [];
 
+    List<string> dxfFills = [];
+    Dictionary<string, uint> dxfFillIndex = [];
+
+    internal uint GetOrCreateDxfFillIndex(string color)
+    {
+        if (dxfFillIndex.TryGetValue(color, out var id))
+        {
+            return id;
+        }
+
+        id = (uint)dxfFills.Count;
+        dxfFills.Add(color);
+        dxfFillIndex[color] = id;
+        return id;
+    }
+
     internal uint GetOrCreateStyleIndex(CellStyle style)
     {
         var fontId = GetOrCreateFontId(style.Font);
@@ -272,6 +288,31 @@ class StyleManager
         }
 
         stylesheet.Append(cellFormatsEl);
+
+        if (dxfFills.Count > 0)
+        {
+            var dxfs = new DifferentialFormats
+            {
+                Count = (uint)dxfFills.Count
+            };
+            foreach (var color in dxfFills)
+            {
+                var dxf = new DifferentialFormat();
+                dxf.Append(
+                    new Fill(
+                        new PatternFill(
+                            new BackgroundColor
+                            {
+                                Rgb = color
+                            })
+                        {
+                            PatternType = PatternValues.Solid
+                        }));
+                dxfs.Append(dxf);
+            }
+
+            stylesheet.Append(dxfs);
+        }
 
         return stylesheet;
     }

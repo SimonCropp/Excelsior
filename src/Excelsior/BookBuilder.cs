@@ -42,15 +42,17 @@ public class BookBuilder
         string? name = null,
         int? defaultMinColumnWidth = null,
         int? defaultMaxColumnWidth = null,
-        int? maxRowHeight = null) =>
-        AddSheet(data.ToAsyncEnumerable(), name, defaultMinColumnWidth, defaultMaxColumnWidth, maxRowHeight);
+        int? maxRowHeight = null,
+        int templateRowCount = 0) =>
+        AddSheet(data.ToAsyncEnumerable(), name, defaultMinColumnWidth, defaultMaxColumnWidth, maxRowHeight, templateRowCount);
 
     public ISheetBuilder<TModel> AddSheet<TModel>(
         IAsyncEnumerable<TModel> data,
         string? name = null,
         int? defaultMinColumnWidth = null,
         int? defaultMaxColumnWidth = null,
-        int? maxRowHeight = null)
+        int? maxRowHeight = null,
+        int templateRowCount = 0)
     {
         name ??= $"Sheet{actions.Count + 1}";
         var columns = new Columns<TModel>();
@@ -65,7 +67,8 @@ public class BookBuilder
                 defaultMinColumnWidth,
                 defaultMaxColumnWidth,
                 maxRowHeight,
-                this)
+                this,
+                templateRowCount)
             {
                 AutoFilter = columns.AutoFilter
             };
@@ -74,6 +77,48 @@ public class BookBuilder
 
         return builder;
     }
+
+    /// <summary>
+    /// Adds an empty template sheet with no underlying data binding. Columns are defined explicitly
+    /// by name, type, and configuration. Useful when emitting a spreadsheet for users to fill in.
+    /// Validation, locked-cell behavior, and conditional formatting all extend down
+    /// <paramref name="templateRowCount"/> rows below the header.
+    /// </summary>
+    public ITemplateSheetBuilder AddTemplateSheet(
+        string? name = null,
+        int templateRowCount = 1000,
+        int? defaultMinColumnWidth = null,
+        int? defaultMaxColumnWidth = null,
+        int? maxRowHeight = null)
+    {
+        if (templateRowCount < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(templateRowCount), templateRowCount, "Must be non-negative.");
+        }
+
+        name ??= $"Sheet{actions.Count + 1}";
+        var builder = new TemplateSheetBuilder();
+
+        actions.Add((book, cancel) =>
+        {
+            var renderer = new Renderer<TemplateRow>(
+                name,
+                AsyncEnumerable.Empty<TemplateRow>(),
+                builder.OrderedColumns(),
+                defaultMinColumnWidth,
+                defaultMaxColumnWidth,
+                maxRowHeight,
+                this,
+                templateRowCount)
+            {
+                AutoFilter = builder.AutoFilter
+            };
+            return renderer.AddSheet(book, cancel);
+        });
+
+        return builder;
+    }
+
 
     public async Task<SpreadsheetDocument> Build(Cancel cancel = default)
     {

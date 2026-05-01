@@ -98,4 +98,64 @@ class SheetBuilder<TModel>(Columns<TModel> columns) :
     public void Exclude<TProperty>(
         Expression<Func<TModel, TProperty>> property) =>
         Column(property, _ => _.Include = false);
+
+    public void AllowedValues<TProperty>(
+        Expression<Func<TModel, TProperty>> property,
+        IReadOnlyList<string> values) =>
+        Column(property, _ => _.AllowedValues = values);
+
+    public void DisableAllowedValues<TProperty>(
+        Expression<Func<TModel, TProperty>> property) =>
+        Column(property, _ => _.DisableAllowedValues = true);
+
+    public void Range<TProperty>(
+        Expression<Func<TModel, TProperty>> property,
+        decimal min,
+        decimal max) =>
+        Column(property, _ => _.Range(min, max));
+
+    public void Range<TProperty>(
+        Expression<Func<TModel, TProperty>> property,
+        DateTime min,
+        DateTime max) =>
+        Column(property, _ => _.Range(min, max));
+
+    public void Required<TProperty>(
+        Expression<Func<TModel, TProperty>> property) =>
+        Column(property, _ => _.Required = true);
+
+    public void Locked<TProperty>(
+        Expression<Func<TModel, TProperty>> property,
+        bool value = true) =>
+        Column(property, _ => _.Locked = value);
+
+    public void InputMessage<TProperty>(
+        Expression<Func<TModel, TProperty>> property,
+        string message,
+        string? title = null) =>
+        Column(
+            property,
+            _ =>
+            {
+                _.InputMessage = message;
+                if (title != null)
+                {
+                    _.InputTitle = title;
+                }
+            });
+
+    public void ErrorMessage<TProperty>(
+        Expression<Func<TModel, TProperty>> property,
+        string message,
+        string? title = null) =>
+        Column(
+            property,
+            _ =>
+            {
+                _.ErrorMessage = message;
+                if (title != null)
+                {
+                    _.ErrorTitle = title;
+                }
+            });
 }

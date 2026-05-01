@@ -1050,6 +1050,301 @@ builder.AddSheet(employees);
 <!-- endSnippet -->
 
 
+### Anonymous Types
+
+Anonymous types can be used as binding models. Type-safe column configuration via `Column(_ => _.Property, ...)` works as long as it is chained directly off `AddSheet(...)` so the compiler can infer the model type.
+
+<!-- snippet: AnonymousType -->
+<a id='snippet-AnonymousType'></a>
+```cs
+var employees = SampleData.Employees()
+    .Select(_ => new
+    {
+        _.Name,
+        _.Email,
+        _.Salary
+    });
+
+var builder = new BookBuilder();
+builder.AddSheet(employees)
+    .Column(
+        _ => _.Salary,
+        _ => _.Heading = "Annual Salary");
+
+using var book = await builder.Build();
+```
+<sup><a href='/src/Excelsior.Tests/AnonymousTypeTests.cs#L7-L25' title='Snippet source file'>snippet source</a> | <a href='#snippet-AnonymousType' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+
+### Template Sheets
+
+`AddTemplateSheet` produces an empty spreadsheet for the user to fill in — known column names, types, widths, formats, and validation but no data rows. Validation, locked-cell behavior, and conditional formatting all extend down `templateRowCount` rows below the header (defaults to 1000).
+
+<!-- snippet: TemplateSheetBasic -->
+<a id='snippet-TemplateSheetBasic'></a>
+```cs
+var builder = new BookBuilder();
+builder.AddTemplateSheet("Employees")
+    .Column<string>("Name", _ => _.Width = 25)
+    .Column<string>("Email", _ => _.Width = 30)
+    .Column<DateTime>(
+        "HireDate",
+        _ =>
+        {
+            _.Heading = "Hire Date";
+            _.Width = 15;
+        })
+    .Column<decimal>(
+        "Salary",
+        _ =>
+        {
+            _.Heading = "Annual Salary";
+            _.Format = "$#,##0.00";
+            _.Width = 18;
+        });
+
+using var book = await builder.Build();
+```
+<sup><a href='/src/Excelsior.Tests/TemplateSheetTests.cs#L7-L31' title='Snippet source file'>snippet source</a> | <a href='#snippet-TemplateSheetBasic' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+#### Auto-Derived Enum Dropdowns
+
+Enum-typed columns automatically render as dropdown lists. The list values match the same rendering used for cell content, so `[Display(Name = "Full Time")]` shows "Full Time" in the dropdown.
+
+<!-- snippet: TemplateSheetEnumDropdown -->
+<a id='snippet-TemplateSheetEnumDropdown'></a>
+```cs
+var builder = new BookBuilder(headingStyle: _ => _.Font.Bold = true);
+builder.AddTemplateSheet("Employees", templateRowCount: 50)
+    .Column<string>("Name", _ => _.Width = 25)
+    .Column<EmployeeStatus>("Status", _ => _.Width = 14);
+
+using var book = await builder.Build();
+```
+<sup><a href='/src/Excelsior.Tests/TemplateSheetTests.cs#L39-L48' title='Snippet source file'>snippet source</a> | <a href='#snippet-TemplateSheetEnumDropdown' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+This applies to data-bound sheets too — set `templateRowCount` on `AddSheet` to extend dropdowns past the data rows so users adding new rows still get validation.
+
+<!-- snippet: ValidationEnumDropdown -->
+<a id='snippet-ValidationEnumDropdown'></a>
+```cs
+var builder = new BookBuilder();
+builder.AddSheet(SampleData.Employees(), templateRowCount: 25);
+
+using var book = await builder.Build();
+```
+<sup><a href='/src/Excelsior.Tests/ValidationTests.cs#L7-L14' title='Snippet source file'>snippet source</a> | <a href='#snippet-ValidationEnumDropdown' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+To suppress the auto-derived dropdown for a specific column, set `DisableAllowedValues = true`. Setting `AllowedValues` explicitly to a list overrides the auto-derived values.
+
+#### Numeric and Date Ranges
+
+Restrict entry to a numeric or date range via `Range(min, max)`, or set `NumericMin`/`NumericMax`/`DateMin`/`DateMax` individually for one-sided constraints.
+
+<!-- snippet: TemplateSheetNumericRange -->
+<a id='snippet-TemplateSheetNumericRange'></a>
+```cs
+var builder = new BookBuilder();
+builder.AddTemplateSheet("Scorecard", templateRowCount: 25)
+    .Column<string>("Name", _ => _.Width = 25)
+    .Column<int>(
+        "Score",
+        _ =>
+        {
+            _.Width = 10;
+            _.Range(0, 100);
+            _.InputTitle = "Score";
+            _.InputMessage = "Whole number between 0 and 100.";
+            _.ErrorTitle = "Invalid score";
+            _.ErrorMessage = "Score must be between 0 and 100.";
+        });
+
+using var book = await builder.Build();
+```
+<sup><a href='/src/Excelsior.Tests/TemplateSheetTests.cs#L56-L75' title='Snippet source file'>snippet source</a> | <a href='#snippet-TemplateSheetNumericRange' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+<!-- snippet: TemplateSheetDateRange -->
+<a id='snippet-TemplateSheetDateRange'></a>
+```cs
+var builder = new BookBuilder();
+builder.AddTemplateSheet("Hires", templateRowCount: 25)
+    .Column<string>("Name", _ => _.Width = 25)
+    .Column<DateTime>(
+        "HireDate",
+        _ =>
+        {
+            _.Heading = "Hire Date";
+            _.Width = 15;
+            _.Range(new(2020, 1, 1), new DateTime(2030, 12, 31));
+        });
+
+using var book = await builder.Build();
+```
+<sup><a href='/src/Excelsior.Tests/TemplateSheetTests.cs#L83-L99' title='Snippet source file'>snippet source</a> | <a href='#snippet-TemplateSheetDateRange' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+#### Input Hints and Error Messages
+
+`InputTitle` / `InputMessage` configure the tooltip Excel shows when a cell is selected. `ErrorTitle` / `ErrorMessage` override the popup shown when invalid input is rejected.
+
+#### Required Cells
+
+`Required = true` highlights blank cells in the column with a soft red conditional-format fill, drawing attention to fields the user has not yet filled in.
+
+<!-- snippet: TemplateSheetRequired -->
+<a id='snippet-TemplateSheetRequired'></a>
+```cs
+var builder = new BookBuilder();
+builder.AddTemplateSheet("Employees", templateRowCount: 25)
+    .Column<string>(
+        "Name",
+        _ =>
+        {
+            _.Width = 25;
+            _.Required = true;
+        })
+    .Column<string>("Email", _ => _.Width = 30)
+    .Column<DateTime>(
+        "HireDate",
+        _ =>
+        {
+            _.Heading = "Hire Date";
+            _.Width = 15;
+            _.Required = true;
+        });
+
+using var book = await builder.Build();
+```
+<sup><a href='/src/Excelsior.Tests/TemplateSheetTests.cs#L107-L130' title='Snippet source file'>snippet source</a> | <a href='#snippet-TemplateSheetRequired' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+#### Locked Cells under Protection
+
+When the workbook is built with `SheetProtectionOptions`, headings are locked and data cells are unlocked by default. Set `Locked = true` on a column to lock its data cells too — useful for read-only identifier columns or pre-filled formula results.
+
+<!-- snippet: TemplateSheetProtected -->
+<a id='snippet-TemplateSheetProtected'></a>
+```cs
+var builder = new BookBuilder(
+    protection: new()
+    {
+        Password = "secret"
+    });
+builder.AddTemplateSheet("Employees", templateRowCount: 25)
+    .Column<string>("Name", _ => _.Width = 25)
+    .Column<string>(
+        "EmployeeId",
+        _ =>
+        {
+            _.Heading = "Employee ID";
+            _.Width = 14;
+            _.Locked = true;
+        });
+
+using var book = await builder.Build();
+```
+<sup><a href='/src/Excelsior.Tests/TemplateSheetTests.cs#L138-L158' title='Snippet source file'>snippet source</a> | <a href='#snippet-TemplateSheetProtected' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+#### Combining Features
+
+A typical "data entry" workbook combines several of these features:
+
+<!-- snippet: TemplateSheetFullFeatured -->
+<a id='snippet-TemplateSheetFullFeatured'></a>
+```cs
+var builder = new BookBuilder(
+    headingStyle: _ =>
+    {
+        _.Font.Bold = true;
+        _.BackgroundColor = "FFEFEFEF";
+    });
+builder.AddTemplateSheet("Employees", templateRowCount: 100)
+    .Column<string>(
+        "Name",
+        _ =>
+        {
+            _.Width = 25;
+            _.Required = true;
+            _.InputMessage = "Full name of the employee.";
+        })
+    .Column<string>(
+        "Email",
+        _ =>
+        {
+            _.Width = 30;
+            _.Required = true;
+        })
+    .Column<DateTime>(
+        "HireDate",
+        _ =>
+        {
+            _.Heading = "Hire Date";
+            _.Width = 15;
+            _.Required = true;
+            _.Range(new(2020, 1, 1), new DateTime(2030, 12, 31));
+            _.ErrorMessage = "Hire date must be on or after 2020-01-01.";
+        })
+    .Column<decimal>(
+        "Salary",
+        _ =>
+        {
+            _.Heading = "Annual Salary";
+            _.Format = "$#,##0.00";
+            _.Width = 18;
+            _.Range(0m, 1_000_000m);
+        })
+    .Column<EmployeeStatus>(
+        "Status",
+        _ =>
+        {
+            _.Width = 14;
+            _.Required = true;
+        });
+
+using var book = await builder.Build();
+```
+<sup><a href='/src/Excelsior.Tests/TemplateSheetTests.cs#L166-L219' title='Snippet source file'>snippet source</a> | <a href='#snippet-TemplateSheetFullFeatured' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+All of the above features (`AllowedValues`, `Range`, `Required`, `Locked`, `InputMessage`, `ErrorMessage`) work the same way on the data-bound `AddSheet(...).Column(_ => _.Foo, c => ...)` API.
+
+#### Shortcut Methods
+
+The data-bound `ISheetBuilder<TModel>` exposes each validation feature as a one-line shortcut, mirroring the existing `Width`, `Format`, `Filter` etc. shortcuts.
+
+| Shortcut | Configures |
+| --- | --- |
+| `AllowedValues(p, values)` | dropdown list |
+| `DisableAllowedValues(p)` | suppress the auto-derived enum dropdown |
+| `Range(p, decimal min, decimal max)` | numeric range |
+| `Range(p, DateTime min, DateTime max)` | date range |
+| `Required(p)` | conditional-format blank highlight |
+| `Locked(p, value = true)` | per-column lock under protection |
+| `InputMessage(p, message, title = null)` | input-hint tooltip |
+| `ErrorMessage(p, message, title = null)` | error popup on invalid input |
+
+<!-- snippet: ValidationShortcuts -->
+<a id='snippet-ValidationShortcuts'></a>
+```cs
+var builder = new BookBuilder();
+var sheet = builder.AddSheet(SampleData.Employees(), templateRowCount: 25);
+sheet.Range(_ => _.Salary, 0, 1_000_000);
+sheet.Required(_ => _.Email);
+sheet.InputMessage(_ => _.Salary, "Annual salary in USD.", "Salary");
+sheet.ErrorMessage(_ => _.Salary, "Salary must be between 0 and 1,000,000.", "Invalid salary");
+
+using var book = await builder.Build();
+```
+<sup><a href='/src/Excelsior.Tests/ValidationTests.cs#L85-L96' title='Snippet source file'>snippet source</a> | <a href='#snippet-ValidationShortcuts' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+
 ### ColumnAttribute
 
 `ColumnAttribute` allows customization of rendering at the model level.

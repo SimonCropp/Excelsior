@@ -133,12 +133,11 @@ public class BookBuilder
         return builder;
     }
 
-
     public async Task<SpreadsheetDocument> Build(Cancel cancel = default)
     {
         var document = SpreadsheetDocument.Create(new MemoryStream(), SpreadsheetDocumentType.Workbook);
         var workbookPart = document.AddWorkbookPart();
-        workbookPart.Workbook = new(new Sheets());
+        var book = workbookPart.Workbook = new(new Sheets());
 
         foreach (var action in actions)
         {
@@ -146,13 +145,13 @@ public class BookBuilder
             await action(document, cancel);
         }
 
-        ApplyStylesheet(document);
-        ApplyWorkbookProtection(workbookPart);
+        ApplyStylesheet(workbookPart);
+        ApplyWorkbookProtection(book);
         WriteSheetMetadata(workbookPart);
         return document;
     }
 
-    void WriteSheetMetadata(WorkbookPart workbookPart)
+    void WriteSheetMetadata(WorkbookPart book)
     {
         if (sheetMetadata.Count == 0)
         {
@@ -173,32 +172,32 @@ public class BookBuilder
                                 new XAttribute("index", column.Index),
                                 new XAttribute("property", column.PropertyName)))))));
 
-        var customPart = workbookPart.AddCustomXmlPart(CustomXmlPartType.CustomXml);
+        var customPart = book.AddCustomXmlPart(CustomXmlPartType.CustomXml);
         using var stream = customPart.GetStream(FileMode.Create);
         doc.Save(stream);
     }
 
-    void ApplyWorkbookProtection(WorkbookPart workbookPart)
+    void ApplyWorkbookProtection(Workbook book)
     {
         if (!IsProtected)
         {
             return;
         }
 
-        var sheets = workbookPart.Workbook!.GetFirstChild<Sheets>()!;
+        var sheets = book.GetFirstChild<Sheets>()!;
         var protection = new WorkbookProtection
         {
             WorkbookPassword = ProtectionPasswordHasher.Hash(Protection!.Password),
             LockStructure = true,
             LockWindows = false
         };
-        workbookPart.Workbook.InsertBefore(protection, sheets);
+        book.InsertBefore(protection, sheets);
     }
 
-    void ApplyStylesheet(SpreadsheetDocument document)
+    void ApplyStylesheet(WorkbookPart book)
     {
-        var stylesPart = document.WorkbookPart!.GetPartsOfType<WorkbookStylesPart>().FirstOrDefault()
-                         ?? document.WorkbookPart.AddNewPart<WorkbookStylesPart>();
+        var stylesPart = book.GetPartsOfType<WorkbookStylesPart>().FirstOrDefault()
+                         ?? book.AddNewPart<WorkbookStylesPart>();
         stylesPart.Stylesheet = StyleManager.BuildStylesheet();
     }
 

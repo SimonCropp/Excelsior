@@ -1,6 +1,6 @@
 namespace Excelsior;
 
-class DictionarySheetReader :
+class DictionarySheetReader(string? name) :
     IDictionarySheetReader,
     IReaderSheet
 {
@@ -9,11 +9,8 @@ class DictionarySheetReader :
     List<IReadOnlyDictionary<string, object?>> rows = [];
     HashSet<string> names = new(StringComparer.Ordinal);
 
-    public string? Name { get; }
+    public string? Name { get; } = name;
     public IReadOnlyList<IReadOnlyDictionary<string, object?>> Rows => rows;
-
-    public DictionarySheetReader(string? name) =>
-        Name = name;
 
     public IDictionarySheetReader Column<TProperty>(
         string name,

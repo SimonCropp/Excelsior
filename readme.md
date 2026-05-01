@@ -189,7 +189,7 @@ await builder.ToStream(stream);
 
 ### Reading xlsx
 
-`BookReader` is the inverse of `BookBuilder`: register the sheets you want, then `Convert` (throws on failure) or `TryConvert` (returns a result).
+`BookReader` is the inverse of `BookBuilder`: register the sheets to read, then `Convert` (throws on failure) or `TryConvert` (returns a result).
 
 #### Strong-typed
 
@@ -219,7 +219,7 @@ var employees = sheet.Rows;
 
 For sheets without a backing model, declare every column explicitly. Each parsed row is an `IReadOnlyDictionary<string, object?>` keyed by the column name.
 
-The `name` you pass to `Column<T>` serves two roles: it is matched against the file's header row (case-insensitively) and it is the key under which the parsed value is exposed in each row dictionary. So pick whatever you want to read the value out as — the simplest choice is the file's heading text itself. For files written by `BookBuilder`, you may alternatively pass the underlying property name; the workbook's metadata resolves it back to the correct column.
+The `name` passed to `Column<T>` serves two roles: it is matched against the file's header row (case-insensitively) and it is the key under which the parsed value is exposed in each row dictionary. The simplest choice is the file's heading text itself. For files written by `BookBuilder`, the underlying property name can be passed instead; the workbook's metadata resolves it back to the correct column.
 
 <!-- snippet: BookReaderDictionary -->
 <a id='snippet-BookReaderDictionary'></a>
@@ -373,6 +373,15 @@ if (!result)
 ```
 <sup><a href='/src/Excelsior.Tests/Reading/BookReaderErrorTests.cs#L47-L62' title='Snippet source file'>snippet source</a> | <a href='#snippet-BookReaderTryConvert' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
+
+
+#### Rich text
+
+Cells written with run-level formatting (mixed bold / colors / fonts within a single cell — Excel's "rich string" feature, which is what `IsHtml = true` produces on the write side) are flattened to plain text on read. The runs are concatenated and formatting attributes are discarded; a `string` property receives the joined text.
+
+For formatted text that must round-trip through a workbook, store the markup as plain text in the cell rather than relying on Excel rich-text formatting. Markdown or HTML stored as a regular string is preserved exactly across write → read and can be rendered downstream. Excel's own rich-text data model has no equivalent on the .NET side and therefore cannot be reconstructed by `BookReader`.
+
+To inspect the runs directly (e.g. to extract formatting), wire up a per-cell delegate (`sheet.Convert(_ => _.Prop, cell => ...)`) and walk the OpenXml `Run` elements.
 
 
 #### Supported types
@@ -1073,9 +1082,9 @@ sheet.Column(
     _ => _.IsHtml = true);
 ```
 
-`[StringSyntax("html")]` is useful when the property is already being annotated for IDE/analyzer support and you want to avoid adding a second attribute.
+`[StringSyntax("html")]` is useful when the property is already being annotated for IDE/analyzer support and a second attribute would be redundant.
 
-`[Html]` detection is provided as a convenience for codebases that already define their own `HtmlAttribute` for other purposes (e.g. sanitization, templating). Excelsior does not ship this attribute — it simply matches any attribute whose type name is `HtmlAttribute`, regardless of namespace. This path has the lowest precedence: both `[Column(IsHtml = ...)]` and `[StringSyntax("html")]` override it.
+`[Html]` detection is provided as a convenience for codebases that already define a custom `HtmlAttribute` for other purposes (e.g. sanitization, templating). Excelsior does not ship this attribute — it matches any attribute whose type name is `HtmlAttribute`, regardless of namespace. This path has the lowest precedence: both `[Column(IsHtml = ...)]` and `[StringSyntax("html")]` override it.
 
 If any two of these opt-in paths disagree — for example `[Column(IsHtml = false)]` combined with `[StringSyntax("html")]`, or a fluent `IsHtml = false` on a column where the attribute says `true` — Excelsior throws at runtime. The `EXCEL003` analyzer catches the attribute-level form of this mismatch at compile time.
 
@@ -1374,7 +1383,7 @@ using var book = await builder.Build();
 Per-column overrides always win — set `Required = false` or `DisableAllowedValues = true` to opt out for one column.
 
 <a id="bool-dropdown-vs-strict-boolean"></a>
-**Note on the bool dropdown.** Excel does have a native Boolean cell type (OOXML `t="b"`) and Excelsior writes `bool` values that way. The auto-derived dropdown is a *string list* of `TRUE,FALSE`, so when a user picks an entry Excel inserts the literal text — in practice it auto-coerces back to a Boolean cell on edit, but you can end up with mixed cell types in the same column (Booleans we wrote vs. strings the user picked) which can affect formulas like `=A2*1` or `COUNTIF(A:A, TRUE)`. If you need strict Boolean enforcement, set `DisableAllowedValues = true` on the column — this drops the dropdown so you can supply your own `=ISLOGICAL(A2)` constraint via a custom data validation. For typical data-entry templates the dropdown is the better UX.
+**Note on the bool dropdown.** Excel does have a native Boolean cell type (OOXML `t="b"`) and Excelsior writes `bool` values that way. The auto-derived dropdown is a *string list* of `TRUE,FALSE`, so when a user picks an entry Excel inserts the literal text — in practice it auto-coerces back to a Boolean cell on edit, but the result can be mixed cell types in the same column (Booleans written by Excelsior vs. strings the user picked) which can affect formulas like `=A2*1` or `COUNTIF(A:A, TRUE)`. For strict Boolean enforcement, set `DisableAllowedValues = true` on the column — this drops the dropdown so a custom `=ISLOGICAL(A2)` constraint can be supplied via a custom data validation. For typical data-entry templates the dropdown is the better UX.
 
 #### Auto-Derived Enum Dropdowns
 
@@ -1499,7 +1508,7 @@ using var book = await builder.Build();
 - Typing a blank value and pressing Enter → the Stop popup fires and the entry is rejected.
 - Pressing Delete to clear an existing value → the cell goes blank silently, but the conditional-formatting highlight makes the gap visible.
 
-If you need true enforcement at save time (block save while any required cell is blank), you'll need a workbook-level VBA macro on `Workbook_BeforeSave` — that's out of scope for a template generator.
+For true enforcement at save time (block save while any required cell is blank), a workbook-level VBA macro on `Workbook_BeforeSave` is required — that's out of scope for a template generator.
 
 <!-- snippet: TemplateSheetRequired -->
 <a id='snippet-TemplateSheetRequired'></a>

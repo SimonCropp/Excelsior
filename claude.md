@@ -73,6 +73,6 @@ The `readme.md` uses [MarkdownSnippets](https://github.com/SimonCropp/MarkdownSn
 
 - Target framework: `net10.0` (with `LangVersion` set to `preview`)
 - Central package management via `src/Directory.Packages.props`
-- `TreatWarningsAsErrors` + `EnforceCodeStyleInBuild` are both enabled — IDE style rules (e.g. `IDE0007 use 'var'`) fail the build, not just warn. Use `var` everywhere; for tests demonstrating an implicit conversion, use a cast (`var x = (TargetType)source`) rather than declaring the type.
+- `TreatWarningsAsErrors` + `EnforceCodeStyleInBuild` are both enabled — IDE style rules (e.g. `IDE0007 use 'var'`) fail the build rather than warning. Use `var` everywhere; for tests demonstrating an implicit conversion, use a cast (`var x = (TargetType)source`) rather than declaring the type.
 - Global usings live in three places: each project's `GlobalUsings.cs`, the auto-generated `*.GlobalUsings.g.cs` (implicit usings), and the `ProjectDefaults` NuGet package which adds `System.Text`, `System.Reflection`, `System.Diagnostics`, etc. Important type aliases: `Date = System.DateOnly`, `Time = System.TimeOnly`, `Cancel = CancellationToken`, `CancelSource = CancellationTokenSource`.
 - `ValueRenderer` static methods (`For<T>`, `ForEnums`, `BoolDisplay`, `NullDisplayFor<T>`, `DisableWhitespaceTrimming`, `Default*Format`) must be called from a `[ModuleInitializer]` — they throw if invoked after the first `BookBuilder` is constructed.

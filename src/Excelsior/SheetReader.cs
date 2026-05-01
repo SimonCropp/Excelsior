@@ -4,7 +4,7 @@ class SheetReader<TModel> :
     ISheetReader<TModel>,
     IReaderSheet
 {
-    Dictionary<string, ColumnReadState<TModel>> columns = new(StringComparer.Ordinal);
+    Dictionary<string, ColumnReadState> columns = new(StringComparer.Ordinal);
     List<TModel> rows = [];
 
     public string? Name { get; }
@@ -16,14 +16,12 @@ class SheetReader<TModel> :
 
         foreach (var info in GetReadableProperties(typeof(TModel)))
         {
-            var setter = BuildSetter(info);
             columns[info.Name] = new()
             {
                 Name = info.Name,
                 Heading = ResolveHeading(info),
                 Type = info.PropertyType,
                 Include = ResolveInclude(info),
-                SetValue = setter,
                 Convert = null
             };
         }
@@ -84,16 +82,6 @@ class SheetReader<TModel> :
         }
 
         return true;
-    }
-
-    static Action<TModel, object?> BuildSetter(PropertyInfo info)
-    {
-        if (info.SetMethod == null)
-        {
-            return (_, _) => { };
-        }
-
-        return (target, value) => info.SetValue(target, value);
     }
 
     public ISheetReader<TModel> Column<TProperty>(

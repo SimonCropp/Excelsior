@@ -91,17 +91,15 @@ public class SheetBuilderGenerator :
 
         var parameterless = publicCtors.FirstOrDefault(_ => _.Parameters.Length == 0);
 
-        IMethodSymbol? chosen;
         ImmutableArray<ActivatorParam> ctorParams;
 
         if (parameterless != null)
         {
-            chosen = parameterless;
             ctorParams = ImmutableArray<ActivatorParam>.Empty;
         }
         else
         {
-            chosen = publicCtors
+            var chosen = publicCtors
                 .OrderByDescending(_ => _.Parameters.Length)
                 .FirstOrDefault();
 
@@ -113,7 +111,7 @@ public class SheetBuilderGenerator :
             ctorParams = chosen.Parameters
                 .Select(_ => new ActivatorParam(
                     _.Name,
-                    _.Type.ToDisplayString(NullableQualified)))
+                    _.Type.ToDisplayString(nullableQualified)))
                 .ToImmutableArray();
         }
 
@@ -150,14 +148,14 @@ public class SheetBuilderGenerator :
             }
 
             var setter = property.SetMethod;
-            if (setter == null || setter.DeclaredAccessibility != Accessibility.Public)
+            if (setter is not {DeclaredAccessibility: Accessibility.Public})
             {
                 continue;
             }
 
             var assign = new ActivatorAssign(
                 property.Name,
-                property.Type.ToDisplayString(NullableQualified));
+                property.Type.ToDisplayString(nullableQualified));
 
             if (setter.IsInitOnly || property.IsRequired)
             {
@@ -175,7 +173,7 @@ public class SheetBuilderGenerator :
             new EquatableArray<ActivatorAssign>(setBuilder.ToImmutable()));
     }
 
-    static readonly SymbolDisplayFormat NullableQualified = SymbolDisplayFormat.FullyQualifiedFormat
+    static readonly SymbolDisplayFormat nullableQualified = SymbolDisplayFormat.FullyQualifiedFormat
         .AddMiscellaneousOptions(SymbolDisplayMiscellaneousOptions.IncludeNullableReferenceTypeModifier);
 
     static bool IsAccessible(INamedTypeSymbol type)
@@ -708,7 +706,7 @@ public class SheetBuilderGenerator :
         {
             var param = plan.CtorParams[i];
             var argName = $"arg{i}";
-            builder.AppendLine($$"""        values.TryGetValue("{{param.Name}}", out var {{argName}});""");
+            builder.AppendLine($"        values.TryGetValue(\"{param.Name}\", out var {argName});");
             ctorArgs.Add($"({param.TypeFullName}){argName}!");
         }
 
@@ -742,7 +740,7 @@ public class SheetBuilderGenerator :
                 var prop = plan.SetProps[i];
                 var v = $"sv{i}";
                 builder.AppendLine(
-                    $$"""        if (values.TryGetValue("{{prop.Name}}", out var {{v}})) instance.{{prop.Name}} = ({{prop.TypeFullName}}){{v}}!;""");
+                    $"        if (values.TryGetValue(\"{prop.Name}\", out var {v})) instance.{prop.Name} = ({prop.TypeFullName}){v}!;");
             }
 
             builder.AppendLine("        return instance;");
@@ -762,7 +760,7 @@ public class SheetBuilderGenerator :
             var prop = props[i];
             var v = $"v{i}";
             builder.AppendLine(
-                $$"""            {{prop.Name}} = values.TryGetValue("{{prop.Name}}", out var {{v}}) ? ({{prop.TypeFullName}}){{v}}! : default!,""");
+                $"            {prop.Name} = values.TryGetValue(\"{prop.Name}\", out var {v}) ? ({prop.TypeFullName}){v}! : default!,");
         }
 
         builder.AppendLine($"        }}{terminator}");

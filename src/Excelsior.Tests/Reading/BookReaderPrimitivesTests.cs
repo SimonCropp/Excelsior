@@ -26,11 +26,9 @@ public class BookReaderPrimitivesTests
     public async Task Strings()
     {
         var rows = await RoundTrip<StringRow>(
-        [
             new() { Value = "alpha" },
             new() { Value = "beta" },
-            new() { Value = "" }
-        ]);
+            new() { Value = "" });
         Assert.That(rows.Select(_ => _.Value), Is.EqualTo(["alpha", "beta", ""]));
     }
 

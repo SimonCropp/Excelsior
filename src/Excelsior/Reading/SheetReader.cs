@@ -187,31 +187,17 @@ class SheetReader<TModel> :
         var hasValue = new bool[cellsBySlot.Length];
         for (var slot = 0; slot < cellsBySlot.Length; slot++)
         {
-            var cell = cellsBySlot[slot];
-            var converter = convertersBySlot![slot];
-            if (converter != null && cell != null)
-            {
-                try
-                {
-                    values[slot] = converter(cell);
-                    hasValue[slot] = true;
-                }
-                catch (Exception exception)
-                {
-                    onError(slot, $"Converter delegate threw: {exception.Message}");
-                }
-
-                continue;
-            }
-
-            if (CellConverter.TryConvert(cell, typesBySlot![slot], sharedStrings, out var value, out var error))
+            if (CellConverter.TryConvertSlot(
+                    cellsBySlot[slot],
+                    convertersBySlot![slot],
+                    typesBySlot![slot],
+                    sharedStrings,
+                    slot,
+                    onError,
+                    out var value))
             {
                 values[slot] = value;
                 hasValue[slot] = true;
-            }
-            else
-            {
-                onError(slot, error);
             }
         }
 

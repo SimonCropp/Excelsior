@@ -14,7 +14,7 @@ static class ModelActivator<T>
         {
             ctorParamNames = [];
             ctorArgIndexByName = new(StringComparer.Ordinal);
-            setters = new();
+            setters = [];
             return;
         }
 
@@ -88,10 +88,10 @@ static class ModelActivator<T>
 
     /// <summary>Per-property lookup; -1 when the property isn't a constructor parameter.</summary>
     public static int FindCtorArgIndex(string name) =>
-        ctorArgIndexByName.TryGetValue(name, out var i) ? i : -1;
+        ctorArgIndexByName.GetValueOrDefault(name, -1);
 
     public static Action<T, object?>? FindSetter(string name) =>
-        setters.TryGetValue(name, out var s) ? s : null;
+        setters.GetValueOrDefault(name);
 
     /// <summary>Generated-factory dispatch. Caller owns the dictionary allocation.</summary>
     public static T CreateFromDictionary(IReadOnlyDictionary<string, object?> values) =>

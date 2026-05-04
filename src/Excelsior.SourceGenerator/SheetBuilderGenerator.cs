@@ -180,9 +180,11 @@ public class SheetBuilderGenerator :
         var isNullable = false;
 
         // Value-type Nullable<T> unwrap.
-        if (type is INamedTypeSymbol named &&
-            named.IsGenericType &&
-            named.OriginalDefinition.SpecialType == SpecialType.System_Nullable_T)
+        if (type is INamedTypeSymbol
+            {
+                IsGenericType: true,
+                OriginalDefinition.SpecialType: SpecialType.System_Nullable_T
+            } named)
         {
             underlying = named.TypeArguments[0];
             isNullable = true;

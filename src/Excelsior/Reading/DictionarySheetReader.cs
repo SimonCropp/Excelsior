@@ -41,30 +41,17 @@ class DictionarySheetReader(string? name) :
         var dict = new Dictionary<string, object?>(cellsBySlot.Length, StringComparer.Ordinal);
         for (var slot = 0; slot < cellsBySlot.Length; slot++)
         {
-            var cell = cellsBySlot[slot];
             var column = columnInfos[slot];
-
-            if (column.Convert != null && cell != null)
-            {
-                try
-                {
-                    dict[column.Name] = column.Convert(cell);
-                }
-                catch (Exception exception)
-                {
-                    onError(slot, $"Converter delegate threw: {exception.Message}");
-                }
-
-                continue;
-            }
-
-            if (CellConverter.TryConvert(cell, column.Type, sharedStrings, out var value, out var error))
+            if (CellConverter.TryConvertSlot(
+                    cellsBySlot[slot],
+                    column.Convert,
+                    column.Type,
+                    sharedStrings,
+                    slot,
+                    onError,
+                    out var value))
             {
                 dict[column.Name] = value;
-            }
-            else
-            {
-                onError(slot, error);
             }
         }
 

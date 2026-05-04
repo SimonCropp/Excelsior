@@ -332,6 +332,29 @@ static class CellConverter
     }
 
     /// <summary>
+    /// Generic enum parser used by source-generated row readers; avoids the
+    /// boxing roundtrip the non-generic <see cref="TryParseEnum"/> does.
+    /// </summary>
+    public static bool TryParseEnumGeneric<T>(string raw, out T value)
+        where T : struct, Enum
+    {
+        if (Enum.TryParse<T>(raw, ignoreCase: true, out value))
+        {
+            return true;
+        }
+
+        var map = humanisedEnumCache.GetOrAdd(typeof(T), BuildHumanisedEnumMap);
+        if (map.TryGetValue(raw, out var member))
+        {
+            value = (T)member;
+            return true;
+        }
+
+        value = default;
+        return false;
+    }
+
+    /// <summary>
     /// Materializes the shared-string table once per workbook so per-cell
     /// lookups stay O(1) instead of walking the OpenXml linked list.
     /// </summary>

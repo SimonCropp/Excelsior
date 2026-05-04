@@ -76,90 +76,104 @@ static class SheetParser
             byHeading[info.Heading] = info;
         }
 
-        var sheetData = worksheetPart.Worksheet?.GetFirstChild<SheetData>();
-        if (sheetData == null)
-        {
-            return;
-        }
+        // Streaming reader: avoids materializing the entire SheetData DOM.
+        // Each Row is loaded on demand and becomes Gen0 garbage after processing.
+        using var reader = OpenXmlReader.Create(worksheetPart);
 
-        Row? headerRow = null;
-        var dataRows = new List<Row>();
-        foreach (var row in sheetData.Elements<Row>())
-        {
-            if (headerRow == null)
-            {
-                headerRow = row;
-            }
-            else
-            {
-                dataRows.Add(row);
-            }
-        }
+        var headerSeen = false;
+        Dictionary<int, int>? fileIndexToSlot = null;
+        Cell?[]? cellsBySlot = null;
+        Action<int, string>? onError = null;
+        Row? currentRow = null;
 
-        if (headerRow == null)
+        while (reader.Read())
         {
-            return;
-        }
-
-        var columnByIndex = ResolveColumnByIndex(
-            headerRow,
-            sharedStrings,
-            metadataColumnMap,
-            byName,
-            byHeading);
-
-        var resolvedNames = new HashSet<string>(StringComparer.Ordinal);
-        foreach (var info in columnByIndex.Values)
-        {
-            resolvedNames.Add(info.Name);
-        }
-
-        var beforeCount = errors.Count;
-        foreach (var declared in columns)
-        {
-            if (resolvedNames.Contains(declared.Name))
+            if (reader.ElementType != typeof(Row) || !reader.IsStartElement)
             {
                 continue;
             }
 
-            errors.Add(
-                new(
-                    resolvedSheetName,
-                    RowIndex: 0,
-                    declared.Name,
-                    CellReference: "",
-                    $"Column '{declared.Name}' (heading '{declared.Heading}') was not found in the sheet header row.",
-                    null));
-        }
+            var row = (Row)reader.LoadCurrentElement()!;
 
-        if (errors.Count > beforeCount)
-        {
-            return;
-        }
+            if (!headerSeen)
+            {
+                headerSeen = true;
+                var columnByIndex = ResolveColumnByIndex(row, sharedStrings, metadataColumnMap, byName, byHeading);
 
-        foreach (var row in dataRows)
-        {
-            var cellByIndex = new Dictionary<int, Cell>();
+                var resolvedNames = new HashSet<string>(StringComparer.Ordinal);
+                foreach (var info in columnByIndex.Values)
+                {
+                    resolvedNames.Add(info.Name);
+                }
+
+                var beforeCount = errors.Count;
+                foreach (var declared in columns)
+                {
+                    if (resolvedNames.Contains(declared.Name))
+                    {
+                        continue;
+                    }
+
+                    errors.Add(new(
+                        resolvedSheetName,
+                        RowIndex: 0,
+                        declared.Name,
+                        CellReference: "",
+                        $"Column '{declared.Name}' (heading '{declared.Heading}') was not found in the sheet header row.",
+                        null));
+                }
+
+                if (errors.Count > beforeCount)
+                {
+                    return;
+                }
+
+                var slotByName = new Dictionary<string, int>(columns.Count, StringComparer.Ordinal);
+                for (var i = 0; i < columns.Count; i++)
+                {
+                    slotByName[columns[i].Name] = i;
+                }
+
+                fileIndexToSlot = new(columnByIndex.Count);
+                foreach (var (fileIndex, column) in columnByIndex)
+                {
+                    fileIndexToSlot[fileIndex] = slotByName[column.Name];
+                }
+
+                cellsBySlot = new Cell?[columns.Count];
+
+                // Closure built once; `currentRow` is reassigned per row but the
+                // closure reads it lazily so no per-row delegate allocation.
+                var slotColumns = columns;
+                onError = (slot, message) =>
+                {
+                    var col = slotColumns[slot];
+                    var rowIndex = currentRow?.RowIndex?.Value ?? 0;
+                    var cellRef = $"{SheetContext.GetColumnLetter(slot)}{rowIndex}";
+                    errors.Add(new(resolvedSheetName, (int)rowIndex, col.Name, cellRef, message, null));
+                };
+
+                continue;
+            }
+
+            currentRow = row;
+            Array.Clear(cellsBySlot!);
+
             foreach (var cell in row.Elements<Cell>())
             {
                 var index = ParseColumnIndex(cell.CellReference?.Value);
-                if (index >= 0)
+                if (index < 0)
                 {
-                    cellByIndex[index] = cell;
+                    continue;
+                }
+
+                if (fileIndexToSlot!.TryGetValue(index, out var slot))
+                {
+                    cellsBySlot![slot] = cell;
                 }
             }
 
-            var values = new Dictionary<string, object?>(columnByIndex.Count, StringComparer.Ordinal);
-            foreach (var (index, column) in columnByIndex)
-            {
-                cellByIndex.TryGetValue(index, out var cell);
-                if (TryConvertCell(resolvedSheetName, row, index, cell, column, sharedStrings, errors, out var value))
-                {
-                    values[column.Name] = value;
-                }
-            }
-
-            sheet.Receive(values);
+            sheet.ReceiveRow(cellsBySlot!, sharedStrings, onError!);
         }
     }
 
@@ -212,56 +226,6 @@ static class SheetParser
         }
 
         return result;
-    }
-
-    static bool TryConvertCell(
-        string sheetName,
-        Row row,
-        int columnIndex,
-        Cell? cell,
-        ColumnReadInfo column,
-        string?[]? sharedStrings,
-        List<ReadError> errors,
-        out object? value)
-    {
-        var cellRef = cell?.CellReference?.Value
-                      ?? $"{SheetContext.GetColumnLetter(columnIndex)}{row.RowIndex?.Value ?? 0}";
-
-        if (column.Convert != null &&
-            cell != null)
-        {
-            try
-            {
-                value = column.Convert(cell);
-                return true;
-            }
-            catch (Exception exception)
-            {
-                errors.Add(new(
-                    sheetName,
-                    (int)(row.RowIndex?.Value ?? 0),
-                    column.Name,
-                    cellRef,
-                    $"Converter delegate threw: {exception.Message}",
-                    exception));
-                value = null;
-                return false;
-            }
-        }
-
-        if (CellConverter.TryConvert(cell, column.Type, sharedStrings, out value, out var error))
-        {
-            return true;
-        }
-
-        errors.Add(new(
-            sheetName,
-            (int)(row.RowIndex?.Value ?? 0),
-            column.Name,
-            cellRef,
-            error,
-            null));
-        return false;
     }
 
     static int ParseColumnIndex(string? cellReference)

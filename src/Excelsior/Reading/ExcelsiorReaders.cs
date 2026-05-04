@@ -1,0 +1,447 @@
+namespace Excelsior;
+
+/// <summary>
+/// Typed cell readers consumed by source-generated row readers. Each method
+/// reports parse failures via the <see cref="Action{T1, T2}"/> callback (slot
+/// index + message) and returns a default value, mirroring the reflection
+/// path's "row keeps loading; errors collected" semantics.
+/// </summary>
+public static class ExcelsiorReaders
+{
+    static string? Raw(Cell? cell, string?[]? sharedStrings) =>
+        CellConverter.ReadRaw(cell, sharedStrings);
+
+    public static string ReadString(Cell? cell, string?[]? sharedStrings)
+    {
+        var raw = Raw(cell, sharedStrings) ?? "";
+        if (ValueRenderer.TrimWhitespace)
+        {
+            raw = raw.Trim();
+        }
+
+        return raw;
+    }
+
+    static T ReadParsable<T>(
+        Cell? cell,
+        string?[]? sharedStrings,
+        int slot,
+        Action<int, string> onError,
+        string typeName)
+        where T : struct, IParsable<T>
+    {
+        var raw = Raw(cell, sharedStrings);
+        if (string.IsNullOrEmpty(raw))
+        {
+            onError(slot, $"Cell is empty but target type {typeName} is not nullable.");
+            return default;
+        }
+
+        if (T.TryParse(raw, CultureInfo.InvariantCulture, out var value))
+        {
+            return value;
+        }
+
+        onError(slot, $"Could not parse '{raw}' as {typeName}.");
+        return default;
+    }
+
+    static T? ReadParsableNullable<T>(
+        Cell? cell,
+        string?[]? sharedStrings,
+        int slot,
+        Action<int, string> onError,
+        string typeName)
+        where T : struct, IParsable<T>
+    {
+        var raw = Raw(cell, sharedStrings);
+        if (string.IsNullOrEmpty(raw))
+        {
+            return null;
+        }
+
+        if (T.TryParse(raw, CultureInfo.InvariantCulture, out var value))
+        {
+            return value;
+        }
+
+        onError(slot, $"Could not parse '{raw}' as {typeName}?.");
+        return null;
+    }
+
+    public static byte ReadByte(Cell? cell, string?[]? ss, int slot, Action<int, string> onError) => ReadParsable<byte>(cell, ss, slot, onError, "Byte");
+    public static byte? ReadByteNullable(Cell? cell, string?[]? ss, int slot, Action<int, string> onError) => ReadParsableNullable<byte>(cell, ss, slot, onError, "Byte");
+    public static sbyte ReadSByte(Cell? cell, string?[]? ss, int slot, Action<int, string> onError) => ReadParsable<sbyte>(cell, ss, slot, onError, "SByte");
+    public static sbyte? ReadSByteNullable(Cell? cell, string?[]? ss, int slot, Action<int, string> onError) => ReadParsableNullable<sbyte>(cell, ss, slot, onError, "SByte");
+    public static short ReadShort(Cell? cell, string?[]? ss, int slot, Action<int, string> onError) => ReadParsable<short>(cell, ss, slot, onError, "Int16");
+    public static short? ReadShortNullable(Cell? cell, string?[]? ss, int slot, Action<int, string> onError) => ReadParsableNullable<short>(cell, ss, slot, onError, "Int16");
+    public static ushort ReadUShort(Cell? cell, string?[]? ss, int slot, Action<int, string> onError) => ReadParsable<ushort>(cell, ss, slot, onError, "UInt16");
+    public static ushort? ReadUShortNullable(Cell? cell, string?[]? ss, int slot, Action<int, string> onError) => ReadParsableNullable<ushort>(cell, ss, slot, onError, "UInt16");
+    public static int ReadInt(Cell? cell, string?[]? ss, int slot, Action<int, string> onError) => ReadParsable<int>(cell, ss, slot, onError, "Int32");
+    public static int? ReadIntNullable(Cell? cell, string?[]? ss, int slot, Action<int, string> onError) => ReadParsableNullable<int>(cell, ss, slot, onError, "Int32");
+    public static uint ReadUInt(Cell? cell, string?[]? ss, int slot, Action<int, string> onError) => ReadParsable<uint>(cell, ss, slot, onError, "UInt32");
+    public static uint? ReadUIntNullable(Cell? cell, string?[]? ss, int slot, Action<int, string> onError) => ReadParsableNullable<uint>(cell, ss, slot, onError, "UInt32");
+    public static long ReadLong(Cell? cell, string?[]? ss, int slot, Action<int, string> onError) => ReadParsable<long>(cell, ss, slot, onError, "Int64");
+    public static long? ReadLongNullable(Cell? cell, string?[]? ss, int slot, Action<int, string> onError) => ReadParsableNullable<long>(cell, ss, slot, onError, "Int64");
+    public static ulong ReadULong(Cell? cell, string?[]? ss, int slot, Action<int, string> onError) => ReadParsable<ulong>(cell, ss, slot, onError, "UInt64");
+    public static ulong? ReadULongNullable(Cell? cell, string?[]? ss, int slot, Action<int, string> onError) => ReadParsableNullable<ulong>(cell, ss, slot, onError, "UInt64");
+    public static float ReadFloat(Cell? cell, string?[]? ss, int slot, Action<int, string> onError) => ReadParsable<float>(cell, ss, slot, onError, "Single");
+    public static float? ReadFloatNullable(Cell? cell, string?[]? ss, int slot, Action<int, string> onError) => ReadParsableNullable<float>(cell, ss, slot, onError, "Single");
+    public static double ReadDouble(Cell? cell, string?[]? ss, int slot, Action<int, string> onError) => ReadParsable<double>(cell, ss, slot, onError, "Double");
+    public static double? ReadDoubleNullable(Cell? cell, string?[]? ss, int slot, Action<int, string> onError) => ReadParsableNullable<double>(cell, ss, slot, onError, "Double");
+    public static decimal ReadDecimal(Cell? cell, string?[]? ss, int slot, Action<int, string> onError) => ReadParsable<decimal>(cell, ss, slot, onError, "Decimal");
+    public static decimal? ReadDecimalNullable(Cell? cell, string?[]? ss, int slot, Action<int, string> onError) => ReadParsableNullable<decimal>(cell, ss, slot, onError, "Decimal");
+    public static Guid ReadGuid(Cell? cell, string?[]? ss, int slot, Action<int, string> onError) => ReadParsable<Guid>(cell, ss, slot, onError, "Guid");
+    public static Guid? ReadGuidNullable(Cell? cell, string?[]? ss, int slot, Action<int, string> onError) => ReadParsableNullable<Guid>(cell, ss, slot, onError, "Guid");
+
+    public static bool ReadBool(Cell? cell, string?[]? ss, int slot, Action<int, string> onError)
+    {
+        var raw = Raw(cell, ss);
+        if (string.IsNullOrEmpty(raw))
+        {
+            onError(slot, "Cell is empty but target type Boolean is not nullable.");
+            return false;
+        }
+
+        if (TryParseBool(raw, out var value))
+        {
+            return value;
+        }
+
+        onError(slot, $"Could not parse '{raw}' as Boolean.");
+        return false;
+    }
+
+    public static bool? ReadBoolNullable(Cell? cell, string?[]? ss, int slot, Action<int, string> onError)
+    {
+        var raw = Raw(cell, ss);
+        if (string.IsNullOrEmpty(raw))
+        {
+            return null;
+        }
+
+        if (TryParseBool(raw, out var value))
+        {
+            return value;
+        }
+
+        onError(slot, $"Could not parse '{raw}' as Boolean.");
+        return null;
+    }
+
+    static bool TryParseBool(string raw, out bool value)
+    {
+        if (raw == "1") { value = true; return true; }
+        if (raw == "0") { value = false; return true; }
+        if (bool.TryParse(raw, out value)) return true;
+
+        var (trueDisplay, falseDisplay) = ValueRenderer.GetBoolDisplayValues();
+        if (string.Equals(raw, trueDisplay, StringComparison.OrdinalIgnoreCase))
+        {
+            value = true;
+            return true;
+        }
+
+        if (string.Equals(raw, falseDisplay, StringComparison.OrdinalIgnoreCase))
+        {
+            value = false;
+            return true;
+        }
+
+        value = false;
+        return false;
+    }
+
+    public static char ReadChar(Cell? cell, string?[]? ss, int slot, Action<int, string> onError)
+    {
+        var raw = Raw(cell, ss);
+        if (string.IsNullOrEmpty(raw))
+        {
+            onError(slot, "Cell is empty but target type Char is not nullable.");
+            return '\0';
+        }
+
+        if (raw.Length == 1)
+        {
+            return raw[0];
+        }
+
+        onError(slot, $"Could not parse '{raw}' as Char (expected single character).");
+        return '\0';
+    }
+
+    public static char? ReadCharNullable(Cell? cell, string?[]? ss, int slot, Action<int, string> onError)
+    {
+        var raw = Raw(cell, ss);
+        if (string.IsNullOrEmpty(raw))
+        {
+            return null;
+        }
+
+        if (raw.Length == 1)
+        {
+            return raw[0];
+        }
+
+        onError(slot, $"Could not parse '{raw}' as Char (expected single character).");
+        return null;
+    }
+
+    public static DateTime ReadDateTime(Cell? cell, string?[]? ss, int slot, Action<int, string> onError)
+    {
+        var raw = Raw(cell, ss);
+        if (string.IsNullOrEmpty(raw))
+        {
+            onError(slot, "Cell is empty but target type DateTime is not nullable.");
+            return default;
+        }
+
+        if (TryParseDateTime(raw, out var value))
+        {
+            return value;
+        }
+
+        onError(slot, $"Could not parse '{raw}' as DateTime.");
+        return default;
+    }
+
+    public static DateTime? ReadDateTimeNullable(Cell? cell, string?[]? ss, int slot, Action<int, string> onError)
+    {
+        var raw = Raw(cell, ss);
+        if (string.IsNullOrEmpty(raw))
+        {
+            return null;
+        }
+
+        if (TryParseDateTime(raw, out var value))
+        {
+            return value;
+        }
+
+        onError(slot, $"Could not parse '{raw}' as DateTime.");
+        return null;
+    }
+
+    public static Date ReadDate(Cell? cell, string?[]? ss, int slot, Action<int, string> onError)
+    {
+        var raw = Raw(cell, ss);
+        if (string.IsNullOrEmpty(raw))
+        {
+            onError(slot, "Cell is empty but target type DateOnly is not nullable.");
+            return default;
+        }
+
+        if (TryParseDateTime(raw, out var dt))
+        {
+            return Date.FromDateTime(dt);
+        }
+
+        onError(slot, $"Could not parse '{raw}' as DateOnly.");
+        return default;
+    }
+
+    public static Date? ReadDateNullable(Cell? cell, string?[]? ss, int slot, Action<int, string> onError)
+    {
+        var raw = Raw(cell, ss);
+        if (string.IsNullOrEmpty(raw))
+        {
+            return null;
+        }
+
+        if (TryParseDateTime(raw, out var dt))
+        {
+            return Date.FromDateTime(dt);
+        }
+
+        onError(slot, $"Could not parse '{raw}' as DateOnly.");
+        return null;
+    }
+
+    public static Time ReadTime(Cell? cell, string?[]? ss, int slot, Action<int, string> onError)
+    {
+        var raw = Raw(cell, ss);
+        if (string.IsNullOrEmpty(raw))
+        {
+            onError(slot, "Cell is empty but target type TimeOnly is not nullable.");
+            return default;
+        }
+
+        if (TryParseDateTime(raw, out var dt))
+        {
+            return Time.FromDateTime(dt);
+        }
+
+        onError(slot, $"Could not parse '{raw}' as TimeOnly.");
+        return default;
+    }
+
+    public static Time? ReadTimeNullable(Cell? cell, string?[]? ss, int slot, Action<int, string> onError)
+    {
+        var raw = Raw(cell, ss);
+        if (string.IsNullOrEmpty(raw))
+        {
+            return null;
+        }
+
+        if (TryParseDateTime(raw, out var dt))
+        {
+            return Time.FromDateTime(dt);
+        }
+
+        onError(slot, $"Could not parse '{raw}' as TimeOnly.");
+        return null;
+    }
+
+    static bool TryParseDateTime(string raw, out DateTime value)
+    {
+        if (double.TryParse(raw, NumberStyles.Float, CultureInfo.InvariantCulture, out var oa))
+        {
+            try
+            {
+                value = DateTime.FromOADate(oa);
+                return true;
+            }
+            catch (ArgumentException)
+            {
+                value = default;
+                return false;
+            }
+        }
+
+        return DateTime.TryParse(raw, ValueRenderer.Culture, DateTimeStyles.AssumeLocal, out value);
+    }
+
+    public static DateTimeOffset ReadDateTimeOffset(Cell? cell, string?[]? ss, int slot, Action<int, string> onError)
+    {
+        var raw = Raw(cell, ss);
+        if (string.IsNullOrEmpty(raw))
+        {
+            onError(slot, "Cell is empty but target type DateTimeOffset is not nullable.");
+            return default;
+        }
+
+        if (DateTimeOffset.TryParse(raw, ValueRenderer.Culture, DateTimeStyles.AssumeLocal, out var value))
+        {
+            return value;
+        }
+
+        onError(slot, $"Could not parse '{raw}' as DateTimeOffset.");
+        return default;
+    }
+
+    public static DateTimeOffset? ReadDateTimeOffsetNullable(Cell? cell, string?[]? ss, int slot, Action<int, string> onError)
+    {
+        var raw = Raw(cell, ss);
+        if (string.IsNullOrEmpty(raw))
+        {
+            return null;
+        }
+
+        if (DateTimeOffset.TryParse(raw, ValueRenderer.Culture, DateTimeStyles.AssumeLocal, out var value))
+        {
+            return value;
+        }
+
+        onError(slot, $"Could not parse '{raw}' as DateTimeOffset.");
+        return null;
+    }
+
+    public static TimeSpan ReadTimeSpan(Cell? cell, string?[]? ss, int slot, Action<int, string> onError)
+    {
+        var raw = Raw(cell, ss);
+        if (string.IsNullOrEmpty(raw))
+        {
+            onError(slot, "Cell is empty but target type TimeSpan is not nullable.");
+            return default;
+        }
+
+        if (double.TryParse(raw, NumberStyles.Float, CultureInfo.InvariantCulture, out var days))
+        {
+            return TimeSpan.FromDays(days);
+        }
+
+        if (TimeSpan.TryParse(raw, CultureInfo.InvariantCulture, out var value))
+        {
+            return value;
+        }
+
+        onError(slot, $"Could not parse '{raw}' as TimeSpan.");
+        return default;
+    }
+
+    public static TimeSpan? ReadTimeSpanNullable(Cell? cell, string?[]? ss, int slot, Action<int, string> onError)
+    {
+        var raw = Raw(cell, ss);
+        if (string.IsNullOrEmpty(raw))
+        {
+            return null;
+        }
+
+        if (double.TryParse(raw, NumberStyles.Float, CultureInfo.InvariantCulture, out var days))
+        {
+            return TimeSpan.FromDays(days);
+        }
+
+        if (TimeSpan.TryParse(raw, CultureInfo.InvariantCulture, out var value))
+        {
+            return value;
+        }
+
+        onError(slot, $"Could not parse '{raw}' as TimeSpan.");
+        return null;
+    }
+
+    public static T ReadEnum<T>(Cell? cell, string?[]? ss, int slot, Action<int, string> onError)
+        where T : struct, Enum
+    {
+        var raw = Raw(cell, ss);
+        if (string.IsNullOrEmpty(raw))
+        {
+            onError(slot, $"Cell is empty but target type {typeof(T).Name} is not nullable.");
+            return default;
+        }
+
+        if (CellConverter.TryParseEnumGeneric<T>(raw, out var value))
+        {
+            return value;
+        }
+
+        onError(slot, $"Could not parse '{raw}' as {typeof(T).Name}.");
+        return default;
+    }
+
+    public static T? ReadEnumNullable<T>(Cell? cell, string?[]? ss, int slot, Action<int, string> onError)
+        where T : struct, Enum
+    {
+        var raw = Raw(cell, ss);
+        if (string.IsNullOrEmpty(raw))
+        {
+            return null;
+        }
+
+        if (CellConverter.TryParseEnumGeneric<T>(raw, out var value))
+        {
+            return value;
+        }
+
+        onError(slot, $"Could not parse '{raw}' as {typeof(T).Name}.");
+        return null;
+    }
+
+    /// <summary>Boxed fallback for property types not covered by typed readers.</summary>
+    public static object? ReadObject(
+        Cell? cell,
+        string?[]? sharedStrings,
+        Type targetType,
+        int slot,
+        Action<int, string> onError)
+    {
+        if (CellConverter.TryConvert(cell, targetType, sharedStrings, out var value, out var error))
+        {
+            return value;
+        }
+
+        onError(slot, error);
+        return null;
+    }
+}

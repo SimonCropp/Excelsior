@@ -33,11 +33,43 @@ class DictionarySheetReader(string? name) :
         return this;
     }
 
-    public List<ColumnReadInfo> Columns() =>
+    public IReadOnlyList<ColumnReadInfo> Columns() =>
         columnInfos;
 
-    public void Receive(IReadOnlyDictionary<string, object?> rowValues) =>
-        rows.Add(rowValues);
+    public void ReceiveRow(Cell?[] cellsBySlot, string?[]? sharedStrings, Action<int, string> onError)
+    {
+        var dict = new Dictionary<string, object?>(cellsBySlot.Length, StringComparer.Ordinal);
+        for (var slot = 0; slot < cellsBySlot.Length; slot++)
+        {
+            var cell = cellsBySlot[slot];
+            var column = columnInfos[slot];
+
+            if (column.Convert != null && cell != null)
+            {
+                try
+                {
+                    dict[column.Name] = column.Convert(cell);
+                }
+                catch (Exception exception)
+                {
+                    onError(slot, $"Converter delegate threw: {exception.Message}");
+                }
+
+                continue;
+            }
+
+            if (CellConverter.TryConvert(cell, column.Type, sharedStrings, out var value, out var error))
+            {
+                dict[column.Name] = value;
+            }
+            else
+            {
+                onError(slot, error);
+            }
+        }
+
+        rows.Add(dict);
+    }
 
     public void Reset() =>
         rows.Clear();

@@ -168,9 +168,9 @@ public class SheetBuilderGenerator :
         }
 
         return new ActivatorPlan(
-            new EquatableArray<ActivatorParam>(ctorParams),
-            new EquatableArray<ActivatorAssign>(initBuilder.ToImmutable()),
-            new EquatableArray<ActivatorAssign>(setBuilder.ToImmutable()));
+            new(ctorParams),
+            new(initBuilder.ToImmutable()),
+            new(setBuilder.ToImmutable()));
     }
 
     static readonly SymbolDisplayFormat nullableQualified = SymbolDisplayFormat.FullyQualifiedFormat

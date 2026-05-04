@@ -27,11 +27,13 @@ public class BookReaderConstructionTests
         var sheet = reader.AddSheet<PersonRecord>();
         reader.Convert(stream);
 
-        Assert.That(sheet.Rows, Is.EqualTo(new[]
-        {
-            new PersonRecord("Alice", 30),
-            new PersonRecord("Bob", 25)
-        }));
+        Assert.That(
+            sheet.Rows,
+            Is.EqualTo<PersonRecord>(
+            [
+                new("Alice", 30),
+                new("Bob", 25)
+            ]));
     }
 
     #endregion
@@ -59,8 +61,17 @@ public class BookReaderConstructionTests
         var sheet = reader.AddSheet<CtorByName>();
         reader.Convert(stream);
 
-        Assert.That(sheet.Rows.Select(_ => _.Name), Is.EqualTo(new[] { "Alice", "Bob" }));
-        Assert.That(sheet.Rows.Select(_ => _.Age), Is.EqualTo(new[] { 30, 25 }));
+        Assert.That(
+            sheet.Rows.Select(_ => _.Name),
+            Is.EqualTo([
+                "Alice",
+                "Bob"
+            ]));
+        Assert.That(sheet.Rows.Select(_ => _.Age),
+            Is.EqualTo([
+                30,
+                25
+            ]));
     }
 
     public class ParameterlessWins
@@ -72,14 +83,23 @@ public class BookReaderConstructionTests
         {
         }
 
+        // ReSharper disable InconsistentNaming
+        // ReSharper disable UnusedParameter.Local
         public ParameterlessWins(string Name, int Age) =>
+            // ReSharper restore UnusedParameter.Local
+            // ReSharper restore InconsistentNaming
             throw new("Parameterless ctor should be preferred when present");
     }
 
     [Test]
     public async Task ParameterlessCtorWinsOverMatching()
     {
-        var stream = await Write(new ParameterlessWins { Name = "Alice", Age = 30 });
+        var stream = await Write(
+            new ParameterlessWins
+            {
+                Name = "Alice",
+                Age = 30
+            });
 
         var reader = new BookReader();
         var sheet = reader.AddSheet<ParameterlessWins>();
@@ -93,6 +113,7 @@ public class BookReaderConstructionTests
     {
         public string Name { get; set; } = "";
 
+        // ReSharper disable once UnusedMember.Local
         PrivateParameterless()
         {
         }
@@ -125,7 +146,10 @@ public class BookReaderConstructionTests
     [Test]
     public async Task ConstructorParamsAndSettersCombine()
     {
-        var stream = await Write(new PartialCtor("Alice") { Notes = "VIP" });
+        var stream = await Write(new PartialCtor("Alice")
+        {
+            Notes = "VIP"
+        });
 
         var reader = new BookReader();
         var sheet = reader.AddSheet<PartialCtor>();
@@ -173,7 +197,11 @@ public class BookReaderConstructionTests
         // Write a stream with column "Name" using a writable model, then try
         // to read it into a model that has no public parameterless ctor and
         // no public ctor at all (only internal).
-        var stream = await Write(new HasName { Name = "Alice" });
+        var stream = await Write(
+            new HasName
+            {
+                Name = "Alice"
+            });
 
         var reader = new BookReader();
         reader.AddSheet<NoUsableCtor>();

@@ -120,7 +120,7 @@ public class BookReaderErrorTests
     [Test]
     public async Task ColumnMismatch_StrongTyped_OneMissing()
     {
-        var stream = await Write([new OneCol { A = "x" }]);
+        var stream = await Write(new OneCol { A = "x" });
 
         var reader = new BookReader();
         reader.AddSheet<TwoCols>();
@@ -134,7 +134,7 @@ public class BookReaderErrorTests
     [Test]
     public async Task ColumnMismatch_StrongTyped_MultipleMissingProduceMultipleErrors()
     {
-        var stream = await Write([new OneCol { A = "x" }]);
+        var stream = await Write(new OneCol { A = "x" });
 
         var reader = new BookReader();
         reader.AddSheet<ThreeCols>();

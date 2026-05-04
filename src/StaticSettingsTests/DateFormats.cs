@@ -8,6 +8,7 @@ public class DateFormats
         ValueRenderer.DefaultDateFormat = "yyyy/MM/dd";
         ValueRenderer.DefaultDateTimeFormat = "yyyy/MM/dd HH:mm:ss";
         ValueRenderer.DefaultDateTimeOffsetFormat = "yyyy/MM/dd HH:mm:ss z";
+        ValueRenderer.DefaultTimeFormat = "HH:mm:ss";
     }
 
     [TearDown]
@@ -21,6 +22,7 @@ public class DateFormats
         ValueRenderer.DefaultDateFormat = "yyyy/MM/dd" ;
         ValueRenderer.DefaultDateTimeFormat = "yyyy/MM/dd HH:mm:ss" ;
         ValueRenderer.DefaultDateTimeOffsetFormat = "yyyy/MM/dd HH:mm:ss z" ;
+        ValueRenderer.DefaultTimeFormat = "HH:mm:ss" ;
     }
 
     #endregion

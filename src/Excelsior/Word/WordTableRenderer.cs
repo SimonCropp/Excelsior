@@ -429,6 +429,11 @@ static class WordTableRenderer<TModel>
             return date.ToDateTime(new(0, 0)).ToString(column.Format ?? ValueRenderer.DefaultDateFormat, ValueRenderer.Culture);
         }
 
+        if (value is Time time)
+        {
+            return time.ToString(column.Format ?? ValueRenderer.DefaultTimeFormat, ValueRenderer.Culture);
+        }
+
         if (column.Format != null && value is IFormattable formattable)
         {
             return formattable.ToString(column.Format, ValueRenderer.Culture);

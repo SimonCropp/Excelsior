@@ -131,11 +131,10 @@ class Renderer<TModel>(
     {
         var resultMinColumnWidth = minColumnWidth ?? bookBuilder.DefaultMinColumnWidth;
         var resultMaxColumnWidth = maxColumnWidth ?? bookBuilder.DefaultMaxColumnWidth;
-        var column = new ColumnRef(index);
         int width;
         if (columnConfig.Width == null)
         {
-            var doubleWidth = AdjustColumnWidth(sheet, column);
+            var doubleWidth = AdjustColumnWidth(sheet, index);
             width = (int)Math.Round(doubleWidth);
             width += 1;
 
@@ -165,7 +164,7 @@ class Renderer<TModel>(
             width = columnConfig.Width.Value;
         }
 
-        finalColumnWidths[column.Index] = width;
+        finalColumnWidths[index] = width;
     }
 
     void AutoSizeColumns(SheetContext sheet)
@@ -508,10 +507,10 @@ class Renderer<TModel>(
                 sheet.SheetData);
     }
 
-    static double AdjustColumnWidth(SheetContext sheet, ColumnRef column)
+    static double AdjustColumnWidth(SheetContext sheet, int columnIndex)
     {
         double maxWidth = 8;
-        var colLetter = SheetContext.GetColumnLetter(column.Index);
+        var colLetter = SheetContext.GetColumnLetter(columnIndex);
 
         foreach (var row in sheet.SheetData.Elements<Row>())
         {
@@ -1166,6 +1165,15 @@ class Renderer<TModel>(
             ThrowIfHtml();
             style.NumberFormat = column.Format ?? ValueRenderer.DefaultDateFormat;
             SetCellValue(cell, date.ToDateTime(new(0, 0)));
+
+            return;
+        }
+
+        if (value is Time time)
+        {
+            ThrowIfHtml();
+            style.NumberFormat = column.Format ?? ValueRenderer.DefaultTimeFormat;
+            SetCellValue(cell, DateTime.FromOADate(0).Add(time.ToTimeSpan()));
 
             return;
         }

@@ -187,6 +187,258 @@ await builder.ToStream(stream);
 <!-- endSnippet -->
 
 
+### Reading xlsx
+
+`BookReader` is the inverse of `BookBuilder`: register the sheets to read, then `Convert` (throws on failure) or `TryConvert` (returns a result).
+
+#### Strong-typed
+
+The same property-discovery pipeline that drives writes also drives reads — `[Column]`, `[Display]`, `[DisplayName]`, ordering, and inclusion all carry over. When the workbook was produced by Excelsior, the column→property mapping is recovered from a custom XML metadata part written at build time, so renaming a heading on either side does not break the round-trip.
+
+<!-- snippet: BookReaderUsage -->
+<a id='snippet-BookReaderUsage'></a>
+```cs
+var stream = new MemoryStream();
+var builder = new BookBuilder();
+builder.AddSheet(SampleData.Employees());
+await builder.ToStream(stream);
+
+stream.Position = 0;
+
+var reader = new BookReader();
+var sheet = reader.AddSheet<Employee>();
+reader.Convert(stream);
+
+var employees = sheet.Rows;
+```
+<sup><a href='/src/Excelsior.Tests/Reading/BookReaderTests.cs#L7-L22' title='Snippet source file'>snippet source</a> | <a href='#snippet-BookReaderUsage' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+
+##### Model construction
+
+Strong-typed rows are instantiated in one of two ways:
+
+1. **Parameterless constructor (preferred)** — public or non-public. After construction, every parsed column value is applied via its property setter. `init` setters and `required` members are honoured: construction goes through `ConstructorInfo.Invoke`, which bypasses the runtime `required`-members check that `Activator.CreateInstance` would enforce.
+2. **Longest matching public constructor (fallback)** — used when no parameterless constructor exists. Constructor parameters are filled by name from the parsed column values; any column whose name does not match a constructor parameter is then applied via its property setter.
+
+This means records, primary-constructor classes, and other immutable models work without extra configuration as long as constructor parameter names match the property names.
+
+<!-- snippet: BookReaderPositionalRecord -->
+<a id='snippet-BookReaderPositionalRecord'></a>
+```cs
+public record PersonRecord(string Name, int Age);
+
+[Test]
+public async Task PositionalRecord()
+{
+    var stream = await Write(
+        new PersonRecord("Alice", 30),
+        new PersonRecord("Bob", 25));
+
+    var reader = new BookReader();
+    var sheet = reader.AddSheet<PersonRecord>();
+    reader.Convert(stream);
+
+    Assert.That(
+        sheet.Rows,
+        Is.EqualTo<PersonRecord>(
+        [
+            new("Alice", 30),
+            new("Bob", 25)
+        ]));
+}
+```
+<sup><a href='/src/Excelsior.Tests/Reading/BookReaderConstructionTests.cs#L15-L39' title='Snippet source file'>snippet source</a> | <a href='#snippet-BookReaderPositionalRecord' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+Limitations:
+
+- Parameter matching is case-sensitive — a constructor parameter `name` will not bind to property `Name`.
+- Only properties are bound; fields are ignored.
+- A type with no public constructors and no parameterless constructor (public or non-public) throws on the first row.
+
+##### Source-generated activators
+
+Types marked with `[SheetModel]` get a source-generated factory that replaces the reflection path at row time. The generator follows the same parameterless-preferred / longest-matching-public-ctor rules and emits direct constructor calls and setter assignments — no reflection per row. Registration happens via a `[ModuleInitializer]` in the consuming assembly, so the fast path is automatic.
+
+
+#### Anonymous / dictionary
+
+For sheets without a backing model, declare every column explicitly. Each parsed row is an `IReadOnlyDictionary<string, object?>` keyed by the column name.
+
+The `name` passed to `Column<T>` serves two roles: it is matched against the file's header row (case-insensitively) and it is the key under which the parsed value is exposed in each row dictionary. The simplest choice is the file's heading text itself. For files written by `BookBuilder`, the underlying property name can be passed instead; the workbook's metadata resolves it back to the correct column.
+
+<!-- snippet: BookReaderDictionary -->
+<a id='snippet-BookReaderDictionary'></a>
+```cs
+var reader = new BookReader();
+var sheet = reader.AddSheet();
+sheet
+    .Column<int>("Employee ID")
+    .Column<string>("Full Name")
+    .Column<string>("Email Address")
+    .Column<Date?>("Hire Date")
+    .Column<int>("Annual Salary")
+    .Column<bool>("IsActive")
+    .Column<EmployeeStatus>("Status");
+
+reader.Convert(stream);
+
+var first = sheet.Rows[0];
+```
+<sup><a href='/src/Excelsior.Tests/Reading/BookReaderAnonymousTests.cs#L13-L30' title='Snippet source file'>snippet source</a> | <a href='#snippet-BookReaderDictionary' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+
+#### Multiple sheets
+
+Register multiple sheets on the same `BookReader`. Pass a name to `AddSheet` to bind to a specific sheet by name; omit it to bind by registration order. Strong-typed and dictionary readers can be mixed freely.
+
+Strong-typed:
+
+<!-- snippet: BookReaderMultipleSheets -->
+<a id='snippet-BookReaderMultipleSheets'></a>
+```cs
+var reader = new BookReader();
+var staff = reader.AddSheet<Employee>("Staff");
+var departments = reader.AddSheet<Department>("Departments");
+reader.Convert(stream);
+
+var employees = staff.Rows;
+var depts = departments.Rows;
+```
+<sup><a href='/src/Excelsior.Tests/Reading/BookReaderTests.cs#L84-L94' title='Snippet source file'>snippet source</a> | <a href='#snippet-BookReaderMultipleSheets' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+Dictionary:
+
+<!-- snippet: BookReaderDictionaryMultipleSheets -->
+<a id='snippet-BookReaderDictionaryMultipleSheets'></a>
+```cs
+var reader = new BookReader();
+
+var staff = reader.AddSheet("Staff");
+staff
+    .Column<int>("Employee ID")
+    .Column<string>("Full Name");
+
+var departments = reader.AddSheet("Departments");
+departments
+    .Column<string>("Name")
+    .Column<int>("HeadCount");
+
+reader.Convert(stream);
+
+Assert.That(staff.Rows[0]["Employee ID"], Is.EqualTo(1));
+Assert.That(staff.Rows[0]["Full Name"], Is.EqualTo("John Doe"));
+Assert.That(departments.Rows.Select(_ => _["Name"]), Is.EqualTo(new object[] { "Eng", "Sales" }));
+Assert.That(departments.Rows.Select(_ => _["HeadCount"]), Is.EqualTo(new object[] { 12, 7 }));
+```
+<sup><a href='/src/Excelsior.Tests/Reading/BookReaderAnonymousTests.cs#L62-L82' title='Snippet source file'>snippet source</a> | <a href='#snippet-BookReaderDictionaryMultipleSheets' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+If a sheet's declared columns don't match what's in the file, that sheet's row parsing is skipped (one error per missing column is recorded against it), but subsequent sheets are still processed. Per-row parse errors don't have this short-circuit — they are collected per failing cell.
+
+
+#### Per-cell delegate conversion
+
+Override the default parsing for a single column with a delegate that receives the underlying OpenXml `Cell`.
+
+Strong-typed:
+
+<!-- snippet: ReaderDelegate -->
+<a id='snippet-ReaderDelegate'></a>
+```cs
+var reader = new BookReader();
+var sheet = reader.AddSheet<Target>();
+sheet.Convert(
+    _ => _.Priority,
+    cell =>
+    {
+        var raw = cell.InnerText.Trim().ToLowerInvariant();
+        return raw switch
+        {
+            "low" => Priority.Low,
+            "medium" => Priority.Medium,
+            "high" => Priority.High,
+            _ => Priority.Low
+        };
+    });
+reader.Convert(stream);
+```
+<sup><a href='/src/Excelsior.Tests/Reading/BookReaderDelegateTests.cs#L39-L58' title='Snippet source file'>snippet source</a> | <a href='#snippet-ReaderDelegate' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+Dictionary:
+
+<!-- snippet: ReaderDictionaryDelegate -->
+<a id='snippet-ReaderDictionaryDelegate'></a>
+```cs
+var reader = new BookReader();
+var sheet = reader.AddSheet();
+sheet.Column<string>("Code");
+sheet.Column(
+    "Priority",
+    cell =>
+    {
+        var text = cell.InnerText;
+        return text.Trim().ToLowerInvariant() switch
+        {
+            "low" => 1,
+            "medium" => 2,
+            "high" => 3,
+            _ => 0
+        };
+    });
+reader.Convert(stream);
+```
+<sup><a href='/src/Excelsior.Tests/Reading/BookReaderDelegateTests.cs#L79-L99' title='Snippet source file'>snippet source</a> | <a href='#snippet-ReaderDictionaryDelegate' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+
+#### Convert vs TryConvert
+
+`Convert` throws `ReadException` on the first batch of conversion failures. The exception's `Errors` property is the same collection that `TryConvert` exposes.
+
+`TryConvert` never throws on data errors. It returns a `ReadResult` that is implicitly convertible to `bool` (success) and to `ReadError[]`.
+
+<!-- snippet: BookReaderTryConvert -->
+<a id='snippet-BookReaderTryConvert'></a>
+```cs
+var stream = await WriteStringNumber();
+var reader = new BookReader();
+var sheet = reader.AddSheet<IntTarget>();
+
+var result = reader.TryConvert(stream);
+if (!result)
+{
+    foreach (var error in result.Errors)
+    {
+        Console.WriteLine(error);
+    }
+}
+```
+<sup><a href='/src/Excelsior.Tests/Reading/BookReaderErrorTests.cs#L47-L62' title='Snippet source file'>snippet source</a> | <a href='#snippet-BookReaderTryConvert' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+
+#### Rich text
+
+Cells written with run-level formatting (mixed bold / colors / fonts within a single cell — Excel's "rich string" feature, which is what `IsHtml = true` produces on the write side) are flattened to plain text on read. The runs are concatenated and formatting attributes are discarded; a `string` property receives the joined text.
+
+For formatted text that must round-trip through a workbook, store the markup as plain text in the cell rather than relying on Excel rich-text formatting. Markdown or HTML stored as a regular string is preserved exactly across write → read and can be rendered downstream. Excel's own rich-text data model has no equivalent on the .NET side and therefore cannot be reconstructed by `BookReader`.
+
+To inspect the runs directly (e.g. to extract formatting), wire up a per-cell delegate (`sheet.Convert(_ => _.Prop, cell => ...)`) and walk the OpenXml `Run` elements.
+
+
+#### Supported types
+
+`BookReader` understands all standard .NET primitives and their nullable variants:
+
+`bool`, `byte`, `sbyte`, `short`, `ushort`, `int`, `uint`, `long`, `ulong`, `float`, `double`, `decimal`, `string`, `char`, `Guid`, `DateTime`, `DateOnly` (`Date`), `TimeOnly` (`Time`), `TimeSpan`, `DateTimeOffset`, and any `enum` (matched against the humanised display string used by the writer).
+
+
 ### Grouping Column Configuration
 
 When applying multiple settings to the same column, prefer grouping them in a single `Column` call rather than using separate method calls. This makes it clearer which settings belong together.
@@ -878,9 +1130,9 @@ sheet.Column(
     _ => _.IsHtml = true);
 ```
 
-`[StringSyntax("html")]` is useful when the property is already being annotated for IDE/analyzer support and you want to avoid adding a second attribute.
+`[StringSyntax("html")]` is useful when the property is already being annotated for IDE/analyzer support and a second attribute would be redundant.
 
-`[Html]` detection is provided as a convenience for codebases that already define their own `HtmlAttribute` for other purposes (e.g. sanitization, templating). Excelsior does not ship this attribute — it simply matches any attribute whose type name is `HtmlAttribute`, regardless of namespace. This path has the lowest precedence: both `[Column(IsHtml = ...)]` and `[StringSyntax("html")]` override it.
+`[Html]` detection is provided as a convenience for codebases that already define a custom `HtmlAttribute` for other purposes (e.g. sanitization, templating). Excelsior does not ship this attribute — it matches any attribute whose type name is `HtmlAttribute`, regardless of namespace. This path has the lowest precedence: both `[Column(IsHtml = ...)]` and `[StringSyntax("html")]` override it.
 
 If any two of these opt-in paths disagree — for example `[Column(IsHtml = false)]` combined with `[StringSyntax("html")]`, or a fluent `IsHtml = false` on a column where the attribute says `true` — Excelsior throws at runtime. The `EXCEL003` analyzer catches the attribute-level form of this mismatch at compile time.
 
@@ -1179,7 +1431,7 @@ using var book = await builder.Build();
 Per-column overrides always win — set `Required = false` or `DisableAllowedValues = true` to opt out for one column.
 
 <a id="bool-dropdown-vs-strict-boolean"></a>
-**Note on the bool dropdown.** Excel does have a native Boolean cell type (OOXML `t="b"`) and Excelsior writes `bool` values that way. The auto-derived dropdown is a *string list* of `TRUE,FALSE`, so when a user picks an entry Excel inserts the literal text — in practice it auto-coerces back to a Boolean cell on edit, but you can end up with mixed cell types in the same column (Booleans we wrote vs. strings the user picked) which can affect formulas like `=A2*1` or `COUNTIF(A:A, TRUE)`. If you need strict Boolean enforcement, set `DisableAllowedValues = true` on the column — this drops the dropdown so you can supply your own `=ISLOGICAL(A2)` constraint via a custom data validation. For typical data-entry templates the dropdown is the better UX.
+**Note on the bool dropdown.** Excel does have a native Boolean cell type (OOXML `t="b"`) and Excelsior writes `bool` values that way. The auto-derived dropdown is a *string list* of `TRUE,FALSE`, so when a user picks an entry Excel inserts the literal text — in practice it auto-coerces back to a Boolean cell on edit, but the result can be mixed cell types in the same column (Booleans written by Excelsior vs. strings the user picked) which can affect formulas like `=A2*1` or `COUNTIF(A:A, TRUE)`. For strict Boolean enforcement, set `DisableAllowedValues = true` on the column — this drops the dropdown so a custom `=ISLOGICAL(A2)` constraint can be supplied via a custom data validation. For typical data-entry templates the dropdown is the better UX.
 
 #### Auto-Derived Enum Dropdowns
 
@@ -1304,7 +1556,7 @@ using var book = await builder.Build();
 - Typing a blank value and pressing Enter → the Stop popup fires and the entry is rejected.
 - Pressing Delete to clear an existing value → the cell goes blank silently, but the conditional-formatting highlight makes the gap visible.
 
-If you need true enforcement at save time (block save while any required cell is blank), you'll need a workbook-level VBA macro on `Workbook_BeforeSave` — that's out of scope for a template generator.
+For true enforcement at save time (block save while any required cell is blank), a workbook-level VBA macro on `Workbook_BeforeSave` is required — that's out of scope for a template generator.
 
 <!-- snippet: TemplateSheetRequired -->
 <a id='snippet-TemplateSheetRequired'></a>
@@ -1853,12 +2105,13 @@ The same type specificity applies to `NullDisplayFor<T>`: `NullDisplayFor<Color>
 
 ### Date formats
 
-`DateTime` and `DateOnly` are passed directly in to the respective library.
+`DateTime`, `DateOnly`, and `TimeOnly` are passed directly in to the respective library.
 
 Excel is directed (using a format string) to render the value using the following:
 
  * `yyyy-MM-dd HH:mm:ss` for `DateTime`s
  * `yyyy-MM-dd` for `DateOnly`s
+ * `HH:mm:ss` for `TimeOnly`s
 
 Excel has no direct support for `DateTimeOffset` — a cell is either a number (formatted as a date) or a string, and the offset cannot be represented natively. So `DateTimeOffset`s are stored as strings using the `yyyy-MM-dd HH:mm:ss z` format and `CultureInfo.InvariantCulture`. This preserves the offset on round-trip, but the cell is plain text — Excel will not treat it as a date for sorting, filtering, or arithmetic, and the format string is applied at write time rather than via Excel's cell number format.
 
@@ -1875,9 +2128,10 @@ static void CustomDateFormats()
     ValueRenderer.DefaultDateFormat = "yyyy/MM/dd" ;
     ValueRenderer.DefaultDateTimeFormat = "yyyy/MM/dd HH:mm:ss" ;
     ValueRenderer.DefaultDateTimeOffsetFormat = "yyyy/MM/dd HH:mm:ss z" ;
+    ValueRenderer.DefaultTimeFormat = "HH:mm:ss" ;
 }
 ```
-<sup><a href='/src/StaticSettingsTests/DateFormats.cs#L17-L26' title='Snippet source file'>snippet source</a> | <a href='#snippet-DateFormatsInit' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/StaticSettingsTests/DateFormats.cs#L18-L28' title='Snippet source file'>snippet source</a> | <a href='#snippet-DateFormatsInit' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 

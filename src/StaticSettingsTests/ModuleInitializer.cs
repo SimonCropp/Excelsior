@@ -1,5 +1,3 @@
-using VerifyTests.DiffPlex;
-
 [assembly: NonParallelizable]
 
 public static class ModuleInitializer

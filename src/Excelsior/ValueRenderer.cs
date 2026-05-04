@@ -37,6 +37,7 @@ public static partial class ValueRenderer
         ThrowIfBookBuilderUsed();
 
         enumRender = func;
+        CellConverter.ResetEnumCache();
     }
 
     internal static string RenderEnum(Enum value) =>
@@ -223,6 +224,7 @@ public static partial class ValueRenderer
         DefaultDateTimeOffsetFormat = "yyyy-MM-dd HH:mm:ss z";
         DefaultTimeFormat = "HH:mm:ss";
         Culture = CultureInfo.CurrentCulture;
+        CellConverter.ResetEnumCache();
     }
 
     internal static void SetBookBuilderUsed() => bookBuilderUsed = true;

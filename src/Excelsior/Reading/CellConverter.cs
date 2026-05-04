@@ -10,7 +10,7 @@ static class CellConverter
     public static bool TryConvert(
         Cell? cell,
         Type targetType,
-        SharedStringTable? sharedStrings,
+        string?[]? sharedStrings,
         out object? value,
         [NotNullWhen(false)] out string? error)
     {
@@ -296,6 +296,11 @@ static class CellConverter
         return DateTime.Parse(raw, ValueRenderer.Culture, DateTimeStyles.AssumeLocal);
     }
 
+    static ConcurrentDictionary<Type, Dictionary<string, object>> humanisedEnumCache = new();
+
+    internal static void ResetEnumCache() =>
+        humanisedEnumCache = new();
+
     static bool TryParseEnum(Type enumType, string raw, out object? value)
     {
         if (Enum.TryParse(enumType, raw, ignoreCase: true, out value))
@@ -303,26 +308,55 @@ static class CellConverter
             return true;
         }
 
-        foreach (var name in Enum.GetNames(enumType))
+        var map = humanisedEnumCache.GetOrAdd(enumType, BuildHumanisedEnumMap);
+        if (map.TryGetValue(raw, out var member))
         {
-            var member = (Enum)Enum.Parse(enumType, name);
-            var humanised = ValueRenderer.RenderEnum(member);
-            if (string.Equals(humanised, raw, StringComparison.OrdinalIgnoreCase))
-            {
-                value = member;
-                return true;
-            }
+            value = member;
+            return true;
         }
 
         value = null;
         return false;
     }
 
+    static Dictionary<string, object> BuildHumanisedEnumMap(Type enumType)
+    {
+        var map = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+        foreach (var name in Enum.GetNames(enumType))
+        {
+            var member = (Enum)Enum.Parse(enumType, name);
+            map[ValueRenderer.RenderEnum(member)] = member;
+        }
+
+        return map;
+    }
+
+    /// <summary>
+    /// Materializes the shared-string table once per workbook so per-cell
+    /// lookups stay O(1) instead of walking the OpenXml linked list.
+    /// </summary>
+    public static string?[]? BuildSharedStrings(SharedStringTable? table)
+    {
+        if (table == null)
+        {
+            return null;
+        }
+
+        var items = table.Elements<SharedStringItem>().ToArray();
+        var values = new string?[items.Length];
+        for (var i = 0; i < items.Length; i++)
+        {
+            values[i] = ReadInlineText(items[i]);
+        }
+
+        return values;
+    }
+
     /// <summary>
     /// Reads the textual content of a cell, resolving shared-string lookups and
     /// inline-string runs. Returns null when the cell holds no readable value.
     /// </summary>
-    public static string? ReadRaw(Cell? cell, SharedStringTable? sharedStrings)
+    public static string? ReadRaw(Cell? cell, string?[]? sharedStrings)
     {
         if (cell == null)
         {
@@ -342,8 +376,12 @@ static class CellConverter
                 return null;
             }
 
-            var item = sharedStrings.ElementAtOrDefault(index) as SharedStringItem;
-            return ReadInlineText(item);
+            if ((uint)index >= (uint)sharedStrings.Length)
+            {
+                return null;
+            }
+
+            return sharedStrings[index];
         }
 
         if (cell.DataType?.Value == CellValues.InlineString || cell.InlineString != null)

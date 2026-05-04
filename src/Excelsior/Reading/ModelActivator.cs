@@ -4,6 +4,7 @@ static class ModelActivator<T>
     static ConstructorInfo? parameterlessCtor;
     static ConstructorInfo? matchingCtor;
     static string[] ctorParamNames;
+    static HashSet<string> ctorParamSet;
     static Dictionary<string, Action<T, object?>> setters;
 
     static ModelActivator()
@@ -12,6 +13,7 @@ static class ModelActivator<T>
         if (generatedFactory != null)
         {
             ctorParamNames = [];
+            ctorParamSet = new(StringComparer.Ordinal);
             setters = new();
             return;
         }
@@ -30,6 +32,7 @@ static class ModelActivator<T>
         {
             matchingCtor = null;
             ctorParamNames = [];
+            ctorParamSet = new(StringComparer.Ordinal);
             return;
         }
 
@@ -42,6 +45,7 @@ static class ModelActivator<T>
             ?.GetParameters()
             .Select(_ => _.Name ?? "")
             .ToArray() ?? [];
+        ctorParamSet = new(ctorParamNames, StringComparer.Ordinal);
     }
 
     static Dictionary<string, Action<T, object?>> BuildSetters(Type type)
@@ -105,7 +109,7 @@ static class ModelActivator<T>
         foreach (var (name, value) in values)
         {
             if (parameterlessCtor == null &&
-                Array.IndexOf(ctorParamNames, name) >= 0)
+                ctorParamSet.Contains(name))
             {
                 continue;
             }

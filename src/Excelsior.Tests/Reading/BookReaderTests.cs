@@ -48,6 +48,25 @@ public class BookReaderTests
     }
 
     [Test]
+    public async Task SheetNameMatchIsCaseInsensitive()
+    {
+        // Excel sheet names are themselves case-insensitive (you cannot have
+        // "Staff" and "staff" in the same workbook), so the reader's sheet
+        // lookup must match accordingly.
+        var stream = new MemoryStream();
+        var builder = new BookBuilder();
+        builder.AddSheet(SampleData.Employees(), "Staff");
+        await builder.ToStream(stream);
+        stream.Position = 0;
+
+        var reader = new BookReader();
+        var sheet = reader.AddSheet<Employee>("staff");
+        reader.Convert(stream);
+
+        Assert.That(sheet.Rows, Is.Not.Empty);
+    }
+
+    [Test]
     public async Task RoundTrip_MultipleSheets()
     {
         var stream = new MemoryStream();

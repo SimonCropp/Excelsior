@@ -72,7 +72,7 @@ public class BookReader
         var errors = new List<ReadError>();
         using var document = SpreadsheetDocument.Open(stream, false);
         var workbookPart = document.WorkbookPart!;
-        var sharedStrings = workbookPart.SharedStringTablePart?.SharedStringTable;
+        var sharedStrings = CellConverter.BuildSharedStrings(workbookPart.SharedStringTablePart?.SharedStringTable);
         var metadata = SheetParser.ReadMetadata(workbookPart);
 
         var workbookSheets = workbookPart.Workbook?
@@ -125,6 +125,6 @@ public class BookReader
             return null;
         }
 
-        return sheets.FirstOrDefault(_ => _.Name?.Value == sheet.Name);
+        return sheets.FirstOrDefault(_ => string.Equals(_.Name?.Value, sheet.Name, StringComparison.OrdinalIgnoreCase));
     }
 }

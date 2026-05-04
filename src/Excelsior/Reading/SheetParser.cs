@@ -61,7 +61,7 @@ static class SheetParser
         IReaderSheet sheet,
         string resolvedSheetName,
         WorksheetPart worksheetPart,
-        SharedStringTable? sharedStrings,
+        string?[]? sharedStrings,
         Dictionary<int, string>? metadataColumnMap,
         List<ReadError> errors)
     {
@@ -165,7 +165,7 @@ static class SheetParser
 
     static Dictionary<int, ColumnReadInfo> ResolveColumnByIndex(
         Row headerRow,
-        SharedStringTable? sharedStrings,
+        string?[]? sharedStrings,
         Dictionary<int, string>? metadataColumnMap,
         Dictionary<string, ColumnReadInfo> byName,
         Dictionary<string, ColumnReadInfo> byHeading)
@@ -220,7 +220,7 @@ static class SheetParser
         int columnIndex,
         Cell? cell,
         ColumnReadInfo column,
-        SharedStringTable? sharedStrings,
+        string?[]? sharedStrings,
         List<ReadError> errors,
         out object? value)
     {

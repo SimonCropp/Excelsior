@@ -308,7 +308,7 @@ reader.Convert(stream);
 var employees = staff.Rows;
 var depts = departments.Rows;
 ```
-<sup><a href='/src/Excelsior.Tests/Reading/BookReaderTests.cs#L65-L75' title='Snippet source file'>snippet source</a> | <a href='#snippet-BookReaderMultipleSheets' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/Reading/BookReaderTests.cs#L84-L94' title='Snippet source file'>snippet source</a> | <a href='#snippet-BookReaderMultipleSheets' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 Dictionary:

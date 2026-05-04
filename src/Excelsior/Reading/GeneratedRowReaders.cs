@@ -16,7 +16,7 @@ public static class GeneratedRowReaders
     public static void Register<T>(RowReader<T> reader) =>
         Holder<T>.Reader = reader;
 
-    public static RowReader<T>? TryGet<T>() =>
+    internal static RowReader<T>? TryGet<T>() =>
         Holder<T>.Reader;
 }
 

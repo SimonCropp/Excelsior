@@ -43,7 +43,9 @@ public class BookReaderConstructionTests
         public string Name { get; }
         public int Age { get; }
 
+#pragma warning disable IDE0290
         public CtorByName(string Name, int Age)
+#pragma warning restore IDE0290
         {
             this.Name = Name;
             this.Age = Age;

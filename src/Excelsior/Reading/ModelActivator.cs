@@ -4,7 +4,7 @@ static class ModelActivator<T>
     static ConstructorInfo? parameterlessCtor;
     static ConstructorInfo? matchingCtor;
     static string[] ctorParamNames;
-    static HashSet<string> ctorParamSet;
+    static Dictionary<string, int> ctorArgIndexByName;
     static Dictionary<string, Action<T, object?>> setters;
 
     static ModelActivator()
@@ -13,8 +13,8 @@ static class ModelActivator<T>
         if (generatedFactory != null)
         {
             ctorParamNames = [];
-            ctorParamSet = new(StringComparer.Ordinal);
-            setters = new();
+            ctorArgIndexByName = new(StringComparer.Ordinal);
+            setters = [];
             return;
         }
 
@@ -32,7 +32,7 @@ static class ModelActivator<T>
         {
             matchingCtor = null;
             ctorParamNames = [];
-            ctorParamSet = new(StringComparer.Ordinal);
+            ctorArgIndexByName = new(StringComparer.Ordinal);
             return;
         }
 
@@ -45,7 +45,11 @@ static class ModelActivator<T>
             ?.GetParameters()
             .Select(_ => _.Name ?? "")
             .ToArray() ?? [];
-        ctorParamSet = new(ctorParamNames, StringComparer.Ordinal);
+        ctorArgIndexByName = new(ctorParamNames.Length, StringComparer.Ordinal);
+        for (var i = 0; i < ctorParamNames.Length; i++)
+        {
+            ctorArgIndexByName[ctorParamNames[i]] = i;
+        }
     }
 
     static Dictionary<string, Action<T, object?>> BuildSetters(Type type)
@@ -79,13 +83,32 @@ static class ModelActivator<T>
         return Expression.Lambda<Action<T, object?>>(call, target, value).Compile();
     }
 
-    public static T Create(IReadOnlyDictionary<string, object?> values)
-    {
-        if (generatedFactory != null)
-        {
-            return generatedFactory(values);
-        }
+    /// <summary>True when a [SheetModel] source-generated factory is registered for T.</summary>
+    public static bool HasGeneratedFactory => generatedFactory != null;
 
+    /// <summary>Per-property lookup; -1 when the property isn't a constructor parameter.</summary>
+    public static int FindCtorArgIndex(string name) =>
+        ctorArgIndexByName.GetValueOrDefault(name, -1);
+
+    public static Action<T, object?>? FindSetter(string name) =>
+        setters.GetValueOrDefault(name);
+
+    /// <summary>Generated-factory dispatch. Caller owns the dictionary allocation.</summary>
+    public static T CreateFromDictionary(IReadOnlyDictionary<string, object?> values) =>
+        generatedFactory!(values);
+
+    /// <summary>
+    /// Reflection-path activation. Values arrive in slot order (matching the sheet's
+    /// declared column order). <paramref name="slotToCtorArgIndex"/> and
+    /// <paramref name="slotToSetter"/> are pre-resolved by the sheet so this stays
+    /// allocation-free per row aside from the eventual model + ctor args buffer.
+    /// </summary>
+    public static T CreatePositional(
+        object?[] valuesBySlot,
+        bool[] hasValueBySlot,
+        int[] slotToCtorArgIndex,
+        Action<T, object?>?[] slotToSetter)
+    {
         T instance;
         if (parameterlessCtor != null)
         {
@@ -94,9 +117,18 @@ static class ModelActivator<T>
         else if (matchingCtor != null)
         {
             var args = new object?[ctorParamNames.Length];
-            for (var i = 0; i < ctorParamNames.Length; i++)
+            for (var s = 0; s < valuesBySlot.Length; s++)
             {
-                values.TryGetValue(ctorParamNames[i], out args[i]);
+                if (!hasValueBySlot[s])
+                {
+                    continue;
+                }
+
+                var argIndex = slotToCtorArgIndex[s];
+                if (argIndex >= 0)
+                {
+                    args[argIndex] = valuesBySlot[s];
+                }
             }
 
             instance = (T)matchingCtor.Invoke(args);
@@ -106,18 +138,19 @@ static class ModelActivator<T>
             throw new($"Type {typeof(T).Name} has no usable constructor for deserialization. Provide a parameterless constructor or a constructor whose parameter names match the column property names.");
         }
 
-        foreach (var (name, value) in values)
+        for (var s = 0; s < valuesBySlot.Length; s++)
         {
-            if (parameterlessCtor == null &&
-                ctorParamSet.Contains(name))
+            if (!hasValueBySlot[s])
             {
                 continue;
             }
 
-            if (setters.TryGetValue(name, out var setter))
+            if (slotToCtorArgIndex[s] >= 0)
             {
-                setter(instance, value);
+                continue;
             }
+
+            slotToSetter[s]?.Invoke(instance, valuesBySlot[s]);
         }
 
         return instance;

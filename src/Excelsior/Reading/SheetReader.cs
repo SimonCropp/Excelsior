@@ -5,6 +5,14 @@ class SheetReader<TModel> :
     Dictionary<string, ColumnReadState> columns = new(StringComparer.Ordinal);
     List<TModel> rows = [];
 
+    string[]? namesBySlot;
+    Type[]? typesBySlot;
+    Func<Cell, object?>?[]? convertersBySlot;
+    int[]? slotToCtorArgIndex;
+    Action<TModel, object?>?[]? slotToSetter;
+    bool useGeneratedRowReader;
+    RowReader<TModel>? rowReader;
+
     public string? Name { get; }
     public IReadOnlyList<TModel> Rows => rows;
 
@@ -94,6 +102,9 @@ class SheetReader<TModel> :
             column.Convert = cell => convert(cell);
         }
 
+        // Per-column configuration may have changed: drop the cached dispatch tables.
+        InvalidateDispatchTables();
+
         return this;
     }
 
@@ -103,7 +114,7 @@ class SheetReader<TModel> :
     public void Convert<TProperty>(Expression<Func<TModel, TProperty>> property, Func<Cell, TProperty> convert) =>
         Column(property, _ => _.Convert = convert);
 
-    public List<ColumnReadInfo> Columns()
+    public IReadOnlyList<ColumnReadInfo> Columns()
     {
         var result = new List<ColumnReadInfo>(columns.Count);
         foreach (var column in columns.Values)
@@ -114,8 +125,99 @@ class SheetReader<TModel> :
         return result;
     }
 
-    public void Receive(IReadOnlyDictionary<string, object?> rowValues) =>
-        rows.Add(ModelActivator<TModel>.Create(rowValues));
+    void InvalidateDispatchTables()
+    {
+        namesBySlot = null;
+        typesBySlot = null;
+        convertersBySlot = null;
+        slotToCtorArgIndex = null;
+        slotToSetter = null;
+        rowReader = null;
+        useGeneratedRowReader = false;
+    }
+
+    void EnsureDispatchTables()
+    {
+        if (namesBySlot != null)
+        {
+            return;
+        }
+
+        var ordered = columns.Values.ToArray();
+        var names = new string[ordered.Length];
+        var types = new Type[ordered.Length];
+        var converters = new Func<Cell, object?>?[ordered.Length];
+        var ctorArgs = new int[ordered.Length];
+        var setters = new Action<TModel, object?>?[ordered.Length];
+        var anyConverter = false;
+        for (var i = 0; i < ordered.Length; i++)
+        {
+            var col = ordered[i];
+            names[i] = col.Name;
+            types[i] = col.Type;
+            converters[i] = col.Convert;
+            ctorArgs[i] = ModelActivator<TModel>.FindCtorArgIndex(col.Name);
+            setters[i] = ModelActivator<TModel>.FindSetter(col.Name);
+            if (col.Convert != null)
+            {
+                anyConverter = true;
+            }
+        }
+
+        namesBySlot = names;
+        typesBySlot = types;
+        convertersBySlot = converters;
+        slotToCtorArgIndex = ctorArgs;
+        slotToSetter = setters;
+        rowReader = GeneratedRowReaders.TryGet<TModel>();
+        useGeneratedRowReader = rowReader != null && !anyConverter;
+    }
+
+    public void ReceiveRow(Cell?[] cellsBySlot, string?[]? sharedStrings, Action<int, string> onError)
+    {
+        EnsureDispatchTables();
+
+        if (useGeneratedRowReader)
+        {
+            rows.Add(rowReader!(cellsBySlot, sharedStrings, onError));
+            return;
+        }
+
+        var values = new object?[cellsBySlot.Length];
+        var hasValue = new bool[cellsBySlot.Length];
+        for (var slot = 0; slot < cellsBySlot.Length; slot++)
+        {
+            if (CellConverter.TryConvertSlot(
+                    cellsBySlot[slot],
+                    convertersBySlot![slot],
+                    typesBySlot![slot],
+                    sharedStrings,
+                    slot,
+                    onError,
+                    out var value))
+            {
+                values[slot] = value;
+                hasValue[slot] = true;
+            }
+        }
+
+        if (ModelActivator<TModel>.HasGeneratedFactory)
+        {
+            var dict = new Dictionary<string, object?>(values.Length, StringComparer.Ordinal);
+            for (var i = 0; i < values.Length; i++)
+            {
+                if (hasValue[i])
+                {
+                    dict[namesBySlot![i]] = values[i];
+                }
+            }
+
+            rows.Add(ModelActivator<TModel>.CreateFromDictionary(dict));
+            return;
+        }
+
+        rows.Add(ModelActivator<TModel>.CreatePositional(values, hasValue, slotToCtorArgIndex!, slotToSetter!));
+    }
 
     public void Reset() =>
         rows.Clear();

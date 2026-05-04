@@ -9,6 +9,7 @@
     <File Path="global.json" />
     <File Path="mdsnippets.json" />
   </Folder>
+  <Project Path="Excelsior.Benchmarks/Excelsior.Benchmarks.csproj" />
   <Project Path="Excelsior.Tests/Excelsior.Tests.csproj" />
   <Project Path="Excelsior/Excelsior.csproj" />
   <Project Path="Excelsior.SourceGenerator/Excelsior.SourceGenerator.csproj" />

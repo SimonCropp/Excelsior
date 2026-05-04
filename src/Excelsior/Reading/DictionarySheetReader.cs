@@ -33,11 +33,30 @@ class DictionarySheetReader(string? name) :
         return this;
     }
 
-    public List<ColumnReadInfo> Columns() =>
+    public IReadOnlyList<ColumnReadInfo> Columns() =>
         columnInfos;
 
-    public void Receive(IReadOnlyDictionary<string, object?> rowValues) =>
-        rows.Add(rowValues);
+    public void ReceiveRow(Cell?[] cellsBySlot, string?[]? sharedStrings, Action<int, string> onError)
+    {
+        var dict = new Dictionary<string, object?>(cellsBySlot.Length, StringComparer.Ordinal);
+        for (var slot = 0; slot < cellsBySlot.Length; slot++)
+        {
+            var column = columnInfos[slot];
+            if (CellConverter.TryConvertSlot(
+                    cellsBySlot[slot],
+                    column.Convert,
+                    column.Type,
+                    sharedStrings,
+                    slot,
+                    onError,
+                    out var value))
+            {
+                dict[column.Name] = value;
+            }
+        }
+
+        rows.Add(dict);
+    }
 
     public void Reset() =>
         rows.Clear();

@@ -46,6 +46,12 @@ public class SheetBuilderGenerator :
                     var activatorSource = GenerateActivator(model, activator);
                     productionContext.AddSource($"{model.TypeName}Activator.g.cs", activatorSource);
                 }
+
+                if (model.RowReaderSlots is { } slots)
+                {
+                    var rowReaderSource = GenerateRowReader(model, slots);
+                    productionContext.AddSource($"{model.TypeName}RowReader.g.cs", rowReaderSource);
+                }
             });
     }
 
@@ -75,12 +81,148 @@ public class SheetBuilderGenerator :
             return new(null, null);
         }
 
+        var activator = BuildActivatorPlan(type);
+        var rowReaderSlots = BuildRowReaderSlots(type, activator);
+
         var model = new ModelInfo(
             type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
             GetFlattenedName(type),
             properties,
-            BuildActivatorPlan(type));
+            activator,
+            rowReaderSlots);
         return new(model, null);
+    }
+
+    /// <summary>
+    /// Enumerate top-level public readable properties in declaration order, the
+    /// same set the runtime <c>SheetReader&lt;T&gt;</c> sees. Each slot's
+    /// assignment kind is derived from <paramref name="activator"/>.
+    /// </summary>
+    static EquatableArray<RowReaderSlot>? BuildRowReaderSlots(INamedTypeSymbol type, ActivatorPlan? activator)
+    {
+        if (activator is not { } plan)
+        {
+            return null;
+        }
+
+        var ctorParamSet = new HashSet<string>(plan.CtorParams.Select(_ => _.Name), StringComparer.Ordinal);
+        var initSet = new HashSet<string>(plan.InitProps.Select(_ => _.Name), StringComparer.Ordinal);
+        var setSet = new HashSet<string>(plan.SetProps.Select(_ => _.Name), StringComparer.Ordinal);
+
+        var slots = new List<RowReaderSlot>();
+        foreach (var member in type.GetMembers())
+        {
+            if (member is not IPropertySymbol property)
+            {
+                continue;
+            }
+
+            if (property.DeclaredAccessibility != Accessibility.Public)
+            {
+                continue;
+            }
+
+            if (property.IsStatic || property.IsIndexer)
+            {
+                continue;
+            }
+
+            if (property.GetMethod is null)
+            {
+                continue;
+            }
+
+            if (HasAttribute(property, "IgnoreAttribute"))
+            {
+                continue;
+            }
+
+            // [Split] is unsupported by the row reader path: matches the runtime
+            // reader, which doesn't recurse either.
+            if (HasAttribute(property, "SplitAttribute") ||
+                HasAttribute(property.Type, "SplitAttribute"))
+            {
+                return null;
+            }
+
+            var assignment = SlotAssignment.None;
+            if (ctorParamSet.Contains(property.Name))
+            {
+                assignment = SlotAssignment.CtorArg;
+            }
+            else if (initSet.Contains(property.Name))
+            {
+                assignment = SlotAssignment.Init;
+            }
+            else if (setSet.Contains(property.Name))
+            {
+                assignment = SlotAssignment.Setter;
+            }
+
+            var (typeFull, readerKey, isNullable) = ClassifyType(property.Type);
+
+            slots.Add(new(property.Name, typeFull, readerKey, isNullable, assignment));
+        }
+
+        return new(slots.ToImmutableArray());
+    }
+
+    /// <summary>
+    /// Classify a property type for the row reader. Returns the canonical
+    /// <c>ReaderTypeKey</c> (e.g. "Int32", "String", "Enum&lt;Foo&gt;") that
+    /// <see cref="GenerateRowReader"/> uses to pick the matching
+    /// <c>ExcelsiorReaders</c> method, plus the fully-qualified type for the
+    /// generated cast site.
+    /// </summary>
+    static (string TypeFullName, string ReaderKey, bool IsNullable) ClassifyType(ITypeSymbol type)
+    {
+        var underlying = type;
+        var isNullable = false;
+
+        // Value-type Nullable<T> unwrap.
+        if (type is INamedTypeSymbol
+            {
+                IsGenericType: true,
+                OriginalDefinition.SpecialType: SpecialType.System_Nullable_T
+            } named)
+        {
+            underlying = named.TypeArguments[0];
+            isNullable = true;
+        }
+
+        var typeFull = type.ToDisplayString(nullableQualified);
+        var underlyingFull = underlying.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+
+        var readerKey = underlying.SpecialType switch
+        {
+            SpecialType.System_String => "String",
+            SpecialType.System_Boolean => "Bool",
+            SpecialType.System_Byte => "Byte",
+            SpecialType.System_SByte => "SByte",
+            SpecialType.System_Int16 => "Short",
+            SpecialType.System_UInt16 => "UShort",
+            SpecialType.System_Int32 => "Int",
+            SpecialType.System_UInt32 => "UInt",
+            SpecialType.System_Int64 => "Long",
+            SpecialType.System_UInt64 => "ULong",
+            SpecialType.System_Single => "Float",
+            SpecialType.System_Double => "Double",
+            SpecialType.System_Decimal => "Decimal",
+            SpecialType.System_Char => "Char",
+            SpecialType.System_DateTime => "DateTime",
+            _ => underlyingFull switch
+            {
+                "global::System.DateOnly" => "Date",
+                "global::System.TimeOnly" => "Time",
+                "global::System.DateTimeOffset" => "DateTimeOffset",
+                "global::System.TimeSpan" => "TimeSpan",
+                "global::System.Guid" => "Guid",
+                _ when underlying.TypeKind == TypeKind.Enum => $"Enum:{underlyingFull}",
+                _ => $"Object:{typeFull}"
+            }
+        };
+
+        return (typeFull, readerKey, isNullable);
     }
 
     static ActivatorPlan? BuildActivatorPlan(INamedTypeSymbol type)
@@ -750,6 +892,130 @@ public class SheetBuilderGenerator :
         builder.Append('}');
 
         return builder.ToString();
+    }
+
+    static string GenerateRowReader(ModelInfo model, EquatableArray<RowReaderSlot> slots)
+    {
+        var builder = new StringBuilder(
+            $$"""
+              // <auto-generated/>
+              #nullable enable
+              namespace Excelsior;
+              using System;
+              using System.Runtime.CompilerServices;
+              file static class {{model.TypeName}}RowReaderRegistration
+              {
+                  [ModuleInitializer]
+                  internal static void Register() =>
+                      GeneratedRowReaders.Register<{{model.TypeFullName}}>(ReadRow);
+
+                  static {{model.TypeFullName}} ReadRow(global::DocumentFormat.OpenXml.Spreadsheet.Cell?[] cells, string?[]? sharedStrings, global::System.Action<int, string> onError)
+                  {
+
+              """);
+
+        var ctorArgs = new List<string>();
+        var initSlots = new List<(int Slot, RowReaderSlot Info)>();
+        var setterSlots = new List<(int Slot, RowReaderSlot Info)>();
+
+        for (var i = 0; i < slots.Length; i++)
+        {
+            var slot = slots[i];
+            switch (slot.Assignment)
+            {
+                case SlotAssignment.CtorArg:
+                    ctorArgs.Add(EmitReader(slot, i));
+                    break;
+                case SlotAssignment.Init:
+                    initSlots.Add((i, slot));
+                    break;
+                case SlotAssignment.Setter:
+                    setterSlots.Add((i, slot));
+                    break;
+            }
+        }
+
+        var ctorCall = $"new {model.TypeFullName}({string.Join(", ", ctorArgs)})";
+        var hasInit = initSlots.Count > 0;
+        var hasSet = setterSlots.Count > 0;
+
+        if (!hasInit && !hasSet)
+        {
+            builder.AppendLine($"        return {ctorCall};");
+        }
+        else if (!hasSet)
+        {
+            builder.AppendLine($"        return {ctorCall}");
+            builder.AppendLine("        {");
+            for (var i = 0; i < initSlots.Count; i++)
+            {
+                var (slotIdx, info) = initSlots[i];
+                var trail = i == initSlots.Count - 1 ? "" : ",";
+                builder.AppendLine($"            {info.Name} = {EmitReader(info, slotIdx)}{trail}");
+            }
+
+            builder.AppendLine("        };");
+        }
+        else
+        {
+            if (hasInit)
+            {
+                builder.AppendLine($"        var instance = {ctorCall}");
+                builder.AppendLine("        {");
+                for (var i = 0; i < initSlots.Count; i++)
+                {
+                    var (slotIdx, info) = initSlots[i];
+                    var trail = i == initSlots.Count - 1 ? "" : ",";
+                    builder.AppendLine($"            {info.Name} = {EmitReader(info, slotIdx)}{trail}");
+                }
+
+                builder.AppendLine("        };");
+            }
+            else
+            {
+                builder.AppendLine($"        var instance = {ctorCall};");
+            }
+
+            foreach (var (slotIdx, info) in setterSlots)
+            {
+                builder.AppendLine($"        instance.{info.Name} = {EmitReader(info, slotIdx)};");
+            }
+
+            builder.AppendLine("        return instance;");
+        }
+
+        builder.AppendLine("    }");
+        builder.Append('}');
+
+        return builder.ToString();
+    }
+
+    static string EmitReader(RowReaderSlot slot, int slotIndex)
+    {
+        var key = slot.ReaderTypeKey;
+        var nullableSuffix = slot.IsNullable ? "Nullable" : "";
+
+        if (key == "String")
+        {
+            return $"global::Excelsior.ExcelsiorReaders.ReadString(cells[{slotIndex}], sharedStrings)";
+        }
+
+        if (key.StartsWith("Enum:"))
+        {
+            var enumType = key.Substring("Enum:".Length);
+            return $"global::Excelsior.ExcelsiorReaders.ReadEnum{nullableSuffix}<{enumType}>(cells[{slotIndex}], sharedStrings, {slotIndex}, onError)";
+        }
+
+        if (key.StartsWith("Object:"))
+        {
+            var typeFull = key.Substring("Object:".Length);
+            // Boxed fallback. Cast the boxed result back to the property type;
+            // ! suppresses the nullability check since ReadObject returns null on
+            // error (matches the reflection path's "leave property at default").
+            return $"({typeFull})global::Excelsior.ExcelsiorReaders.ReadObject(cells[{slotIndex}], sharedStrings, typeof({typeFull}), {slotIndex}, onError)!";
+        }
+
+        return $"global::Excelsior.ExcelsiorReaders.Read{key}{nullableSuffix}(cells[{slotIndex}], sharedStrings, {slotIndex}, onError)";
     }
 
     static void AppendInitBlock(StringBuilder builder, EquatableArray<ActivatorAssign> props, string terminator)

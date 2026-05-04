@@ -3,6 +3,45 @@ namespace Excelsior;
 static class CellConverter
 {
     /// <summary>
+    /// Apply either the column's user-provided converter (if any) or the
+    /// built-in <see cref="TryConvert"/> path. Errors are routed through
+    /// <paramref name="onError"/> with the supplied <paramref name="slot"/>;
+    /// returns true when a value is available, false otherwise.
+    /// </summary>
+    public static bool TryConvertSlot(
+        Cell? cell,
+        Func<Cell, object?>? converter,
+        Type targetType,
+        string?[]? sharedStrings,
+        int slot,
+        Action<int, string> onError,
+        out object? value)
+    {
+        if (converter != null && cell != null)
+        {
+            try
+            {
+                value = converter(cell);
+                return true;
+            }
+            catch (Exception exception)
+            {
+                onError(slot, $"Converter delegate threw: {exception.Message}");
+                value = null;
+                return false;
+            }
+        }
+
+        if (TryConvert(cell, targetType, sharedStrings, out value, out var error))
+        {
+            return true;
+        }
+
+        onError(slot, error);
+        return false;
+    }
+
+    /// <summary>
     /// Returns true and assigns <paramref name="value"/> on success. On failure, returns
     /// false and assigns <paramref name="error"/> with a human-readable message.
     /// A null/empty cell on a nullable target succeeds with <c>value = null</c>.
@@ -329,6 +368,29 @@ static class CellConverter
         }
 
         return map;
+    }
+
+    /// <summary>
+    /// Generic enum parser used by source-generated row readers; avoids the
+    /// boxing roundtrip the non-generic <see cref="TryParseEnum"/> does.
+    /// </summary>
+    public static bool TryParseEnumGeneric<T>(string raw, out T value)
+        where T : struct, Enum
+    {
+        if (Enum.TryParse(raw, ignoreCase: true, out value))
+        {
+            return true;
+        }
+
+        var map = humanisedEnumCache.GetOrAdd(typeof(T), BuildHumanisedEnumMap);
+        if (map.TryGetValue(raw, out var member))
+        {
+            value = (T)member;
+            return true;
+        }
+
+        value = default;
+        return false;
     }
 
     /// <summary>

@@ -44,7 +44,9 @@ public class BookReaderConstructionTests
         public int Age { get; }
 
 #pragma warning disable IDE0290
+        // ReSharper disable InconsistentNaming
         public CtorByName(string Name, int Age)
+            // ReSharper restore InconsistentNaming
 #pragma warning restore IDE0290
         {
             this.Name = Name;
@@ -141,6 +143,8 @@ public class BookReaderConstructionTests
         public string Name { get; }
         public string? Notes { get; set; }
 
+        // ReSharper disable once ConvertToPrimaryConstructor
+        // ReSharper disable once InconsistentNaming
         public PartialCtor(string Name) =>
             this.Name = Name;
     }

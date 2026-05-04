@@ -35,15 +35,23 @@ public class BookReaderSourceGenTests
     public async Task SourceGenRoundTrip_ParameterlessWithRequiredInit()
     {
         var stream = await Write(
-            new SourceGenInitModel { Name = "Alice", Age = 30 },
-            new SourceGenInitModel { Name = "Bob", Age = 25 });
+            new SourceGenInitModel
+            {
+                Name = "Alice",
+                Age = 30
+            },
+            new SourceGenInitModel
+            {
+                Name = "Bob",
+                Age = 25
+            });
 
         var reader = new BookReader();
         var sheet = reader.AddSheet<SourceGenInitModel>();
         reader.Convert(stream);
 
-        Assert.That(sheet.Rows.Select(_ => _.Name), Is.EqualTo(new[] { "Alice", "Bob" }));
-        Assert.That(sheet.Rows.Select(_ => _.Age), Is.EqualTo(new[] { 30, 25 }));
+        Assert.That(sheet.Rows.Select(_ => _.Name), Is.EqualTo(["Alice", "Bob"]));
+        Assert.That(sheet.Rows.Select(_ => _.Age), Is.EqualTo([30, 25]));
     }
 
     [SheetModel]
@@ -60,11 +68,13 @@ public class BookReaderSourceGenTests
         var sheet = reader.AddSheet<SourceGenRecord>();
         reader.Convert(stream);
 
-        Assert.That(sheet.Rows, Is.EqualTo(new[]
-        {
-            new SourceGenRecord("Alice", 30),
-            new SourceGenRecord("Bob", 25)
-        }));
+        Assert.That(
+            sheet.Rows,
+            Is.EqualTo<SourceGenRecord>(
+            [
+                new("Alice", 30),
+                new("Bob", 25)
+            ]));
     }
 
     [SheetModel]
@@ -78,14 +88,22 @@ public class BookReaderSourceGenTests
     public async Task SourceGenRoundTrip_PlainSetters()
     {
         var stream = await Write(
-            new SourceGenSetterModel { Name = "Alice", Age = 30 },
-            new SourceGenSetterModel { Name = "Bob", Age = 25 });
+            new SourceGenSetterModel
+            {
+                Name = "Alice",
+                Age = 30
+            },
+            new SourceGenSetterModel
+            {
+                Name = "Bob",
+                Age = 25
+            });
 
         var reader = new BookReader();
         var sheet = reader.AddSheet<SourceGenSetterModel>();
         reader.Convert(stream);
 
-        Assert.That(sheet.Rows.Select(_ => _.Name), Is.EqualTo(new[] { "Alice", "Bob" }));
-        Assert.That(sheet.Rows.Select(_ => _.Age), Is.EqualTo(new[] { 30, 25 }));
+        Assert.That(sheet.Rows.Select(_ => _.Name), Is.EqualTo(["Alice", "Bob"]));
+        Assert.That(sheet.Rows.Select(_ => _.Age), Is.EqualTo([30, 25]));
     }
 }

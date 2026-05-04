@@ -240,14 +240,16 @@ public async Task PositionalRecord()
     var sheet = reader.AddSheet<PersonRecord>();
     reader.Convert(stream);
 
-    Assert.That(sheet.Rows, Is.EqualTo(new[]
-    {
-        new PersonRecord("Alice", 30),
-        new PersonRecord("Bob", 25)
-    }));
+    Assert.That(
+        sheet.Rows,
+        Is.EqualTo<PersonRecord>(
+        [
+            new("Alice", 30),
+            new("Bob", 25)
+        ]));
 }
 ```
-<sup><a href='/src/Excelsior.Tests/Reading/BookReaderConstructionTests.cs#L15-L37' title='Snippet source file'>snippet source</a> | <a href='#snippet-BookReaderPositionalRecord' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/Reading/BookReaderConstructionTests.cs#L15-L39' title='Snippet source file'>snippet source</a> | <a href='#snippet-BookReaderPositionalRecord' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 Limitations:

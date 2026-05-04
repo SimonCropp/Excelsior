@@ -277,12 +277,12 @@ static class SheetParser
         {
             if (c is >= 'A' and <= 'Z')
             {
-                index = index * 26 + (c - 'A' + 1);
+                index = index * 26 + (c - 'A') + 1;
                 length++;
             }
             else if (c is >= 'a' and <= 'z')
             {
-                index = index * 26 + (c - 'a' + 1);
+                index = index * 26 + (c - 'a') + 1;
                 length++;
             }
             else

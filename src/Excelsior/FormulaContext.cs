@@ -25,17 +25,30 @@ public class FormulaContext<TModel>
     /// the current row.
     /// </summary>
     public string Ref<TProperty>(Expression<Func<TModel, TProperty>> property) =>
-        GetColumnLetter(property) + Row;
+        GetColumnLetter(property.PropertyName()) + Row;
 
     /// <summary>
     /// Returns the column letter (e.g. "B") for the specified property.
     /// </summary>
     public string Column<TProperty>(Expression<Func<TModel, TProperty>> property) =>
-        GetColumnLetter(property);
+        GetColumnLetter(property.PropertyName());
 
-    string GetColumnLetter<TProperty>(Expression<Func<TModel, TProperty>> property)
+    /// <summary>
+    /// Returns the cell reference (e.g. "B5") for the column with the given name on
+    /// the current row. Useful on dictionary-backed sheets where columns are keyed by string.
+    /// </summary>
+    public string Ref(string columnName) =>
+        GetColumnLetter(columnName) + Row;
+
+    /// <summary>
+    /// Returns the column letter (e.g. "B") for the column with the given name.
+    /// Useful on dictionary-backed sheets where columns are keyed by string.
+    /// </summary>
+    public string Column(string columnName) =>
+        GetColumnLetter(columnName);
+
+    string GetColumnLetter(string name)
     {
-        var name = property.PropertyName();
         if (!columnIndexesByName.TryGetValue(name, out var columnIndex))
         {
             throw new($"Could not find property in output columns: {name}. Ensure the column is included in the sheet.");

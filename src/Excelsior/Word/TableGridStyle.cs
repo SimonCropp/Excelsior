@@ -17,16 +17,22 @@ static class TableGridStyle
     public const string StyleId = "TableGrid";
     const string tableNormalId = "TableNormal";
 
+    // Built once per process; CloneNode is faster than rebuilding the element tree, and the
+    // prototype itself is never appended (OpenXmlElement instances can't be shared between
+    // parents — appending detaches from the prior one).
+    static readonly W.Style tableNormalPrototype = BuildTableNormalStyle();
+    static readonly W.Style tableGridPrototype = BuildTableGridStyle();
+
     public static void EnsurePresent(MainDocumentPart mainPart)
     {
         var stylesPart = mainPart.StyleDefinitionsPart ?? mainPart.AddNewPart<StyleDefinitionsPart>();
         stylesPart.Styles ??= new();
 
-        EnsureStyle(stylesPart.Styles, tableNormalId, BuildTableNormalStyle);
-        EnsureStyle(stylesPart.Styles, StyleId, BuildTableGridStyle);
+        EnsureStyle(stylesPart.Styles, tableNormalId, tableNormalPrototype);
+        EnsureStyle(stylesPart.Styles, StyleId, tableGridPrototype);
     }
 
-    static void EnsureStyle(W.Styles styles, string styleId, Func<W.Style> build)
+    static void EnsureStyle(W.Styles styles, string styleId, W.Style prototype)
     {
         var existing = styles
             .Elements<W.Style>()
@@ -38,7 +44,7 @@ static class TableGridStyle
             return;
         }
 
-        styles.Append(build());
+        styles.Append((W.Style) prototype.CloneNode(true));
     }
 
     // Mirrors the TableNormal Word ships in user-authored docs: zero indentation, 108dxa

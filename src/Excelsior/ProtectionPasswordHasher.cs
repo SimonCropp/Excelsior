@@ -1,5 +1,3 @@
-namespace Excelsior;
-
 static class ProtectionPasswordHasher
 {
     public static HexBinaryValue Hash(string password)

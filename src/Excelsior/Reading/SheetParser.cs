@@ -1,5 +1,3 @@
-namespace Excelsior;
-
 static class SheetParser
 {
     public static Dictionary<string, Dictionary<int, string>> ReadMetadata(WorkbookPart workbookPart)

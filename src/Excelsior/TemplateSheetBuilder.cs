@@ -1,5 +1,3 @@
-namespace Excelsior;
-
 class TemplateSheetBuilder :
     ITemplateSheetBuilder
 {

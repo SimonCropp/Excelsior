@@ -5,7 +5,8 @@ namespace Excelsior;
 /// Mirrors <see cref="ColumnConfig{TModel,TProperty}"/> but with the row type fixed to
 /// <see cref="IReadOnlyDictionary{TKey,TValue}"/> keyed by string.
 /// </summary>
-public class DictionaryColumnConfig<TProperty>
+public class DictionaryColumnConfig<TProperty> :
+    IColumnSettings
 {
     public string? Heading { get; set; }
     public int? Order { get; set; }

@@ -1,5 +1,3 @@
-namespace Excelsior;
-
 using W = DocumentFormat.OpenXml.Wordprocessing;
 
 /// <summary>

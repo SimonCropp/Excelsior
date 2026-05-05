@@ -1,5 +1,3 @@
-namespace Excelsior;
-
 class DictionarySheetBuilder :
     IDictionarySheetBuilder
 {
@@ -26,72 +24,62 @@ class DictionarySheetBuilder :
         configuration?.Invoke(config);
 
         var (isEnumerable, render) = ValueRenderer.GetRender(type);
-
-        var allowedValues = config.DisableAllowedValues
-            ? null
-            : config.AllowedValues ?? TypeInference.DeriveAllowedValues(type);
-
         var keyForCapture = key;
-
-        Func<IReadOnlyDictionary<string, object?>, object, string?>? finalRender;
-        if (config.Render != null)
-        {
-            var userRender = config.Render;
-            finalRender = (row, value) => userRender(row, (TProperty)value);
-        }
-        else if (!isEnumerable && render != null)
-        {
-            finalRender = (_, value) => render(value);
-        }
-        else
-        {
-            finalRender = null;
-        }
-
-        Action<CellStyle, IReadOnlyDictionary<string, object?>, object?>? finalCellStyle = null;
-        if (config.CellStyle != null)
-        {
-            var userCellStyle = config.CellStyle;
-            finalCellStyle = (style, row, value) => userCellStyle(style, row, (TProperty)value!);
-        }
 
         var column = new ColumnConfig<IReadOnlyDictionary<string, object?>>
         {
             Name = key,
-            Heading = config.Heading ?? key,
-            Order = config.Order,
+            Heading = key,
+            Order = null,
             DeclarationIndex = Columns.Count,
-            Width = config.Width,
-            MinWidth = config.MinWidth,
-            MaxWidth = config.MaxWidth,
-            HeadingStyle = config.HeadingStyle,
-            CellStyle = finalCellStyle,
-            Format = config.Format ?? DeriveDefaultFormat(type),
-            NullDisplay = config.NullDisplay ?? ValueRenderer.GetNullDisplay(type),
-            Render = finalRender,
-            Formula = config.Formula,
-            IsHtml = config.IsHtml ?? false,
-            IsHtmlExplicit = config.IsHtml.HasValue,
-            Filter = config.Filter,
-            Include = config.Include ?? true,
+            Width = null,
+            MinWidth = null,
+            MaxWidth = null,
+            HeadingStyle = null,
+            CellStyle = null,
+            Format = DeriveDefaultFormat(type),
+            NullDisplay = ValueRenderer.GetNullDisplay(type),
+            Render = !isEnumerable && render != null ? (_, value) => render(value) : null,
+            Formula = null,
+            IsHtml = false,
+            IsHtmlExplicit = false,
+            Filter = null,
+            Include = true,
             IsNumber = type.IsNumericType() ||
                        (Nullable.GetUnderlyingType(type)?.IsNumericType() ?? false),
             IsEnumerable = isEnumerable,
             ItemRender = isEnumerable ? render : null,
-            GetValue = row => row.TryGetValue(keyForCapture, out var value) ? value : null,
-            AllowedValues = allowedValues,
-            NumericMin = config.NumericMin,
-            NumericMax = config.NumericMax,
-            DateMin = config.DateMin,
-            DateMax = config.DateMax,
-            Required = config.Required ?? false,
-            Locked = config.Locked,
-            InputTitle = config.InputTitle,
-            InputMessage = config.InputMessage,
-            ErrorTitle = config.ErrorTitle,
-            ErrorMessage = config.ErrorMessage,
-            ErrorStyle = config.ErrorStyle
+            GetValue = row => row.GetValueOrDefault(keyForCapture),
+            AllowedValues = TypeInference.DeriveAllowedValues(type),
+            Required = false
         };
+
+        ColumnConfigMerge.ApplyUserSettings(config, column);
+
+        if (config.CellStyle != null)
+        {
+            var userCellStyle = config.CellStyle;
+            column.CellStyle = (style, row, value) => userCellStyle(style, row, (TProperty)value!);
+        }
+
+        if (config.Render != null)
+        {
+            var userRender = config.Render;
+            column.Render = (row, value) => userRender(row, (TProperty)value);
+            if (config.AllowedValues == null && !config.DisableAllowedValues)
+            {
+                column.AllowedValues = null;
+            }
+        }
+
+        if (config.Formula != null)
+        {
+            column.Formula = config.Formula;
+            if (config.AllowedValues == null && !config.DisableAllowedValues)
+            {
+                column.AllowedValues = null;
+            }
+        }
 
         Columns.Add(column);
         return this;

@@ -248,16 +248,21 @@ public class WordTableBuilderTests
     }
 
     [Test]
-    public void TablePropertiesCarryOpinionatedDefaultsWhenNoHostStyle()
+    public void StandaloneTableCarriesInlineBordersAndFullWidth()
     {
-        // Without a MainDocumentPart (or with one whose default table style is empty), the
-        // renderer falls back to its own opinionated defaults so a standalone table still has
-        // visible borders and cell padding.
+        // Without a MainDocumentPart there's no styles part to add TableGrid to, so the renderer
+        // falls back to inline borders. tblW pct=5000 is always emitted so the table fills the
+        // content area regardless of where it's appended.
         var table = new WordTableBuilder<Employee>([]).Build();
         var props = table.GetFirstChild<TableProperties>()!;
 
         IsNotNull(props.GetFirstChild<TableBorders>());
         IsNotNull(props.GetFirstChild<TableCellMarginDefault>());
+        IsNull(props.GetFirstChild<TableStyle>());
+
+        var width = props.GetFirstChild<TableWidth>()!;
+        AreEqual("5000", width.Width?.Value);
+        AreEqual(TableWidthUnitValues.Pct, width.Type?.Value);
 
         var look = props.GetFirstChild<TableLook>()!;
         AreEqual(true, look.FirstRow?.Value);
@@ -265,70 +270,169 @@ public class WordTableBuilderTests
     }
 
     [Test]
-    public void TablePropertiesDropOpinionatedDefaultsWhenHostHasCustomStyle()
+    public void HostBuiltTableReferencesTableGridStyleAndIsFullWidth()
     {
+        // Build(mainPart) emits a tblStyle reference to the built-in TableGrid style and the
+        // helper inserts the style definition into the host's styles part if it isn't already
+        // there — Word's own behavior when a table is inserted via the ribbon.
         using var stream = new MemoryStream();
         using var doc = WordprocessingDocument.Create(stream, WordprocessingDocumentType.Document);
         var mainPart = doc.AddMainDocumentPart();
         mainPart.Document = new(new Body());
-        AddDefaultTableStyle(mainPart);
 
         var table = new WordTableBuilder<Employee>([]).Build(mainPart);
         var props = table.GetFirstChild<TableProperties>()!;
 
-        // Host owns borders + cell margins; only tblLook ships so the host's firstRow
-        // conditional formatting rule still formats the header row.
+        var tableStyle = props.GetFirstChild<TableStyle>()!;
+        AreEqual("TableGrid", tableStyle.Val?.Value);
+
+        var width = props.GetFirstChild<TableWidth>()!;
+        AreEqual("5000", width.Width?.Value);
+        AreEqual(TableWidthUnitValues.Pct, width.Type?.Value);
+
+        // No inline borders/margins when a tblStyle is referenced — the style owns them.
         IsNull(props.GetFirstChild<TableBorders>());
         IsNull(props.GetFirstChild<TableCellMarginDefault>());
-        IsNotNull(props.GetFirstChild<TableLook>());
+
+        var styles = mainPart.StyleDefinitionsPart!.Styles!.Elements<Style>().ToList();
+        var tableGrid = styles.Single(_ => _.StyleId?.Value == "TableGrid");
+        AreEqual(StyleValues.Table, tableGrid.Type?.Value);
+        IsNotNull(tableGrid.Descendants<TableBorders>().FirstOrDefault());
     }
 
     [Test]
-    public void TablePropertiesKeepOpinionatedDefaultsWhenHostStyleIsBare()
+    public void EnsureTableGridStyleIsIdempotent_AcrossMultipleBuilds()
     {
-        // A document containing only a bare TableNormal (default but no actual properties)
-        // shouldn't suppress the opinionated defaults — there's nothing to inherit from.
+        // Building two tables against the same host must not duplicate the TableGrid definition.
+        using var stream = new MemoryStream();
+        using var doc = WordprocessingDocument.Create(stream, WordprocessingDocumentType.Document);
+        var mainPart = doc.AddMainDocumentPart();
+        mainPart.Document = new(new Body());
+
+        new WordTableBuilder<Employee>([]).Build(mainPart);
+        new WordTableBuilder<Employee>([]).Build(mainPart);
+
+        var tableGridCount = mainPart.StyleDefinitionsPart!.Styles!
+            .Elements<Style>()
+            .Count(_ => _.StyleId?.Value == "TableGrid");
+        AreEqual(1, tableGridCount);
+    }
+
+    [Test]
+    public void EnsureTableGridStyleAddsStockTableNormalWithCellMarginsWhenHostHasNone()
+    {
+        // TableGrid inherits its cell padding from TableNormal via basedOn. A programmatically
+        // built host has no styles part at all — so the helper must add a stock TableNormal
+        // (matching what Word ships) so the rendered table picks up the expected 108dxa
+        // left/right cell padding.
+        using var stream = new MemoryStream();
+        using var doc = WordprocessingDocument.Create(stream, WordprocessingDocumentType.Document);
+        var mainPart = doc.AddMainDocumentPart();
+        mainPart.Document = new(new Body());
+
+        new WordTableBuilder<Employee>([]).Build(mainPart);
+
+        var tableNormal = mainPart.StyleDefinitionsPart!.Styles!
+            .Elements<Style>()
+            .Single(_ => _.StyleId?.Value == "TableNormal");
+        AreEqual(true, tableNormal.Default?.Value);
+
+        var cellMargins = tableNormal.Descendants<TableCellMarginDefault>().Single();
+        AreEqual("108", cellMargins.GetFirstChild<StartMargin>()!.Width?.Value);
+        AreEqual("108", cellMargins.GetFirstChild<EndMargin>()!.Width?.Value);
+    }
+
+    [Test]
+    public void EnsureTableGridStyleLeavesPreExistingTableNormalUntouched()
+    {
+        // A Word-authored host always ships TableNormal in its styles part — sometimes with
+        // customizations the template author intentionally made (different cell margins, etc.).
+        // The helper must never replace, duplicate, or strip those.
         using var stream = new MemoryStream();
         using var doc = WordprocessingDocument.Create(stream, WordprocessingDocumentType.Document);
         var mainPart = doc.AddMainDocumentPart();
         mainPart.Document = new(new Body());
         var stylesPart = mainPart.AddNewPart<StyleDefinitionsPart>();
         stylesPart.Styles = new(
-            new Style
-            {
-                Type = StyleValues.Table,
-                StyleId = "TableNormal",
-                Default = true,
-            });
+            new Style(
+                    new StyleName { Val = "Normal Table" },
+                    new TableProperties(
+                        new TableCellMarginDefault(
+                            new TopMargin { Width = "20", Type = TableWidthUnitValues.Dxa },
+                            new StartMargin { Width = "200", Type = TableWidthUnitValues.Dxa },
+                            new BottomMargin { Width = "20", Type = TableWidthUnitValues.Dxa },
+                            new EndMargin { Width = "200", Type = TableWidthUnitValues.Dxa })))
+                {
+                    Type = StyleValues.Table,
+                    StyleId = "TableNormal",
+                    Default = true,
+                });
+        var preExisting = stylesPart.Styles.Elements<Style>().Single(_ => _.StyleId?.Value == "TableNormal");
 
-        var table = new WordTableBuilder<Employee>([]).Build(mainPart);
-        var props = table.GetFirstChild<TableProperties>()!;
+        new WordTableBuilder<Employee>([]).Build(mainPart);
 
-        IsNotNull(props.GetFirstChild<TableBorders>());
-        IsNotNull(props.GetFirstChild<TableCellMarginDefault>());
+        var tableNormals = stylesPart.Styles.Elements<Style>().Where(_ => _.StyleId?.Value == "TableNormal").ToList();
+        AreEqual(1, tableNormals.Count);
+        AreSame(preExisting, tableNormals[0]);
+        var cellMargins = tableNormals[0].Descendants<TableCellMarginDefault>().Single();
+        AreEqual("200", cellMargins.GetFirstChild<StartMargin>()!.Width?.Value);
     }
 
     [Test]
-    public Task InheritsBordersFromHostDefaultTableStyle()
+    public void EnsureTableGridStyleIsIdempotent_LeavesPreExistingTableGridUntouched()
     {
-        // When the host doc has a default <w:style w:type="table" w:default="1"> with its own
-        // borders, the rendered table picks them up — the renderer no longer writes inline
-        // <w:tblBorders> that would override.
-        var builder = new WordTableBuilder<Employee>(SampleData.Employees());
-        return VerifyTableInDocWithDefaultTableStyle(builder);
+        // A template authored in Word with tables already present ships TableGrid in styles.xml.
+        // Build(mainPart) must detect the existing definition and leave it alone — not replace,
+        // duplicate, or strip any customizations the template author made to the style.
+        using var stream = new MemoryStream();
+        using var doc = WordprocessingDocument.Create(stream, WordprocessingDocumentType.Document);
+        var mainPart = doc.AddMainDocumentPart();
+        mainPart.Document = new(new Body());
+        AddCustomizedTableGridStyle(mainPart);
+
+        var preExisting = mainPart.StyleDefinitionsPart!.Styles!
+            .Elements<Style>()
+            .Single(_ => _.StyleId?.Value == "TableGrid");
+
+        new WordTableBuilder<Employee>([]).Build(mainPart);
+
+        var styles = mainPart.StyleDefinitionsPart.Styles
+            .Elements<Style>()
+            .Where(_ => _.StyleId?.Value == "TableGrid")
+            .ToList();
+        AreEqual(1, styles.Count);
+        // Same instance — confirms no replacement happened, just left in place.
+        AreSame(preExisting, styles[0]);
+        // Customizations remain intact.
+        var borders = styles[0].Descendants<TableBorders>().Single();
+        AreEqual(BorderValues.Double, borders.GetFirstChild<TopBorder>()!.Val?.Value);
+        AreEqual("1F4E79", borders.GetFirstChild<TopBorder>()!.Color?.Value);
     }
 
-    static void AddDefaultTableStyle(MainDocumentPart mainPart)
+    [Test]
+    public Task InheritsBordersFromHostCustomizedTableGrid()
+    {
+        // The supported way to rebrand Excelsior tables is to customize TableGrid in the host
+        // template — Excelsior emits a tblStyle reference, so any borders/cell-margin overrides
+        // declared on TableGrid in the host's styles part flow straight through.
+        var builder = new WordTableBuilder<Employee>(SampleData.Employees());
+        return VerifyTableInDocWithCustomizedTableGrid(builder);
+    }
+
+    static void AddCustomizedTableGridStyle(MainDocumentPart mainPart)
     {
         var stylesPart = mainPart.AddNewPart<StyleDefinitionsPart>();
         stylesPart.Styles = new(
             new Style(
-                    new StyleName { Val = "BrandTable" },
+                    new StyleName { Val = "Table Grid" },
                     new TableProperties(
                         new TableBorders(
                             new TopBorder { Val = BorderValues.Double, Size = 12, Color = "1F4E79" },
                             new BottomBorder { Val = BorderValues.Double, Size = 12, Color = "1F4E79" },
-                            new InsideHorizontalBorder { Val = BorderValues.Single, Size = 4, Color = "1F4E79" }),
+                            new LeftBorder { Val = BorderValues.Double, Size = 12, Color = "1F4E79" },
+                            new RightBorder { Val = BorderValues.Double, Size = 12, Color = "1F4E79" },
+                            new InsideHorizontalBorder { Val = BorderValues.Single, Size = 4, Color = "1F4E79" },
+                            new InsideVerticalBorder { Val = BorderValues.Single, Size = 4, Color = "1F4E79" }),
                         new TableCellMarginDefault(
                             new TopMargin { Width = "60", Type = TableWidthUnitValues.Dxa },
                             new BottomMargin { Width = "60", Type = TableWidthUnitValues.Dxa })),
@@ -346,13 +450,11 @@ public class WordTableBuilderTests
                         { Type = TableStyleOverrideValues.FirstRow })
                 {
                     Type = StyleValues.Table,
-                    StyleId = "BrandTable",
-                    Default = true,
-                    CustomStyle = true,
+                    StyleId = "TableGrid",
                 });
     }
 
-    static async Task VerifyTableInDocWithDefaultTableStyle(WordTableBuilder<Employee> builder)
+    static async Task VerifyTableInDocWithCustomizedTableGrid(WordTableBuilder<Employee> builder)
     {
         using var stream = new MemoryStream();
         using (var doc = WordprocessingDocument.Create(stream, WordprocessingDocumentType.Document))
@@ -360,7 +462,7 @@ public class WordTableBuilderTests
             var mainPart = doc.AddMainDocumentPart();
             mainPart.Document = new(new Body());
 
-            AddDefaultTableStyle(mainPart);
+            AddCustomizedTableGridStyle(mainPart);
 
             var table = builder.Build(mainPart);
             var body = mainPart.Document.Body!;

@@ -26,15 +26,22 @@ static class WordTableRenderer<TModel>
     }
 
     /// <summary>
-    /// Builds <c>&lt;w:tblPr&gt;</c>. When the host document has customized its default table
-    /// style (a <c>&lt;w:style w:type="table" w:default="1"&gt;</c> with substantive borders,
-    /// cell margins, or conditional formatting), only a <c>&lt;w:tblLook&gt;</c> is emitted so
-    /// that style wins. Otherwise — including when no <c>MainDocumentPart</c> is supplied —
-    /// the renderer falls back to its own opinionated defaults (single-line 4pt borders, 108dxa
-    /// start/end cell margins) so a standalone table still looks reasonable.
+    /// Builds <c>&lt;w:tblPr&gt;</c>. Tables are rendered at 100% page width via
+    /// <c>&lt;w:tblW w:type="pct" w:w="5000"/&gt;</c>. When a <c>MainDocumentPart</c> is supplied,
+    /// the table references Word's built-in <c>TableGrid</c> style (single-line borders) — the
+    /// definition is added to the host's styles part if absent, mirroring what Word itself does
+    /// when a table is inserted via the ribbon. Customizing <c>TableGrid</c> in the template is
+    /// the supported way to rebrand Excelsior tables. The standalone path (no host) emits inline
+    /// borders instead, since there's no styles part to add to.
     /// </summary>
     static W.TableProperties BuildTableProperties(MainDocumentPart? mainPart)
     {
+        var tblW = new W.TableWidth
+        {
+            Width = "5000",
+            Type = W.TableWidthUnitValues.Pct
+        };
+
         var tblLook = new W.TableLook
         {
             Val = "04A0",
@@ -46,60 +53,73 @@ static class WordTableRenderer<TModel>
             NoVerticalBand = true,
         };
 
-        if (HostHasCustomDefaultTableStyle(mainPart))
+        if (mainPart != null)
         {
-            return new(tblLook);
+            TableGridStyle.EnsurePresent(mainPart);
+            return new(
+                new W.TableStyle
+                {
+                    Val = TableGridStyle.StyleId
+                },
+                tblW,
+                tblLook);
         }
 
         return new(
+            tblW,
             new W.TableBorders(
-                new W.TopBorder { Val = W.BorderValues.Single, Size = 4 },
-                new W.BottomBorder { Val = W.BorderValues.Single, Size = 4 },
-                new W.LeftBorder { Val = W.BorderValues.Single, Size = 4 },
-                new W.RightBorder { Val = W.BorderValues.Single, Size = 4 },
-                new W.InsideHorizontalBorder { Val = W.BorderValues.Single, Size = 4 },
-                new W.InsideVerticalBorder { Val = W.BorderValues.Single, Size = 4 }),
+                new W.TopBorder
+                {
+                    Val = W.BorderValues.Single,
+                    Size = 4
+                },
+                new W.BottomBorder
+                {
+                    Val = W.BorderValues.Single,
+                    Size = 4
+                },
+                new W.LeftBorder
+                {
+                    Val = W.BorderValues.Single,
+                    Size = 4
+                },
+                new W.RightBorder
+                {
+                    Val = W.BorderValues.Single,
+                    Size = 4
+                },
+                new W.InsideHorizontalBorder
+                {
+                    Val = W.BorderValues.Single,
+                    Size = 4
+                },
+                new W.InsideVerticalBorder
+                {
+                    Val = W.BorderValues.Single,
+                    Size = 4
+                }),
             new W.TableCellMarginDefault(
-                new W.TopMargin { Width = "0", Type = W.TableWidthUnitValues.Dxa },
-                new W.StartMargin { Width = "108", Type = W.TableWidthUnitValues.Dxa },
-                new W.BottomMargin { Width = "0", Type = W.TableWidthUnitValues.Dxa },
-                new W.EndMargin { Width = "108", Type = W.TableWidthUnitValues.Dxa }),
+                new W.TopMargin
+                {
+                    Width = "0",
+                    Type = W.TableWidthUnitValues.Dxa
+                },
+                new W.StartMargin
+                {
+                    Width = "108",
+                    Type = W.TableWidthUnitValues.Dxa
+                },
+                new W.BottomMargin
+                {
+                    Width = "0",
+                    Type = W.TableWidthUnitValues.Dxa
+                },
+                new W.EndMargin
+                {
+                    Width = "108",
+                    Type = W.TableWidthUnitValues.Dxa
+                }),
             tblLook);
-    }
-
-    static bool HostHasCustomDefaultTableStyle(MainDocumentPart? mainPart)
-    {
-        var styles = mainPart?.StyleDefinitionsPart?.Styles;
-        if (styles == null)
-        {
-            return false;
-        }
-
-        foreach (var style in styles.Elements<W.Style>())
-        {
-            if (style.Type?.Value != W.StyleValues.Table)
-            {
-                continue;
-            }
-
-            if (style.Default?.Value != true)
-            {
-                continue;
-            }
-
-            // A bare <w:style w:default="1" w:type="table"/> (e.g. the built-in TableNormal
-            // shipped with most blank docs) carries no actual visual rules. Only treat the
-            // style as "customized" when it actually defines borders, cell margins, or a
-            // conditional-formatting block (firstRow, etc.) the renderer would clash with.
-            if (style.Descendants<W.TableBorders>().Any() ||
-                style.Descendants<W.TableCellMarginDefault>().Any() ||
-                style.Descendants<W.TableStyleProperties>().Any())
-            {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     static W.TableGrid BuildGrid(int columnCount)
@@ -128,10 +148,12 @@ static class WordTableRenderer<TModel>
     {
         var style = ResolveHeadingStyle(column, tableHeadingStyle);
 
-        var run = new W.Run(BuildHeaderRunProperties(style), new W.Text(column.Heading)
-        {
-            Space = SpaceProcessingModeValues.Preserve
-        });
+        var run = new W.Run(
+            BuildHeaderRunProperties(style),
+            new W.Text(column.Heading)
+            {
+                Space = SpaceProcessingModeValues.Preserve
+            });
 
         var paragraph = new W.Paragraph(BuildHeaderParagraphProperties(style), run);
         var cell = new W.TableCell(paragraph);

@@ -187,6 +187,22 @@ await builder.ToStream(stream);
 <!-- endSnippet -->
 
 
+### Saving to bytes
+
+To save to a byte array use `ToBytes()`.
+
+<!-- snippet: ToBytes -->
+<a id='snippet-ToBytes'></a>
+```cs
+var builder = new BookBuilder();
+builder.AddSheet(data);
+
+var bytes = await builder.ToBytes();
+```
+<sup><a href='/src/Excelsior.Tests/Saving.cs#L28-L35' title='Snippet source file'>snippet source</a> | <a href='#snippet-ToBytes' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+
 ### Reading xlsx
 
 `BookReader` is the inverse of `BookBuilder`: register the sheets to read, then `Convert` (throws on failure) or `TryConvert` (returns a result).

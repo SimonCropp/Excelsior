@@ -19,6 +19,23 @@ public class Saving
 
         await Verify(stream, extension: "xlsx");
     }
+
+    [Test]
+    public async Task ToBytes()
+    {
+        var data = SampleData.Employees();
+
+        #region ToBytes
+
+        var builder = new BookBuilder();
+        builder.AddSheet(data);
+
+        var bytes = await builder.ToBytes();
+
+        #endregion
+
+        await Verify(bytes, extension: "xlsx");
+    }
 }
 
 // ReSharper disable UnusedParameter.Local

@@ -70,7 +70,8 @@ public class WordTableBuilderTests
         var table = new WordTableBuilder<Employee>(employees).Build();
 
         var rows = table.Elements<TableRow>().ToList();
-        AreEqual(employees.Count + 1, rows.Count); // +1 for header row
+         // +1 for header row
+        AreEqual(employees.Count + 1, rows.Count);
     }
 
     [Test]
@@ -102,7 +103,7 @@ public class WordTableBuilderTests
             new LinkRow
             {
                 Label = "Anthropic",
-                Site = new("https://www.anthropic.com", "Home")
+                Site = new("http://github.com/SimonCropp/Excelsior", "Home")
             }
         };
 
@@ -113,13 +114,19 @@ public class WordTableBuilderTests
 
         var table = new WordTableBuilder<LinkRow>(rows).Build(mainPart);
 
-        var cells = table.Elements<TableRow>().Skip(1).First().Elements<TableCell>().ToList();
+        var cells = table.Elements<TableRow>()
+            .Skip(1)
+            .First()
+            .Elements<TableCell>()
+            .ToList();
         var linkCell = cells[1];
-        var hyperlink = linkCell.GetFirstChild<Paragraph>()!.GetFirstChild<Hyperlink>();
+        var hyperlink = linkCell
+            .GetFirstChild<Paragraph>()!
+            .GetFirstChild<Hyperlink>();
         IsNotNull(hyperlink);
 
         var rel = mainPart.HyperlinkRelationships.Single();
-        AreEqual("https://www.anthropic.com/", rel.Uri.ToString());
+        AreEqual("http://github.com/SimonCropp/Excelsior", rel.Uri.ToString());
         AreEqual(rel.Id, hyperlink!.Id?.Value);
 
         var run = hyperlink.GetFirstChild<Run>()!;
@@ -136,13 +143,18 @@ public class WordTableBuilderTests
             new LinkRow
             {
                 Label = "Anthropic",
-                Site = new("https://www.anthropic.com", "Home")
+                Site = new("http://github.com/SimonCropp/Excelsior", "Home")
             }
         };
 
         var table = new WordTableBuilder<LinkRow>(rows).Build();
 
-        var cells = table.Elements<TableRow>().Skip(1).First().Elements<TableCell>().ToList();
+        var cells = table
+            .Elements<TableRow>()
+            .Skip(1)
+            .First()
+            .Elements<TableCell>()
+            .ToList();
         var linkCell = cells[1];
         var paragraph = linkCell.GetFirstChild<Paragraph>()!;
         IsNull(paragraph.GetFirstChild<Hyperlink>());

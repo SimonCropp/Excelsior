@@ -10,16 +10,9 @@ namespace Excelsior;
 /// Word document part. It is intentionally not concerned with document-level concerns (sections,
 /// headers/footers, styles) — the caller owns the host document.
 /// </remarks>
-public class WordTableBuilder<TModel>
+public class WordTableBuilder<TModel>(IEnumerable<TModel> data, Action<CellStyle>? headingStyle = null)
 {
-    readonly IEnumerable<TModel> data;
     readonly Columns<TModel> columns = new();
-
-    public WordTableBuilder(IEnumerable<TModel> data, Action<CellStyle>? headingStyle = null)
-    {
-        this.data = data;
-        HeadingStyle = headingStyle;
-    }
 
     /// <summary>
     /// Table-level heading style applied to every header cell before any per-column
@@ -29,7 +22,7 @@ public class WordTableBuilder<TModel>
     /// cref="CellFont"/> adjustments become run properties, and <see cref="CellAlignment"/>
     /// adjustments become paragraph properties.
     /// </summary>
-    public Action<CellStyle>? HeadingStyle { get; }
+    public Action<CellStyle>? HeadingStyle { get; } = headingStyle;
 
     /// <summary>
     /// Configure a single column. Mirrors <c>ISheetBuilder&lt;TModel&gt;.Column</c>: any settings

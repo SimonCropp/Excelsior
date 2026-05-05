@@ -8,19 +8,3 @@ public class CellStyle
     public bool Locked { get; set; } = true;
     internal string? NumberFormat { get; set; }
 }
-
-public class CellFont
-{
-    public bool Bold { get; set; }
-    public bool Underline { get; set; }
-    public string? Color { get; set; }
-    public double? Size { get; set; }
-    public string? Name { get; set; }
-}
-
-public class CellAlignment
-{
-    public HorizontalAlignmentValues Horizontal { get; set; } = HorizontalAlignmentValues.General;
-    public VerticalAlignmentValues Vertical { get; set; } = VerticalAlignmentValues.Bottom;
-    public bool WrapText { get; set; }
-}

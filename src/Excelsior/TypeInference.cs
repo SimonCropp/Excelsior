@@ -1,5 +1,3 @@
-namespace Excelsior;
-
 static class TypeInference
 {
     /// <summary>

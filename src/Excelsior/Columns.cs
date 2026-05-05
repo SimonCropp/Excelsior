@@ -68,49 +68,12 @@ class Columns<TModel>
 
         var config = new ColumnConfig<TModel, TProperty>();
         configuration(config);
-        if (config.Heading != null)
-        {
-            column.Heading = config.Heading;
-        }
 
-        if (config.Order != null)
-        {
-            column.Order = config.Order;
-        }
-
-        if (config.Width != null)
-        {
-            column.Width = config.Width;
-        }
-
-        if (config.MinWidth != null)
-        {
-            column.MinWidth = config.MinWidth;
-        }
-
-        if (config.MaxWidth != null)
-        {
-            column.MaxWidth = config.MaxWidth;
-        }
-
-        if (config.HeadingStyle != null)
-        {
-            column.HeadingStyle = config.HeadingStyle;
-        }
+        ColumnConfigMerge.ApplyUserSettings(config, column);
 
         if (config.CellStyle != null)
         {
             column.CellStyle = (style, model, value) => config.CellStyle.Invoke(style, model, (TProperty)value!);
-        }
-
-        if (config.Format != null)
-        {
-            column.Format = config.Format;
-        }
-
-        if (config.NullDisplay != null)
-        {
-            column.NullDisplay = config.NullDisplay;
         }
 
         if (config.Render != null)
@@ -131,91 +94,6 @@ class Columns<TModel>
             {
                 column.AllowedValues = null;
             }
-        }
-
-        if (config.IsHtml is { } fluentIsHtml)
-        {
-            if (column.IsHtmlExplicit && column.IsHtml != fluentIsHtml)
-            {
-                throw new($"Column '{column.Name}': mismatched IsHtml — attribute says {column.IsHtml}, fluent configuration says {fluentIsHtml}.");
-            }
-
-            column.IsHtml = fluentIsHtml;
-            column.IsHtmlExplicit = true;
-        }
-
-        if (config.Filter != null)
-        {
-            column.Filter = config.Filter.Value;
-        }
-
-        if (config.Include != null)
-        {
-            column.Include = config.Include.Value;
-        }
-
-        if (config.DisableAllowedValues)
-        {
-            column.AllowedValues = null;
-        }
-        else if (config.AllowedValues != null)
-        {
-            column.AllowedValues = config.AllowedValues;
-        }
-
-        if (config.NumericMin.HasValue)
-        {
-            column.NumericMin = config.NumericMin;
-        }
-
-        if (config.NumericMax.HasValue)
-        {
-            column.NumericMax = config.NumericMax;
-        }
-
-        if (config.DateMin.HasValue)
-        {
-            column.DateMin = config.DateMin;
-        }
-
-        if (config.DateMax.HasValue)
-        {
-            column.DateMax = config.DateMax;
-        }
-
-        if (config.Required.HasValue)
-        {
-            column.Required = config.Required.Value;
-        }
-
-        if (config.Locked.HasValue)
-        {
-            column.Locked = config.Locked;
-        }
-
-        if (config.InputTitle != null)
-        {
-            column.InputTitle = config.InputTitle;
-        }
-
-        if (config.InputMessage != null)
-        {
-            column.InputMessage = config.InputMessage;
-        }
-
-        if (config.ErrorTitle != null)
-        {
-            column.ErrorTitle = config.ErrorTitle;
-        }
-
-        if (config.ErrorMessage != null)
-        {
-            column.ErrorMessage = config.ErrorMessage;
-        }
-
-        if (config.ErrorStyle.HasValue)
-        {
-            column.ErrorStyle = config.ErrorStyle;
         }
     }
 

@@ -1329,6 +1329,149 @@ using var book = await builder.Build();
 <!-- endSnippet -->
 
 
+### Dictionary Sheets
+
+When the data isn't backed by a class, use `AddDictionarySheet` to write rows from `IReadOnlyDictionary<string, object?>`. Columns are declared explicitly via `Column<TProperty>("key", ...)`; the key is the dictionary lookup *and* the default heading. `TProperty` drives type-based defaults (date format, enum dropdown, numeric ISNUMBER validation) the same way a strong-typed property does. Keys missing from a row are written as null cells.
+
+<!-- snippet: DictionarySheetBasic -->
+<a id='snippet-DictionarySheetBasic'></a>
+```cs
+var rows = new IReadOnlyDictionary<string, object?>[]
+{
+    new Dictionary<string, object?>
+    {
+        ["Name"] = "John Doe",
+        ["Email"] = "john@company.com",
+        ["HireDate"] = new DateTime(2020, 1, 15),
+        ["Salary"] = 75_000m
+    },
+    new Dictionary<string, object?>
+    {
+        ["Name"] = "Jane Smith",
+        ["Email"] = "jane@company.com",
+        ["HireDate"] = new DateTime(2019, 3, 22),
+        ["Salary"] = 120_000m
+    }
+};
+
+var builder = new BookBuilder();
+builder.AddDictionarySheet(rows)
+    .Column<string>("Name", _ => _.Width = 25)
+    .Column<string>("Email", _ => _.Width = 30)
+    .Column<DateTime>("HireDate", _ => _.Heading = "Hire Date")
+    .Column<decimal>(
+        "Salary",
+        _ =>
+        {
+            _.Heading = "Annual Salary";
+            _.Format = "$#,##0.00";
+        });
+
+using var book = await builder.Build();
+```
+<sup><a href='/src/Excelsior.Tests/DictionarySheetTests.cs#L7-L42' title='Snippet source file'>snippet source</a> | <a href='#snippet-DictionarySheetBasic' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+#### Type-Based Inference
+
+A column's `TProperty` drives the same defaults as the strong-typed path. For example, an `enum`-typed column auto-derives its allowed values into a dropdown:
+
+<!-- snippet: DictionarySheetEnumDropdown -->
+<a id='snippet-DictionarySheetEnumDropdown'></a>
+```cs
+var rows = new IReadOnlyDictionary<string, object?>[]
+{
+    new Dictionary<string, object?> { ["Name"] = "Alice", ["Status"] = EmployeeStatus.FullTime },
+    new Dictionary<string, object?> { ["Name"] = "Bob", ["Status"] = EmployeeStatus.PartTime },
+};
+
+var builder = new BookBuilder();
+builder.AddDictionarySheet(rows)
+    .Column<string>("Name")
+    .Column<EmployeeStatus>("Status");
+
+using var book = await builder.Build();
+```
+<sup><a href='/src/Excelsior.Tests/DictionarySheetTests.cs#L70-L85' title='Snippet source file'>snippet source</a> | <a href='#snippet-DictionarySheetEnumDropdown' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+#### Formulas
+
+Formulas can reference other columns by key via string-keyed overloads on `FormulaContext`. `ctx.Ref("Quantity")` resolves to the cell reference (e.g. `B2`) for the `Quantity` column on the current row.
+
+<!-- snippet: DictionarySheetFormula -->
+<a id='snippet-DictionarySheetFormula'></a>
+```cs
+var rows = new IReadOnlyDictionary<string, object?>[]
+{
+    new Dictionary<string, object?> { ["Item"] = "Widget", ["Quantity"] = 3, ["UnitPrice"] = 10m },
+    new Dictionary<string, object?> { ["Item"] = "Gadget", ["Quantity"] = 5, ["UnitPrice"] = 8m },
+};
+
+var builder = new BookBuilder();
+builder.AddDictionarySheet(rows)
+    .Column<string>("Item")
+    .Column<int>("Quantity")
+    .Column<decimal>("UnitPrice")
+    .Column<decimal>(
+        "Total",
+        _ =>
+        {
+            _.Format = "$#,##0.00";
+            _.Formula = (_, ctx) => $"={ctx.Ref("Quantity")}*{ctx.Ref("UnitPrice")}";
+        });
+
+using var book = await builder.Build();
+```
+<sup><a href='/src/Excelsior.Tests/DictionarySheetTests.cs#L93-L116' title='Snippet source file'>snippet source</a> | <a href='#snippet-DictionarySheetFormula' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+#### Round-Trip with `BookReader`
+
+Dictionary sheets written by `BookBuilder` can be read back by the dictionary path on `BookReader` (`reader.AddSheet()`). Column metadata records each column's key, so headings can be renamed independently of the keys without breaking the round-trip.
+
+<!-- snippet: DictionarySheetRoundTrip -->
+<a id='snippet-DictionarySheetRoundTrip'></a>
+```cs
+var rows = new IReadOnlyDictionary<string, object?>[]
+{
+    new Dictionary<string, object?>
+    {
+        ["Name"] = "Alice",
+        ["HireDate"] = new Date(2020, 1, 15),
+        ["Status"] = EmployeeStatus.FullTime
+    },
+    new Dictionary<string, object?>
+    {
+        ["Name"] = "Bob",
+        ["HireDate"] = new Date(2021, 6, 1),
+        ["Status"] = EmployeeStatus.PartTime
+    }
+};
+
+var stream = new MemoryStream();
+var builder = new BookBuilder();
+builder.AddDictionarySheet(rows)
+    .Column<string>("Name")
+    .Column<Date>("HireDate", _ => _.Heading = "Hire Date")
+    .Column<EmployeeStatus>("Status");
+await builder.ToStream(stream);
+stream.Position = 0;
+
+var reader = new BookReader();
+var sheet = reader.AddSheet();
+sheet
+    .Column<string>("Name")
+    .Column<Date>("HireDate")
+    .Column<EmployeeStatus>("Status");
+reader.Convert(stream);
+
+var first = sheet.Rows[0];
+```
+<sup><a href='/src/Excelsior.Tests/DictionarySheetTests.cs#L124-L161' title='Snippet source file'>snippet source</a> | <a href='#snippet-DictionarySheetRoundTrip' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+
 ### Template Sheets
 
 `AddTemplateSheet` produces an empty spreadsheet for the user to fill in — known column names, types, widths, formats, and validation but no data rows. Validation, locked-cell behavior, and conditional formatting all extend down `templateRowCount` rows below the header (defaults to 1000).

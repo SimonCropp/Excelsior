@@ -92,6 +92,49 @@ public class BookBuilder
     }
 
     /// <summary>
+    /// Adds a sheet whose rows are <see cref="IReadOnlyDictionary{TKey,TValue}"/> instances
+    /// keyed by string. Columns must be declared explicitly via
+    /// <see cref="IDictionarySheetBuilder.Column{TProperty}"/>; the column key is also the
+    /// dictionary lookup key for each row.
+    /// </summary>
+    public IDictionarySheetBuilder AddDictionarySheet(
+        IEnumerable<IReadOnlyDictionary<string, object?>> data,
+        string? name = null,
+        int? defaultMinColumnWidth = null,
+        int? defaultMaxColumnWidth = null,
+        int? maxRowHeight = null) =>
+        AddDictionarySheet(data.ToAsyncEnumerable(), name, defaultMinColumnWidth, defaultMaxColumnWidth, maxRowHeight);
+
+    public IDictionarySheetBuilder AddDictionarySheet(
+        IAsyncEnumerable<IReadOnlyDictionary<string, object?>> data,
+        string? name = null,
+        int? defaultMinColumnWidth = null,
+        int? defaultMaxColumnWidth = null,
+        int? maxRowHeight = null)
+    {
+        name ??= $"Sheet{actions.Count + 1}";
+        var builder = new DictionarySheetBuilder();
+
+        actions.Add((book, cancel) =>
+        {
+            var renderer = new Renderer<IReadOnlyDictionary<string, object?>>(
+                name,
+                data,
+                builder.OrderedColumns(),
+                defaultMinColumnWidth,
+                defaultMaxColumnWidth,
+                maxRowHeight,
+                this)
+            {
+                AutoFilter = builder.AutoFilter
+            };
+            return renderer.AddSheet(book, cancel);
+        });
+
+        return builder;
+    }
+
+    /// <summary>
     /// Adds an empty template sheet with no underlying data binding. Columns are defined explicitly
     /// by name, type, and configuration. Useful when emitting a spreadsheet for users to fill in.
     /// Validation, locked-cell behavior, and conditional formatting all extend down

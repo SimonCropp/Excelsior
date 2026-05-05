@@ -71,7 +71,8 @@ class ColumnConfig<TModel>
     }
 }
 
-public class ColumnConfig<TModel, TProperty>
+public class ColumnConfig<TModel, TProperty> :
+    IColumnSettings
 {
     public string? Heading { get; set; }
     public int? Order { get; set; }

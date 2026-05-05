@@ -274,4 +274,13 @@ public class BookBuilder
         document.Clone(stream);
         return stream.ToArray();
     }
+
+    public async Task<MemoryStream> ToMemoryStream(Cancel cancel = default)
+    {
+        using var document = await Build(cancel);
+        var stream = new MemoryStream();
+        document.Clone(stream);
+        stream.Position = 0;
+        return stream;
+    }
 }

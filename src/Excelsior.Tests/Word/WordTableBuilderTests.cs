@@ -102,7 +102,7 @@ public class WordTableBuilderTests
         {
             new LinkRow
             {
-                Label = "Anthropic",
+                Label = "Excelsior",
                 Site = new("http://github.com/SimonCropp/Excelsior", "Home")
             }
         };
@@ -142,7 +142,7 @@ public class WordTableBuilderTests
         {
             new LinkRow
             {
-                Label = "Anthropic",
+                Label = "Excelsior",
                 Site = new("http://github.com/SimonCropp/Excelsior", "Home")
             }
         };

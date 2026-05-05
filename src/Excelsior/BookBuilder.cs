@@ -266,4 +266,21 @@ public class BookBuilder
         await using var stream = File.Create(path);
         await ToStream(stream, cancel);
     }
+
+    public async Task<byte[]> ToBytes(Cancel cancel = default)
+    {
+        using var document = await Build(cancel);
+        using var stream = new MemoryStream();
+        document.Clone(stream);
+        return stream.ToArray();
+    }
+
+    public async Task<MemoryStream> ToMemoryStream(Cancel cancel = default)
+    {
+        using var document = await Build(cancel);
+        var stream = new MemoryStream();
+        document.Clone(stream);
+        stream.Position = 0;
+        return stream;
+    }
 }

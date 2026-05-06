@@ -326,13 +326,19 @@ static class WordTableRenderer<TModel>
         foreach (var column in columns)
         {
             var value = column.GetValue(item);
-            row.Append(new W.TableCell(BuildCellParagraph(column, item, value, mainPart)));
+            var cell = new W.TableCell();
+            foreach (var paragraph in BuildCellParagraphs(column, item, value, mainPart))
+            {
+                cell.Append(paragraph);
+            }
+
+            row.Append(cell);
         }
 
         return row;
     }
 
-    static W.Paragraph BuildCellParagraph(
+    static IReadOnlyList<W.Paragraph> BuildCellParagraphs(
         ColumnConfig<TModel> column,
         TModel item,
         object? value,
@@ -349,16 +355,27 @@ static class WordTableRenderer<TModel>
         // fall through to the plain-text path which renders link.Text ?? link.Url.
         if (value is Link link && mainPart != null)
         {
-            return BuildHyperlinkParagraph(link, mainPart);
+            return [BuildHyperlinkParagraph(link, mainPart)];
         }
 
         var text = ToText(column, item, value);
-        return new(
-            new W.Run(
-                new W.Text(text)
-                {
-                    Space = SpaceProcessingModeValues.Preserve
-                }));
+
+        // IsHtml columns route through WordHtmlConverter so inline tags (<i>, <b>, <a>, etc.) and
+        // block elements (<p>, <ul>, ...) become proper runs/paragraphs instead of literal text.
+        if (column.IsHtml)
+        {
+            return WordHtmlConverter.ToParagraphs(text, mainPart);
+        }
+
+        return
+        [
+            new(
+                new W.Run(
+                    new W.Text(text)
+                    {
+                        Space = SpaceProcessingModeValues.Preserve
+                    }))
+        ];
     }
 
     static W.Paragraph BuildHyperlinkParagraph(Link link, MainDocumentPart mainPart)

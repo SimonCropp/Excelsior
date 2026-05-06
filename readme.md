@@ -2700,7 +2700,7 @@ var builder = new WordTableBuilder<Employee>(
         _.Font.Underline = true;
     });
 ```
-<sup><a href='/src/Excelsior.Tests/Word/WordTableBuilderTests.cs#L172-L185' title='Snippet source file'>snippet source</a> | <a href='#snippet-WordTableHeadingStyle' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/Word/WordTableBuilderTests.cs#L184-L197' title='Snippet source file'>snippet source</a> | <a href='#snippet-WordTableHeadingStyle' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 A per-column `HeadingStyle` on `ColumnConfig` composes on top of the table-level style, so individual headers can override or extend the shared look:
@@ -2715,7 +2715,7 @@ var builder = new WordTableBuilder<Employee>(
         _ => _.Name,
         _ => _.HeadingStyle = cell => cell.BackgroundColor = "FF0000");
 ```
-<sup><a href='/src/Excelsior.Tests/Word/WordTableBuilderTests.cs#L193-L202' title='Snippet source file'>snippet source</a> | <a href='#snippet-WordTableColumnHeadingStyle' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/Word/WordTableBuilderTests.cs#L205-L214' title='Snippet source file'>snippet source</a> | <a href='#snippet-WordTableColumnHeadingStyle' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 Colors accept a leading `#` (e.g. `"#4472C4"`) and it will be stripped before being written to OpenXml.

@@ -163,6 +163,29 @@ public class WordTableBuilderTests
         AreEqual("Home", run.GetFirstChild<Text>()!.Text);
     }
 
+    public record HtmlRow
+    {
+        [Column(IsHtml = true)]
+        public required string Name { get; init; }
+    }
+
+    [Test]
+    public void IsHtmlColumnRendersInlineFormattingAsRunProperties()
+    {
+        var rows = new[]
+        {
+            new HtmlRow { Name = "<i>A. Smith</i>" }
+        };
+
+        var table = new WordTableBuilder<HtmlRow>(rows).Build();
+
+        var dataCell = table.Elements<TableRow>().Skip(1).First().GetFirstChild<TableCell>()!;
+        var paragraph = dataCell.GetFirstChild<Paragraph>()!;
+        var run = paragraph.GetFirstChild<Run>()!;
+        IsNotNull(run.RunProperties!.GetFirstChild<Italic>());
+        AreEqual("A. Smith", run.GetFirstChild<Text>()!.Text);
+    }
+
     [Test]
     public void FormulaColumnThrows()
     {

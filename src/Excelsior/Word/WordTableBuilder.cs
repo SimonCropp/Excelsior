@@ -15,16 +15,6 @@ public class WordTableBuilder<TModel>(IEnumerable<TModel> data, Action<CellStyle
     readonly Columns<TModel> columns = new();
 
     /// <summary>
-    /// Table-level heading style applied to every header cell before any per-column
-    /// <see cref="ColumnConfig{TModel,TProperty}.HeadingStyle"/>. Mirrors
-    /// <see cref="BookBuilder.HeadingStyle"/> for spreadsheets. Translated to Word formatting at
-    /// build time: <see cref="CellStyle.BackgroundColor"/> becomes cell shading, <see
-    /// cref="CellFont"/> adjustments become run properties, and <see cref="CellAlignment"/>
-    /// adjustments become paragraph properties.
-    /// </summary>
-    public Action<CellStyle>? HeadingStyle { get; } = headingStyle;
-
-    /// <summary>
     /// Configure a single column. Mirrors <c>ISheetBuilder&lt;TModel&gt;.Column</c>: any settings
     /// not overridden fall back to <see cref="ColumnAttribute"/> on the model property.
     /// </summary>
@@ -47,5 +37,5 @@ public class WordTableBuilder<TModel>(IEnumerable<TModel> data, Action<CellStyle
     /// the host part. When omitted, link cells fall back to their display text only.
     /// </summary>
     public DocumentFormat.OpenXml.Wordprocessing.Table Build(MainDocumentPart? mainPart = null) =>
-        WordTableRenderer<TModel>.Build(data, columns.OrderedColumns(), HeadingStyle, mainPart);
+        WordTableRenderer<TModel>.Build(data, columns.OrderedColumns(), headingStyle, mainPart);
 }

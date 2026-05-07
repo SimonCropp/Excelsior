@@ -10,7 +10,8 @@ static class SheetParser
 
 
             var root = doc.Root;
-            if (root == null || root.Name.NamespaceName != BookBuilder.MetadataNamespace)
+            if (root == null ||
+                root.Name.NamespaceName != BookBuilder.MetadataNamespace)
             {
                 continue;
             }
@@ -27,7 +28,8 @@ static class SheetParser
                 var map = new Dictionary<int, string>();
                 foreach (var column in sheet.Elements(ns + "column"))
                 {
-                    if (!int.TryParse(column.Attribute("index")?.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var index))
+                    var indexCalue = column.Attribute("index")?.Value;
+                    if (!int.TryParse(indexCalue, NumberStyles.Integer, CultureInfo.InvariantCulture, out var index))
                     {
                         continue;
                     }
@@ -110,8 +112,7 @@ static class SheetParser
                         RowIndex: 0,
                         declared.Name,
                         CellReference: "",
-                        $"Column '{declared.Name}' (heading '{declared.Heading}') was not found in the sheet header row.",
-                        null));
+                        $"Column '{declared.Name}' (heading '{declared.Heading}') was not found in the sheet header row."));
                 }
 
                 if (errors.Count > beforeCount)
@@ -141,7 +142,7 @@ static class SheetParser
                     var col = slotColumns[slot];
                     var rowIndex = currentRow?.RowIndex?.Value ?? 0;
                     var cellRef = $"{SheetContext.GetColumnLetter(slot)}{rowIndex}";
-                    errors.Add(new(resolvedSheetName, (int)rowIndex, col.Name, cellRef, message, null));
+                    errors.Add(new(resolvedSheetName, (int)rowIndex, col.Name, cellRef, message));
                 };
 
                 continue;

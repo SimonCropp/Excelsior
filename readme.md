@@ -2681,10 +2681,10 @@ The `WordTableBuilder<TModel>` constructor accepts an optional table-level `head
 
 - `CellStyle.BackgroundColor` → cell shading (`<w:shd>`).
 - `CellFont.Bold` / `Underline` / `Color` / `Size` / `Name` → run properties.
-- `CellAlignment.Horizontal` → paragraph justification (defaults to centered).
+- `CellAlignment.Horizontal` → paragraph justification (defaults to left).
 - `CellAlignment.Vertical` → cell vertical alignment.
 
-The `CellStyle` is preseeded with `Font.Bold = true` and horizontal alignment `Center`, matching the default header look. Callers layer on additions, or opt out by setting `Font.Bold = false`:
+The `CellStyle` is preseeded with `Font.Bold = true` and horizontal alignment `Left`, matching the default header look. Callers layer on additions, or opt out by setting `Font.Bold = false`:
 
 <!-- snippet: WordTableHeadingStyle -->
 <a id='snippet-WordTableHeadingStyle'></a>

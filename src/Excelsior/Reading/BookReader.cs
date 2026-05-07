@@ -87,19 +87,20 @@ public class BookReader
             var name = sheet.Name;
             if (match == null)
             {
-                errors.Add(new(
-                    name ?? $"#{i}",
-                    0,
-                    "",
-                    "",
-                    name == null
-                        ? $"Workbook contains fewer than {i + 1} sheets."
-                        : $"Workbook does not contain a sheet named '{name}'."));
+                errors.Add(
+                    new(
+                        name ?? $"#{i}",
+                        0,
+                        "",
+                        "",
+                        name == null
+                            ? $"Workbook contains fewer than {i + 1} sheets."
+                            : $"Workbook does not contain a sheet named '{name}'."));
                 sheet.Reset();
                 continue;
             }
 
-            var worksheetPart = (WorksheetPart)workbookPart.GetPartById(match.Id!.Value!);
+            var worksheetPart = (WorksheetPart) workbookPart.GetPartById(match.Id!.Value!);
             var resolvedName = match.Name?.Value ?? name ?? $"#{i}";
             metadata.TryGetValue(resolvedName, out var columnMap);
             SheetParser.Parse(sheet, resolvedName, worksheetPart, sharedStrings, columnMap, errors);

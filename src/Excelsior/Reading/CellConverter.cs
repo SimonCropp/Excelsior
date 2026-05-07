@@ -15,7 +15,8 @@ static class CellConverter
         Action<int, string> onError,
         out object? value)
     {
-        if (converter != null && cell != null)
+        if (converter != null &&
+            cell != null)
         {
             try
             {
@@ -73,9 +74,11 @@ static class CellConverter
             return true;
         }
 
-        if (cell == null || string.IsNullOrEmpty(raw))
+        if (cell == null ||
+            string.IsNullOrEmpty(raw))
         {
-            if (isNullable || !effective.IsValueType)
+            if (isNullable ||
+                !effective.IsValueType)
             {
                 value = null;
                 error = null;
@@ -89,7 +92,6 @@ static class CellConverter
 
         try
         {
-
             if (effective == typeof(bool))
             {
                 if (TryParseBool(raw, out var b))

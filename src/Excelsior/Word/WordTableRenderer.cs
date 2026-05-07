@@ -169,14 +169,14 @@ static class WordTableRenderer<TModel>
 
     static CellStyle ResolveHeadingStyle(ColumnConfig<TModel> column, Action<CellStyle>? tableHeadingStyle)
     {
-        // Preseed with the renderer's header defaults (bold, centered) so callers can layer on
+        // Preseed with the renderer's header defaults (bold, left-aligned) so callers can layer on
         // additions (background, font color, size) or opt out (set Font.Bold = false) without
         // having to restate what they didn't want to change.
         var style = new CellStyle
         {
             Alignment =
             {
-                Horizontal = HorizontalAlignmentValues.Center
+                Horizontal = HorizontalAlignmentValues.Left
             },
             Font =
             {
@@ -248,9 +248,9 @@ static class WordTableRenderer<TModel>
     {
         var horizontal = style.Alignment.Horizontal;
         W.JustificationValues justification;
-        if (horizontal == HorizontalAlignmentValues.Left)
+        if (horizontal == HorizontalAlignmentValues.Center)
         {
-            justification = W.JustificationValues.Left;
+            justification = W.JustificationValues.Center;
         }
         else if (horizontal == HorizontalAlignmentValues.Right)
         {
@@ -262,8 +262,8 @@ static class WordTableRenderer<TModel>
         }
         else
         {
-            // Center / General / Fill all default to centered headers, matching the pre-styling behaviour.
-            justification = W.JustificationValues.Center;
+            // Left / General / Fill all collapse to left, matching the renderer's default.
+            justification = W.JustificationValues.Left;
         }
 
         return new(

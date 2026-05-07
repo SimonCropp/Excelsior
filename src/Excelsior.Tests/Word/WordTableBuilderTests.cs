@@ -49,7 +49,7 @@ public class WordTableBuilderTests
     }
 
     [Test]
-    public void HeaderRowIsBoldAndCentered()
+    public void HeaderRowIsBoldAndLeftAligned()
     {
         var builder = new WordTableBuilder<Employee>(SampleData.Employees());
         var table = builder.Build();
@@ -57,7 +57,7 @@ public class WordTableBuilderTests
         var headerRow = table.Elements<TableRow>().First();
         var headerParagraph = headerRow.Elements<TableCell>().First().GetFirstChild<Paragraph>()!;
         var justification = headerParagraph.ParagraphProperties!.GetFirstChild<Justification>()!;
-        AreEqual(JustificationValues.Center, justification.Val?.Value);
+        AreEqual(JustificationValues.Left, justification.Val?.Value);
 
         var headerRun = headerParagraph.GetFirstChild<Run>()!;
         IsNotNull(headerRun.RunProperties!.GetFirstChild<Bold>());

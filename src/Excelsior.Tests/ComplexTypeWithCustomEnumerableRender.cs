@@ -17,9 +17,7 @@ public class ComplexTypeWithCustomEnumerableRender
     [ModuleInitializer]
     public static void Init() =>
         ValueRenderer.For<Address>(_ =>
-        {
-            return $"{_.Number}, {_.Street}, {_.City}, {_.State}, {_.PostCode}";
-        });
+            $"{_.Number}, {_.Street}, {_.City}, {_.State}, {_.PostCode}");
 
     #endregion
 

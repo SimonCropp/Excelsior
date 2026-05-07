@@ -98,8 +98,7 @@ class SheetReader<TModel> :
 
         if (config.Convert != null)
         {
-            var convert = config.Convert;
-            column.Convert = cell => convert(cell);
+            column.Convert = cell => config.Convert(cell);
         }
 
         // Per-column configuration may have changed: drop the cached dispatch tables.

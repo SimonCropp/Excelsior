@@ -116,8 +116,22 @@ class Renderer<TModel>(
             SetCellValue(cell, column.Heading);
             var style = GetStyle(cell);
             ApplyHeadingStyling(column, style);
+            if (column.Heading.AsSpan().IndexOfAny('\n', '\r') >= 0)
+            {
+                style.Alignment.WrapText = true;
+            }
             CommitStyle(cell, style);
         }
+    }
+
+    static string NormalizeNewlines(string value)
+    {
+        if (value.AsSpan().IndexOf('\r') < 0)
+        {
+            return value;
+        }
+
+        return value.Replace("\r\n", "\n").Replace('\r', '\n');
     }
 
     void ApplyHeadingStyling(ColumnConfig<TModel> column, CellStyle style)
@@ -318,7 +332,7 @@ class Renderer<TModel>(
     }
 
     static Text BuildText(string value) =>
-        new(StripInvalidXmlChars(value))
+        new(StripInvalidXmlChars(NormalizeNewlines(value)))
         {
             Space = SpaceProcessingModeValues.Preserve
         };

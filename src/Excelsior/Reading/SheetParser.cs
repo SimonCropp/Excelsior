@@ -6,15 +6,8 @@ static class SheetParser
         foreach (var part in workbookPart.GetPartsOfType<CustomXmlPart>())
         {
             using var stream = part.GetStream();
-            XDocument doc;
-            try
-            {
-                doc = XDocument.Load(stream);
-            }
-            catch
-            {
-                continue;
-            }
+            var doc = XDocument.Load(stream);
+
 
             var root = doc.Root;
             if (root == null || root.Name.NamespaceName != BookBuilder.MetadataNamespace)

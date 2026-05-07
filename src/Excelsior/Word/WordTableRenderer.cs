@@ -133,6 +133,25 @@ static class WordTableRenderer<TModel>
         return grid;
     }
 
+    static void AppendTextWithLineBreaks(W.Run run, string value)
+    {
+        var normalized = value.Replace("\r\n", "\n").Replace('\r', '\n');
+        var lines = normalized.Split('\n');
+        for (var i = 0; i < lines.Length; i++)
+        {
+            if (i > 0)
+            {
+                run.Append(new W.Break());
+            }
+
+            run.Append(
+                new W.Text(lines[i])
+                {
+                    Space = SpaceProcessingModeValues.Preserve
+                });
+        }
+    }
+
     static W.TableRow BuildHeaderRow(List<ColumnConfig<TModel>> columns, Action<CellStyle>? tableHeadingStyle)
     {
         var row = new W.TableRow();
@@ -148,12 +167,8 @@ static class WordTableRenderer<TModel>
     {
         var style = ResolveHeadingStyle(column, tableHeadingStyle);
 
-        var run = new W.Run(
-            BuildHeaderRunProperties(style),
-            new W.Text(column.Heading)
-            {
-                Space = SpaceProcessingModeValues.Preserve
-            });
+        var run = new W.Run(BuildHeaderRunProperties(style));
+        AppendTextWithLineBreaks(run, column.Heading);
 
         var paragraph = new W.Paragraph(BuildHeaderParagraphProperties(style), run);
         var cell = new W.TableCell(paragraph);
@@ -367,15 +382,9 @@ static class WordTableRenderer<TModel>
             return WordHtmlConverter.ToParagraphs(text, mainPart);
         }
 
-        return
-        [
-            new(
-                new W.Run(
-                    new W.Text(text)
-                    {
-                        Space = SpaceProcessingModeValues.Preserve
-                    }))
-        ];
+        var run = new W.Run();
+        AppendTextWithLineBreaks(run, text);
+        return [new(run)];
     }
 
     static W.Paragraph BuildHyperlinkParagraph(Link link, MainDocumentPart mainPart)

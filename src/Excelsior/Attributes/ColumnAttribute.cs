@@ -1,6 +1,9 @@
+using JetBrains.Annotations;
+
 namespace Excelsior;
 
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Parameter)]
+[MeansImplicitUse]
 public sealed class ColumnAttribute :
     Attribute
 {

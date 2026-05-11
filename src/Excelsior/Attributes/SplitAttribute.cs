@@ -2,6 +2,7 @@
 
 [AttributeUsage(
     AttributeTargets.Property |
+    AttributeTargets.Field |
     AttributeTargets.Parameter |
     AttributeTargets.Class |
     AttributeTargets.Struct)]

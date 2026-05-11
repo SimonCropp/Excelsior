@@ -70,6 +70,57 @@ public class GeneratedTestModel
 #endregion
 
 [SheetModel]
+public class GeneratedFieldModel
+{
+    public string Name = "";
+    public int Age;
+}
+
+[TestFixture]
+public class SourceGeneratorFieldIntegrationTests
+{
+    [Test]
+    public async Task GeneratedExtensionsForFields()
+    {
+        var builder = new BookBuilder();
+
+        List<GeneratedFieldModel> data =
+        [
+            new() { Name = "Alice", Age = 30 },
+            new() { Name = "Bob", Age = 25 },
+        ];
+
+        var sheet = builder.AddSheet(data);
+        sheet.NameColumn(_ => _.Heading = "Full Name");
+        sheet.AgeWidth(15);
+
+        using var book = await builder.Build();
+        await Verify(book);
+    }
+
+    [Test]
+    public async Task GeneratedRoundTripWithFields()
+    {
+        var stream = new MemoryStream();
+        var builder = new BookBuilder();
+        builder.AddSheet<GeneratedFieldModel>(
+        [
+            new() { Name = "Alice", Age = 30 },
+            new() { Name = "Bob", Age = 25 },
+        ]);
+        await builder.ToStream(stream);
+
+        stream.Position = 0;
+
+        var reader = new BookReader();
+        var sheet = reader.AddSheet<GeneratedFieldModel>();
+        reader.Convert(stream);
+
+        await Verify(sheet.Rows);
+    }
+}
+
+[SheetModel]
 public class GeneratedColumnAttributeModel
 {
     [Column(Heading = "Employee ID", Order = 1, Format = "0000")]

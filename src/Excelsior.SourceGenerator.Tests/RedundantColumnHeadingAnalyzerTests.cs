@@ -40,6 +40,26 @@ public class RedundantColumnHeadingAnalyzerTests
     }
 
     [Test]
+    public void RedundantHeading_OnField()
+    {
+        var source = """
+            using Excelsior;
+
+            public class Order
+            {
+                [Column(Heading = "ReferenceNumber")]
+                public string ReferenceNumber;
+            }
+            """;
+
+        var diagnostics = GetDiagnostics(source);
+
+        AreEqual(1, diagnostics.Length);
+        AreEqual("EXCEL001", diagnostics[0].Id);
+        IsTrue(diagnostics[0].GetMessage().Contains("ReferenceNumber"));
+    }
+
+    [Test]
     public void RedundantHeading_CamelCaseSplit()
     {
         var source = """

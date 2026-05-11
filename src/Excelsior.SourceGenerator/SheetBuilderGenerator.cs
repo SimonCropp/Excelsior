@@ -94,9 +94,9 @@ public class SheetBuilderGenerator :
     }
 
     /// <summary>
-    /// Enumerate top-level public readable properties in declaration order, the
-    /// same set the runtime <c>SheetReader&lt;T&gt;</c> sees. Each slot's
-    /// assignment kind is derived from <paramref name="activator"/>.
+    /// Enumerate top-level public readable members (properties and fields) in
+    /// declaration order, the same set the runtime <c>SheetReader&lt;T&gt;</c>
+    /// sees. Each slot's assignment kind is derived from <paramref name="activator"/>.
     /// </summary>
     static EquatableArray<RowReaderSlot>? BuildRowReaderSlots(INamedTypeSymbol type, ActivatorPlan? activator)
     {
@@ -110,58 +110,38 @@ public class SheetBuilderGenerator :
         var setSet = new HashSet<string>(plan.SetProps.Select(_ => _.Name), StringComparer.Ordinal);
 
         var slots = new List<RowReaderSlot>();
-        foreach (var member in type.GetMembers())
+        foreach (var member in type.EnumerateColumnMembers())
         {
-            if (member is not IPropertySymbol property)
-            {
-                continue;
-            }
-
-            if (property.DeclaredAccessibility != Accessibility.Public)
-            {
-                continue;
-            }
-
-            if (property.IsStatic || property.IsIndexer)
-            {
-                continue;
-            }
-
-            if (property.GetMethod is null)
-            {
-                continue;
-            }
-
-            if (HasAttribute(property, "IgnoreAttribute"))
+            if (HasAttribute(member.Symbol, "IgnoreAttribute"))
             {
                 continue;
             }
 
             // [Split] is unsupported by the row reader path: matches the runtime
             // reader, which doesn't recurse either.
-            if (HasAttribute(property, "SplitAttribute") ||
-                HasAttribute(property.Type, "SplitAttribute"))
+            if (HasAttribute(member.Symbol, "SplitAttribute") ||
+                HasAttribute(member.Type, "SplitAttribute"))
             {
                 return null;
             }
 
             var assignment = SlotAssignment.None;
-            if (ctorParamSet.Contains(property.Name))
+            if (ctorParamSet.Contains(member.Name))
             {
                 assignment = SlotAssignment.CtorArg;
             }
-            else if (initSet.Contains(property.Name))
+            else if (initSet.Contains(member.Name))
             {
                 assignment = SlotAssignment.Init;
             }
-            else if (setSet.Contains(property.Name))
+            else if (setSet.Contains(member.Name))
             {
                 assignment = SlotAssignment.Setter;
             }
 
-            var (typeFull, readerKey, isNullable) = ClassifyType(property.Type);
+            var (typeFull, readerKey, isNullable) = ClassifyType(member.Type);
 
-            slots.Add(new(property.Name, typeFull, readerKey, isNullable, assignment));
+            slots.Add(new(member.Name, typeFull, readerKey, isNullable, assignment));
         }
 
         return new(slots.ToImmutableArray());
@@ -262,44 +242,28 @@ public class SheetBuilderGenerator :
         var initBuilder = ImmutableArray.CreateBuilder<ActivatorAssign>();
         var setBuilder = ImmutableArray.CreateBuilder<ActivatorAssign>();
 
-        foreach (var member in type.GetMembers())
+        foreach (var member in type.EnumerateColumnMembers())
         {
-            if (member is not IPropertySymbol property)
+            if (HasAttribute(member.Symbol, "IgnoreAttribute"))
             {
                 continue;
             }
 
-            if (property.DeclaredAccessibility != Accessibility.Public)
+            if (ctorParamNames.Contains(member.Name))
             {
                 continue;
             }
 
-            if (property.IsStatic || property.IsIndexer)
-            {
-                continue;
-            }
-
-            if (HasAttribute(property, "IgnoreAttribute"))
-            {
-                continue;
-            }
-
-            if (ctorParamNames.Contains(property.Name))
-            {
-                continue;
-            }
-
-            var setter = property.SetMethod;
-            if (setter is not {DeclaredAccessibility: Accessibility.Public})
+            if (!member.HasPublicSetter)
             {
                 continue;
             }
 
             var assign = new ActivatorAssign(
-                property.Name,
-                property.Type.ToDisplayString(nullableQualified));
+                member.Name,
+                member.Type.ToDisplayString(nullableQualified));
 
-            if (setter.IsInitOnly || property.IsRequired)
+            if (member.IsInitOnly || member.IsRequired)
             {
                 initBuilder.Add(assign);
             }
@@ -351,34 +315,19 @@ public class SheetBuilderGenerator :
 
     static IEnumerable<PropertyInfo> GetPropertiesRecursive(INamedTypeSymbol type, ImmutableArray<string> parentPath)
     {
-        foreach (var member in type.GetMembers())
+        foreach (var member in type.EnumerateColumnMembers())
         {
-            if (member is not IPropertySymbol property)
+            if (HasAttribute(member.Symbol, "IgnoreAttribute"))
             {
                 continue;
             }
 
-            if (property.DeclaredAccessibility != Accessibility.Public)
+            if (HasAttribute(member.Symbol, "SplitAttribute") ||
+                HasAttribute(member.Type, "SplitAttribute"))
             {
-                continue;
-            }
-
-            if (property.GetMethod is null)
-            {
-                continue;
-            }
-
-            if (HasAttribute(property, "IgnoreAttribute"))
-            {
-                continue;
-            }
-
-            if (HasAttribute(property, "SplitAttribute") ||
-                HasAttribute(property.Type, "SplitAttribute"))
-            {
-                if (property.Type is INamedTypeSymbol namedType)
+                if (member.Type is INamedTypeSymbol namedType)
                 {
-                    var newPath = parentPath.Add(property.Name);
+                    var newPath = parentPath.Add(member.Name);
                     foreach (var nested in GetPropertiesRecursive(namedType, newPath))
                     {
                         yield return nested;
@@ -388,17 +337,17 @@ public class SheetBuilderGenerator :
                 continue;
             }
 
-            var propertyType = property.Type.ToDisplayString(
+            var memberType = member.Type.ToDisplayString(
                 SymbolDisplayFormat.FullyQualifiedFormat
                     .AddMiscellaneousOptions(SymbolDisplayMiscellaneousOptions.IncludeNullableReferenceTypeModifier));
             var accessPath = parentPath.IsEmpty
-                ? property.Name
-                : string.Join(".", parentPath.Add(property.Name));
+                ? member.Name
+                : string.Join(".", parentPath.Add(member.Name));
 
-            var column = GetColumnData(property);
-            var declaringType = property.ContainingType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+            var column = GetColumnData(member.Symbol);
+            var declaringType = member.Symbol.ContainingType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 
-            yield return new(property.Name, propertyType, accessPath, declaringType, column);
+            yield return new(member.Name, memberType, accessPath, declaringType, column);
         }
     }
 
@@ -415,9 +364,9 @@ public class SheetBuilderGenerator :
     static AttributeData? FindAttribute(ImmutableArray<AttributeData> attributes, string name) =>
         attributes.FirstOrDefault(_ => IsAttribute(_.AttributeClass, name));
 
-    static AttributeData? FindColumnAttribute(IPropertySymbol property)
+    static AttributeData? FindColumnAttribute(ISymbol member)
     {
-        var attr = FindAttribute(property.GetAttributes(), "ColumnAttribute");
+        var attr = FindAttribute(member.GetAttributes(), "ColumnAttribute");
 
         if (attr is not null)
         {
@@ -425,12 +374,12 @@ public class SheetBuilderGenerator :
         }
 
         // Check matching constructor parameter (e.g. record positional parameters)
-        if (property.ContainingType is { } type)
+        if (member.ContainingType is { } type)
         {
             foreach (var constructor in type.Constructors)
             {
                 var param = constructor.Parameters
-                    .FirstOrDefault(_ => _.Name == property.Name);
+                    .FirstOrDefault(_ => _.Name == member.Name);
 
                 if (param is null)
                 {
@@ -449,11 +398,11 @@ public class SheetBuilderGenerator :
         return null;
     }
 
-    static ColumnData? GetColumnData(IPropertySymbol property)
+    static ColumnData? GetColumnData(ISymbol member)
     {
-        var columnAttribute = FindColumnAttribute(property);
-        var hasHtmlSyntax = HasHtmlStringSyntax(property);
-        var hasHtmlAttribute = HasHtmlAttribute(property);
+        var columnAttribute = FindColumnAttribute(member);
+        var hasHtmlSyntax = HasHtmlStringSyntax(member);
+        var hasHtmlAttribute = HasHtmlAttribute(member);
 
         if (columnAttribute is null &&
             !hasHtmlSyntax &&
@@ -544,20 +493,20 @@ public class SheetBuilderGenerator :
         return new(heading, order, width, minWidth, maxWidth, format, nullDisplay, isHtml, filter, include);
     }
 
-    static bool HasHtmlAttribute(IPropertySymbol property)
+    static bool HasHtmlAttribute(ISymbol member)
     {
-        if (HasHtmlAttribute(property.GetAttributes()))
+        if (HasHtmlAttribute(member.GetAttributes()))
         {
             return true;
         }
 
-        if (property.ContainingType is { } type)
+        if (member.ContainingType is { } type)
         {
             foreach (var constructor in type.Constructors)
             {
                 foreach (var parameter in constructor.Parameters)
                 {
-                    if (parameter.Name != property.Name)
+                    if (parameter.Name != member.Name)
                     {
                         continue;
                     }
@@ -586,20 +535,20 @@ public class SheetBuilderGenerator :
         return false;
     }
 
-    static bool HasHtmlStringSyntax(IPropertySymbol property)
+    static bool HasHtmlStringSyntax(ISymbol member)
     {
-        if (HasHtmlStringSyntax(property.GetAttributes()))
+        if (HasHtmlStringSyntax(member.GetAttributes()))
         {
             return true;
         }
 
-        if (property.ContainingType is { } type)
+        if (member.ContainingType is { } type)
         {
             foreach (var constructor in type.Constructors)
             {
                 foreach (var parameter in constructor.Parameters)
                 {
-                    if (parameter.Name != property.Name)
+                    if (parameter.Name != member.Name)
                     {
                         continue;
                     }

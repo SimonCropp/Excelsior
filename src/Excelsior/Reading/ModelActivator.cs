@@ -54,10 +54,11 @@ static class ModelActivator<T>
 
     static Dictionary<string, Action<T, object?>> BuildSetters(Type type)
     {
+        const BindingFlags flags = BindingFlags.Public | BindingFlags.Instance;
         var result = new Dictionary<string, Action<T, object?>>(StringComparer.Ordinal);
-        foreach (var property in type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
+        foreach (var property in type.GetProperties(flags))
         {
-            if (!property.CanWrite)
+            if (!property.CanWriteMember())
             {
                 continue;
             }
@@ -68,19 +69,38 @@ static class ModelActivator<T>
                 continue;
             }
 
-            result[property.Name] = BuildSetter(property, setter);
+            result[property.Name] = BuildPropertySetter(property, setter);
+        }
+
+        foreach (var field in type.GetFields(flags))
+        {
+            if (!field.CanWriteMember())
+            {
+                continue;
+            }
+
+            result[field.Name] = BuildFieldSetter(field);
         }
 
         return result;
     }
 
-    static Action<T, object?> BuildSetter(PropertyInfo property, MethodInfo setter)
+    static Action<T, object?> BuildPropertySetter(PropertyInfo property, MethodInfo setter)
     {
         var target = Expression.Parameter(typeof(T), "target");
         var value = Expression.Parameter(typeof(object), "value");
         var converted = Expression.Convert(value, property.PropertyType);
         var call = Expression.Call(target, setter, converted);
         return Expression.Lambda<Action<T, object?>>(call, target, value).Compile();
+    }
+
+    static Action<T, object?> BuildFieldSetter(FieldInfo field)
+    {
+        var target = Expression.Parameter(typeof(T), "target");
+        var value = Expression.Parameter(typeof(object), "value");
+        var converted = Expression.Convert(value, field.FieldType);
+        var assign = Expression.Assign(Expression.Field(target, field), converted);
+        return Expression.Lambda<Action<T, object?>>(assign, target, value).Compile();
     }
 
     /// <summary>True when a [SheetModel] source-generated factory is registered for T.</summary>

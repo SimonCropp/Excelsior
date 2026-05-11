@@ -287,7 +287,7 @@ public async Task PositionalRecord()
 Limitations:
 
 - Parameter matching is case-sensitive — a constructor parameter `name` will not bind to property `Name`.
-- Only properties are bound; fields are ignored.
+- Public instance properties and fields are both bound. `readonly` and `const` fields are read on write but skipped on read (they keep their initializer value).
 - A type with no public constructors and no parameterless constructor (public or non-public) throws on the first row.
 
 ##### Source-generated activators
@@ -1898,7 +1898,7 @@ It is intended as the preferred approach over usage of `DisplayAttribute` and `D
 ```cs
 namespace Excelsior;
 
-[AttributeUsage(AttributeTargets.Property | AttributeTargets.Parameter)]
+[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Parameter)]
 public sealed class ColumnAttribute :
     Attribute
 {

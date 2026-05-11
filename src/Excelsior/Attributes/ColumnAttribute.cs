@@ -1,6 +1,6 @@
 namespace Excelsior;
 
-[AttributeUsage(AttributeTargets.Property | AttributeTargets.Parameter)]
+[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Parameter)]
 public sealed class ColumnAttribute :
     Attribute
 {

@@ -1896,9 +1896,12 @@ It is intended as the preferred approach over usage of `DisplayAttribute` and `D
 <!-- snippet: ColumnAttribute.cs -->
 <a id='snippet-ColumnAttribute.cs'></a>
 ```cs
+using JetBrains.Annotations;
+
 namespace Excelsior;
 
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Parameter)]
+[MeansImplicitUse]
 public sealed class ColumnAttribute :
     Attribute
 {
@@ -1947,7 +1950,7 @@ public sealed class ColumnAttribute :
     internal bool IncludeHasValue { get; private set; }
 }
 ```
-<sup><a href='/src/Excelsior/Attributes/ColumnAttribute.cs#L1-L50' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnAttribute.cs' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior/Attributes/ColumnAttribute.cs#L1-L53' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnAttribute.cs' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 

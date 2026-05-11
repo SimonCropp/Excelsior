@@ -708,7 +708,7 @@ public class SheetBuilderGenerator :
 
             if (col.Heading is { } heading)
             {
-                args.Add($"Heading: \"{Escape(heading)}\"");
+                args.Add($"Heading: {Literal(heading)}");
             }
 
             if (col.Order is { } order)
@@ -733,12 +733,12 @@ public class SheetBuilderGenerator :
 
             if (col.Format is { } format)
             {
-                args.Add($"Format: \"{Escape(format)}\"");
+                args.Add($"Format: {Literal(format)}");
             }
 
             if (col.NullDisplay is { } nullDisplay)
             {
-                args.Add($"NullDisplay: \"{Escape(nullDisplay)}\"");
+                args.Add($"NullDisplay: {Literal(nullDisplay)}");
             }
 
             if (col.IsHtml)
@@ -981,6 +981,6 @@ public class SheetBuilderGenerator :
         builder.AppendLine($"        }}{terminator}");
     }
 
-    static string Escape(string value) =>
-        value.Replace("\\", "\\\\").Replace("\"", "\\\"");
+    static string Literal(string value) =>
+        Microsoft.CodeAnalysis.CSharp.SymbolDisplay.FormatLiteral(value, quote: true);
 }

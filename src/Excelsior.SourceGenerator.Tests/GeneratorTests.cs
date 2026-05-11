@@ -107,6 +107,45 @@ public class GeneratorTests
     }
 
     [Test]
+    public Task WithHeadingContainingEscapes()
+    {
+        // Every property exercises a different escape sequence in the
+        // Heading/Format/NullDisplay string so the generated registration must
+        // emit a valid C# string literal for each. Regression test for
+        // headings that broke the generator when only \ and " were escaped.
+        var source = "using Excelsior;\n" +
+            "\n" +
+            "[SheetModel]\n" +
+            "public class Employee\n" +
+            "{\n" +
+            "    [Column(Heading = \"line1\\nline2\")]\n" +
+            "    public string Lf { get; set; }\n" +
+            "\n" +
+            "    [Column(Heading = \"line1\\rline2\")]\n" +
+            "    public string Cr { get; set; }\n" +
+            "\n" +
+            "    [Column(Heading = \"line1\\r\\nline2\")]\n" +
+            "    public string CrLf { get; set; }\n" +
+            "\n" +
+            "    [Column(Heading = \"col1\\tcol2\")]\n" +
+            "    public string Tab { get; set; }\n" +
+            "\n" +
+            "    [Column(Heading = \"say \\\"hi\\\"\")]\n" +
+            "    public string Quote { get; set; }\n" +
+            "\n" +
+            "    [Column(Heading = \"back\\\\slash\")]\n" +
+            "    public string Backslash { get; set; }\n" +
+            "\n" +
+            "    [Column(Format = \"0\\n0\", NullDisplay = \"n/a\\tvalue\")]\n" +
+            "    public int Mixed { get; set; }\n" +
+            "}\n";
+
+        var generated = Generate(source);
+
+        return Verify(generated);
+    }
+
+    [Test]
     public Task WithColumnAttributes()
     {
         var source = """

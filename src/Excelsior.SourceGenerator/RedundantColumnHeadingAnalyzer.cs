@@ -28,25 +28,19 @@ public class RedundantColumnHeadingAnalyzer : DiagnosticAnalyzer
             }
 
             start.RegisterSymbolAction(
-                ctx => AnalyzeProperty(ctx, columnAttributeType),
+                ctx => AnalyzeMember(ctx, columnAttributeType),
                 SymbolKind.Property);
             start.RegisterSymbolAction(
-                ctx => AnalyzeParameter(ctx, columnAttributeType),
+                ctx => AnalyzeMember(ctx, columnAttributeType),
+                SymbolKind.Field);
+            start.RegisterSymbolAction(
+                ctx => AnalyzeMember(ctx, columnAttributeType),
                 SymbolKind.Parameter);
         });
     }
 
-    static void AnalyzeProperty(SymbolAnalysisContext context, INamedTypeSymbol columnAttributeType)
-    {
-        var property = (IPropertySymbol)context.Symbol;
-        AnalyzeSymbol(context, property.Name, columnAttributeType);
-    }
-
-    static void AnalyzeParameter(SymbolAnalysisContext context, INamedTypeSymbol columnAttributeType)
-    {
-        var parameter = (IParameterSymbol)context.Symbol;
-        AnalyzeSymbol(context, parameter.Name, columnAttributeType);
-    }
+    static void AnalyzeMember(SymbolAnalysisContext context, INamedTypeSymbol columnAttributeType) =>
+        AnalyzeSymbol(context, context.Symbol.Name, columnAttributeType);
 
     static void AnalyzeSymbol(SymbolAnalysisContext context, string memberName, INamedTypeSymbol columnAttributeType)
     {

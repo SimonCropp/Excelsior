@@ -20,28 +20,24 @@ class SheetReader<TModel> :
     {
         Name = name;
 
-        foreach (var info in GetReadableProperties(typeof(TModel)))
+        foreach (var info in GetReadableMembers(typeof(TModel)))
         {
             columns[info.Name] = new()
             {
                 Name = info.Name,
                 Heading = ResolveHeading(info),
-                Type = info.PropertyType,
+                Type = info.GetMemberType(),
                 Convert = null
             };
         }
     }
 
-    static IEnumerable<PropertyInfo> GetReadableProperties(Type type)
+    static IEnumerable<MemberInfo> GetReadableMembers(Type type)
     {
-        foreach (var property in type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
+        const BindingFlags flags = BindingFlags.Public | BindingFlags.Instance;
+        foreach (var property in type.GetProperties(flags))
         {
-            if (!property.CanRead)
-            {
-                continue;
-            }
-
-            if (property.GetIndexParameters().Length > 0)
+            if (!property.CanReadMember())
             {
                 continue;
             }
@@ -53,9 +49,19 @@ class SheetReader<TModel> :
 
             yield return property;
         }
+
+        foreach (var field in type.GetFields(flags))
+        {
+            if (field.Attribute<IgnoreAttribute>() != null)
+            {
+                continue;
+            }
+
+            yield return field;
+        }
     }
 
-    static string ResolveHeading(PropertyInfo info)
+    static string ResolveHeading(MemberInfo info)
     {
         var column = info.Attribute<ColumnAttribute>();
         if (column?.Heading != null)

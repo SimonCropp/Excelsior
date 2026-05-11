@@ -1,17 +1,17 @@
-﻿class Property<T>
+class Property<T>
 {
     public Property(
-        PropertyInfo info,
+        MemberInfo info,
         ParameterInfo? constructorParameter,
         Func<T, object?> get,
-        IReadOnlyList<(PropertyInfo property, ParameterInfo? parameter)> infos,
+        IReadOnlyList<(MemberInfo member, ParameterInfo? parameter)> infos,
         bool useHierachyForName)
     {
         Get = get;
         var generated = GeneratedColumnAttributes.TryGet(info.DeclaringType!, info.Name);
         var display = info.Attribute<DisplayAttribute>() ?? constructorParameter?.Attribute<DisplayAttribute>();
         DisplayName = GetHeading(infos, useHierachyForName);
-        Name = string.Join('.', infos.Select(_ => _.property.Name));
+        Name = string.Join('.', infos.Select(_ => _.member.Name));
 
         if (generated is null)
         {
@@ -28,7 +28,7 @@
         }
         else
         {
-            Order = generated.Order ?? display?.Order;
+            Order = generated.Order ?? display?.GetOrder();
             Width = generated.Width;
             MinWidth = generated.MinWidth;
             MaxWidth = generated.MaxWidth;
@@ -40,13 +40,13 @@
             Include = generated.Include;
         }
 
-        Type = info.PropertyType;
-        IsNumber = info.PropertyType.IsNumericType();
+        Type = info.GetMemberType();
+        IsNumber = Type.IsNumericType();
         IsNonNullable = ResolveIsNonNullable(info);
         IsRequired = ResolveIsRequired(info, constructorParameter);
     }
 
-    static bool ResolveIsRequired(PropertyInfo info, ParameterInfo? constructorParameter)
+    static bool ResolveIsRequired(MemberInfo info, ParameterInfo? constructorParameter)
     {
         if (info.GetCustomAttribute<RequiredMemberAttribute>() != null)
         {
@@ -61,20 +61,25 @@
         return constructorParameter?.Attribute<RequiredAttribute>() != null;
     }
 
-    static bool ResolveIsNonNullable(PropertyInfo info)
+    static bool ResolveIsNonNullable(MemberInfo info)
     {
-        var type = info.PropertyType;
+        var type = info.GetMemberType();
         if (type.IsValueType)
         {
             return Nullable.GetUnderlyingType(type) == null;
         }
 
         var context = new NullabilityInfoContext();
-        var nullability = context.Create(info);
+        var nullability = info switch
+        {
+            PropertyInfo p => context.Create(p),
+            FieldInfo f => context.Create(f),
+            _ => throw new($"Unsupported member kind: {info.GetType()}")
+        };
         return nullability.ReadState == NullabilityState.NotNull;
     }
 
-    static (bool isHtml, bool isExplicit) ResolveIsHtml(PropertyInfo info, ParameterInfo? constructorParameter, ColumnAttribute? column)
+    static (bool isHtml, bool isExplicit) ResolveIsHtml(MemberInfo info, ParameterInfo? constructorParameter, ColumnAttribute? column)
     {
         var columnExplicit = column is {IsHtmlHasValue: true} ? column.IsHtml : (bool?)null;
         var hasHtmlSyntax = HasHtmlStringSyntax(info, constructorParameter);
@@ -102,14 +107,14 @@
         return (false, false);
     }
 
-    static bool HasHtmlStringSyntax(PropertyInfo info, ParameterInfo? constructorParameter)
+    static bool HasHtmlStringSyntax(MemberInfo info, ParameterInfo? constructorParameter)
     {
         var syntax = info.Attribute<StringSyntaxAttribute>() ?? constructorParameter?.Attribute<StringSyntaxAttribute>();
         return syntax is not null &&
                string.Equals(syntax.Syntax, "html", StringComparison.OrdinalIgnoreCase);
     }
 
-    static bool HasHtmlAttribute(PropertyInfo info, ParameterInfo? constructorParameter)
+    static bool HasHtmlAttribute(MemberInfo info, ParameterInfo? constructorParameter)
     {
         if (info.GetCustomAttributes(true).Any(IsHtmlAttribute))
         {
@@ -129,7 +134,7 @@
             return column.Order;
         }
 
-        return display?.Order;
+        return display?.GetOrder();
     }
 
     static int? GetWidth(ColumnAttribute? column)
@@ -180,12 +185,12 @@
     public bool IsNonNullable { get; }
     public bool IsRequired { get; }
 
-    static string GetHeading(IReadOnlyList<(PropertyInfo property, ParameterInfo? parameter)> infos, bool useHierachyForName)
+    static string GetHeading(IReadOnlyList<(MemberInfo member, ParameterInfo? parameter)> infos, bool useHierachyForName)
     {
         var names = new List<string>();
-        foreach (var (property, parameter) in infos)
+        foreach (var (member, parameter) in infos)
         {
-            Add(property, parameter);
+            Add(member, parameter);
         }
 
         if (!useHierachyForName)
@@ -195,9 +200,9 @@
 
         return string.Join(' ', names);
 
-        void Add(PropertyInfo property, ParameterInfo? parameter)
+        void Add(MemberInfo member, ParameterInfo? parameter)
         {
-            var generated = GeneratedColumnAttributes.TryGet(property.DeclaringType!, property.Name);
+            var generated = GeneratedColumnAttributes.TryGet(member.DeclaringType!, member.Name);
             if (generated?.Heading is not null)
             {
                 names.Add(generated.Heading);
@@ -206,7 +211,7 @@
 
             if (generated is null)
             {
-                var column = property.Attribute<ColumnAttribute>() ?? parameter?.Attribute<ColumnAttribute>();
+                var column = member.Attribute<ColumnAttribute>() ?? parameter?.Attribute<ColumnAttribute>();
                 if (column?.Heading != null)
                 {
                     names.Add(column.Heading);
@@ -214,21 +219,21 @@
                 }
             }
 
-            var display = property.Attribute<DisplayAttribute>() ?? parameter?.Attribute<DisplayAttribute>();
+            var display = member.Attribute<DisplayAttribute>() ?? parameter?.Attribute<DisplayAttribute>();
             if (display?.Name != null)
             {
                 names.Add(display.Name);
                 return;
             }
 
-            var displayName = property.Attribute<DisplayNameAttribute>() ?? parameter?.Attribute<DisplayNameAttribute>();
+            var displayName = member.Attribute<DisplayNameAttribute>() ?? parameter?.Attribute<DisplayNameAttribute>();
             if (displayName != null)
             {
                 names.Add(displayName.DisplayName);
                 return;
             }
 
-            names.Add(CamelCase.Split(property.Name));
+            names.Add(CamelCase.Split(member.Name));
         }
     }
 }

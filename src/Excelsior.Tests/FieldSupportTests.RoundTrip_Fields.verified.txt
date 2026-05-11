@@ -1,0 +1,16 @@
+﻿[
+  {
+    Id: 1,
+    Name: Alice,
+    Amount: 10.5,
+    Ignored: ,
+    ReadOnly: ro
+  },
+  {
+    Id: 2,
+    Name: Bob,
+    Amount: 22.0,
+    Ignored: ,
+    ReadOnly: ro
+  }
+]

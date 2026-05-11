@@ -1,58 +1,69 @@
-﻿static class Properties<T>
+static class Properties<T>
 {
     static Properties() =>
         Items = GetPropertiesRecursive(typeof(T), [], false).ToList();
 
-    static IEnumerable<Property<T>> GetPropertiesRecursive(Type type, List<(PropertyInfo property, ParameterInfo? parameter)> path, bool useHierachyForName)
+    static IEnumerable<Property<T>> GetPropertiesRecursive(Type type, List<(MemberInfo member, ParameterInfo? parameter)> path, bool useHierachyForName)
     {
         var defaultConstructor = type.GetConstructors(BindingFlags.Public | BindingFlags.Instance)
             .Select(_ => _.GetParameters())
             .OrderByDescending(_ => _.Length)
             .FirstOrDefault();
-        foreach (var property in type
-                     .GetProperties(BindingFlags.Public | BindingFlags.Instance))
+        foreach (var member in GetReadableMembers(type))
         {
-            if (!property.CanRead)
+            if (member.Attribute<IgnoreAttribute>() != null)
             {
                 continue;
             }
 
-            if (property.Attribute<IgnoreAttribute>() != null)
-            {
-                continue;
-            }
-
-            var parameter = defaultConstructor?.SingleOrDefault(_ => _.Name == property.Name);
+            var parameter = defaultConstructor?.SingleOrDefault(_ => _.Name == member.Name);
             if (parameter.HasAttribute<IgnoreAttribute>())
             {
                 continue;
             }
 
-            path.Add((property, parameter));
+            path.Add((member, parameter));
 
             var infos = path.ToList();
-            var func = CreateGet(infos.Select(_ => _.property));
-            if (ShouldSplit(property, parameter, out var nestedUseHierachyForName))
+            var func = CreateGet(infos.Select(_ => _.member));
+            if (ShouldSplit(member, parameter, out var nestedUseHierachyForName))
             {
-                foreach (var nested in GetPropertiesRecursive(property.PropertyType, path, nestedUseHierachyForName))
+                foreach (var nested in GetPropertiesRecursive(member.GetMemberType(), path, nestedUseHierachyForName))
                 {
                     yield return nested;
                 }
             }
             else
             {
-                yield return new(property, parameter, func, infos, useHierachyForName);
+                yield return new(member, parameter, func, infos, useHierachyForName);
             }
 
             path.RemoveAt(path.Count - 1);
         }
     }
 
-    static bool ShouldSplit(PropertyInfo property, ParameterInfo? parameter, out bool useHierachyForName)
+    static IEnumerable<MemberInfo> GetReadableMembers(Type type)
     {
-        var split = property.Attribute<SplitAttribute>() ??
+        const BindingFlags flags = BindingFlags.Public | BindingFlags.Instance;
+        foreach (var property in type.GetProperties(flags))
+        {
+            if (property.CanReadMember())
+            {
+                yield return property;
+            }
+        }
+
+        foreach (var field in type.GetFields(flags))
+        {
+            yield return field;
+        }
+    }
+
+    static bool ShouldSplit(MemberInfo member, ParameterInfo? parameter, out bool useHierachyForName)
+    {
+        var split = member.Attribute<SplitAttribute>() ??
                     parameter?.Attribute<SplitAttribute>() ??
-                    property.PropertyType.Attribute<SplitAttribute>();
+                    member.GetMemberType().Attribute<SplitAttribute>();
         if (split == null)
         {
             useHierachyForName = false;
@@ -65,28 +76,29 @@
 
     static ParameterExpression targetParam = Expression.Parameter(typeof(T));
 
-    static Func<T, object?> CreateGet(IEnumerable<PropertyInfo> path)
+    static Func<T, object?> CreateGet(IEnumerable<MemberInfo> path)
     {
         Expression current = targetParam;
 
-        foreach (var property in path)
+        foreach (var member in path)
         {
-            var propertyAccess = Expression.Property(current, property);
+            var memberAccess = Expression.MakeMemberAccess(current, member);
+            var memberType = member.GetMemberType();
 
             if (current.Type.IsValueType &&
                 Nullable.GetUnderlyingType(current.Type) == null)
             {
-                current = propertyAccess;
+                current = memberAccess;
                 continue;
             }
 
             // Add null check if the current type is nullable (reference type or Nullable<T>)
-            // current != null ? current.Property : default(PropertyType)
+            // current != null ? current.Member : default(MemberType)
             current = Expression.Condition(
                 Expression.NotEqual(current, Expression.Constant(null, current.Type)),
-                propertyAccess,
-                Expression.Default(property.PropertyType),
-                property.PropertyType
+                memberAccess,
+                Expression.Default(memberType),
+                memberType
             );
         }
 

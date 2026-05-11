@@ -42,6 +42,27 @@ public class MismatchedIsHtmlAnalyzerTests
     }
 
     [Test]
+    public void Mismatch_OnField()
+    {
+        var source = """
+            using Excelsior;
+            using System.Diagnostics.CodeAnalysis;
+
+            public class Order
+            {
+                [Column(IsHtml = false)]
+                [StringSyntax("html")]
+                public string Notes;
+            }
+            """;
+
+        var diagnostics = GetDiagnostics(source);
+
+        AreEqual(1, diagnostics.Length);
+        AreEqual("EXCEL003", diagnostics[0].Id);
+    }
+
+    [Test]
     public void Mismatch_CaseInsensitive()
     {
         var source = """

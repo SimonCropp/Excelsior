@@ -2,7 +2,7 @@ using JetBrains.Annotations;
 
 namespace Excelsior;
 
-[AttributeUsage(AttributeTargets.Property | AttributeTargets.Parameter)]
+[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Parameter)]
 [MeansImplicitUse]
 public sealed class ColumnAttribute :
     Attribute

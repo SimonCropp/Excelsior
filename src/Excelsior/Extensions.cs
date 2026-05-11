@@ -25,12 +25,37 @@
 
         if (parts.Count == 0)
         {
-            throw new ArgumentException("Expression must be a property access", nameof(expression));
+            throw new ArgumentException("Expression must be a property or field access", nameof(expression));
         }
 
         parts.Reverse();
         return string.Join('.', parts);
     }
+
+    public static Type GetMemberType(this MemberInfo member) =>
+        member switch
+        {
+            PropertyInfo property => property.PropertyType,
+            FieldInfo field => field.FieldType,
+            _ => throw new($"Unsupported member kind: {member.GetType()}")
+        };
+
+    public static bool CanReadMember(this MemberInfo member) =>
+        member switch
+        {
+            PropertyInfo property => property.CanRead &&
+                                     property.GetIndexParameters().Length == 0,
+            FieldInfo => true,
+            _ => false
+        };
+
+    public static bool CanWriteMember(this MemberInfo member) =>
+        member switch
+        {
+            PropertyInfo property => property.CanWrite && property.GetIndexParameters().Length == 0,
+            FieldInfo field => !(field.IsInitOnly || field.IsLiteral),
+            _ => false
+        };
 
     public static bool IsNumericType(this Type type)
     {

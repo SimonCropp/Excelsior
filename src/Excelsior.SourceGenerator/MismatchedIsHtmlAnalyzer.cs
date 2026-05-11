@@ -17,14 +17,12 @@ public class MismatchedIsHtmlAnalyzer : DiagnosticAnalyzer
     {
         context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
         context.EnableConcurrentExecution();
-        context.RegisterSymbolAction(AnalyzeProperty, SymbolKind.Property);
-        context.RegisterSymbolAction(AnalyzeParameter, SymbolKind.Parameter);
+        context.RegisterSymbolAction(AnalyzeMember, SymbolKind.Property);
+        context.RegisterSymbolAction(AnalyzeMember, SymbolKind.Field);
+        context.RegisterSymbolAction(AnalyzeMember, SymbolKind.Parameter);
     }
 
-    static void AnalyzeProperty(SymbolAnalysisContext context) =>
-        AnalyzeSymbol(context, context.Symbol.GetAttributes());
-
-    static void AnalyzeParameter(SymbolAnalysisContext context) =>
+    static void AnalyzeMember(SymbolAnalysisContext context) =>
         AnalyzeSymbol(context, context.Symbol.GetAttributes());
 
     static void AnalyzeSymbol(SymbolAnalysisContext context, ImmutableArray<AttributeData> attributes)

@@ -248,6 +248,153 @@ public class GeneratorTests
         Assert.That(diagnostics[0].Severity, Is.EqualTo(DiagnosticSeverity.Error));
     }
 
+    [Test]
+    public Task ClassWithFields()
+    {
+        var source = """
+            using Excelsior;
+
+            [SheetModel]
+            public class Product
+            {
+                public string Name;
+                public decimal Price;
+            }
+            """;
+
+        var generated = Generate(source);
+
+        return Verify(generated);
+    }
+
+    [Test]
+    public Task ClassWithMixedPropertiesAndFields()
+    {
+        var source = """
+            using Excelsior;
+
+            [SheetModel]
+            public class Product
+            {
+                public required int Id { get; init; }
+                public string Name;
+                public decimal Price { get; set; }
+                public string Sku;
+            }
+            """;
+
+        var generated = Generate(source);
+
+        return Verify(generated);
+    }
+
+    [Test]
+    public Task FieldWithColumnAttribute()
+    {
+        var source = """
+            using Excelsior;
+
+            [SheetModel]
+            public class Product
+            {
+                [Column(Heading = "Product Name", Width = 30)]
+                public string Name;
+
+                [Column(Format = "0.00")]
+                public decimal Price;
+            }
+            """;
+
+        var generated = Generate(source);
+
+        return Verify(generated);
+    }
+
+    [Test]
+    public Task FieldWithIgnore()
+    {
+        var source = """
+            using Excelsior;
+
+            [SheetModel]
+            public class Product
+            {
+                public string Name;
+
+                [Ignore]
+                public string Internal;
+            }
+            """;
+
+        var generated = Generate(source);
+
+        return Verify(generated);
+    }
+
+    [Test]
+    public Task RequiredField()
+    {
+        var source = """
+            using Excelsior;
+
+            [SheetModel]
+            public class Product
+            {
+                public required string Name;
+                public int Age;
+            }
+            """;
+
+        var generated = Generate(source);
+
+        return Verify(generated);
+    }
+
+    [Test]
+    public Task SplitOnField()
+    {
+        var source = """
+            using Excelsior;
+
+            public class Inner
+            {
+                public string Detail { get; set; }
+            }
+
+            [SheetModel]
+            public class Outer
+            {
+                public string Name;
+
+                [Split]
+                public Inner Nested;
+            }
+            """;
+
+        var generated = Generate(source);
+
+        return Verify(generated);
+    }
+
+    [Test]
+    public Task ReadonlyFieldIsReadButNotWritten()
+    {
+        var source = """
+            using Excelsior;
+
+            [SheetModel]
+            public class Product
+            {
+                public string Name;
+                public readonly int Locked = 42;
+            }
+            """;
+
+        var generated = Generate(source);
+
+        return Verify(generated);
+    }
+
     static Dictionary<string, string> Generate(string source)
     {
         var result = RunGenerator(source);

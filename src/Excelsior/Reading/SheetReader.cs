@@ -26,7 +26,7 @@ class SheetReader<TModel> :
             {
                 Name = info.Name,
                 Heading = ResolveHeading(info),
-                Type = info.GetMemberType(),
+                Type = info.MemberValueType,
                 Convert = null
             };
         }
@@ -37,7 +37,7 @@ class SheetReader<TModel> :
         const BindingFlags flags = BindingFlags.Public | BindingFlags.Instance;
         foreach (var property in type.GetProperties(flags))
         {
-            if (!property.CanReadMember())
+            if (!property.IsReadable)
             {
                 continue;
             }

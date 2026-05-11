@@ -58,7 +58,7 @@ static class ModelActivator<T>
         var result = new Dictionary<string, Action<T, object?>>(StringComparer.Ordinal);
         foreach (var property in type.GetProperties(flags))
         {
-            if (!property.CanWriteMember())
+            if (!property.IsWritable)
             {
                 continue;
             }
@@ -74,7 +74,7 @@ static class ModelActivator<T>
 
         foreach (var field in type.GetFields(flags))
         {
-            if (!field.CanWriteMember())
+            if (!field.IsWritable)
             {
                 continue;
             }

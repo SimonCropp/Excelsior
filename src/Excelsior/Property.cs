@@ -40,7 +40,7 @@ class Property<T>
             Include = generated.Include;
         }
 
-        Type = info.GetMemberType();
+        Type = info.MemberValueType;
         IsNumber = Type.IsNumericType();
         IsNonNullable = ResolveIsNonNullable(info);
         IsRequired = ResolveIsRequired(info, constructorParameter);
@@ -63,7 +63,7 @@ class Property<T>
 
     static bool ResolveIsNonNullable(MemberInfo info)
     {
-        var type = info.GetMemberType();
+        var type = info.MemberValueType;
         if (type.IsValueType)
         {
             return Nullable.GetUnderlyingType(type) == null;

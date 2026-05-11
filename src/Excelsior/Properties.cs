@@ -28,7 +28,7 @@ static class Properties<T>
             var func = CreateGet(infos.Select(_ => _.member));
             if (ShouldSplit(member, parameter, out var nestedUseHierachyForName))
             {
-                foreach (var nested in GetPropertiesRecursive(member.GetMemberType(), path, nestedUseHierachyForName))
+                foreach (var nested in GetPropertiesRecursive(member.MemberValueType, path, nestedUseHierachyForName))
                 {
                     yield return nested;
                 }
@@ -47,7 +47,7 @@ static class Properties<T>
         const BindingFlags flags = BindingFlags.Public | BindingFlags.Instance;
         foreach (var property in type.GetProperties(flags))
         {
-            if (property.CanReadMember())
+            if (property.IsReadable)
             {
                 yield return property;
             }
@@ -63,7 +63,7 @@ static class Properties<T>
     {
         var split = member.Attribute<SplitAttribute>() ??
                     parameter?.Attribute<SplitAttribute>() ??
-                    member.GetMemberType().Attribute<SplitAttribute>();
+                    member.MemberValueType.Attribute<SplitAttribute>();
         if (split == null)
         {
             useHierachyForName = false;
@@ -83,7 +83,7 @@ static class Properties<T>
         foreach (var member in path)
         {
             var memberAccess = Expression.MakeMemberAccess(current, member);
-            var memberType = member.GetMemberType();
+            var memberType = member.MemberValueType;
 
             if (current.Type.IsValueType &&
                 Nullable.GetUnderlyingType(current.Type) == null)

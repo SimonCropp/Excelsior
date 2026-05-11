@@ -4,13 +4,16 @@
         where T : Attribute =>
         element?.GetCustomAttribute<T>();
 
-    public static T? Attribute<T>(this ParameterInfo? element)
-        where T : Attribute =>
-        element?.GetCustomAttribute<T>();
+    extension(ParameterInfo? element)
+    {
+        public T? Attribute<T>()
+            where T : Attribute =>
+            element?.GetCustomAttribute<T>();
 
-    public static bool HasAttribute<T>(this ParameterInfo? element)
-        where T : Attribute =>
-        element?.GetCustomAttribute<T>() != null;
+        public bool HasAttribute<T>()
+            where T : Attribute =>
+            element?.GetCustomAttribute<T>() != null;
+    }
 
     public static string PropertyName<T, TProperty>(this Expression<Func<T, TProperty>> expression)
     {
@@ -32,30 +35,37 @@
         return string.Join('.', parts);
     }
 
-    public static Type GetMemberType(this MemberInfo member) =>
-        member switch
-        {
-            PropertyInfo property => property.PropertyType,
-            FieldInfo field => field.FieldType,
-            _ => throw new($"Unsupported member kind: {member.GetType()}")
-        };
+    extension(PropertyInfo property)
+    {
+        public bool IsIndexer => property.GetIndexParameters().Length > 0;
+    }
 
-    public static bool CanReadMember(this MemberInfo member) =>
-        member switch
-        {
-            PropertyInfo property => property.CanRead &&
-                                     property.GetIndexParameters().Length == 0,
-            FieldInfo => true,
-            _ => false
-        };
+    extension(MemberInfo member)
+    {
+        public Type MemberValueType =>
+            member switch
+            {
+                PropertyInfo property => property.PropertyType,
+                FieldInfo f => f.FieldType,
+                _ => throw new($"Unsupported member kind: {member.GetType()}")
+            };
 
-    public static bool CanWriteMember(this MemberInfo member) =>
-        member switch
-        {
-            PropertyInfo property => property.CanWrite && property.GetIndexParameters().Length == 0,
-            FieldInfo field => !(field.IsInitOnly || field.IsLiteral),
-            _ => false
-        };
+        public bool IsReadable =>
+            member switch
+            {
+                PropertyInfo property => property is { CanRead: true, IsIndexer: false },
+                FieldInfo => true,
+                _ => false
+            };
+
+        public bool IsWritable =>
+            member switch
+            {
+                PropertyInfo property => property is { CanWrite: true, IsIndexer: false },
+                FieldInfo f => !(f.IsInitOnly || f.IsLiteral),
+                _ => false
+            };
+    }
 
     public static bool IsNumericType(this Type type)
     {

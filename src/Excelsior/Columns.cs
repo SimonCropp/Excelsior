@@ -26,6 +26,17 @@ class Columns<TModel>
                        (property.IsRequired ||
                         (inferValidationFromTypes && property.IsNonNullable));
 
+        // For enum properties we route through the typed (non-boxing) writer instead
+        // of installing a Render closure that takes a boxed Enum. The typed path is
+        // skipped if the user registered a per-type ValueRenderer.For<TEnum>(...) —
+        // that override still needs to win.
+        var typedEnumWriter = property.TypedEnumWriter;
+        if (typedEnumWriter != null &&
+            ValueRenderer.HasUserRender(type))
+        {
+            typedEnumWriter = null;
+        }
+
         columns.Add(
             property.Name,
             new()
@@ -41,7 +52,7 @@ class Columns<TModel>
                 CellStyle = null,
                 Format = property.Format,
                 NullDisplay = property.NullDisplay ?? ValueRenderer.GetNullDisplay(type),
-                Render = isEnumerable ? null : render == null ? null : (_, value) => render(value),
+                Render = GetDefaultRender(typedEnumWriter, isEnumerable, render),
                 Formula = null,
                 IsHtml = property.IsHtml,
                 IsHtmlExplicit = property.IsHtmlExplicit,
@@ -51,9 +62,22 @@ class Columns<TModel>
                 IsEnumerable = isEnumerable,
                 ItemRender = isEnumerable ? render : null,
                 GetValue = property.Get,
+                TypedEnumWriter = typedEnumWriter,
                 AllowedValues = allowedValues,
                 Required = required
             });
+    }
+
+    static Func<TModel, object, string?>? GetDefaultRender(TypedCellWriter<TModel>? typedEnumWriter, bool isEnumerable, Func<object, string>? render)
+    {
+        if (typedEnumWriter != null ||
+            isEnumerable ||
+            render == null)
+        {
+            return null;
+        }
+
+        return (Func<TModel, object, string?>)((_, value) => render(value));
     }
 
     public void Add<TProperty>(
@@ -81,7 +105,8 @@ class Columns<TModel>
             column.Render = (model, value) => config.Render.Invoke(model, (TProperty)value);
             // A custom render produces cell values that won't match the auto-derived enum
             // dropdown list, so suppress it unless the caller has supplied an explicit list.
-            if (config.AllowedValues == null && !config.DisableAllowedValues)
+            if (config.AllowedValues == null &&
+                !config.DisableAllowedValues)
             {
                 column.AllowedValues = null;
             }

@@ -22,7 +22,9 @@ public static partial class ValueRenderer
     static bool bookBuilderUsed;
     static Dictionary<Type, Func<object, string>> renders =[];
     static Dictionary<Type, Func<object, string>> itemRenders = [];
-    static Func<Enum, string> enumRender = EnumExtensions.Humanize;
+    static readonly Func<Enum, string> defaultEnumRender = EnumExtensions.Humanize;
+    static Func<Enum, string> enumRender = defaultEnumRender;
+    internal static bool HasCustomEnumRender => !ReferenceEquals(enumRender, defaultEnumRender);
     static ConcurrentDictionary<Type, (bool isEnumerable, Func<object, string>? render)> renderCache = [];
 
     public static void DisableWhitespaceTrimming()
@@ -139,6 +141,9 @@ public static partial class ValueRenderer
         return result;
     }
 
+    internal static bool HasUserRender(Type type) =>
+        FindBestMatch(type, renders) != null;
+
     static (bool isEnumerable, Func<object, string>? render) ResolveRender(Type type)
     {
         var render = FindBestMatch(type, renders);
@@ -215,7 +220,7 @@ public static partial class ValueRenderer
         TrimWhitespace = true;
         renders = [];
         itemRenders = [];
-        enumRender = EnumExtensions.Humanize;
+        enumRender = defaultEnumRender;
         renderCache = [];
         nullDisplay = [];
         boolDisplay = null;

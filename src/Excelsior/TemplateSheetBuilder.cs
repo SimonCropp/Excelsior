@@ -58,6 +58,7 @@ class TemplateSheetBuilder :
             IsEnumerable = false,
             ItemRender = null,
             GetValue = _ => null,
+            TypedEnumWriter = null,
             AllowedValues = allowedValues,
             NumericMin = config.NumericMin,
             NumericMax = config.NumericMax,

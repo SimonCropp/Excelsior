@@ -78,6 +78,19 @@ static class Properties<T>
 
     static Func<T, object?> CreateGet(IEnumerable<MemberInfo> path)
     {
+        var current = BuildAccessExpression(path);
+        var box = Expression.Convert(current, typeof(object));
+        return Expression.Lambda<Func<T, object?>>(box, targetParam).Compile();
+    }
+
+    internal static Func<T, TProp> CreateTypedGet<TProp>(IEnumerable<MemberInfo> path)
+    {
+        var current = BuildAccessExpression(path);
+        return Expression.Lambda<Func<T, TProp>>(current, targetParam).Compile();
+    }
+
+    static Expression BuildAccessExpression(IEnumerable<MemberInfo> path)
+    {
         Expression current = targetParam;
 
         foreach (var member in path)
@@ -102,8 +115,7 @@ static class Properties<T>
             );
         }
 
-        var box = Expression.Convert(current, typeof(object));
-        return Expression.Lambda<Func<T, object?>>(box, targetParam).Compile();
+        return current;
     }
 
     public static IReadOnlyList<Property<T>> Items { get; }

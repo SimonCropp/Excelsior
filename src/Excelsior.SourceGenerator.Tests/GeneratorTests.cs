@@ -434,6 +434,51 @@ public class GeneratorTests
         return Verify(generated);
     }
 
+    [Test]
+    public Task WithEnumProperty()
+    {
+        var source = """
+            using System.ComponentModel.DataAnnotations;
+            using Excelsior;
+
+            public enum Status
+            {
+                FullTime,
+                [Display(Name = "Part-time")]
+                PartTime,
+                [Display(Description = "Outside hire")]
+                Contract,
+                NDA,
+            }
+
+            [SheetModel]
+            public record Employee(string Name, Status Status, Status? Backup);
+            """;
+
+        var generated = Generate(source);
+
+        return Verify(generated);
+    }
+
+    [Test]
+    public Task WithFlagsEnumPropertyIsSkipped()
+    {
+        var source = """
+            using System;
+            using Excelsior;
+
+            [Flags]
+            public enum Permissions { None = 0, Read = 1, Write = 2 }
+
+            [SheetModel]
+            public record Doc(string Name, Permissions Perms);
+            """;
+
+        var generated = Generate(source);
+
+        return Verify(generated);
+    }
+
     static Dictionary<string, string> Generate(string source)
     {
         var result = RunGenerator(source);

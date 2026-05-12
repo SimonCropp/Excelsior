@@ -50,6 +50,7 @@ class DictionarySheetBuilder :
             IsEnumerable = isEnumerable,
             ItemRender = isEnumerable ? render : null,
             GetValue = row => row.GetValueOrDefault(keyForCapture),
+            TypedEnumWriter = null,
             AllowedValues = TypeInference.DeriveAllowedValues(type),
             Required = false
         };

@@ -8,6 +8,7 @@ class Property<T>
         bool useHierachyForName)
     {
         Get = get;
+        TypedEnumWriter = EnumWriterFactory<T>.TryBuild(info.MemberValueType, infos.Select(_ => _.member));
         var generated = GeneratedColumnAttributes.TryGet(info.DeclaringType!, info.Name);
         var display = info.Attribute<DisplayAttribute>() ?? constructorParameter?.Attribute<DisplayAttribute>();
         DisplayName = GetHeading(infos, useHierachyForName);
@@ -168,6 +169,7 @@ class Property<T>
     }
 
     public Func<T, object?> Get { get; }
+    internal TypedCellWriter<T>? TypedEnumWriter { get; }
     public string DisplayName { get; }
     public string Name { get; }
     public int? Order { get; }

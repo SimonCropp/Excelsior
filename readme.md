@@ -1500,8 +1500,16 @@ A column's `TProperty` drives the same defaults as the strong-typed path. For ex
 ```cs
 var rows = new IReadOnlyDictionary<string, object?>[]
 {
-    new Dictionary<string, object?> { ["Name"] = "Alice", ["Status"] = EmployeeStatus.FullTime },
-    new Dictionary<string, object?> { ["Name"] = "Bob", ["Status"] = EmployeeStatus.PartTime },
+    new Dictionary<string, object?>
+    {
+        ["Name"] = "Alice",
+        ["Status"] = EmployeeStatus.FullTime
+    },
+    new Dictionary<string, object?>
+    {
+        ["Name"] = "Bob",
+        ["Status"] = EmployeeStatus.PartTime
+    },
 };
 
 var builder = new BookBuilder();
@@ -1511,7 +1519,7 @@ builder.AddDictionarySheet(rows)
 
 using var book = await builder.Build();
 ```
-<sup><a href='/src/Excelsior.Tests/DictionarySheetTests.cs#L70-L85' title='Snippet source file'>snippet source</a> | <a href='#snippet-DictionarySheetEnumDropdown' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/DictionarySheetTests.cs#L78-L101' title='Snippet source file'>snippet source</a> | <a href='#snippet-DictionarySheetEnumDropdown' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -1553,7 +1561,7 @@ builder.AddDictionarySheet(rows)
 
 using var book = await builder.Build();
 ```
-<sup><a href='/src/Excelsior.Tests/DictionarySheetTests.cs#L93-L126' title='Snippet source file'>snippet source</a> | <a href='#snippet-DictionarySheetFormula' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/DictionarySheetTests.cs#L109-L142' title='Snippet source file'>snippet source</a> | <a href='#snippet-DictionarySheetFormula' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 #### Round-Trip with `BookReader`
@@ -1598,7 +1606,7 @@ reader.Convert(stream);
 
 var first = sheet.Rows[0];
 ```
-<sup><a href='/src/Excelsior.Tests/DictionarySheetTests.cs#L134-L171' title='Snippet source file'>snippet source</a> | <a href='#snippet-DictionarySheetRoundTrip' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/DictionarySheetTests.cs#L150-L187' title='Snippet source file'>snippet source</a> | <a href='#snippet-DictionarySheetRoundTrip' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -1652,10 +1660,15 @@ When a column is `Required` and has no other validation type (e.g. a non-empty s
 ```cs
 public class Employee
 {
-    public required string Name { get; init; }   // always-on Required
+   // always-on Required
+    public required string Name;
+
+    // always-on Required
     [Required]
-    public string Email { get; init; } = "";     // always-on Required
-    public string? Notes { get; init; }          // not Required
+    public string Email = "";
+
+    // not Required
+    public string? Notes { get; init; }
 }
 ```
 

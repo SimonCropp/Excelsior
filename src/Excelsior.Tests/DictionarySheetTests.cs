@@ -49,8 +49,16 @@ public class DictionarySheetTests
     {
         var rows = new IReadOnlyDictionary<string, object?>[]
         {
-            new Dictionary<string, object?> { ["Name"] = "Alice", ["Salary"] = 100m },
-            new Dictionary<string, object?> { ["Name"] = "Bob" }, // Salary missing
+            new Dictionary<string, object?>
+            {
+                ["Name"] = "Alice",
+                ["Salary"] = 100m
+            },
+            new Dictionary<string, object?>
+            {
+                ["Name"] = "Bob"
+                // Salary missing
+            },
         };
 
         var builder = new BookBuilder();
@@ -71,8 +79,16 @@ public class DictionarySheetTests
 
         var rows = new IReadOnlyDictionary<string, object?>[]
         {
-            new Dictionary<string, object?> { ["Name"] = "Alice", ["Status"] = EmployeeStatus.FullTime },
-            new Dictionary<string, object?> { ["Name"] = "Bob", ["Status"] = EmployeeStatus.PartTime },
+            new Dictionary<string, object?>
+            {
+                ["Name"] = "Alice",
+                ["Status"] = EmployeeStatus.FullTime
+            },
+            new Dictionary<string, object?>
+            {
+                ["Name"] = "Bob",
+                ["Status"] = EmployeeStatus.PartTime
+            },
         };
 
         var builder = new BookBuilder();

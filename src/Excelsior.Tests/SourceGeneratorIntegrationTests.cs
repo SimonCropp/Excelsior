@@ -28,6 +28,29 @@ public class SourceGeneratorIntegrationTests
     }
 
     [Test]
+    public async Task GeneratedEnumRenderHonorsDisplayAndNullDisplay()
+    {
+        // Exercises the source-gen-emitted EnumRender<TEnum>.Set switch end-to-end:
+        // [Display(Name/Description)] should win over the humanized fallback, and
+        // the nullable-enum typed write path should respect NullDisplay.
+        var builder = new BookBuilder();
+
+        List<GeneratedEnumModel> data =
+        [
+            new() { Name = "Alice", Status = GeneratedStatus.FullTime, Backup = GeneratedStatus.PartTime },
+            new() { Name = "Bob",   Status = GeneratedStatus.Contract, Backup = null },
+            new() { Name = "Carol", Status = GeneratedStatus.NDA,      Backup = GeneratedStatus.FullTime },
+        ];
+
+        var sheet = builder.AddSheet(data);
+        sheet.BackupNullDisplay("(none)");
+
+        using var book = await builder.Build();
+
+        await Verify(book);
+    }
+
+    [Test]
     public async Task ColumnAttributesAppliedAutomatically()
     {
         var builder = new BookBuilder();
@@ -118,6 +141,24 @@ public class SourceGeneratorFieldIntegrationTests
 
         await Verify(sheet.Rows);
     }
+}
+
+public enum GeneratedStatus
+{
+    FullTime,
+    [Display(Name = "Part-time")]
+    PartTime,
+    [Display(Description = "Outside hire")]
+    Contract,
+    NDA,
+}
+
+[SheetModel]
+public class GeneratedEnumModel
+{
+    public required string Name { get; init; }
+    public required GeneratedStatus Status { get; init; }
+    public GeneratedStatus? Backup { get; init; }
 }
 
 [SheetModel]

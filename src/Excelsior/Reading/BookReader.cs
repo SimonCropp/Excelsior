@@ -65,7 +65,9 @@ public class BookReader
     /// Must be called after <see cref="Convert(Stream)"/> or
     /// <see cref="TryConvert(Stream)"/>.
     /// </summary>
-    public bool TryGetMetadata([NotNullWhen(true)] out string? value)
+    public bool TryGetMetadata(
+        [StringSyntax(StringSyntaxAttribute.Json), NotNullWhen(true)]
+        out string? value)
     {
         value = userMetadataJson;
         return value != null;

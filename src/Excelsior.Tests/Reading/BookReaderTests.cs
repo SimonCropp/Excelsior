@@ -204,7 +204,7 @@ public class BookReaderTests
         }));
 
         // Clearing first allows a subsequent set.
-        builder.SetMetadata((string?)null);
+        builder.SetMetadata(null);
         Assert.DoesNotThrow(() => builder.SetMetadata("""{"ok":true}"""));
     }
 

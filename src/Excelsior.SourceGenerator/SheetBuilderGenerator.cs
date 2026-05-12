@@ -845,8 +845,11 @@ public class SheetBuilderGenerator :
             builder.AppendLine("        return instance;");
         }
 
-        builder.AppendLine("    }");
-        builder.Append('}');
+        builder.Append(
+            """
+                }
+            }
+            """);
 
         return builder.ToString();
     }
@@ -902,8 +905,11 @@ public class SheetBuilderGenerator :
         }
         else if (!hasSet)
         {
-            builder.AppendLine($"        return {ctorCall}");
-            builder.AppendLine("        {");
+            builder.AppendLine(
+                $$"""
+                          return {{ctorCall}}
+                          {
+                  """);
             for (var i = 0; i < initSlots.Count; i++)
             {
                 var (slotIdx, info) = initSlots[i];
@@ -917,8 +923,11 @@ public class SheetBuilderGenerator :
         {
             if (hasInit)
             {
-                builder.AppendLine($"        var instance = {ctorCall}");
-                builder.AppendLine("        {");
+                builder.AppendLine(
+                    $$"""
+                              var instance = {{ctorCall}}
+                              {
+                      """);
                 for (var i = 0; i < initSlots.Count; i++)
                 {
                     var (slotIdx, info) = initSlots[i];
@@ -941,8 +950,11 @@ public class SheetBuilderGenerator :
             builder.AppendLine("        return instance;");
         }
 
-        builder.AppendLine("    }");
-        builder.Append('}');
+        builder.Append(
+            """
+                }
+            }
+            """);
 
         return builder.ToString();
     }
@@ -1188,15 +1200,21 @@ public class SheetBuilderGenerator :
 
         foreach (var render in model.EnumRenders)
         {
-            builder.AppendLine($"        global::Excelsior.EnumRender<{render.TypeFullName}>.Set(static value => value switch");
-            builder.AppendLine("        {");
+            builder.AppendLine(
+                $$"""
+                          global::Excelsior.EnumRender<{{render.TypeFullName}}>.Set(static value => value switch
+                          {
+                  """);
             foreach (var member in render.Members)
             {
                 builder.AppendLine($"            {render.TypeFullName}.{member.Name} => {Literal(member.Display)},");
             }
 
-            builder.AppendLine("            _ => global::EnumExtensions.Humanize(value),");
-            builder.AppendLine("        });");
+            builder.AppendLine(
+                """
+                            _ => global::EnumExtensions.Humanize(value),
+                        });
+                """);
         }
 
         builder.Append(

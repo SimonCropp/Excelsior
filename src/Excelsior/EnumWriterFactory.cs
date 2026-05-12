@@ -16,9 +16,16 @@ static class EnumWriterFactory<TModel>
             return null;
         }
 
-        var method = underlying != null
-            ? buildNullableMethod.MakeGenericMethod(effective)
-            : buildMethod.MakeGenericMethod(effective);
+        MethodInfo method;
+        if (underlying == null)
+        {
+            method = buildMethod.MakeGenericMethod(effective);
+        }
+        else
+        {
+            method = buildNullableMethod.MakeGenericMethod(effective);
+        }
+
         return (TypedCellWriter<TModel>)method.Invoke(null, [path])!;
     }
 

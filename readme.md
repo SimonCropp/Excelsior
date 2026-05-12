@@ -484,12 +484,13 @@ The payload is written into a custom XML part with a dedicated namespace, so it 
 var stream = new MemoryStream();
 var builder = new BookBuilder();
 builder.AddSheet(SampleData.Employees());
-builder.SetMetadata(new BookHeader
-{
-    Title = "Q1 staff snapshot",
-    Version = 3,
-    GeneratedAt = new(2026, 1, 15, 9, 30, 0, DateTimeKind.Utc)
-});
+builder.SetMetadata(
+    new BookHeader
+    {
+        Title = "Q1 staff snapshot",
+        Version = 3,
+        GeneratedAt = new(2026, 1, 15, 9, 30, 0, DateTimeKind.Utc)
+    });
 await builder.ToStream(stream);
 
 stream.Position = 0;
@@ -500,12 +501,13 @@ reader.Convert(stream);
 
 var header = reader.GetMetadata<BookHeader>();
 ```
-<sup><a href='/src/Excelsior.Tests/Reading/BookReaderTests.cs#L118-L139' title='Snippet source file'>snippet source</a> | <a href='#snippet-UserMetadataUsage' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/Reading/BookReaderTests.cs#L118-L140' title='Snippet source file'>snippet source</a> | <a href='#snippet-UserMetadataUsage' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
-`SetMetadata` replaces any prior call; passing `null` clears the payload.
+Calling `SetMetadata` a second time with a non-null value throws — metadata is treated as a single intentional payload, so accidental double-assignment is surfaced loudly rather than silently last-wins. To overwrite deliberately, pass `null` first to clear and then set the new value.
 
 On the reader, `GetMetadata<T>()` throws if no payload is present in the workbook. When absence is expected, use `TryGetMetadata<T>(out var value)`.
+
 
 ##### Raw JSON access
 
@@ -528,7 +530,7 @@ reader.Convert(stream);
 
 var json = reader.GetMetadata();
 ```
-<sup><a href='/src/Excelsior.Tests/Reading/BookReaderTests.cs#L164-L180' title='Snippet source file'>snippet source</a> | <a href='#snippet-RawMetadataUsage' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/Reading/BookReaderTests.cs#L165-L181' title='Snippet source file'>snippet source</a> | <a href='#snippet-RawMetadataUsage' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 

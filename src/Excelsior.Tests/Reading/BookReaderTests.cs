@@ -120,12 +120,13 @@ public class BookReaderTests
         var stream = new MemoryStream();
         var builder = new BookBuilder();
         builder.AddSheet(SampleData.Employees());
-        builder.SetMetadata(new BookHeader
-        {
-            Title = "Q1 staff snapshot",
-            Version = 3,
-            GeneratedAt = new(2026, 1, 15, 9, 30, 0, DateTimeKind.Utc)
-        });
+        builder.SetMetadata(
+            new BookHeader
+            {
+                Title = "Q1 staff snapshot",
+                Version = 3,
+                GeneratedAt = new(2026, 1, 15, 9, 30, 0, DateTimeKind.Utc)
+            });
         await builder.ToStream(stream);
 
         stream.Position = 0;
@@ -185,17 +186,41 @@ public class BookReaderTests
     }
 
     [Test]
+    public void SetMetadata_Throws_WhenCalledTwice()
+    {
+        var builder = new BookBuilder();
+        builder.SetMetadata(new BookHeader
+        {
+            Title = "first",
+            Version = 1,
+            GeneratedAt = DateTime.UtcNow
+        });
+
+        Assert.Throws<Exception>(() => builder.SetMetadata(new BookHeader
+        {
+            Title = "second",
+            Version = 2,
+            GeneratedAt = DateTime.UtcNow
+        }));
+
+        // Clearing first allows a subsequent set.
+        builder.SetMetadata((string?)null);
+        Assert.DoesNotThrow(() => builder.SetMetadata("""{"ok":true}"""));
+    }
+
+    [Test]
     public async Task TryGetMetadata_RoundTrip()
     {
         var stream = new MemoryStream();
         var builder = new BookBuilder();
         builder.AddSheet(SampleData.Employees());
-        builder.SetMetadata(new BookHeader
-        {
-            Title = "Q1 staff snapshot",
-            Version = 3,
-            GeneratedAt = new(2026, 1, 15, 9, 30, 0, DateTimeKind.Utc)
-        });
+        builder.SetMetadata(
+            new BookHeader
+            {
+                Title = "Q1 staff snapshot",
+                Version = 3,
+                GeneratedAt = new(2026, 1, 15, 9, 30, 0, DateTimeKind.Utc)
+            });
         await builder.ToStream(stream);
         stream.Position = 0;
 

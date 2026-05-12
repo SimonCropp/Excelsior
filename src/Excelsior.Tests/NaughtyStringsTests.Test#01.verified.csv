@@ -209,29 +209,29 @@ Z̮̞̠͙͔ͅḀ̗̞͈̻̗Ḷ͙͎̯̹̞͓G̻O̭̗̮,Z̮̞̠͙͔ͅḀ̗̞͈̻̗�
 𝕋𝕙𝕖 𝕢𝕦𝕚𝕔𝕜 𝕓𝕣𝕠𝕨𝕟 𝕗𝕠𝕩 𝕛𝕦𝕞𝕡𝕤 𝕠𝕧𝕖𝕣 𝕥𝕙𝕖 𝕝𝕒𝕫𝕪 𝕕𝕠𝕘,𝕋𝕙𝕖 𝕢𝕦𝕚𝕔𝕜 𝕓𝕣𝕠𝕨𝕟 𝕗𝕠𝕩 𝕛𝕦𝕞𝕡𝕤 𝕠𝕧𝕖𝕣 𝕥𝕙𝕖 𝕝𝕒𝕫𝕪 𝕕𝕠𝕘
 𝚃𝚑𝚎 𝚚𝚞𝚒𝚌𝚔 𝚋𝚛𝚘𝚠𝚗 𝚏𝚘𝚡 𝚓𝚞𝚖𝚙𝚜 𝚘𝚟𝚎𝚛 𝚝𝚑𝚎 𝚕𝚊𝚣𝚢 𝚍𝚘𝚐,𝚃𝚑𝚎 𝚚𝚞𝚒𝚌𝚔 𝚋𝚛𝚘𝚠𝚗 𝚏𝚘𝚡 𝚓𝚞𝚖𝚙𝚜 𝚘𝚟𝚎𝚛 𝚝𝚑𝚎 𝚕𝚊𝚣𝚢 𝚍𝚘𝚐
 ⒯⒣⒠ ⒬⒰⒤⒞⒦ ⒝⒭⒪⒲⒩ ⒡⒪⒳ ⒥⒰⒨⒫⒮ ⒪⒱⒠⒭ ⒯⒣⒠ ⒧⒜⒵⒴ ⒟⒪⒢,⒯⒣⒠ ⒬⒰⒤⒞⒦ ⒝⒭⒪⒲⒩ ⒡⒪⒳ ⒥⒰⒨⒫⒮ ⒪⒱⒠⒭ ⒯⒣⒠ ⒧⒜⒵⒴ ⒟⒪⒢
-<script>alert(0)</script>,alert(0)
+<script>alert(0)</script>,
 &lt;script&gt;alert(&#39;1&#39;);&lt;/script&gt;,<script>alert('1');</script>
 <img src=x onerror=alert(2) />,
 <svg><script>123<1>alert(3)</script>,
-"""><script>alert(4)</script>",""">alert(4)"
-'><script>alert(5)</script>,'>alert(5)
-><script>alert(6)</script>,>alert(6)
-</script><script>alert(7)</script>,alert(7)
+"""><script>alert(4)</script>",""">"
+'><script>alert(5)</script>,'>
+><script>alert(6)</script>,>
+</script><script>alert(7)</script>,
 < / script >< script >alert(8)< / script >,< / script >< script >alert(8)< / script >
 onfocus=JaVaSCript:alert(9) autofocus,onfocus=JaVaSCript:alert(9) autofocus
 """ onfocus=JaVaSCript:alert(10) autofocus",""" onfocus=JaVaSCript:alert(10) autofocus"
 ' onfocus=JaVaSCript:alert(11) autofocus,' onfocus=JaVaSCript:alert(11) autofocus
 ＜script＞alert(12)＜/script＞,＜script＞alert(12)＜/script＞
 <sc<script>ript>alert(13)</sc</script>ript>,ript>alert(13)ript>
---><script>alert(14)</script>,-->alert(14)
+--><script>alert(14)</script>,-->
 """;alert(15);t=""",""";alert(15);t="""
 ';alert(16);t=',';alert(16);t='
 JavaSCript:alert(17),JavaSCript:alert(17)
 ;alert(18);,;alert(18);
 src=JaVaSCript:prompt(19),src=JaVaSCript:prompt(19)
-"""><script>alert(20);</script x=""",""">alert(20);"
-'><script>alert(21);</script x=','>alert(21);
-><script>alert(22);</script x=,>alert(22);
+"""><script>alert(20);</script x=""",""">"
+'><script>alert(21);</script x=','>
+><script>alert(22);</script x=,>
 """ autofocus onkeyup=""javascript:alert(23)",""" autofocus onkeyup=""javascript:alert(23)"
 ' autofocus onkeyup='javascript:alert(24),' autofocus onkeyup='javascript:alert(24)
 "<script\x20type=""text/javascript"">javascript:alert(25);</script>",javascript:alert(25);
@@ -364,43 +364,43 @@ DEF"
 "`""'><img src=xxx:x \x00onerror=javascript:alert(125)>","`""'>"
 "`""'><img src=xxx:x \x27onerror=javascript:alert(126)>","`""'>"
 "`""'><img src=xxx:x \x20onerror=javascript:alert(127)>","`""'>"
-"""`'><script>\x3Bjavascript:alert(128)</script>","""`'>\x3Bjavascript:alert(128)"
-"""`'><script>\x0Djavascript:alert(129)</script>","""`'>\x0Djavascript:alert(129)"
-"""`'><script>\xEF\xBB\xBFjavascript:alert(130)</script>","""`'>\xEF\xBB\xBFjavascript:alert(130)"
-"""`'><script>\xE2\x80\x81javascript:alert(131)</script>","""`'>\xE2\x80\x81javascript:alert(131)"
-"""`'><script>\xE2\x80\x84javascript:alert(132)</script>","""`'>\xE2\x80\x84javascript:alert(132)"
-"""`'><script>\xE3\x80\x80javascript:alert(133)</script>","""`'>\xE3\x80\x80javascript:alert(133)"
-"""`'><script>\x09javascript:alert(134)</script>","""`'>\x09javascript:alert(134)"
-"""`'><script>\xE2\x80\x89javascript:alert(135)</script>","""`'>\xE2\x80\x89javascript:alert(135)"
-"""`'><script>\xE2\x80\x85javascript:alert(136)</script>","""`'>\xE2\x80\x85javascript:alert(136)"
-"""`'><script>\xE2\x80\x88javascript:alert(137)</script>","""`'>\xE2\x80\x88javascript:alert(137)"
-"""`'><script>\x00javascript:alert(138)</script>","""`'>\x00javascript:alert(138)"
-"""`'><script>\xE2\x80\xA8javascript:alert(139)</script>","""`'>\xE2\x80\xA8javascript:alert(139)"
-"""`'><script>\xE2\x80\x8Ajavascript:alert(140)</script>","""`'>\xE2\x80\x8Ajavascript:alert(140)"
-"""`'><script>\xE1\x9A\x80javascript:alert(141)</script>","""`'>\xE1\x9A\x80javascript:alert(141)"
-"""`'><script>\x0Cjavascript:alert(142)</script>","""`'>\x0Cjavascript:alert(142)"
-"""`'><script>\x2Bjavascript:alert(143)</script>","""`'>\x2Bjavascript:alert(143)"
-"""`'><script>\xF0\x90\x96\x9Ajavascript:alert(144)</script>","""`'>\xF0\x90\x96\x9Ajavascript:alert(144)"
-"""`'><script>-javascript:alert(145)</script>","""`'>-javascript:alert(145)"
-"""`'><script>\x0Ajavascript:alert(146)</script>","""`'>\x0Ajavascript:alert(146)"
-"""`'><script>\xE2\x80\xAFjavascript:alert(147)</script>","""`'>\xE2\x80\xAFjavascript:alert(147)"
-"""`'><script>\x7Ejavascript:alert(148)</script>","""`'>\x7Ejavascript:alert(148)"
-"""`'><script>\xE2\x80\x87javascript:alert(149)</script>","""`'>\xE2\x80\x87javascript:alert(149)"
-"""`'><script>\xE2\x81\x9Fjavascript:alert(150)</script>","""`'>\xE2\x81\x9Fjavascript:alert(150)"
-"""`'><script>\xE2\x80\xA9javascript:alert(151)</script>","""`'>\xE2\x80\xA9javascript:alert(151)"
-"""`'><script>\xC2\x85javascript:alert(152)</script>","""`'>\xC2\x85javascript:alert(152)"
-"""`'><script>\xEF\xBF\xAEjavascript:alert(153)</script>","""`'>\xEF\xBF\xAEjavascript:alert(153)"
-"""`'><script>\xE2\x80\x83javascript:alert(154)</script>","""`'>\xE2\x80\x83javascript:alert(154)"
-"""`'><script>\xE2\x80\x8Bjavascript:alert(155)</script>","""`'>\xE2\x80\x8Bjavascript:alert(155)"
-"""`'><script>\xEF\xBF\xBEjavascript:alert(156)</script>","""`'>\xEF\xBF\xBEjavascript:alert(156)"
-"""`'><script>\xE2\x80\x80javascript:alert(157)</script>","""`'>\xE2\x80\x80javascript:alert(157)"
-"""`'><script>\x21javascript:alert(158)</script>","""`'>\x21javascript:alert(158)"
-"""`'><script>\xE2\x80\x82javascript:alert(159)</script>","""`'>\xE2\x80\x82javascript:alert(159)"
-"""`'><script>\xE2\x80\x86javascript:alert(160)</script>","""`'>\xE2\x80\x86javascript:alert(160)"
-"""`'><script>\xE1\xA0\x8Ejavascript:alert(161)</script>","""`'>\xE1\xA0\x8Ejavascript:alert(161)"
-"""`'><script>\x0Bjavascript:alert(162)</script>","""`'>\x0Bjavascript:alert(162)"
-"""`'><script>\x20javascript:alert(163)</script>","""`'>\x20javascript:alert(163)"
-"""`'><script>\xC2\xA0javascript:alert(164)</script>","""`'>\xC2\xA0javascript:alert(164)"
+"""`'><script>\x3Bjavascript:alert(128)</script>","""`'>"
+"""`'><script>\x0Djavascript:alert(129)</script>","""`'>"
+"""`'><script>\xEF\xBB\xBFjavascript:alert(130)</script>","""`'>"
+"""`'><script>\xE2\x80\x81javascript:alert(131)</script>","""`'>"
+"""`'><script>\xE2\x80\x84javascript:alert(132)</script>","""`'>"
+"""`'><script>\xE3\x80\x80javascript:alert(133)</script>","""`'>"
+"""`'><script>\x09javascript:alert(134)</script>","""`'>"
+"""`'><script>\xE2\x80\x89javascript:alert(135)</script>","""`'>"
+"""`'><script>\xE2\x80\x85javascript:alert(136)</script>","""`'>"
+"""`'><script>\xE2\x80\x88javascript:alert(137)</script>","""`'>"
+"""`'><script>\x00javascript:alert(138)</script>","""`'>"
+"""`'><script>\xE2\x80\xA8javascript:alert(139)</script>","""`'>"
+"""`'><script>\xE2\x80\x8Ajavascript:alert(140)</script>","""`'>"
+"""`'><script>\xE1\x9A\x80javascript:alert(141)</script>","""`'>"
+"""`'><script>\x0Cjavascript:alert(142)</script>","""`'>"
+"""`'><script>\x2Bjavascript:alert(143)</script>","""`'>"
+"""`'><script>\xF0\x90\x96\x9Ajavascript:alert(144)</script>","""`'>"
+"""`'><script>-javascript:alert(145)</script>","""`'>"
+"""`'><script>\x0Ajavascript:alert(146)</script>","""`'>"
+"""`'><script>\xE2\x80\xAFjavascript:alert(147)</script>","""`'>"
+"""`'><script>\x7Ejavascript:alert(148)</script>","""`'>"
+"""`'><script>\xE2\x80\x87javascript:alert(149)</script>","""`'>"
+"""`'><script>\xE2\x81\x9Fjavascript:alert(150)</script>","""`'>"
+"""`'><script>\xE2\x80\xA9javascript:alert(151)</script>","""`'>"
+"""`'><script>\xC2\x85javascript:alert(152)</script>","""`'>"
+"""`'><script>\xEF\xBF\xAEjavascript:alert(153)</script>","""`'>"
+"""`'><script>\xE2\x80\x83javascript:alert(154)</script>","""`'>"
+"""`'><script>\xE2\x80\x8Bjavascript:alert(155)</script>","""`'>"
+"""`'><script>\xEF\xBF\xBEjavascript:alert(156)</script>","""`'>"
+"""`'><script>\xE2\x80\x80javascript:alert(157)</script>","""`'>"
+"""`'><script>\x21javascript:alert(158)</script>","""`'>"
+"""`'><script>\xE2\x80\x82javascript:alert(159)</script>","""`'>"
+"""`'><script>\xE2\x80\x86javascript:alert(160)</script>","""`'>"
+"""`'><script>\xE1\xA0\x8Ejavascript:alert(161)</script>","""`'>"
+"""`'><script>\x0Bjavascript:alert(162)</script>","""`'>"
+"""`'><script>\x20javascript:alert(163)</script>","""`'>"
+"""`'><script>\xC2\xA0javascript:alert(164)</script>","""`'>"
 "<img \x00src=x onerror=""alert(165)"">",
 "<img \x47src=x onerror=""javascript:alert(166)"">",
 "<img \x11src=x onerror=""javascript:alert(167)"">",
@@ -438,13 +438,13 @@ DEF"
 <a href=java&#1&#2&#3&#4&#5&#6&#7&#8&#11&#12script:javascript:alert(199)>XXX</a>,XXX (javascript:javascript:alert(199))
 "<img src=""x` `<script>javascript:alert(200)</script>""` `>",
 "<img src onerror /"" '""= alt=javascript:alert(201)//"">",
-<title onpropertychange=javascript:alert(202)></title><title title=>,</body>
+<title onpropertychange=javascript:alert(202)></title><title title=>,
 "<a href=http://foo.bar/#x=`y></a><img alt=""`><img src=x:x onerror=javascript:alert(203)></a>"">", (http://foo.bar/#x=`y)`><img src=x:x onerror=javascript:alert(203)></a>
 <!--[if]><script>javascript:alert(204)</script -->,
 <!--[if<img src=x onerror=javascript:alert(205)//]> -->,
 "<script src=""/\%(jscript)s""></script>",
 "<script src=""\\%(jscript)s""></script>",
-"<IMG """"""><SCRIPT>alert(""206"")</SCRIPT>"">","alert(""206"")"">"
+"<IMG """"""><SCRIPT>alert(""206"")</SCRIPT>"">",""">"
 "<IMG SRC=javascript:alert(String.fromCharCode(50,48,55))>",
 "<IMG SRC=# onmouseover=""alert('208')"">",
 "<IMG SRC= onmouseover=""alert('209')"">",
@@ -461,9 +461,9 @@ DEF"
 "<SCRIPT/XSS SRC=""http://ha.ckers.org/xss.js""></SCRIPT>",
 "<BODY onload!#$%&()*~+-_.,:;?@[/|\]^`=alert(""220"")>",
 "<SCRIPT/SRC=""http://ha.ckers.org/xss.js""></SCRIPT>",
-"<<SCRIPT>alert(""221"");//<</SCRIPT>","<alert(""221"");//<"
-<SCRIPT SRC=http://ha.ckers.org/xss.js?< B >,</body>
-<SCRIPT SRC=//ha.ckers.org/.j>,</body>
+"<<SCRIPT>alert(""221"");//<</SCRIPT>",<
+<SCRIPT SRC=http://ha.ckers.org/xss.js?< B >,
+<SCRIPT SRC=//ha.ckers.org/.j>,
 "<IMG SRC=""javascript:alert('222')""",
 <iframe src=http://ha.ckers.org/scriptlet.html <,
 "\"";alert('223');//","\"";alert('223');//"
@@ -471,7 +471,7 @@ DEF"
 <i onwheel=alert(224)> Scroll over me </i>, Scroll over me 
 <plaintext>,</body>
 http://a/%%30%30,http://a/%%30%30
-</textarea><script>alert(225)</script>,alert(225)
+</textarea><script>alert(225)</script>,
 1;DROP TABLE users,1;DROP TABLE users
 1'; DROP TABLE users-- 1,1'; DROP TABLE users-- 1
 ' OR 1=1 -- 1,' OR 1=1 -- 1

@@ -23,23 +23,23 @@ using Excelsior;
 public class Employee
 {
     [Column(Heading = "Employee ID", Order = 1)]
-    public required int Id { get; init; }
+    public required int Id;
 
     [Column(Heading = "Full Name", Order = 2)]
-    public required string Name { get; init; }
+    public required string Name;
 
     [Column(Heading = "Email Address", Order = 3)]
-    public required string Email { get; init; }
+    public required string Email;
 
     [Column(Heading = "Hire Date", Order = 4)]
-    public Date? HireDate { get; init; }
+    public Date? HireDate;
 
     [Column(Heading = "Annual Salary", Order = 5)]
-    public int Salary { get; init; }
+    public int Salary;
 
-    public bool IsActive { get; init; }
+    public bool IsActive;
 
-    public EmployeeStatus Status { get; init; }
+    public EmployeeStatus Status;
 }
 ```
 <sup><a href='/src/Model/Employee.cs#L1-L23' title='Snippet source file'>snippet source</a> | <a href='#snippet-Employee.cs' title='Start of snippet'>anchor</a></sup>
@@ -126,24 +126,24 @@ builder.AddSheet(employees, "Employee Report");
 public class Employee
 {
     [Display(Name = "Employee ID", Order = 1)]
-    public required int Id { get; init; }
+    public required int Id;
 
     [Display(Name = "Full Name", Order = 2)]
-    public required string Name { get; init; }
+    public required string Name;
 
     [Display(Name = "Email Address", Order = 3)]
-    public required string Email { get; init; }
+    public required string Email;
 
     [Display(Name = "Hire Date", Order = 4)]
-    public Date? HireDate { get; init; }
+    public Date? HireDate;
 
     [Display(Name = "Annual Salary", Order = 5)]
-    public int Salary { get; init; }
+    public int Salary;
 
     [DisplayName("IsActive")]
     public bool IsActive { get; init; }
 
-    public EmployeeStatus Status { get; init; }
+    public EmployeeStatus Status;
 }
 
 public enum EmployeeStatus
@@ -533,7 +533,7 @@ builder.AddSheet(employees)
 public class Employee
 {
     [Column(Heading = "Employee Name")]
-    public required string Name { get; init; }
+    public required string Name;
 ```
 
 
@@ -553,7 +553,7 @@ public class Employee
 public class Employee
 {
     [Display(Name = "Employee Name")]
-    public required string Name { get; init; }
+    public required string Name;
 ```
 
 
@@ -781,7 +781,7 @@ builder.AddSheet(employees)
 public class Employee
 {
     [Column(Width = 25)]
-    public required string Name { get; init; }
+    public required string Name;
 ```
 
 
@@ -872,10 +872,10 @@ sheet.MaxWidth(_ => _.Email, 20);
 public class EmployeeWithMinMaxWidth
 {
     [Column(MinWidth = 40)]
-    public required string Name { get; init; }
+    public required string Name;
 
     [Column(MaxWidth = 20)]
-    public required string Email { get; init; }
+    public required string Email;
 }
 ```
 <sup><a href='/src/Excelsior.Tests/ColumnWidths.cs#L305-L316' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnMinMaxWidthModel' title='Start of snippet'>anchor</a></sup>
@@ -1154,21 +1154,21 @@ There are four equivalent ways to opt in:
 public class Employee
 {
     [Column(IsHtml = true)]
-    public required string Notes { get; init; }
+    public required string Notes;
 }
 
 // StringSyntax attribute (case-insensitive match on "html")
 public class Employee
 {
     [StringSyntax("html")]
-    public required string Notes { get; init; }
+    public required string Notes;
 }
 
 // Any attribute whose type name is `HtmlAttribute` (namespace ignored, matched by name)
 public class Employee
 {
     [Html]
-    public required string Notes { get; init; }
+    public required string Notes;
 }
 
 // Fluent
@@ -1318,10 +1318,10 @@ Then a custom binding type can be used.
 ```cs
 public class EmployeeBindingModel
 {
-    public required string Name { get; init; }
-    public required string Email { get; init; }
-    public required string Company { get; init; }
-    public required string Address { get; init; }
+    public required string Name;
+    public required string Email;
+    public required string Company;
+    public required string Address;
 }
 ```
 <sup><a href='/src/Excelsior.Tests/BindingModel.cs#L28-L38' title='Snippet source file'>snippet source</a> | <a href='#snippet-EmployeeBindingModel' title='Start of snippet'>anchor</a></sup>
@@ -1977,16 +1977,16 @@ public sealed class ColumnAttribute :
 public class Employee
 {
     [Column(Heading = "Employee ID", Order = 1, Format = "0000")]
-    public required int Id { get; init; }
+    public required int Id;
 
     [Column(Heading = "Full Name", Order = 2, Width = 20)]
-    public required string Name { get; init; }
+    public required string Name;
 
     [Column(Heading = "Email Address", Width = 30)]
-    public required string Email { get; init; }
+    public required string Email;
 
     [Column(Order = 3, NullDisplay = "unknown")]
-    public Date? HireDate { get; init; }
+    public Date? HireDate;
 }
 ```
 <sup><a href='/src/Excelsior.Tests/ColumnAttributeTests.cs#L4-L21' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnAttributeModel' title='Start of snippet'>anchor</a></sup>
@@ -2228,7 +2228,11 @@ List<Target> data =
     new()
     {
         Name = "Alice",
-        Address = new() { Street = "1 Park Ave", City = "Springfield" }
+        Address = new()
+        {
+            Street = "1 Park Ave",
+            City = "Springfield"
+        }
     },
     new()
     {
@@ -2238,7 +2242,7 @@ List<Target> data =
 ];
 builder.AddSheet(data);
 ```
-<sup><a href='/src/StaticSettingsTests/ValueRendererNullDisplayForType.cs#L28-L47' title='Snippet source file'>snippet source</a> | <a href='#snippet-ValueRendererNullDisplayForType' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/StaticSettingsTests/ValueRendererNullDisplayForType.cs#L28-L51' title='Snippet source file'>snippet source</a> | <a href='#snippet-ValueRendererNullDisplayForType' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -2596,8 +2600,8 @@ Add `[SheetModel]` to the model class:
 [SheetModel]
 public class GeneratedTestModel
 {
-    public required string Name { get; init; }
-    public required int Age { get; init; }
+    public required string Name;
+    public required int Age;
 }
 ```
 <sup><a href='/src/Excelsior.Tests/SourceGeneratorIntegrationTests.cs#L107-L116' title='Snippet source file'>snippet source</a> | <a href='#snippet-SourceGeneratedModel' title='Start of snippet'>anchor</a></sup>

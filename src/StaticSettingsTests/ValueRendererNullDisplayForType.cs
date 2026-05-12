@@ -34,7 +34,11 @@ public class ValueRendererNullDisplayForType
             new()
             {
                 Name = "Alice",
-                Address = new() { Street = "1 Park Ave", City = "Springfield" }
+                Address = new()
+                {
+                    Street = "1 Park Ave",
+                    City = "Springfield"
+                }
             },
             new()
             {

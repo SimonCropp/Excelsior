@@ -45,24 +45,24 @@ public class DataAnnotationsTests
     public class Employee
     {
         [Display(Name = "Employee ID", Order = 1)]
-        public required int Id { get; init; }
+        public required int Id;
 
         [Display(Name = "Full Name", Order = 2)]
-        public required string Name { get; init; }
+        public required string Name;
 
         [Display(Name = "Email Address", Order = 3)]
-        public required string Email { get; init; }
+        public required string Email;
 
         [Display(Name = "Hire Date", Order = 4)]
-        public Date? HireDate { get; init; }
+        public Date? HireDate;
 
         [Display(Name = "Annual Salary", Order = 5)]
-        public int Salary { get; init; }
+        public int Salary;
 
         [DisplayName("IsActive")]
         public bool IsActive { get; init; }
 
-        public EmployeeStatus Status { get; init; }
+        public EmployeeStatus Status;
     }
 
     public enum EmployeeStatus

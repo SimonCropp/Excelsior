@@ -109,8 +109,8 @@ public class SourceGeneratorIntegrationTests
 [SheetModel]
 public class GeneratedTestModel
 {
-    public required string Name { get; init; }
-    public required int Age { get; init; }
+    public required string Name;
+    public required int Age;
 }
 
 #endregion
@@ -132,8 +132,16 @@ public class SourceGeneratorFieldIntegrationTests
 
         List<GeneratedFieldModel> data =
         [
-            new() { Name = "Alice", Age = 30 },
-            new() { Name = "Bob", Age = 25 },
+            new()
+            {
+                Name = "Alice",
+                Age = 30
+            },
+            new()
+            {
+                Name = "Bob",
+                Age = 25
+            },
         ];
 
         var sheet = builder.AddSheet(data);
@@ -151,8 +159,16 @@ public class SourceGeneratorFieldIntegrationTests
         var builder = new BookBuilder();
         builder.AddSheet<GeneratedFieldModel>(
         [
-            new() { Name = "Alice", Age = 30 },
-            new() { Name = "Bob", Age = 25 },
+            new()
+            {
+                Name = "Alice",
+                Age = 30
+            },
+            new()
+            {
+                Name = "Bob",
+                Age = 25
+            },
         ]);
         await builder.ToStream(stream);
 

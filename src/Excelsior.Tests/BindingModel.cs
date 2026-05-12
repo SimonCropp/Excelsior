@@ -29,10 +29,10 @@ public class BindingModel
 
     public class EmployeeBindingModel
     {
-        public required string Name { get; init; }
-        public required string Email { get; init; }
-        public required string Company { get; init; }
-        public required string Address { get; init; }
+        public required string Name;
+        public required string Email;
+        public required string Company;
+        public required string Address;
     }
 
     #endregion

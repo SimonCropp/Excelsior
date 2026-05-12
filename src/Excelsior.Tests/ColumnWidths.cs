@@ -307,10 +307,10 @@ public class ColumnWidths
     public class EmployeeWithMinMaxWidth
     {
         [Column(MinWidth = 40)]
-        public required string Name { get; init; }
+        public required string Name;
 
         [Column(MaxWidth = 20)]
-        public required string Email { get; init; }
+        public required string Email;
     }
 
     #endregion

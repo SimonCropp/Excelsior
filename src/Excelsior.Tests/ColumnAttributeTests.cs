@@ -6,16 +6,16 @@ public class ColumnAttributeTests
     public class Employee
     {
         [Column(Heading = "Employee ID", Order = 1, Format = "0000")]
-        public required int Id { get; init; }
+        public required int Id;
 
         [Column(Heading = "Full Name", Order = 2, Width = 20)]
-        public required string Name { get; init; }
+        public required string Name;
 
         [Column(Heading = "Email Address", Width = 30)]
-        public required string Email { get; init; }
+        public required string Email;
 
         [Column(Order = 3, NullDisplay = "unknown")]
-        public Date? HireDate { get; init; }
+        public Date? HireDate;
     }
 
     #endregion

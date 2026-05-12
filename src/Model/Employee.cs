@@ -3,21 +3,21 @@ using Excelsior;
 public class Employee
 {
     [Column(Heading = "Employee ID", Order = 1)]
-    public required int Id { get; init; }
+    public required int Id;
 
     [Column(Heading = "Full Name", Order = 2)]
-    public required string Name { get; init; }
+    public required string Name;
 
     [Column(Heading = "Email Address", Order = 3)]
-    public required string Email { get; init; }
+    public required string Email;
 
     [Column(Heading = "Hire Date", Order = 4)]
-    public Date? HireDate { get; init; }
+    public Date? HireDate;
 
     [Column(Heading = "Annual Salary", Order = 5)]
-    public int Salary { get; init; }
+    public int Salary;
 
-    public bool IsActive { get; init; }
+    public bool IsActive;
 
-    public EmployeeStatus Status { get; init; }
+    public EmployeeStatus Status;
 }

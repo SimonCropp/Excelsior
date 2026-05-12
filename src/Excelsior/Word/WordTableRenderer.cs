@@ -428,6 +428,13 @@ static class WordTableRenderer<TModel>
             return rendered;
         }
 
+        // Enum columns now route through the typed (non-boxing) writer in the Excel
+        // renderer rather than column.Render, so handle them explicitly here.
+        if (value is Enum enumValue)
+        {
+            return ValueRenderer.RenderEnum(enumValue);
+        }
+
         // Hyperlink fallback when the renderer wasn't given a MainDocumentPart: emit the display
         // text only. The relationship cannot be registered without a host document part.
         if (value is Link link)

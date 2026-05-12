@@ -21,6 +21,7 @@ class ColumnConfig<TModel>
     public required Func<object, string>? ItemRender { get; init; }
     public required string Name { get; set; }
     public required Func<TModel, object?> GetValue { get; init; }
+    public required TypedCellWriter<TModel>? TypedEnumWriter { get; init; }
 
     public IReadOnlyList<string>? AllowedValues { get; set; }
     public decimal? NumericMin { get; set; }

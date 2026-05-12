@@ -52,6 +52,12 @@ public class SheetBuilderGenerator :
                     var rowReaderSource = GenerateRowReader(model, slots);
                     productionContext.AddSource($"{model.TypeName}RowReader.g.cs", rowReaderSource);
                 }
+
+                if (model.EnumRenders.Length > 0)
+                {
+                    var enumSource = GenerateEnumRenders(model);
+                    productionContext.AddSource($"{model.TypeName}EnumRenders.g.cs", enumSource);
+                }
             });
     }
 
@@ -83,13 +89,15 @@ public class SheetBuilderGenerator :
 
         var activator = BuildActivatorPlan(type);
         var rowReaderSlots = BuildRowReaderSlots(type, activator);
+        var enumRenders = BuildEnumRenders(type);
 
         var model = new ModelInfo(
             type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
             GetFlattenedName(type),
             properties,
             activator,
-            rowReaderSlots);
+            rowReaderSlots,
+            enumRenders);
         return new(model, null);
     }
 
@@ -620,58 +628,58 @@ public class SheetBuilderGenerator :
 
             builder.Append(
                 $"""
-                     public static ISheetBuilder<{modelType}> {prefix}Column(
-                         this ISheetBuilder<{modelType}> builder,
-                         Action<ColumnConfig<{modelType}, {propType}>> configuration)
-                         => builder.Column(_ => _.{access}, configuration);
+                   public static ISheetBuilder<{modelType}> {prefix}Column(
+                     this ISheetBuilder<{modelType}> builder,
+                     Action<ColumnConfig<{modelType}, {propType}>> configuration)
+                     => builder.Column(_ => _.{access}, configuration);
 
-                     public static void {prefix}HeadingText(this ISheetBuilder<{modelType}> builder, string value)
-                         => builder.HeadingText(_ => _.{access}, value);
+                   public static void {prefix}HeadingText(this ISheetBuilder<{modelType}> builder, string value)
+                     => builder.HeadingText(_ => _.{access}, value);
 
-                     public static void {prefix}Order(this ISheetBuilder<{modelType}> builder, int? value)
-                         => builder.Order(_ => _.{access}, value);
+                   public static void {prefix}Order(this ISheetBuilder<{modelType}> builder, int? value)
+                     => builder.Order(_ => _.{access}, value);
 
-                     public static void {prefix}Width(this ISheetBuilder<{modelType}> builder, int? value)
-                         => builder.Width(_ => _.{access}, value);
+                   public static void {prefix}Width(this ISheetBuilder<{modelType}> builder, int? value)
+                     => builder.Width(_ => _.{access}, value);
 
-                     public static void {prefix}MinWidth(this ISheetBuilder<{modelType}> builder, int? value)
-                         => builder.MinWidth(_ => _.{access}, value);
+                   public static void {prefix}MinWidth(this ISheetBuilder<{modelType}> builder, int? value)
+                     => builder.MinWidth(_ => _.{access}, value);
 
-                     public static void {prefix}MaxWidth(this ISheetBuilder<{modelType}> builder, int? value)
-                         => builder.MaxWidth(_ => _.{access}, value);
+                   public static void {prefix}MaxWidth(this ISheetBuilder<{modelType}> builder, int? value)
+                     => builder.MaxWidth(_ => _.{access}, value);
 
-                     public static void {prefix}HeadingStyle(this ISheetBuilder<{modelType}> builder, Action<Excelsior.CellStyle> value)
-                         => builder.HeadingStyle(_ => _.{access}, value);
+                   public static void {prefix}HeadingStyle(this ISheetBuilder<{modelType}> builder, Action<Excelsior.CellStyle> value)
+                     => builder.HeadingStyle(_ => _.{access}, value);
 
-                     public static void {prefix}CellStyle(this ISheetBuilder<{modelType}> builder, Action<Excelsior.CellStyle, {modelType}, {propType}> value)
-                         => builder.CellStyle(_ => _.{access}, value);
+                   public static void {prefix}CellStyle(this ISheetBuilder<{modelType}> builder, Action<Excelsior.CellStyle, {modelType}, {propType}> value)
+                     => builder.CellStyle(_ => _.{access}, value);
 
-                     public static void {prefix}Format(this ISheetBuilder<{modelType}> builder, string value)
-                         => builder.Format(_ => _.{access}, value);
+                   public static void {prefix}Format(this ISheetBuilder<{modelType}> builder, string value)
+                     => builder.Format(_ => _.{access}, value);
 
-                     public static void {prefix}NullDisplay(this ISheetBuilder<{modelType}> builder, string value)
-                         => builder.NullDisplay(_ => _.{access}, value);
+                   public static void {prefix}NullDisplay(this ISheetBuilder<{modelType}> builder, string value)
+                     => builder.NullDisplay(_ => _.{access}, value);
 
-                     public static void {prefix}IsHtml(this ISheetBuilder<{modelType}> builder)
-                         => builder.IsHtml(_ => _.{access});
+                   public static void {prefix}IsHtml(this ISheetBuilder<{modelType}> builder)
+                     => builder.IsHtml(_ => _.{access});
 
-                     public static void {prefix}Render(this ISheetBuilder<{modelType}> builder, Func<{modelType}, {propType}, string?> value)
-                         => builder.Render(_ => _.{access}, value);
+                   public static void {prefix}Render(this ISheetBuilder<{modelType}> builder, Func<{modelType}, {propType}, string?> value)
+                     => builder.Render(_ => _.{access}, value);
 
-                     public static void {prefix}Formula(this ISheetBuilder<{modelType}> builder, Func<{modelType}, FormulaContext<{modelType}>, string> value)
-                         => builder.Formula(_ => _.{access}, value);
+                   public static void {prefix}Formula(this ISheetBuilder<{modelType}> builder, Func<{modelType}, FormulaContext<{modelType}>, string> value)
+                     => builder.Formula(_ => _.{access}, value);
 
-                     public static void {prefix}Formula(this ISheetBuilder<{modelType}> builder, Func<FormulaContext<{modelType}>, string> value)
-                         => builder.Formula(_ => _.{access}, value);
+                   public static void {prefix}Formula(this ISheetBuilder<{modelType}> builder, Func<FormulaContext<{modelType}>, string> value)
+                     => builder.Formula(_ => _.{access}, value);
 
-                     public static void {prefix}Filter(this ISheetBuilder<{modelType}> builder)
-                         => builder.Filter(_ => _.{access});
+                   public static void {prefix}Filter(this ISheetBuilder<{modelType}> builder)
+                     => builder.Filter(_ => _.{access});
 
-                     public static void {prefix}Include(this ISheetBuilder<{modelType}> builder, bool value)
-                         => builder.Include(_ => _.{access}, value);
+                   public static void {prefix}Include(this ISheetBuilder<{modelType}> builder, bool value)
+                     => builder.Include(_ => _.{access}, value);
 
-                     public static void {prefix}Exclude(this ISheetBuilder<{modelType}> builder)
-                         => builder.Exclude(_ => _.{access});
+                   public static void {prefix}Exclude(this ISheetBuilder<{modelType}> builder)
+                     => builder.Exclude(_ => _.{access});
 
                  """);
         }
@@ -691,9 +699,9 @@ public class SheetBuilderGenerator :
               using System.Runtime.CompilerServices;
               file static class {{model.TypeName}}ColumnAttributesRegistration
               {
-                  [ModuleInitializer]
-                  internal static void Register()
-                  {
+                [ModuleInitializer]
+                internal static void Register()
+                {
 
               """);
 
@@ -757,12 +765,12 @@ public class SheetBuilderGenerator :
             }
 
             builder.AppendLine(
-                $"        GeneratedColumnAttributes.Register(typeof({prop.DeclaringTypeFullName}), \"{prop.Name}\", new({string.Join(", ", args)}));");
+                $"    GeneratedColumnAttributes.Register(typeof({prop.DeclaringTypeFullName}), \"{prop.Name}\", new({string.Join(", ", args)}));");
         }
 
         builder.Append(
             """
-                }
+              }
             }
             """);
 
@@ -784,12 +792,12 @@ public class SheetBuilderGenerator :
               using System.Runtime.CompilerServices;
               file static class {{model.TypeName}}ActivatorRegistration
               {
-                  [ModuleInitializer]
-                  internal static void Register() =>
-                      GeneratedActivators.Register<{{model.TypeFullName}}>(Create);
+                [ModuleInitializer]
+                internal static void Register() =>
+                  GeneratedActivators.Register<{{model.TypeFullName}}>(Create);
 
-                  static {{model.TypeFullName}} Create(IReadOnlyDictionary<string, object?> values)
-                  {
+                static {{model.TypeFullName}} Create(IReadOnlyDictionary<string, object?> values)
+                {
 
               """);
 
@@ -797,7 +805,7 @@ public class SheetBuilderGenerator :
         {
             var param = plan.CtorParams[i];
             var argName = $"arg{i}";
-            builder.AppendLine($"        values.TryGetValue(\"{param.Name}\", out var {argName});");
+            builder.AppendLine($"    values.TryGetValue(\"{param.Name}\", out var {argName});");
             ctorArgs.Add($"({param.TypeFullName}){argName}!");
         }
 
@@ -807,23 +815,23 @@ public class SheetBuilderGenerator :
 
         if (!hasInit && !hasSet)
         {
-            builder.AppendLine($"        return {ctorCall};");
+            builder.AppendLine($"    return {ctorCall};");
         }
         else if (hasInit && !hasSet)
         {
-            builder.AppendLine($"        return {ctorCall}");
+            builder.AppendLine($"    return {ctorCall}");
             AppendInitBlock(builder, plan.InitProps, terminator: ";");
         }
         else
         {
             if (hasInit)
             {
-                builder.AppendLine($"        var instance = {ctorCall}");
+                builder.AppendLine($"    var instance = {ctorCall}");
                 AppendInitBlock(builder, plan.InitProps, terminator: ";");
             }
             else
             {
-                builder.AppendLine($"        var instance = {ctorCall};");
+                builder.AppendLine($"    var instance = {ctorCall};");
             }
 
             for (var i = 0; i < plan.SetProps.Length; i++)
@@ -831,14 +839,17 @@ public class SheetBuilderGenerator :
                 var prop = plan.SetProps[i];
                 var v = $"sv{i}";
                 builder.AppendLine(
-                    $"        if (values.TryGetValue(\"{prop.Name}\", out var {v})) instance.{prop.Name} = ({prop.TypeFullName}){v}!;");
+                    $"    if (values.TryGetValue(\"{prop.Name}\", out var {v})) instance.{prop.Name} = ({prop.TypeFullName}){v}!;");
             }
 
-            builder.AppendLine("        return instance;");
+            builder.AppendLine("    return instance;");
         }
 
-        builder.AppendLine("    }");
-        builder.Append('}');
+        builder.Append(
+            """
+              }
+            }
+            """);
 
         return builder.ToString();
     }
@@ -854,12 +865,12 @@ public class SheetBuilderGenerator :
               using System.Runtime.CompilerServices;
               file static class {{model.TypeName}}RowReaderRegistration
               {
-                  [ModuleInitializer]
-                  internal static void Register() =>
-                      GeneratedRowReaders.Register<{{model.TypeFullName}}>(ReadRow);
+                [ModuleInitializer]
+                internal static void Register() =>
+                  GeneratedRowReaders.Register<{{model.TypeFullName}}>(ReadRow);
 
-                  static {{model.TypeFullName}} ReadRow(global::DocumentFormat.OpenXml.Spreadsheet.Cell?[] cells, string?[]? sharedStrings, global::System.Action<int, string> onError)
-                  {
+                static {{model.TypeFullName}} ReadRow(global::DocumentFormat.OpenXml.Spreadsheet.Cell?[] cells, string?[]? sharedStrings, global::System.Action<int, string> onError)
+                {
 
               """);
 
@@ -890,51 +901,60 @@ public class SheetBuilderGenerator :
 
         if (!hasInit && !hasSet)
         {
-            builder.AppendLine($"        return {ctorCall};");
+            builder.AppendLine($"    return {ctorCall};");
         }
         else if (!hasSet)
         {
-            builder.AppendLine($"        return {ctorCall}");
-            builder.AppendLine("        {");
+            builder.AppendLine(
+                $$"""
+                      return {{ctorCall}}
+                      {
+                  """);
             for (var i = 0; i < initSlots.Count; i++)
             {
                 var (slotIdx, info) = initSlots[i];
                 var trail = i == initSlots.Count - 1 ? "" : ",";
-                builder.AppendLine($"            {info.Name} = {EmitReader(info, slotIdx)}{trail}");
+                builder.AppendLine($"      {info.Name} = {EmitReader(info, slotIdx)}{trail}");
             }
 
-            builder.AppendLine("        };");
+            builder.AppendLine("    };");
         }
         else
         {
             if (hasInit)
             {
-                builder.AppendLine($"        var instance = {ctorCall}");
-                builder.AppendLine("        {");
+                builder.AppendLine(
+                    $$"""
+                          var instance = {{ctorCall}}
+                          {
+                      """);
                 for (var i = 0; i < initSlots.Count; i++)
                 {
                     var (slotIdx, info) = initSlots[i];
                     var trail = i == initSlots.Count - 1 ? "" : ",";
-                    builder.AppendLine($"            {info.Name} = {EmitReader(info, slotIdx)}{trail}");
+                    builder.AppendLine($"      {info.Name} = {EmitReader(info, slotIdx)}{trail}");
                 }
 
-                builder.AppendLine("        };");
+                builder.AppendLine("    };");
             }
             else
             {
-                builder.AppendLine($"        var instance = {ctorCall};");
+                builder.AppendLine($"    var instance = {ctorCall};");
             }
 
             foreach (var (slotIdx, info) in setterSlots)
             {
-                builder.AppendLine($"        instance.{info.Name} = {EmitReader(info, slotIdx)};");
+                builder.AppendLine($"    instance.{info.Name} = {EmitReader(info, slotIdx)};");
             }
 
-            builder.AppendLine("        return instance;");
+            builder.AppendLine("    return instance;");
         }
 
-        builder.AppendLine("    }");
-        builder.Append('}');
+        builder.Append(
+            """
+              }
+            }
+            """);
 
         return builder.ToString();
     }
@@ -969,18 +989,240 @@ public class SheetBuilderGenerator :
 
     static void AppendInitBlock(StringBuilder builder, EquatableArray<ActivatorAssign> props, string terminator)
     {
-        builder.AppendLine("        {");
+        builder.AppendLine("    {");
         for (var i = 0; i < props.Length; i++)
         {
             var prop = props[i];
             var v = $"v{i}";
             builder.AppendLine(
-                $"            {prop.Name} = values.TryGetValue(\"{prop.Name}\", out var {v}) ? ({prop.TypeFullName}){v}! : default!,");
+                $"      {prop.Name} = values.TryGetValue(\"{prop.Name}\", out var {v}) ? ({prop.TypeFullName}){v}! : default!,");
         }
 
-        builder.AppendLine($"        }}{terminator}");
+        builder.AppendLine($"    }}{terminator}");
     }
 
     static string Literal(string value) =>
         Microsoft.CodeAnalysis.CSharp.SymbolDisplay.FormatLiteral(value, quote: true);
+
+    /// <summary>
+    /// Collect distinct enum types referenced by this model's properties (including [Split]
+    /// nested ones, and nullable enum wrappers). For each, emit member display strings so
+    /// the runtime can install a non-boxing switch via <c>EnumRender&lt;TEnum&gt;.Set</c>.
+    /// </summary>
+    static EquatableArray<EnumRenderInfo> BuildEnumRenders(INamedTypeSymbol type)
+    {
+        var seen = new HashSet<string>(StringComparer.Ordinal);
+        var renders = new List<EnumRenderInfo>();
+        CollectEnums(type, seen, renders);
+        return new(renders.ToImmutableArray());
+    }
+
+    static void CollectEnums(INamedTypeSymbol type, HashSet<string> seen, List<EnumRenderInfo> renders)
+    {
+        foreach (var member in type.EnumerateColumnMembers())
+        {
+            if (HasAttribute(member.Symbol, "IgnoreAttribute"))
+            {
+                continue;
+            }
+
+            // Mirror the runtime: [Split] descends into the nested type.
+            if (HasAttribute(member.Symbol, "SplitAttribute") ||
+                HasAttribute(member.Type, "SplitAttribute"))
+            {
+                if (member.Type is INamedTypeSymbol nested)
+                {
+                    CollectEnums(nested, seen, renders);
+                }
+
+                continue;
+            }
+
+            var enumType = ResolveEnumType(member.Type);
+            if (enumType == null)
+            {
+                continue;
+            }
+
+            // [Flags] enums combine via bitwise OR — a value switch can't represent those,
+            // so let the runtime fallback handle them.
+            if (enumType.GetAttributes().Any(_ => _.AttributeClass?.Name == "FlagsAttribute"))
+            {
+                continue;
+            }
+
+            var fullName = enumType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+            if (!seen.Add(fullName))
+            {
+                continue;
+            }
+
+            var members = ImmutableArray.CreateBuilder<EnumMemberInfo>();
+            foreach (var field in enumType.GetMembers().OfType<IFieldSymbol>())
+            {
+                if (!field.IsConst)
+                {
+                    continue;
+                }
+
+                members.Add(new(field.Name, ResolveEnumMemberDisplay(field)));
+            }
+
+            renders.Add(new(fullName, new(members.ToImmutable())));
+        }
+    }
+
+    /// <summary>
+    /// Returns the underlying enum type if <paramref name="type"/> is an enum or
+    /// <see cref="System.Nullable{T}"/> wrapping one; otherwise null.
+    /// </summary>
+    static INamedTypeSymbol? ResolveEnumType(ITypeSymbol type)
+    {
+        if (type is INamedTypeSymbol
+            {
+                IsGenericType: true,
+                OriginalDefinition.SpecialType: SpecialType.System_Nullable_T
+            } nullable)
+        {
+            return nullable.TypeArguments[0] is INamedTypeSymbol { TypeKind: TypeKind.Enum } inner
+                ? inner
+                : null;
+        }
+
+        return type is INamedTypeSymbol { TypeKind: TypeKind.Enum } named ? named : null;
+    }
+
+    /// <summary>
+    /// Matches the runtime's <c>EnumExtensions.Humanize</c>: prefers
+    /// <c>[Display(Description)]</c>, then <c>[Display(Name)]</c>, then the CamelCase-split
+    /// member name. All-uppercase names are passed through as-is.
+    /// </summary>
+    static string ResolveEnumMemberDisplay(IFieldSymbol field)
+    {
+        foreach (var attr in field.GetAttributes())
+        {
+            if (attr.AttributeClass?.Name != "DisplayAttribute")
+            {
+                continue;
+            }
+
+            string? description = null;
+            string? name = null;
+            foreach (var arg in attr.NamedArguments)
+            {
+                switch (arg.Key)
+                {
+                    case "Description":
+                        description = arg.Value.Value as string;
+                        break;
+                    case "Name":
+                        name = arg.Value.Value as string;
+                        break;
+                }
+            }
+
+            if (description != null)
+            {
+                return description;
+            }
+
+            if (name != null)
+            {
+                return name;
+            }
+        }
+
+        return HumanizeName(field.Name);
+    }
+
+    static string HumanizeName(string name)
+    {
+        if (string.IsNullOrEmpty(name))
+        {
+            return name;
+        }
+
+        var allUpper = true;
+        foreach (var c in name)
+        {
+            if (!char.IsUpper(c))
+            {
+                allUpper = false;
+                break;
+            }
+        }
+
+        if (allUpper)
+        {
+            return name;
+        }
+
+        var builder = new StringBuilder(name.Length + 4);
+        builder.Append(name[0]);
+        for (var i = 1; i < name.Length; i++)
+        {
+            var c = name[i];
+            if (char.IsUpper(c))
+            {
+                builder.Append(' ');
+                builder.Append(char.ToLowerInvariant(c));
+            }
+            else
+            {
+                builder.Append(c);
+            }
+        }
+
+        return builder.ToString();
+    }
+
+    /// <summary>
+    /// Emit a per-model registration file that installs non-boxing <c>EnumRender&lt;TEnum&gt;</c>
+    /// switches via a <c>[ModuleInitializer]</c>. Multiple models referencing the same enum will
+    /// each emit a registration; whichever runs last wins, but since both produce equivalent
+    /// switches the end state is identical.
+    /// </summary>
+    static string GenerateEnumRenders(ModelInfo model)
+    {
+        var builder = new StringBuilder(
+            $$"""
+              // <auto-generated/>
+              #nullable enable
+              namespace Excelsior;
+              using System.Runtime.CompilerServices;
+              file static class {{model.TypeName}}EnumRenderRegistration
+              {
+                [ModuleInitializer]
+                internal static void Register()
+                {
+
+              """);
+
+        foreach (var render in model.EnumRenders)
+        {
+            builder.AppendLine(
+                $$"""
+                      global::Excelsior.EnumRender<{{render.TypeFullName}}>.Set(static value => value switch
+                      {
+                  """);
+            foreach (var member in render.Members)
+            {
+                builder.AppendLine($"      {render.TypeFullName}.{member.Name} => {Literal(member.Display)},");
+            }
+
+            builder.AppendLine(
+                """
+                      _ => global::EnumExtensions.Humanize(value),
+                    });
+                """);
+        }
+
+        builder.Append(
+            """
+              }
+            }
+            """);
+
+        return builder.ToString();
+    }
 }

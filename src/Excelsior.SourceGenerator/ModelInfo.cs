@@ -3,7 +3,16 @@ record struct ModelInfo(
     string TypeName,
     EquatableArray<PropertyInfo> Properties,
     ActivatorPlan? Activator,
-    EquatableArray<RowReaderSlot>? RowReaderSlots);
+    EquatableArray<RowReaderSlot>? RowReaderSlots,
+    EquatableArray<EnumRenderInfo> EnumRenders);
+
+record struct EnumRenderInfo(
+    string TypeFullName,
+    EquatableArray<EnumMemberInfo> Members);
+
+record struct EnumMemberInfo(
+    string Name,
+    string Display);
 
 record struct ActivatorPlan(
     EquatableArray<ActivatorParam> CtorParams,

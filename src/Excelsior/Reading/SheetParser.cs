@@ -91,7 +91,7 @@ static class SheetParser
             if (!headerSeen)
             {
                 headerSeen = true;
-                var columnByIndex = ResolveColumnByIndex(row, sharedStrings, metadataColumnMap, byName, byHeading);
+                var columnByIndex = ResolveColumnByIndex(row, sharedStrings, metadataColumnMap, byName, byHeading, out var unmatchedHeaders);
 
                 var resolvedNames = new HashSet<string>(StringComparer.Ordinal);
                 foreach (var info in columnByIndex.Values)
@@ -113,6 +113,16 @@ static class SheetParser
                         declared.Name,
                         CellReference: "",
                         $"Column '{declared.Name}' (heading '{declared.Heading}') was not found in the sheet header row."));
+                }
+
+                foreach (var (cellRef, headerText) in unmatchedHeaders)
+                {
+                    errors.Add(new(
+                        resolvedSheetName,
+                        RowIndex: (int)(row.RowIndex?.Value ?? 0),
+                        ColumnName: "",
+                        CellReference: cellRef,
+                        $"Unrecognized header '{headerText}' — no declared column matches this heading."));
                 }
 
                 if (errors.Count > beforeCount)
@@ -174,9 +184,11 @@ static class SheetParser
         string?[]? sharedStrings,
         Dictionary<int, string>? metadataColumnMap,
         Dictionary<string, ColumnReadInfo> byName,
-        Dictionary<string, ColumnReadInfo> byHeading)
+        Dictionary<string, ColumnReadInfo> byHeading,
+        out List<(string CellReference, string HeaderText)> unmatchedHeaders)
     {
         var result = new Dictionary<int, ColumnReadInfo>();
+        unmatchedHeaders = [];
 
         foreach (var cell in headerRow.Elements<Cell>())
         {
@@ -198,7 +210,7 @@ static class SheetParser
             }
 
             var headerText = CellConverter.ReadRaw(cell, sharedStrings);
-            if (headerText == null)
+            if (string.IsNullOrWhiteSpace(headerText))
             {
                 continue;
             }
@@ -214,7 +226,10 @@ static class SheetParser
             if (byName.TryGetValue(headerText, out var byPlainName))
             {
                 result[index] = byPlainName;
+                continue;
             }
+
+            unmatchedHeaders.Add((cell.CellReference?.Value ?? "", headerText));
         }
 
         return result;

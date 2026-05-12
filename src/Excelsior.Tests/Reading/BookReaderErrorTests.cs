@@ -154,16 +154,17 @@ public class BookReaderErrorTests
         sheet.Column<string>("Nope");
 
         var exception = Assert.Throws<ReadException>(() => reader.Convert(stream))!;
-        Assert.That(exception.Errors, Has.Count.EqualTo(1));
-        Assert.That(exception.Errors[0].ColumnName, Is.EqualTo("Nope"));
+        Assert.That(exception.Errors, Has.Count.EqualTo(2));
+        Assert.That(exception.Errors.Any(_ => _.ColumnName == "Nope" && _.Message.Contains("not found")));
+        Assert.That(exception.Errors.Any(_ => _.Message.Contains("Unrecognized header 'A'")));
     }
 
     [Test]
     public async Task ColumnMismatch_StopsBeforeRowParsing_NoPerCellErrors()
     {
-        // OneCol writes string "x"; reader expects an int "Value" column that
-        // doesn't exist. Should produce exactly one column-mismatch error and
-        // skip row parsing entirely.
+        // OneCol writes string "A"; reader expects an int "Value" column that
+        // doesn't exist. Should produce one missing-column error plus one
+        // unrecognized-header error and skip row parsing entirely.
         var stream = await Write<OneCol>(
             new() { A = "x" },
             new() { A = "y" },
@@ -174,8 +175,9 @@ public class BookReaderErrorTests
         sheet.Column<int>("Value");
 
         var exception = Assert.Throws<ReadException>(() => reader.Convert(stream))!;
-        Assert.That(exception.Errors, Has.Count.EqualTo(1));
-        Assert.That(exception.Errors[0].ColumnName, Is.EqualTo("Value"));
+        Assert.That(exception.Errors, Has.Count.EqualTo(2));
+        Assert.That(exception.Errors.Any(_ => _.ColumnName == "Value" && _.Message.Contains("not found")));
+        Assert.That(exception.Errors.Any(_ => _.Message.Contains("Unrecognized header 'A'")));
         Assert.That(sheet.Rows, Is.Empty);
     }
 

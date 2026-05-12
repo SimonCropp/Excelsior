@@ -68,9 +68,10 @@ public class BookBuilder
     /// value when a payload is already set throws — pass <c>null</c> first to
     /// overwrite deliberately.
     /// </summary>
-    public void SetMetadata(string? json)
+    public void SetMetadata([StringSyntax(StringSyntaxAttribute.Json)] string? json)
     {
-        if (json != null && userMetadataJson != null)
+        if (json != null &&
+            userMetadataJson != null)
         {
             throw new("SetMetadata has already been called. Pass null to clear the existing payload before setting a new value.");
         }
@@ -115,6 +116,7 @@ public class BookBuilder
             {
                 AutoFilter = columns.AutoFilter
             };
+
             return renderer.AddSheet(book, cancel);
         });
 
@@ -158,6 +160,7 @@ public class BookBuilder
             {
                 AutoFilter = builder.AutoFilter
             };
+
             return renderer.AddSheet(book, cancel);
         });
 
@@ -200,6 +203,7 @@ public class BookBuilder
             {
                 AutoFilter = builder.AutoFilter
             };
+
             return renderer.AddSheet(book, cancel);
         });
 

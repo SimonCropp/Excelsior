@@ -28,13 +28,13 @@ public class RedundantColumnHeadingAnalyzer : DiagnosticAnalyzer
             }
 
             start.RegisterSymbolAction(
-                ctx => AnalyzeMember(ctx, columnAttributeType),
+                _ => AnalyzeMember(_, columnAttributeType),
                 SymbolKind.Property);
             start.RegisterSymbolAction(
-                ctx => AnalyzeMember(ctx, columnAttributeType),
+                _ => AnalyzeMember(_, columnAttributeType),
                 SymbolKind.Field);
             start.RegisterSymbolAction(
-                ctx => AnalyzeMember(ctx, columnAttributeType),
+                _ => AnalyzeMember(_, columnAttributeType),
                 SymbolKind.Parameter);
         });
     }

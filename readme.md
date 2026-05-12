@@ -1451,8 +1451,18 @@ Formulas can reference other columns by key via string-keyed overloads on `Formu
 ```cs
 var rows = new IReadOnlyDictionary<string, object?>[]
 {
-    new Dictionary<string, object?> { ["Item"] = "Widget", ["Quantity"] = 3, ["UnitPrice"] = 10m },
-    new Dictionary<string, object?> { ["Item"] = "Gadget", ["Quantity"] = 5, ["UnitPrice"] = 8m },
+    new Dictionary<string, object?>
+    {
+        ["Item"] = "Widget",
+        ["Quantity"] = 3,
+        ["UnitPrice"] = 10m
+    },
+    new Dictionary<string, object?>
+    {
+        ["Item"] = "Gadget",
+        ["Quantity"] = 5,
+        ["UnitPrice"] = 8m
+    },
 };
 
 var builder = new BookBuilder();
@@ -1465,12 +1475,12 @@ builder.AddDictionarySheet(rows)
         _ =>
         {
             _.Format = "$#,##0.00";
-            _.Formula = (_, ctx) => $"={ctx.Ref("Quantity")}*{ctx.Ref("UnitPrice")}";
+            _.Formula = (_, context) => $"={context.Ref("Quantity")}*{context.Ref("UnitPrice")}";
         });
 
 using var book = await builder.Build();
 ```
-<sup><a href='/src/Excelsior.Tests/DictionarySheetTests.cs#L93-L116' title='Snippet source file'>snippet source</a> | <a href='#snippet-DictionarySheetFormula' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/DictionarySheetTests.cs#L93-L126' title='Snippet source file'>snippet source</a> | <a href='#snippet-DictionarySheetFormula' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 #### Round-Trip with `BookReader`
@@ -1515,7 +1525,7 @@ reader.Convert(stream);
 
 var first = sheet.Rows[0];
 ```
-<sup><a href='/src/Excelsior.Tests/DictionarySheetTests.cs#L124-L161' title='Snippet source file'>snippet source</a> | <a href='#snippet-DictionarySheetRoundTrip' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/DictionarySheetTests.cs#L134-L171' title='Snippet source file'>snippet source</a> | <a href='#snippet-DictionarySheetRoundTrip' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 

@@ -94,8 +94,18 @@ public class DictionarySheetTests
 
         var rows = new IReadOnlyDictionary<string, object?>[]
         {
-            new Dictionary<string, object?> { ["Item"] = "Widget", ["Quantity"] = 3, ["UnitPrice"] = 10m },
-            new Dictionary<string, object?> { ["Item"] = "Gadget", ["Quantity"] = 5, ["UnitPrice"] = 8m },
+            new Dictionary<string, object?>
+            {
+                ["Item"] = "Widget",
+                ["Quantity"] = 3,
+                ["UnitPrice"] = 10m
+            },
+            new Dictionary<string, object?>
+            {
+                ["Item"] = "Gadget",
+                ["Quantity"] = 5,
+                ["UnitPrice"] = 8m
+            },
         };
 
         var builder = new BookBuilder();
@@ -108,7 +118,7 @@ public class DictionarySheetTests
                 _ =>
                 {
                     _.Format = "$#,##0.00";
-                    _.Formula = (_, ctx) => $"={ctx.Ref("Quantity")}*{ctx.Ref("UnitPrice")}";
+                    _.Formula = (_, context) => $"={context.Ref("Quantity")}*{context.Ref("UnitPrice")}";
                 });
 
         using var book = await builder.Build();

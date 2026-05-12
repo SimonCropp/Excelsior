@@ -81,7 +81,7 @@ class SheetBuilder<TModel>(Columns<TModel> columns) :
     public void Formula<TProperty>(
         Expression<Func<TModel, TProperty>> property,
         Func<FormulaContext<TModel>, string> value) =>
-        Column(property, _ => _.Formula = (_, ctx) => value(ctx));
+        Column(property, _ => _.Formula = (_, context) => value(context));
 
     public void Filter<TProperty>(
         Expression<Func<TModel, TProperty>> property) =>

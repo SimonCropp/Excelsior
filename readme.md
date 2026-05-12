@@ -353,7 +353,12 @@ var reader = new BookReader();
 var staff = reader.AddSheet("Staff");
 staff
     .Column<int>("Employee ID")
-    .Column<string>("Full Name");
+    .Column<string>("Full Name")
+    .Column<string>("Email Address")
+    .Column<Date?>("Hire Date")
+    .Column<int>("Annual Salary")
+    .Column<bool>("IsActive")
+    .Column<EmployeeStatus>("Status");
 
 var departments = reader.AddSheet("Departments");
 departments
@@ -367,10 +372,10 @@ Assert.That(staff.Rows[0]["Full Name"], Is.EqualTo("John Doe"));
 Assert.That(departments.Rows.Select(_ => _["Name"]), Is.EqualTo(new object[] { "Eng", "Sales" }));
 Assert.That(departments.Rows.Select(_ => _["HeadCount"]), Is.EqualTo(new object[] { 12, 7 }));
 ```
-<sup><a href='/src/Excelsior.Tests/Reading/BookReaderAnonymousTests.cs#L62-L82' title='Snippet source file'>snippet source</a> | <a href='#snippet-BookReaderDictionaryMultipleSheets' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/Reading/BookReaderAnonymousTests.cs#L62-L87' title='Snippet source file'>snippet source</a> | <a href='#snippet-BookReaderDictionaryMultipleSheets' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
-If a sheet's declared columns don't match what's in the file, that sheet's row parsing is skipped (one error per missing column is recorded against it), but subsequent sheets are still processed. Per-row parse errors don't have this short-circuit — they are collected per failing cell.
+If a sheet's declared columns don't match what's in the file, that sheet's row parsing is skipped (one error per missing column, plus one error per unrecognized header column, is recorded against it), but subsequent sheets are still processed. Per-row parse errors don't have this short-circuit — they are collected per failing cell.
 
 
 #### Per-cell delegate conversion

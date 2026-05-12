@@ -66,7 +66,12 @@ public class BookReaderAnonymousTests
         var staff = reader.AddSheet("Staff");
         staff
             .Column<int>("Employee ID")
-            .Column<string>("Full Name");
+            .Column<string>("Full Name")
+            .Column<string>("Email Address")
+            .Column<Date?>("Hire Date")
+            .Column<int>("Annual Salary")
+            .Column<bool>("IsActive")
+            .Column<EmployeeStatus>("Status");
 
         var departments = reader.AddSheet("Departments");
         departments

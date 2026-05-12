@@ -167,7 +167,13 @@ public class BookReaderTests
         var stream = new MemoryStream();
         var builder = new BookBuilder();
         builder.AddSheet(SampleData.Employees());
-        builder.SetMetadata("""{"title":"raw","version":7}""");
+        builder.SetMetadata(
+            """
+            {
+              "title": "raw",
+              "version": 7
+            }
+            """);
         await builder.ToStream(stream);
 
         stream.Position = 0;
@@ -180,9 +186,21 @@ public class BookReaderTests
 
         #endregion
 
-        Assert.That(json, Is.EqualTo("""{"title":"raw","version":7}"""));
+        Assert.That(json, Is.EqualTo(
+            """
+            {
+              "title": "raw",
+              "version": 7
+            }
+            """));
         Assert.That(reader.TryGetMetadata(out var raw), Is.True);
-        Assert.That(raw, Is.EqualTo("""{"title":"raw","version":7}"""));
+        Assert.That(raw, Is.EqualTo(
+            """
+            {
+              "title": "raw",
+              "version": 7
+            }
+            """));
     }
 
     [Test]

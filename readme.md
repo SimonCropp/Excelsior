@@ -519,7 +519,13 @@ For callers who already hold a JSON string — or who want to inspect or rewrite
 var stream = new MemoryStream();
 var builder = new BookBuilder();
 builder.AddSheet(SampleData.Employees());
-builder.SetMetadata("""{"title":"raw","version":7}""");
+builder.SetMetadata(
+    """
+    {
+      "title": "raw",
+      "version": 7
+    }
+    """);
 await builder.ToStream(stream);
 
 stream.Position = 0;
@@ -530,7 +536,7 @@ reader.Convert(stream);
 
 var json = reader.GetMetadata();
 ```
-<sup><a href='/src/Excelsior.Tests/Reading/BookReaderTests.cs#L165-L181' title='Snippet source file'>snippet source</a> | <a href='#snippet-RawMetadataUsage' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/Reading/BookReaderTests.cs#L165-L187' title='Snippet source file'>snippet source</a> | <a href='#snippet-RawMetadataUsage' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 

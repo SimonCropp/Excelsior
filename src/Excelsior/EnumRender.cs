@@ -42,3 +42,33 @@ public static class EnumRender<TEnum>
         return value.Humanize();
     }
 }
+
+/// <summary>
+/// Boxed entry point that dispatches into <see cref="EnumRender{TEnum}.Render"/> for the
+/// concrete runtime type. Provided for callers that hold an <see cref="Enum"/> reference
+/// (e.g. a templating engine handing values as <see cref="object"/>) and want the same
+/// resolution chain Excelsior's row writers use — global override, source-generator switch,
+/// then <see cref="EnumExtensions.Humanize"/> fallback.
+/// </summary>
+public static class EnumRender
+{
+    static readonly ConcurrentDictionary<Type, Func<Enum, string>> dispatchers = new();
+
+    public static string Render(Enum value) =>
+        dispatchers.GetOrAdd(value.GetType(), BuildDispatcher)(value);
+
+    static Func<Enum, string> BuildDispatcher(Type enumType)
+    {
+        var method = typeof(BoxedDispatcher<>)
+            .MakeGenericType(enumType)
+            .GetMethod(nameof(BoxedDispatcher<>.Render), BindingFlags.NonPublic | BindingFlags.Static)!;
+        return method.CreateDelegate<Func<Enum, string>>();
+    }
+
+    static class BoxedDispatcher<TEnum>
+        where TEnum : struct, Enum
+    {
+        internal static string Render(Enum value) =>
+            EnumRender<TEnum>.Render((TEnum)value);
+    }
+}

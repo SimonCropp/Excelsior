@@ -74,8 +74,16 @@ public class BookReaderTests
         builder.AddSheet(SampleData.Employees(), "Staff");
         builder.AddSheet<Department>(
             [
-                new() { Name = "Eng", HeadCount = 12 },
-                new() { Name = "Sales", HeadCount = 7 }
+                new()
+                {
+                    Name = "Eng",
+                    HeadCount = 12
+                },
+                new()
+                {
+                    Name = "Sales",
+                    HeadCount = 7
+                }
             ],
             "Departments");
         await builder.ToStream(stream);

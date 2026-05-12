@@ -264,7 +264,9 @@ public class ColumnWidths
 
         var builder = new BookBuilder();
         builder.AddSheet(employees)
-            .Column(_ => _.Name, _ => _.Width = 256);
+            .Column(
+                _ => _.Name,
+                _ => _.Width = 256);
 
         var exception = Assert.ThrowsAsync<Exception>(async () => await builder.Build());
         Assert.That(exception!.Message, Does.Contain("exceeds the Excel maximum of 255"));
@@ -277,7 +279,9 @@ public class ColumnWidths
 
         var builder = new BookBuilder();
         builder.AddSheet(employees)
-            .Column(_ => _.Name, _ => _.MinWidth = 256);
+            .Column(
+                _ => _.Name,
+                _ => _.MinWidth = 256);
 
         var exception = Assert.ThrowsAsync<Exception>(async () => await builder.Build());
         Assert.That(exception!.Message, Does.Contain("MinWidth (256) exceeds the Excel maximum of 255"));
@@ -290,7 +294,9 @@ public class ColumnWidths
 
         var builder = new BookBuilder();
         builder.AddSheet(employees)
-            .Column(_ => _.Name, _ => _.MaxWidth = 256);
+            .Column(
+                _ => _.Name,
+                _ => _.MaxWidth = 256);
 
         var exception = Assert.ThrowsAsync<Exception>(async () => await builder.Build());
         Assert.That(exception!.Message, Does.Contain("MaxWidth (256) exceeds the Excel maximum of 255"));

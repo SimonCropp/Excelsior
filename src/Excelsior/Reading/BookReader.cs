@@ -42,6 +42,36 @@ public class BookReader
     }
 
     /// <summary>
+    /// Returns the raw JSON string previously embedded via
+    /// <see cref="BookBuilder.SetMetadata"/>. Throws if no payload is present.
+    /// Use <see cref="TryGetMetadata(out string)"/> if the payload may be
+    /// absent. Must be called after <see cref="Convert(Stream)"/> or
+    /// <see cref="TryConvert(Stream)"/>.
+    /// </summary>
+    public string GetMetadata()
+    {
+        if (userMetadataJson == null)
+        {
+            throw new("No embedded metadata was found in the workbook. Use TryGetMetadata to handle the absent case.");
+        }
+
+        return userMetadataJson;
+    }
+
+    /// <summary>
+    /// Attempts to return the raw JSON string previously embedded via
+    /// <see cref="BookBuilder.SetMetadata"/>. Returns <c>false</c> and sets
+    /// <paramref name="value"/> to <c>null</c> when no payload is present.
+    /// Must be called after <see cref="Convert(Stream)"/> or
+    /// <see cref="TryConvert(Stream)"/>.
+    /// </summary>
+    public bool TryGetMetadata([NotNullWhen(true)] out string? value)
+    {
+        value = userMetadataJson;
+        return value != null;
+    }
+
+    /// <summary>
     /// Register a strong-typed sheet. Properties are auto-discovered from
     /// <typeparamref name="TModel"/>; per-column overrides are applied via the
     /// returned fluent API.

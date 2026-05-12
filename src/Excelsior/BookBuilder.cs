@@ -59,6 +59,15 @@ public class BookBuilder
     public void SetMetadata<T>(T value) =>
         userMetadataJson = value is null ? null : JsonSerializer.Serialize(value);
 
+    /// <summary>
+    /// Embeds a raw JSON string in the workbook. The caller is responsible for
+    /// producing valid JSON; no validation is performed. Read back with
+    /// <see cref="BookReader.GetMetadata"/>. Passing <c>null</c> clears any
+    /// previously embedded payload.
+    /// </summary>
+    public void SetMetadata(string? json) =>
+        userMetadataJson = json;
+
     public ISheetBuilder<TModel> AddSheet<TModel>(
         IEnumerable<TModel> data,
         string? name = null,

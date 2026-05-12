@@ -159,6 +159,32 @@ public class BookReaderTests
     }
 
     [Test]
+    public async Task RoundTrip_RawMetadata()
+    {
+        #region RawMetadataUsage
+
+        var stream = new MemoryStream();
+        var builder = new BookBuilder();
+        builder.AddSheet(SampleData.Employees());
+        builder.SetMetadata("""{"title":"raw","version":7}""");
+        await builder.ToStream(stream);
+
+        stream.Position = 0;
+
+        var reader = new BookReader();
+        reader.AddSheet<Employee>();
+        reader.Convert(stream);
+
+        var json = reader.GetMetadata();
+
+        #endregion
+
+        Assert.That(json, Is.EqualTo("""{"title":"raw","version":7}"""));
+        Assert.That(reader.TryGetMetadata(out var raw), Is.True);
+        Assert.That(raw, Is.EqualTo("""{"title":"raw","version":7}"""));
+    }
+
+    [Test]
     public async Task TryGetMetadata_RoundTrip()
     {
         var stream = new MemoryStream();

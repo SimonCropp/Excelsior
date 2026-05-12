@@ -2600,7 +2600,7 @@ public class GeneratedTestModel
     public required int Age { get; init; }
 }
 ```
-<sup><a href='/src/Excelsior.Tests/SourceGeneratorIntegrationTests.cs#L84-L93' title='Snippet source file'>snippet source</a> | <a href='#snippet-SourceGeneratedModel' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/SourceGeneratorIntegrationTests.cs#L107-L116' title='Snippet source file'>snippet source</a> | <a href='#snippet-SourceGeneratedModel' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 This generates typed extension methods for each property, such as `NameColumn`, `NameOrder`, `AgeWidth`, etc.
@@ -2624,8 +2624,16 @@ var builder = new BookBuilder();
 
 List<GeneratedTestModel> data =
 [
-    new() { Name = "Alice", Age = 30 },
-    new() { Name = "Bob", Age = 25 },
+    new()
+    {
+        Name = "Alice",
+        Age = 30
+    },
+    new()
+    {
+        Name = "Bob",
+        Age = 25
+    },
 ];
 
 var sheet = builder.AddSheet(data);
@@ -2634,7 +2642,7 @@ sheet.AgeOrder(1);
 sheet.NameOrder(2);
 sheet.AgeWidth(15);
 ```
-<sup><a href='/src/Excelsior.Tests/SourceGeneratorIntegrationTests.cs#L7-L23' title='Snippet source file'>snippet source</a> | <a href='#snippet-SourceGeneratedUsage' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/SourceGeneratorIntegrationTests.cs#L7-L31' title='Snippet source file'>snippet source</a> | <a href='#snippet-SourceGeneratedUsage' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 

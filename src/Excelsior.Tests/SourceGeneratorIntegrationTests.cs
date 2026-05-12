@@ -10,8 +10,16 @@ public class SourceGeneratorIntegrationTests
 
         List<GeneratedTestModel> data =
         [
-            new() { Name = "Alice", Age = 30 },
-            new() { Name = "Bob", Age = 25 },
+            new()
+            {
+                Name = "Alice",
+                Age = 30
+            },
+            new()
+            {
+                Name = "Bob",
+                Age = 25
+            },
         ];
 
         var sheet = builder.AddSheet(data);
@@ -37,9 +45,24 @@ public class SourceGeneratorIntegrationTests
 
         List<GeneratedEnumModel> data =
         [
-            new() { Name = "Alice", Status = GeneratedStatus.FullTime, Backup = GeneratedStatus.PartTime },
-            new() { Name = "Bob",   Status = GeneratedStatus.Contract, Backup = null },
-            new() { Name = "Carol", Status = GeneratedStatus.NDA,      Backup = GeneratedStatus.FullTime },
+            new()
+            {
+                Name = "Alice",
+                Status = GeneratedStatus.FullTime,
+                Backup = GeneratedStatus.PartTime
+            },
+            new()
+            {
+                Name = "Bob",
+                Status = GeneratedStatus.Contract,
+                Backup = null
+            },
+            new()
+            {
+                Name = "Carol",
+                Status = GeneratedStatus.NDA,
+                Backup = GeneratedStatus.FullTime
+            },
         ];
 
         var sheet = builder.AddSheet(data);

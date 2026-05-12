@@ -470,6 +470,42 @@ if (!result)
 <!-- endSnippet -->
 
 
+#### Embedded metadata
+
+An arbitrary instance can be embedded in the workbook itself, serialized with `System.Text.Json`. Useful for round-tripping out-of-band context — report headers, schema versions, audit info — that doesn't belong in any sheet.
+
+The payload is written into a custom XML part with a dedicated namespace, so it coexists with the column-mapping metadata and any other custom parts.
+
+<!-- snippet: UserMetadataUsage -->
+<a id='snippet-UserMetadataUsage'></a>
+```cs
+var stream = new MemoryStream();
+var builder = new BookBuilder();
+builder.AddSheet(SampleData.Employees());
+builder.SetMetadata(new BookHeader
+{
+    Title = "Q1 staff snapshot",
+    Version = 3,
+    GeneratedAt = new(2026, 1, 15, 9, 30, 0, DateTimeKind.Utc)
+});
+await builder.ToStream(stream);
+
+stream.Position = 0;
+
+var reader = new BookReader();
+reader.AddSheet<Employee>();
+reader.Convert(stream);
+
+var header = reader.GetMetadata<BookHeader>();
+```
+<sup><a href='/src/Excelsior.Tests/Reading/BookReaderTests.cs#L118-L139' title='Snippet source file'>snippet source</a> | <a href='#snippet-UserMetadataUsage' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+`SetMetadata` replaces any prior call; passing `null` clears the payload.
+
+On the reader, `GetMetadata<T>()` throws if no payload is present in the workbook. When absence is expected, use `TryGetMetadata<T>(out var value)`.
+
+
 #### Rich text
 
 Cells written with run-level formatting (mixed bold / colors / fonts within a single cell — Excel's "rich string" feature, which is what `IsHtml = true` produces on the write side) are flattened to plain text on read. The runs are concatenated and formatting attributes are discarded; a `string` property receives the joined text.

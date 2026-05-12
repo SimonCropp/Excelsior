@@ -41,12 +41,23 @@ public class BookBuilder
     // Any OOXML reader that walks <sheet name="..."><column index="N" property="..."/></sheet>
     // can pick this up — Verify.OpenXml does so automatically and surfaces it on ColumnInfo.Metadata.
     internal const string MetadataNamespace = "https://github.com/SimonCropp/Excelsior/columnMetadata/v1";
+    internal const string UserMetadataNamespace = "https://github.com/SimonCropp/Excelsior/userMetadata/v1";
 
     record SheetMetadata(string SheetName, IReadOnlyList<(int Index, string PropertyName)> Columns);
     List<SheetMetadata> sheetMetadata = [];
+    string? userMetadataJson;
 
     internal void RegisterSheetMetadata(string sheetName, IReadOnlyList<(int Index, string PropertyName)> columns) =>
         sheetMetadata.Add(new(sheetName, columns));
+
+    /// <summary>
+    /// Embeds an arbitrary instance in the workbook, serialized as JSON via
+    /// <see cref="JsonSerializer"/>. Read back with <see cref="BookReader.GetMetadata{T}"/>.
+    /// A subsequent call replaces the previously embedded value; passing <c>null</c>
+    /// clears it.
+    /// </summary>
+    public void SetMetadata<T>(T value) =>
+        userMetadataJson = value is null ? null : JsonSerializer.Serialize(value);
 
     public ISheetBuilder<TModel> AddSheet<TModel>(
         IEnumerable<TModel> data,
@@ -191,7 +202,24 @@ public class BookBuilder
         ApplyStylesheet(workbookPart);
         ApplyWorkbookProtection(book);
         WriteSheetMetadata(workbookPart);
+        WriteUserMetadata(workbookPart);
         return document;
+    }
+
+    void WriteUserMetadata(WorkbookPart book)
+    {
+        if (userMetadataJson == null)
+        {
+            return;
+        }
+
+        XNamespace ns = UserMetadataNamespace;
+        var doc = new XDocument(
+            new XElement(ns + "userMetadata", new XCData(userMetadataJson)));
+
+        var customPart = book.AddCustomXmlPart(CustomXmlPartType.CustomXml);
+        using var stream = customPart.GetStream(FileMode.Create);
+        doc.Save(stream);
     }
 
     void WriteSheetMetadata(WorkbookPart book)

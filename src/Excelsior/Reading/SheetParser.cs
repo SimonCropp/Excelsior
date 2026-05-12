@@ -1,7 +1,8 @@
 static class SheetParser
 {
-    public static Dictionary<string, Dictionary<int, string>> ReadMetadata(WorkbookPart workbookPart)
+    public static Dictionary<string, Dictionary<int, string>> ReadMetadata(WorkbookPart workbookPart, out string? userMetadataJson)
     {
+        userMetadataJson = null;
         var result = new Dictionary<string, Dictionary<int, string>>(StringComparer.Ordinal);
         foreach (var part in workbookPart.GetPartsOfType<CustomXmlPart>())
         {
@@ -10,8 +11,18 @@ static class SheetParser
 
 
             var root = doc.Root;
-            if (root == null ||
-                root.Name.NamespaceName != BookBuilder.MetadataNamespace)
+            if (root == null)
+            {
+                continue;
+            }
+
+            if (root.Name.NamespaceName == BookBuilder.UserMetadataNamespace)
+            {
+                userMetadataJson = root.Value;
+                continue;
+            }
+
+            if (root.Name.NamespaceName != BookBuilder.MetadataNamespace)
             {
                 continue;
             }

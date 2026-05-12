@@ -6,6 +6,7 @@ global using System.Globalization;
 global using System.Linq.Expressions;
 global using System.Reflection;
 global using System.Runtime.CompilerServices;
+global using System.Text.Json;
 global using System.Xml.Linq;
 global using DocumentFormat.OpenXml;
 global using DocumentFormat.OpenXml.Packaging;

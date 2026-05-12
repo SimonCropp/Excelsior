@@ -3,6 +3,73 @@ namespace Excelsior;
 public class BookReader
 {
     List<IReaderSheet> sheets = [];
+    string? userMetadataJson;
+
+    /// <summary>
+    /// Deserializes the arbitrary instance previously embedded via
+    /// <see cref="BookBuilder.SetMetadata{T}"/>. Throws if no payload is
+    /// present in the workbook. Use <see cref="TryGetMetadata{T}"/> if the
+    /// payload may be absent. Must be called after <see cref="Convert(Stream)"/>
+    /// or <see cref="TryConvert(Stream)"/>.
+    /// </summary>
+    public T GetMetadata<T>()
+    {
+        if (userMetadataJson == null)
+        {
+            throw new("No embedded metadata was found in the workbook. Use TryGetMetadata to handle the absent case.");
+        }
+
+        return JsonSerializer.Deserialize<T>(userMetadataJson)!;
+    }
+
+    /// <summary>
+    /// Attempts to deserialize the arbitrary instance previously embedded via
+    /// <see cref="BookBuilder.SetMetadata{T}"/>. Returns <c>false</c> and sets
+    /// <paramref name="value"/> to <c>default</c> when no payload is present.
+    /// Must be called after <see cref="Convert(Stream)"/> or
+    /// <see cref="TryConvert(Stream)"/>.
+    /// </summary>
+    public bool TryGetMetadata<T>([NotNullWhen(true)] out T? value)
+    {
+        if (userMetadataJson == null)
+        {
+            value = default;
+            return false;
+        }
+
+        value = JsonSerializer.Deserialize<T>(userMetadataJson)!;
+        return true;
+    }
+
+    /// <summary>
+    /// Returns the raw JSON string previously embedded via
+    /// <see cref="BookBuilder.SetMetadata"/>. Throws if no payload is present.
+    /// Use <see cref="TryGetMetadata(out string)"/> if the payload may be
+    /// absent. Must be called after <see cref="Convert(Stream)"/> or
+    /// <see cref="TryConvert(Stream)"/>.
+    /// </summary>
+    public string GetMetadata()
+    {
+        if (userMetadataJson == null)
+        {
+            throw new("No embedded metadata was found in the workbook. Use TryGetMetadata to handle the absent case.");
+        }
+
+        return userMetadataJson;
+    }
+
+    /// <summary>
+    /// Attempts to return the raw JSON string previously embedded via
+    /// <see cref="BookBuilder.SetMetadata"/>. Returns <c>false</c> and sets
+    /// <paramref name="value"/> to <c>null</c> when no payload is present.
+    /// Must be called after <see cref="Convert(Stream)"/> or
+    /// <see cref="TryConvert(Stream)"/>.
+    /// </summary>
+    public bool TryGetMetadata([NotNullWhen(true)] out string? value)
+    {
+        value = userMetadataJson;
+        return value != null;
+    }
 
     /// <summary>
     /// Register a strong-typed sheet. Properties are auto-discovered from
@@ -73,7 +140,7 @@ public class BookReader
         using var document = SpreadsheetDocument.Open(stream, false);
         var workbookPart = document.WorkbookPart!;
         var sharedStrings = CellConverter.BuildSharedStrings(workbookPart.SharedStringTablePart?.SharedStringTable);
-        var metadata = SheetParser.ReadMetadata(workbookPart);
+        var metadata = SheetParser.ReadMetadata(workbookPart, out userMetadataJson);
 
         var workbookSheets = workbookPart.Workbook?
             .GetFirstChild<Sheets>()?

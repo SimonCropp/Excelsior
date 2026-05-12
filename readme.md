@@ -223,6 +223,7 @@ var stream = await builder.ToMemoryStream();
 
 `BookReader` is the inverse of `BookBuilder`: register the sheets to read, then `Convert` (throws on failure) or `TryConvert` (returns a result).
 
+
 #### Strong-typed
 
 The same property-discovery pipeline that drives writes also drives reads — `[Column]`, `[Display]`, `[DisplayName]`, ordering, and inclusion all carry over. When the workbook was produced by Excelsior, the column→property mapping is recovered from a custom XML metadata part written at build time, so renaming a heading on either side does not break the round-trip.
@@ -289,6 +290,7 @@ Limitations:
 - Parameter matching is case-sensitive — a constructor parameter `name` will not bind to property `Name`.
 - Public instance properties and fields are both bound. `readonly` and `const` fields are read on write but skipped on read (they keep their initializer value).
 - A type with no public constructors and no parameterless constructor (public or non-public) throws on the first row.
+
 
 ##### Source-generated activators
 
@@ -470,6 +472,66 @@ if (!result)
 <!-- endSnippet -->
 
 
+#### Embedded metadata
+
+An arbitrary instance can be embedded in the workbook itself, serialized with `System.Text.Json`. Useful for round-tripping out-of-band context — report headers, schema versions, audit info — that doesn't belong in any sheet.
+
+The payload is written into a custom XML part with a dedicated namespace, so it coexists with the column-mapping metadata and any other custom parts.
+
+<!-- snippet: UserMetadataUsage -->
+<a id='snippet-UserMetadataUsage'></a>
+```cs
+var stream = new MemoryStream();
+var builder = new BookBuilder();
+builder.AddSheet(SampleData.Employees());
+builder.SetMetadata(new BookHeader
+{
+    Title = "Q1 staff snapshot",
+    Version = 3,
+    GeneratedAt = new(2026, 1, 15, 9, 30, 0, DateTimeKind.Utc)
+});
+await builder.ToStream(stream);
+
+stream.Position = 0;
+
+var reader = new BookReader();
+reader.AddSheet<Employee>();
+reader.Convert(stream);
+
+var header = reader.GetMetadata<BookHeader>();
+```
+<sup><a href='/src/Excelsior.Tests/Reading/BookReaderTests.cs#L118-L139' title='Snippet source file'>snippet source</a> | <a href='#snippet-UserMetadataUsage' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+`SetMetadata` replaces any prior call; passing `null` clears the payload.
+
+On the reader, `GetMetadata<T>()` throws if no payload is present in the workbook. When absence is expected, use `TryGetMetadata<T>(out var value)`.
+
+##### Raw JSON access
+
+For callers who already hold a JSON string — or who want to inspect or rewrite the embedded payload without going through `JsonSerializer` — `BookBuilder.SetMetadata(string)`, `BookReader.GetMetadata()` and `BookReader.TryGetMetadata(out string)` operate on the raw string directly. No validation is performed on the write side.
+
+<!-- snippet: RawMetadataUsage -->
+<a id='snippet-RawMetadataUsage'></a>
+```cs
+var stream = new MemoryStream();
+var builder = new BookBuilder();
+builder.AddSheet(SampleData.Employees());
+builder.SetMetadata("""{"title":"raw","version":7}""");
+await builder.ToStream(stream);
+
+stream.Position = 0;
+
+var reader = new BookReader();
+reader.AddSheet<Employee>();
+reader.Convert(stream);
+
+var json = reader.GetMetadata();
+```
+<sup><a href='/src/Excelsior.Tests/Reading/BookReaderTests.cs#L164-L180' title='Snippet source file'>snippet source</a> | <a href='#snippet-RawMetadataUsage' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+
 #### Rich text
 
 Cells written with run-level formatting (mixed bold / colors / fonts within a single cell — Excel's "rich string" feature, which is what `IsHtml = true` produces on the write side) are flattened to plain text on read. The runs are concatenated and formatting attributes are discarded; a `string` property receives the joined text.
@@ -511,6 +573,7 @@ sheet.Render(_ => _.Name, (row, _) => $"<a href='/people/{row.Id}'>{row.Name}</a
 ### Custom Headings
 
 The heading text for a column can be overridden:
+
 
 #### Fluent
 
@@ -1419,6 +1482,7 @@ using var book = await builder.Build();
 <sup><a href='/src/Excelsior.Tests/DictionarySheetTests.cs#L7-L42' title='Snippet source file'>snippet source</a> | <a href='#snippet-DictionarySheetBasic' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
+
 #### Type-Based Inference
 
 A column's `TProperty` drives the same defaults as the strong-typed path. For example, an `enum`-typed column auto-derives its allowed values into a dropdown:
@@ -1441,6 +1505,7 @@ using var book = await builder.Build();
 ```
 <sup><a href='/src/Excelsior.Tests/DictionarySheetTests.cs#L70-L85' title='Snippet source file'>snippet source</a> | <a href='#snippet-DictionarySheetEnumDropdown' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
+
 
 #### Formulas
 
@@ -2550,7 +2615,6 @@ public class Employee
 
 
 ### Splitting
-
 
 `SplitAttribute` can be used push properties up.
 

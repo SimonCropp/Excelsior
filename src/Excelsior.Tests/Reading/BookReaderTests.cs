@@ -104,4 +104,106 @@ public class BookReaderTests
         Assert.That(employees, Is.Not.Empty);
         Assert.That(depts.Select(_ => _.Name), Is.EqualTo(["Eng", "Sales"]));
     }
+
+    public class BookHeader
+    {
+        public required string Title { get; init; }
+        public required int Version { get; init; }
+        public required DateTime GeneratedAt { get; init; }
+    }
+
+    [Test]
+    public async Task RoundTrip_UserMetadata()
+    {
+        #region UserMetadataUsage
+
+        var stream = new MemoryStream();
+        var builder = new BookBuilder();
+        builder.AddSheet(SampleData.Employees());
+        builder.SetMetadata(new BookHeader
+        {
+            Title = "Q1 staff snapshot",
+            Version = 3,
+            GeneratedAt = new(2026, 1, 15, 9, 30, 0, DateTimeKind.Utc)
+        });
+        await builder.ToStream(stream);
+
+        stream.Position = 0;
+
+        var reader = new BookReader();
+        reader.AddSheet<Employee>();
+        reader.Convert(stream);
+
+        var header = reader.GetMetadata<BookHeader>();
+
+        #endregion
+
+        await Verify(header);
+    }
+
+    [Test]
+    public async Task GetMetadata_Throws_WhenNoneEmbedded()
+    {
+        var stream = new MemoryStream();
+        var builder = new BookBuilder();
+        builder.AddSheet(SampleData.Employees());
+        await builder.ToStream(stream);
+        stream.Position = 0;
+
+        var reader = new BookReader();
+        reader.AddSheet<Employee>();
+        reader.Convert(stream);
+
+        Assert.That(reader.TryGetMetadata<BookHeader>(out var _), Is.False);
+        Assert.Throws<Exception>(() => reader.GetMetadata<BookHeader>());
+    }
+
+    [Test]
+    public async Task RoundTrip_RawMetadata()
+    {
+        #region RawMetadataUsage
+
+        var stream = new MemoryStream();
+        var builder = new BookBuilder();
+        builder.AddSheet(SampleData.Employees());
+        builder.SetMetadata("""{"title":"raw","version":7}""");
+        await builder.ToStream(stream);
+
+        stream.Position = 0;
+
+        var reader = new BookReader();
+        reader.AddSheet<Employee>();
+        reader.Convert(stream);
+
+        var json = reader.GetMetadata();
+
+        #endregion
+
+        Assert.That(json, Is.EqualTo("""{"title":"raw","version":7}"""));
+        Assert.That(reader.TryGetMetadata(out var raw), Is.True);
+        Assert.That(raw, Is.EqualTo("""{"title":"raw","version":7}"""));
+    }
+
+    [Test]
+    public async Task TryGetMetadata_RoundTrip()
+    {
+        var stream = new MemoryStream();
+        var builder = new BookBuilder();
+        builder.AddSheet(SampleData.Employees());
+        builder.SetMetadata(new BookHeader
+        {
+            Title = "Q1 staff snapshot",
+            Version = 3,
+            GeneratedAt = new(2026, 1, 15, 9, 30, 0, DateTimeKind.Utc)
+        });
+        await builder.ToStream(stream);
+        stream.Position = 0;
+
+        var reader = new BookReader();
+        reader.AddSheet<Employee>();
+        reader.Convert(stream);
+
+        Assert.That(reader.TryGetMetadata<BookHeader>(out var header), Is.True);
+        Assert.That(header!.Title, Is.EqualTo("Q1 staff snapshot"));
+    }
 }

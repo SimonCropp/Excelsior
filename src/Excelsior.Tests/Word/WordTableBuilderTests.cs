@@ -70,7 +70,7 @@ public class WordTableBuilderTests
         var table = new WordTableBuilder<Employee>(employees).Build();
 
         var rows = table.Elements<TableRow>().ToList();
-         // +1 for header row
+        // +1 for header row
         AreEqual(employees.Count + 1, rows.Count);
     }
 
@@ -174,7 +174,10 @@ public class WordTableBuilderTests
     {
         var rows = new[]
         {
-            new HtmlRow { Name = "<i>A. Smith</i>" }
+            new HtmlRow
+            {
+                Name = "<i>A. Smith</i>"
+            }
         };
 
         var table = new WordTableBuilder<HtmlRow>(rows).Build();
@@ -390,18 +393,37 @@ public class WordTableBuilderTests
         var stylesPart = mainPart.AddNewPart<StyleDefinitionsPart>();
         stylesPart.Styles = new(
             new Style(
-                    new StyleName { Val = "Normal Table" },
-                    new TableProperties(
-                        new TableCellMarginDefault(
-                            new TopMargin { Width = "20", Type = TableWidthUnitValues.Dxa },
-                            new StartMargin { Width = "200", Type = TableWidthUnitValues.Dxa },
-                            new BottomMargin { Width = "20", Type = TableWidthUnitValues.Dxa },
-                            new EndMargin { Width = "200", Type = TableWidthUnitValues.Dxa })))
+                new StyleName
                 {
-                    Type = StyleValues.Table,
-                    StyleId = "TableNormal",
-                    Default = true,
-                });
+                    Val = "Normal Table"
+                },
+                new TableProperties(
+                    new TableCellMarginDefault(
+                        new TopMargin
+                        {
+                            Width = "20",
+                            Type = TableWidthUnitValues.Dxa
+                        },
+                        new StartMargin
+                        {
+                            Width = "200",
+                            Type = TableWidthUnitValues.Dxa
+                        },
+                        new BottomMargin
+                        {
+                            Width = "20",
+                            Type = TableWidthUnitValues.Dxa
+                        },
+                        new EndMargin
+                        {
+                            Width = "200",
+                            Type = TableWidthUnitValues.Dxa
+                        })))
+            {
+                Type = StyleValues.Table,
+                StyleId = "TableNormal",
+                Default = true,
+            });
         var preExisting = stylesPart.Styles.Elements<Style>().Single(_ => _.StyleId?.Value == "TableNormal");
 
         new WordTableBuilder<Employee>([]).Build(mainPart);
@@ -459,34 +481,79 @@ public class WordTableBuilderTests
         var stylesPart = mainPart.AddNewPart<StyleDefinitionsPart>();
         stylesPart.Styles = new(
             new Style(
-                    new StyleName { Val = "Table Grid" },
-                    new TableProperties(
-                        new TableBorders(
-                            new TopBorder { Val = BorderValues.Double, Size = 12, Color = "1F4E79" },
-                            new BottomBorder { Val = BorderValues.Double, Size = 12, Color = "1F4E79" },
-                            new LeftBorder { Val = BorderValues.Double, Size = 12, Color = "1F4E79" },
-                            new RightBorder { Val = BorderValues.Double, Size = 12, Color = "1F4E79" },
-                            new InsideHorizontalBorder { Val = BorderValues.Single, Size = 4, Color = "1F4E79" },
-                            new InsideVerticalBorder { Val = BorderValues.Single, Size = 4, Color = "1F4E79" }),
-                        new TableCellMarginDefault(
-                            new TopMargin { Width = "60", Type = TableWidthUnitValues.Dxa },
-                            new BottomMargin { Width = "60", Type = TableWidthUnitValues.Dxa })),
-                    new TableStyleProperties(
-                        new RunPropertiesBaseStyle(
-                            new Bold(),
-                            new Color { Val = "FFFFFF" }),
-                        new TableStyleConditionalFormattingTableCellProperties(
-                            new Shading
-                            {
-                                Val = ShadingPatternValues.Clear,
-                                Color = "auto",
-                                Fill = "1F4E79"
-                            }))
-                        { Type = TableStyleOverrideValues.FirstRow })
+                new StyleName
                 {
-                    Type = StyleValues.Table,
-                    StyleId = "TableGrid",
-                });
+                    Val = "Table Grid"
+                },
+                new TableProperties(
+                    new TableBorders(
+                        new TopBorder
+                        {
+                            Val = BorderValues.Double,
+                            Size = 12,
+                            Color = "1F4E79"
+                        },
+                        new BottomBorder
+                        {
+                            Val = BorderValues.Double,
+                            Size = 12,
+                            Color = "1F4E79"
+                        },
+                        new LeftBorder
+                        {
+                            Val = BorderValues.Double,
+                            Size = 12,
+                            Color = "1F4E79"
+                        },
+                        new RightBorder
+                        {
+                            Val = BorderValues.Double,
+                            Size = 12,
+                            Color = "1F4E79"
+                        },
+                        new InsideHorizontalBorder
+                        {
+                            Val = BorderValues.Single,
+                            Size = 4, Color = "1F4E79"
+                        },
+                        new InsideVerticalBorder
+                        {
+                            Val = BorderValues.Single,
+                            Size = 4,
+                            Color = "1F4E79"
+                        }),
+                    new TableCellMarginDefault(
+                        new TopMargin
+                        {
+                            Width = "60",
+                            Type = TableWidthUnitValues.Dxa
+                        },
+                        new BottomMargin
+                        {
+                            Width = "60",
+                            Type = TableWidthUnitValues.Dxa
+                        })),
+                new TableStyleProperties(
+                    new RunPropertiesBaseStyle(
+                        new Bold(),
+                        new Color
+                        {
+                            Val = "FFFFFF"
+                        }),
+                    new TableStyleConditionalFormattingTableCellProperties(
+                        new Shading
+                        {
+                            Val = ShadingPatternValues.Clear,
+                            Color = "auto",
+                            Fill = "1F4E79"
+                        }))
+                {
+                    Type = TableStyleOverrideValues.FirstRow
+                })
+            {
+                Type = StyleValues.Table,
+                StyleId = "TableGrid",
+            });
     }
 
     static async Task VerifyTableInDocWithCustomizedTableGrid(WordTableBuilder<Employee> builder)
@@ -504,8 +571,20 @@ public class WordTableBuilderTests
             body.Append(table);
             body.Append(
                 new SectionProperties(
-                    new PageSize { Width = 12240, Height = 15840 },
-                    new PageMargin { Top = 1440, Right = 1440, Bottom = 1440, Left = 1440, Header = 720, Footer = 720 }));
+                    new PageSize
+                    {
+                        Width = 12240,
+                        Height = 15840
+                    },
+                    new PageMargin
+                    {
+                        Top = 1440,
+                        Right = 1440,
+                        Bottom = 1440,
+                        Left = 1440,
+                        Header = 720,
+                        Footer = 720
+                    }));
         }
 
         stream.Position = 0;

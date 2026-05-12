@@ -1,3 +1,7 @@
+using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Spreadsheet;
+
 [TestFixture]
 public class BookReaderErrorTests
 {
@@ -17,9 +21,18 @@ public class BookReaderErrorTests
         var builder = new BookBuilder();
         builder.AddSheet<StringSource>(
         [
-            new() { Number = "42" },
-            new() { Number = "not-a-number" },
-            new() { Number = "100" }
+            new()
+            {
+                Number = "42"
+            },
+            new()
+            {
+                Number = "not-a-number"
+            },
+            new()
+            {
+                Number = "100"
+            }
         ]);
         await builder.ToStream(stream);
         stream.Position = 0;
@@ -127,8 +140,9 @@ public class BookReaderErrorTests
 
         var exception = Assert.Throws<ReadException>(() => reader.Convert(stream))!;
         Assert.That(exception.Errors, Has.Count.EqualTo(1));
-        Assert.That(exception.Errors[0].ColumnName, Is.EqualTo("B"));
-        Assert.That(exception.Errors[0].Message, Does.Contain("not found"));
+        var error = exception.Errors[0];
+        Assert.That(error.ColumnName, Is.EqualTo("B"));
+        Assert.That(error.Message, Does.Contain("not found"));
     }
 
     [Test]
@@ -154,9 +168,11 @@ public class BookReaderErrorTests
         sheet.Column<string>("Nope");
 
         var exception = Assert.Throws<ReadException>(() => reader.Convert(stream))!;
-        Assert.That(exception.Errors, Has.Count.EqualTo(2));
-        Assert.That(exception.Errors.Any(_ => _.ColumnName == "Nope" && _.Message.Contains("not found")));
-        Assert.That(exception.Errors.Any(_ => _.Message.Contains("Unrecognized header 'A'")));
+        var errors = exception.Errors;
+        Assert.That(errors, Has.Count.EqualTo(2));
+        Assert.That(errors.Any(_ => _.ColumnName == "Nope" &&
+                                    _.Message.Contains("not found")));
+        Assert.That(errors.Any(_ => _.Message.Contains("Unrecognized header 'A'")));
     }
 
     [Test]
@@ -166,18 +182,29 @@ public class BookReaderErrorTests
         // doesn't exist. Should produce one missing-column error plus one
         // unrecognized-header error and skip row parsing entirely.
         var stream = await Write<OneCol>(
-            new() { A = "x" },
-            new() { A = "y" },
-            new() { A = "z" });
+            new()
+            {
+                A = "x"
+            },
+            new()
+            {
+                A = "y"
+            },
+            new()
+            {
+                A = "z"
+            });
 
         var reader = new BookReader();
         var sheet = reader.AddSheet();
         sheet.Column<int>("Value");
 
         var exception = Assert.Throws<ReadException>(() => reader.Convert(stream))!;
-        Assert.That(exception.Errors, Has.Count.EqualTo(2));
-        Assert.That(exception.Errors.Any(_ => _.ColumnName == "Value" && _.Message.Contains("not found")));
-        Assert.That(exception.Errors.Any(_ => _.Message.Contains("Unrecognized header 'A'")));
+        var errors = exception.Errors;
+        Assert.That(errors, Has.Count.EqualTo(2));
+        Assert.That(errors.Any(_ => _.ColumnName == "Value" &&
+                                    _.Message.Contains("not found")));
+        Assert.That(errors.Any(_ => _.Message.Contains("Unrecognized header 'A'")));
         Assert.That(sheet.Rows, Is.Empty);
     }
 
@@ -209,11 +236,119 @@ public class BookReaderErrorTests
         // Mismatch in "First" emits one error and skips its rows;
         // "Second" still parses successfully.
         Assert.That(exception.Errors, Has.Count.EqualTo(1));
-        Assert.That(exception.Errors[0].SheetName, Is.EqualTo("First"));
-        Assert.That(exception.Errors[0].ColumnName, Is.EqualTo("B"));
+        var error = exception.Errors[0];
+        Assert.That(error.SheetName, Is.EqualTo("First"));
+        Assert.That(error.ColumnName, Is.EqualTo("B"));
         Assert.That(first.Rows, Is.Empty);
         Assert.That(second.Rows, Has.Count.EqualTo(1));
         Assert.That(second.Rows[0].A, Is.EqualTo("y"));
+    }
+
+    static MemoryStream WriteRaw(IReadOnlyList<string> headers, IReadOnlyList<IReadOnlyList<string>> rows, XDocument? metadata = null)
+    {
+        var stream = new MemoryStream();
+        using (var document = SpreadsheetDocument.Create(stream, SpreadsheetDocumentType.Workbook))
+        {
+            var workbookPart = document.AddWorkbookPart();
+            workbookPart.Workbook = new();
+            var sheets = workbookPart.Workbook.AppendChild(new Sheets());
+
+            var worksheetPart = workbookPart.AddNewPart<WorksheetPart>();
+            var sheetData = new SheetData();
+            worksheetPart.Worksheet = new(sheetData);
+
+            sheetData.Append(BuildInlineRow(1, headers));
+            for (var r = 0; r < rows.Count; r++)
+            {
+                sheetData.Append(BuildInlineRow((uint)(r + 2), rows[r]));
+            }
+
+            sheets.Append(new Sheet
+            {
+                Id = workbookPart.GetIdOfPart(worksheetPart),
+                SheetId = 1,
+                Name = "Sheet1"
+            });
+
+            if (metadata != null)
+            {
+                var customPart = workbookPart.AddCustomXmlPart(CustomXmlPartType.CustomXml);
+                using var metaStream = customPart.GetStream(FileMode.Create);
+                metadata.Save(metaStream);
+            }
+        }
+
+        stream.Position = 0;
+        return stream;
+    }
+
+    static Row BuildInlineRow(uint rowIndex, IReadOnlyList<string> values)
+    {
+        var row = new Row
+        {
+            RowIndex = rowIndex
+        };
+        for (var c = 0; c < values.Count; c++)
+        {
+            var letter = (char) ('A' + c);
+            row.Append(
+                new Cell
+                {
+                    CellReference = $"{letter}{rowIndex}",
+                    DataType = CellValues.String,
+                    CellValue = new(values[c])
+                });
+        }
+
+        return row;
+    }
+
+    [Test]
+    public void DuplicateHeaderCells_ProduceError()
+    {
+        // Two header cells both reading "A" — both resolve to the same declared column.
+        var stream = WriteRaw(["A", "A"], [["x", "y"]]);
+
+        var reader = new BookReader();
+        reader.AddSheet<OneCol>();
+
+        var exception = Assert.Throws<ReadException>(() => reader.Convert(stream))!;
+        Assert.That(exception.Errors, Has.Count.EqualTo(1));
+        var error = exception.Errors[0];
+        Assert.That(error.ColumnName, Is.EqualTo("A"));
+        Assert.That(error.CellReference, Is.EqualTo("B1"));
+        Assert.That(error.Message, Does.Contain("Duplicate column match"));
+        Assert.That(error.Message, Does.Contain("A1 and B1"));
+    }
+
+    [Test]
+    public void DuplicateMetadataMapping_ProducesError()
+    {
+        // Metadata XML maps two file column indices to the same property "A".
+        // The header cells themselves have different text so the metadata path
+        // is what triggers the duplicate detection.
+        XNamespace ns = "https://github.com/SimonCropp/Excelsior/columnMetadata/v1";
+        var metadata = new XDocument(
+            new XElement(
+                ns + "columnMetadata",
+                new XElement(
+                    ns + "sheet",
+                    new XAttribute("name", "Sheet1"),
+                    new XElement(ns + "column", new XAttribute("index", 1), new XAttribute("property", "A")),
+                    new XElement(ns + "column", new XAttribute("index", 2), new XAttribute("property", "A")))));
+
+        var stream = WriteRaw(["A", "Other"], [["x", "y"]], metadata);
+
+        var reader = new BookReader();
+        reader.AddSheet<OneCol>();
+
+        var exception = Assert.Throws<ReadException>(() => reader.Convert(stream))!;
+        Assert.That(exception.Errors, Has.Count.EqualTo(1));
+        var error = exception.Errors[0];
+        Assert.That(error.ColumnName, Is.EqualTo("A"));
+        Assert.That(error.CellReference, Is.EqualTo("B1"));
+        Assert.That(error.Message, Does.Contain("metadata maps multiple header cells"));
+        Assert.That(error.Message, Does.Contain("A1 and B1"));
     }
 
     [Test]
@@ -222,16 +357,26 @@ public class BookReaderErrorTests
         // Column "Value" matches in both; per-cell parse failures must surface
         // as one error per failing row — no deduplication.
         var stream = await Write<StringRow>(
-            new() { Value = "x" },
-            new() { Value = "y" },
-            new() { Value = "z" });
+            new()
+            {
+                Value = "x"
+            },
+            new()
+            {
+                Value = "y"
+            },
+            new()
+            {
+                Value = "z"
+            });
 
         var reader = new BookReader();
         reader.AddSheet<IntRow>();
 
         var exception = Assert.Throws<ReadException>(() => reader.Convert(stream))!;
-        Assert.That(exception.Errors, Has.Count.EqualTo(3));
-        Assert.That(exception.Errors.Select(_ => _.ColumnName), Is.EqualTo(["Value", "Value", "Value"]));
-        Assert.That(exception.Errors.Select(_ => _.RowIndex), Is.EqualTo([2, 3, 4]));
+        var errors = exception.Errors;
+        Assert.That(errors, Has.Count.EqualTo(3));
+        Assert.That(errors.Select(_ => _.ColumnName), Is.EqualTo(["Value", "Value", "Value"]));
+        Assert.That(errors.Select(_ => _.RowIndex), Is.EqualTo([2, 3, 4]));
     }
 }

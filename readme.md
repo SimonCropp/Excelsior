@@ -340,7 +340,7 @@ reader.Convert(stream);
 var employees = staff.Rows;
 var depts = departments.Rows;
 ```
-<sup><a href='/src/Excelsior.Tests/Reading/BookReaderTests.cs#L84-L94' title='Snippet source file'>snippet source</a> | <a href='#snippet-BookReaderMultipleSheets' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/Reading/BookReaderTests.cs#L92-L102' title='Snippet source file'>snippet source</a> | <a href='#snippet-BookReaderMultipleSheets' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 Dictionary:
@@ -376,6 +376,16 @@ Assert.That(departments.Rows.Select(_ => _["HeadCount"]), Is.EqualTo(new object[
 <!-- endSnippet -->
 
 If a sheet's declared columns don't match what's in the file, that sheet's row parsing is skipped (one error per missing column, plus one error per unrecognized header column, is recorded against it), but subsequent sheets are still processed. Per-row parse errors don't have this short-circuit — they are collected per failing cell.
+
+
+#### Duplicate columns
+
+If more than one header cell in a sheet resolves to the same declared column, that's reported as an error and the sheet's rows are skipped. Both resolution paths are checked:
+
+- **Heading match** — two header cells whose text matches the same declared column (`[Column(Heading = "...")]`, `[DisplayName]`, or property name) produce an error citing both cell references.
+- **Metadata match** — the round-trip metadata XML written by `BookBuilder` is also checked. If two columns in the metadata point at the same property, that's reported separately so a corrupted or hand-edited workbook surfaces clearly rather than silently last-writes-wins.
+
+The error message names both cell references involved (e.g. `A1 and B1`), the declared column it collided on, and which path detected it. Like the missing-column / unrecognized-header errors, a duplicate stops row parsing for that sheet but does not affect other sheets in the workbook.
 
 
 #### Per-cell delegate conversion
@@ -456,7 +466,7 @@ if (!result)
     }
 }
 ```
-<sup><a href='/src/Excelsior.Tests/Reading/BookReaderErrorTests.cs#L47-L62' title='Snippet source file'>snippet source</a> | <a href='#snippet-BookReaderTryConvert' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/Reading/BookReaderErrorTests.cs#L60-L75' title='Snippet source file'>snippet source</a> | <a href='#snippet-BookReaderTryConvert' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -868,7 +878,7 @@ public class EmployeeWithMinMaxWidth
     public required string Email { get; init; }
 }
 ```
-<sup><a href='/src/Excelsior.Tests/ColumnWidths.cs#L299-L310' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnMinMaxWidthModel' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/ColumnWidths.cs#L305-L316' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnMinMaxWidthModel' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -2590,7 +2600,7 @@ public class GeneratedTestModel
     public required int Age { get; init; }
 }
 ```
-<sup><a href='/src/Excelsior.Tests/SourceGeneratorIntegrationTests.cs#L84-L93' title='Snippet source file'>snippet source</a> | <a href='#snippet-SourceGeneratedModel' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/SourceGeneratorIntegrationTests.cs#L107-L116' title='Snippet source file'>snippet source</a> | <a href='#snippet-SourceGeneratedModel' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 This generates typed extension methods for each property, such as `NameColumn`, `NameOrder`, `AgeWidth`, etc.
@@ -2614,8 +2624,16 @@ var builder = new BookBuilder();
 
 List<GeneratedTestModel> data =
 [
-    new() { Name = "Alice", Age = 30 },
-    new() { Name = "Bob", Age = 25 },
+    new()
+    {
+        Name = "Alice",
+        Age = 30
+    },
+    new()
+    {
+        Name = "Bob",
+        Age = 25
+    },
 ];
 
 var sheet = builder.AddSheet(data);
@@ -2624,7 +2642,7 @@ sheet.AgeOrder(1);
 sheet.NameOrder(2);
 sheet.AgeWidth(15);
 ```
-<sup><a href='/src/Excelsior.Tests/SourceGeneratorIntegrationTests.cs#L7-L23' title='Snippet source file'>snippet source</a> | <a href='#snippet-SourceGeneratedUsage' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/SourceGeneratorIntegrationTests.cs#L7-L31' title='Snippet source file'>snippet source</a> | <a href='#snippet-SourceGeneratedUsage' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -2708,7 +2726,7 @@ var builder = new WordTableBuilder<Employee>(
         _.Font.Underline = true;
     });
 ```
-<sup><a href='/src/Excelsior.Tests/Word/WordTableBuilderTests.cs#L207-L220' title='Snippet source file'>snippet source</a> | <a href='#snippet-WordTableHeadingStyle' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/Word/WordTableBuilderTests.cs#L210-L223' title='Snippet source file'>snippet source</a> | <a href='#snippet-WordTableHeadingStyle' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 A per-column `HeadingStyle` on `ColumnConfig` composes on top of the table-level style, so individual headers can override or extend the shared look:
@@ -2723,7 +2741,7 @@ var builder = new WordTableBuilder<Employee>(
         _ => _.Name,
         _ => _.HeadingStyle = cell => cell.BackgroundColor = "FF0000");
 ```
-<sup><a href='/src/Excelsior.Tests/Word/WordTableBuilderTests.cs#L228-L237' title='Snippet source file'>snippet source</a> | <a href='#snippet-WordTableColumnHeadingStyle' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/Word/WordTableBuilderTests.cs#L231-L240' title='Snippet source file'>snippet source</a> | <a href='#snippet-WordTableColumnHeadingStyle' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 Colors accept a leading `#` (e.g. `"#4472C4"`) and it will be stripped before being written to OpenXml.

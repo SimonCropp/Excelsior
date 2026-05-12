@@ -39,7 +39,8 @@ public class EnumRenderTests
         // returns the enum type — not Nullable<TEnum>. Guards against MakeGenericType
         // ever being asked for a Nullable<> by the dispatcher cache.
         var value = (NullableDispatchEnum?)NullableDispatchEnum.AntiqueWhite;
-        var boxed = (Enum)(object)value!;
+        // ReSharper disable once RedundantCast
+        var boxed = (Enum)(object)value;
 
         var result = EnumRender.Render(boxed);
 

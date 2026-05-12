@@ -64,7 +64,10 @@ public class BookReaderSharedStringTests
 
     static Row BuildSharedRow(uint rowIndex, IReadOnlyList<int> sharedIndexes)
     {
-        var row = new Row { RowIndex = rowIndex };
+        var row = new Row
+        {
+            RowIndex = rowIndex
+        };
         for (var c = 0; c < sharedIndexes.Count; c++)
         {
             var letter = (char)('A' + c);

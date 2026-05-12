@@ -91,7 +91,7 @@ static class SheetParser
             if (!headerSeen)
             {
                 headerSeen = true;
-                var columnByIndex = ResolveColumnByIndex(row, sharedStrings, metadataColumnMap, byName, byHeading, out var unmatchedHeaders);
+                var columnByIndex = ResolveColumnByIndex(row, sharedStrings, metadataColumnMap, byName, byHeading, out var unmatchedHeaders, out var duplicateMatches);
 
                 var resolvedNames = new HashSet<string>(StringComparer.Ordinal);
                 foreach (var info in columnByIndex.Values)
@@ -123,6 +123,19 @@ static class SheetParser
                         ColumnName: "",
                         CellReference: cellRef,
                         $"Unrecognized header '{headerText}' — no declared column matches this heading."));
+                }
+
+                foreach (var (column, firstRef, secondRef, source) in duplicateMatches)
+                {
+                    var detail = source == DuplicateSource.Metadata
+                        ? $"metadata maps multiple header cells ({firstRef} and {secondRef}) to property '{column.Name}'"
+                        : $"header cells {firstRef} and {secondRef} both resolve to column '{column.Name}' (heading '{column.Heading}')";
+                    errors.Add(new(
+                        resolvedSheetName,
+                        RowIndex: (int)(row.RowIndex?.Value ?? 0),
+                        column.Name,
+                        CellReference: secondRef,
+                        $"Duplicate column match: {detail}."));
                 }
 
                 if (errors.Count > beforeCount)
@@ -179,20 +192,30 @@ static class SheetParser
         }
     }
 
+    enum DuplicateSource
+    {
+        Metadata,
+        Heading
+    }
+
     static Dictionary<int, ColumnReadInfo> ResolveColumnByIndex(
         Row headerRow,
         string?[]? sharedStrings,
         Dictionary<int, string>? metadataColumnMap,
         Dictionary<string, ColumnReadInfo> byName,
         Dictionary<string, ColumnReadInfo> byHeading,
-        out List<(string CellReference, string HeaderText)> unmatchedHeaders)
+        out List<(string CellReference, string HeaderText)> unmatchedHeaders,
+        out List<(ColumnReadInfo Column, string FirstCellRef, string SecondCellRef, DuplicateSource Source)> duplicateMatches)
     {
         var result = new Dictionary<int, ColumnReadInfo>();
         unmatchedHeaders = [];
+        duplicateMatches = [];
+        var claimedBy = new Dictionary<string, string>(StringComparer.Ordinal);
 
         foreach (var cell in headerRow.Elements<Cell>())
         {
-            var index = ParseColumnIndex(cell.CellReference?.Value);
+            var cellRef = cell.CellReference?.Value ?? "";
+            var index = ParseColumnIndex(cellRef);
             if (index < 0)
             {
                 continue;
@@ -205,6 +228,13 @@ static class SheetParser
                 metadataColumnMap.TryGetValue(index + 1, out var propertyName) &&
                 byName.TryGetValue(propertyName, out var byMeta))
             {
+                if (claimedBy.TryGetValue(byMeta.Name, out var firstRefMeta))
+                {
+                    duplicateMatches.Add((byMeta, firstRefMeta, cellRef, DuplicateSource.Metadata));
+                    continue;
+                }
+
+                claimedBy[byMeta.Name] = cellRef;
                 result[index] = byMeta;
                 continue;
             }
@@ -217,6 +247,13 @@ static class SheetParser
 
             if (byHeading.TryGetValue(headerText, out var byHead))
             {
+                if (claimedBy.TryGetValue(byHead.Name, out var firstRefHead))
+                {
+                    duplicateMatches.Add((byHead, firstRefHead, cellRef, DuplicateSource.Heading));
+                    continue;
+                }
+
+                claimedBy[byHead.Name] = cellRef;
                 result[index] = byHead;
                 continue;
             }
@@ -225,11 +262,18 @@ static class SheetParser
             // overridden but the writer used DisplayName everywhere.
             if (byName.TryGetValue(headerText, out var byPlainName))
             {
+                if (claimedBy.TryGetValue(byPlainName.Name, out var firstRefPlain))
+                {
+                    duplicateMatches.Add((byPlainName, firstRefPlain, cellRef, DuplicateSource.Heading));
+                    continue;
+                }
+
+                claimedBy[byPlainName.Name] = cellRef;
                 result[index] = byPlainName;
                 continue;
             }
 
-            unmatchedHeaders.Add((cell.CellReference?.Value ?? "", headerText));
+            unmatchedHeaders.Add((cellRef, headerText));
         }
 
         return result;

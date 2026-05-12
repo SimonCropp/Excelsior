@@ -9,7 +9,7 @@
     <PackageVersion Include="Verify.OpenXML" Version="1.12.0" />
     <PackageVersion Include="Morph.OpenXml.Skia" Version="0.8.0" />
     <PackageVersion Include="MarkdownSnippets.MsBuild" Version="28.2.0" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.7" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.8" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.5.1" />
     <PackageVersion Include="Microsoft.Office.Interop.Excel" Version="16.0.18925.20022" Pinned="true" />
     <PackageVersion Include="Polyfill" Version="10.5.1" />

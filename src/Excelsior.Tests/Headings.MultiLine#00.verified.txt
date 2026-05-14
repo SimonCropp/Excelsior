@@ -69,7 +69,7 @@ Email,
           Metadata: {
             property: HireDate
           },
-          Width: 13.0,
+          Width: 14.0,
           ContainsRichText: false,
           RequiredHighlight: false
         },

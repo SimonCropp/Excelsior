@@ -86,7 +86,7 @@
           Metadata: {
             property: HireDate
           },
-          Width: 13.0,
+          Width: 24.0,
           ContainsRichText: false,
           RequiredHighlight: true,
           Validation: {

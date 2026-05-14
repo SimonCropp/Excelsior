@@ -16,6 +16,7 @@ class Renderer<TModel>(
 
     StyleManager? styleManager;
     Dictionary<Cell, CellStyle> cellStyles = [];
+    Dictionary<Cell, int> cellDisplayLengths = [];
     Dictionary<int, double> finalColumnWidths = [];
     Dictionary<int, uint> columnLevelStyles = [];
 
@@ -465,7 +466,7 @@ class Renderer<TModel>(
                 sheet.SheetData);
     }
 
-    static double AdjustColumnWidth(SheetContext sheet, int columnIndex)
+    double AdjustColumnWidth(SheetContext sheet, int columnIndex)
     {
         double maxWidth = 8;
         var colLetter = SheetContext.GetColumnLetter(columnIndex);
@@ -491,8 +492,16 @@ class Renderer<TModel>(
         return maxWidth;
     }
 
-    static int GetCellContentLength(Cell cell)
+    void RecordDateDisplayLength(Cell cell, DateTime value, string format) =>
+        cellDisplayLengths[cell] = value.ToString(format, ValueRenderer.Culture).Length;
+
+    int GetCellContentLength(Cell cell)
     {
+        if (cellDisplayLengths.TryGetValue(cell, out var displayLength))
+        {
+            return displayLength;
+        }
+
         if (cell.InlineString != null)
         {
             var length = 0;
@@ -986,7 +995,7 @@ class Renderer<TModel>(
         }
     }
 
-    static void SetCellValue(
+    void SetCellValue(
         Cell cell,
         SheetContext sheet,
         CellStyle style,
@@ -1101,8 +1110,10 @@ class Renderer<TModel>(
         if (value is DateTime dateTime)
         {
             ThrowIfHtml();
-            style.NumberFormat = column.Format ?? ValueRenderer.DefaultDateTimeFormat;
+            var format = column.Format ?? ValueRenderer.DefaultDateTimeFormat;
+            style.NumberFormat = format;
             SetCellValue(cell, dateTime);
+            RecordDateDisplayLength(cell, dateTime, format);
 
             return;
         }
@@ -1121,8 +1132,11 @@ class Renderer<TModel>(
         if (value is Date date)
         {
             ThrowIfHtml();
-            style.NumberFormat = column.Format ?? ValueRenderer.DefaultDateFormat;
-            SetCellValue(cell, date.ToDateTime(new(0, 0)));
+            var format = column.Format ?? ValueRenderer.DefaultDateFormat;
+            style.NumberFormat = format;
+            var asDateTime = date.ToDateTime(new(0, 0));
+            SetCellValue(cell, asDateTime);
+            RecordDateDisplayLength(cell, asDateTime, format);
 
             return;
         }
@@ -1130,8 +1144,11 @@ class Renderer<TModel>(
         if (value is Time time)
         {
             ThrowIfHtml();
-            style.NumberFormat = column.Format ?? ValueRenderer.DefaultTimeFormat;
-            SetCellValue(cell, DateTime.FromOADate(0).Add(time.ToTimeSpan()));
+            var format = column.Format ?? ValueRenderer.DefaultTimeFormat;
+            style.NumberFormat = format;
+            var asDateTime = DateTime.FromOADate(0).Add(time.ToTimeSpan());
+            SetCellValue(cell, asDateTime);
+            RecordDateDisplayLength(cell, asDateTime, format);
 
             return;
         }

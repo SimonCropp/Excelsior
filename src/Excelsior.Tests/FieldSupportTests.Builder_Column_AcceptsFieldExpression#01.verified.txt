@@ -27,7 +27,7 @@
           Metadata: {
             property: Field
           },
-          Width: 15.0,
+          Width: 16.0,
           ContainsRichText: false,
           RequiredHighlight: false
         }

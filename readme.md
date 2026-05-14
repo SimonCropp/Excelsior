@@ -949,7 +949,7 @@ public class EmployeeWithMinMaxWidth
     public required string Email;
 }
 ```
-<sup><a href='/src/Excelsior.Tests/ColumnWidths.cs#L305-L316' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnMinMaxWidthModel' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/ColumnWidths.cs#L471-L482' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnMinMaxWidthModel' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 

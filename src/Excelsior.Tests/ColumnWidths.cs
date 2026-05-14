@@ -302,6 +302,172 @@ public class ColumnWidths
         Assert.That(exception!.Message, Does.Contain("MaxWidth (256) exceeds the Excel maximum of 255"));
     }
 
+    [Test]
+    public async Task BoldCellStyleWidensColumn()
+    {
+        var plain = await GetFirstDataColumnWidth(_ => { });
+        var bold = await GetFirstDataColumnWidth(style => style.Font.Bold = true);
+
+        Assert.That(bold, Is.GreaterThan(plain), $"bold {bold} should exceed plain {plain}");
+    }
+
+    [Test]
+    public async Task LargerFontSizeWidensColumn()
+    {
+        var size11 = await GetFirstDataColumnWidth(_ => { });
+        var size22 = await GetFirstDataColumnWidth(style => style.Font.Size = 22);
+
+        // Doubling the point size should roughly double the per-char width contribution.
+        Assert.That(size22, Is.GreaterThan(size11 * 1.5), $"size 22 {size22} should be much wider than size 11 {size11}");
+    }
+
+    [Test]
+    public async Task GlobalBoldWidensAllDataColumns()
+    {
+        var plainBuilder = new BookBuilder();
+        plainBuilder.AddSheet(SampleData.Employees());
+        var plain = await GetAllColumnWidths(plainBuilder);
+
+        var boldBuilder = new BookBuilder(globalStyle: style => style.Font.Bold = true);
+        boldBuilder.AddSheet(SampleData.Employees());
+        var bold = await GetAllColumnWidths(boldBuilder);
+
+        Assert.That(bold.Length, Is.EqualTo(plain.Length));
+        for (var i = 0; i < plain.Length; i++)
+        {
+            Assert.That(bold[i], Is.GreaterThanOrEqualTo(plain[i]), $"column {i}: bold {bold[i]} should be >= plain {plain[i]}");
+        }
+
+        Assert.That(bold.Zip(plain, (b, p) => b > p).Any(), Is.True, "at least one column should grow under global bold");
+    }
+
+    [Test]
+    public async Task FormattedNumberWidensColumn()
+    {
+        var rows = new List<NumberRow>
+        {
+            new() { Amount = 1234567 },
+            new() { Amount = 42 }
+        };
+
+        var rawBuilder = new BookBuilder();
+        rawBuilder.AddSheet(rows)
+            .Column(_ => _.Amount, _ => { });
+        var rawWidth = (await GetAllColumnWidths(rawBuilder))[0];
+
+        var formattedBuilder = new BookBuilder();
+        formattedBuilder.AddSheet(rows)
+            .Column(_ => _.Amount, _ => _.Format = "#,##0.00");
+        var formattedWidth = (await GetAllColumnWidths(formattedBuilder))[0];
+
+        // Raw "1234567" is 7 chars; formatted "1,234,567.00" is 12 chars. The formatted
+        // column must be wider, otherwise Excel renders "########".
+        Assert.That(formattedWidth, Is.GreaterThan(rawWidth), $"formatted {formattedWidth} should exceed raw {rawWidth}");
+    }
+
+    public class NumberRow
+    {
+        public required int Amount { get; set; }
+    }
+
+    [Test]
+    public async Task FontMatrix()
+    {
+        var rows = new List<MatrixRow>
+        {
+            new()
+            {
+                Text = "Hello world",
+                Count = 12345,
+                Amount = 9876.5,
+                Moment = new(2026, 5, 14, 9, 30, 0),
+                Day = new(2026, 5, 14),
+                Active = true,
+                Status = EmployeeStatus.FullTime
+            },
+            new()
+            {
+                Text = "Excelsior matrix",
+                Count = 42,
+                Amount = -0.125,
+                Moment = new(2024, 1, 1, 0, 0, 0),
+                Day = new(2024, 1, 1),
+                Active = false,
+                Status = EmployeeStatus.Contract
+            }
+        };
+
+        var builder = new BookBuilder();
+        builder.AddSheet(rows)
+            // string + plain (baseline)
+            .Column(_ => _.Text, _ => { })
+            // int + size 14
+            .Column(_ => _.Count, _ => _.CellStyle = (style, _, _) => style.Font.Size = 14)
+            // double + bold
+            .Column(_ => _.Amount, _ => _.CellStyle = (style, _, _) => style.Font.Bold = true)
+            // DateTime + size 18 + bold
+            .Column(
+                _ => _.Moment,
+                _ => _.CellStyle = (style, _, _) =>
+                {
+                    style.Font.Size = 18;
+                    style.Font.Bold = true;
+                })
+            // DateOnly + size 14 + bold
+            .Column(
+                _ => _.Day,
+                _ => _.CellStyle = (style, _, _) =>
+                {
+                    style.Font.Size = 14;
+                    style.Font.Bold = true;
+                })
+            // bool + size 22
+            .Column(_ => _.Active, _ => _.CellStyle = (style, _, _) => style.Font.Size = 22)
+            // enum + bold (no size override)
+            .Column(_ => _.Status, _ => _.CellStyle = (style, _, _) => style.Font.Bold = true);
+
+        var book = await builder.Build();
+
+        await Verify(book);
+    }
+
+    public class MatrixRow
+    {
+        public required string Text { get; set; }
+        public required int Count { get; set; }
+        public required double Amount { get; set; }
+        public required DateTime Moment { get; set; }
+        public required Date Day { get; set; }
+        public required bool Active { get; set; }
+        public required EmployeeStatus Status { get; set; }
+    }
+
+    static Task<double> GetFirstDataColumnWidth(Action<CellStyle> cellStyle)
+    {
+        var builder = new BookBuilder();
+        builder.AddSheet(SampleData.Employees())
+            .Column(_ => _.Name, _ => _.CellStyle = (style, _, _) => cellStyle(style));
+        // Name is the second column (index 1) in the Employee model — Id is column 0.
+        return GetColumnWidth(builder, columnIndex: 1);
+    }
+
+    static async Task<double> GetColumnWidth(BookBuilder builder, int columnIndex)
+    {
+        var widths = await GetAllColumnWidths(builder);
+        return widths[columnIndex];
+    }
+
+    static async Task<double[]> GetAllColumnWidths(BookBuilder builder)
+    {
+        using var document = await builder.Build();
+        var worksheet = document.WorkbookPart!.WorksheetParts.First().Worksheet!;
+        var columns = worksheet.GetFirstChild<DocumentFormat.OpenXml.Spreadsheet.Columns>()!;
+        return columns
+            .Elements<DocumentFormat.OpenXml.Spreadsheet.Column>()
+            .Select(_ => _.Width!.Value)
+            .ToArray();
+    }
+
     #region ColumnMinMaxWidthModel
 
     public class EmployeeWithMinMaxWidth

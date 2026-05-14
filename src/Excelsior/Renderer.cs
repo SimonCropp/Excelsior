@@ -482,7 +482,7 @@ class Renderer<TModel>(
             }
 
             var length = GetCellContentLength(cell);
-            var estimated = length * 1.1 + 2;
+            var estimated = length * CharWidthFactor(cell) + 2;
             if (estimated > maxWidth)
             {
                 maxWidth = estimated;
@@ -490,6 +490,27 @@ class Renderer<TModel>(
         }
 
         return maxWidth;
+    }
+
+    double CharWidthFactor(Cell cell)
+    {
+        // Per-char width factor for default Calibri 11 regular. Scaled up for larger fonts
+        // (linear in point size) and bold text (~5% wider). Without this, columns sized for
+        // bold headings or non-default font sizes clip to "########".
+        const double baseFactor = 1.1;
+        if (!cellStyles.TryGetValue(cell, out var style))
+        {
+            return baseFactor;
+        }
+
+        var size = style.Font.Size ?? defaultExcelFontSize;
+        var factor = baseFactor * (size / defaultExcelFontSize);
+        if (style.Font.Bold)
+        {
+            factor *= 1.05;
+        }
+
+        return factor;
     }
 
     void RecordDateDisplayLength(Cell cell, DateTime value, string format) =>
@@ -1163,18 +1184,22 @@ class Renderer<TModel>(
             }
 
             SetCellValue(cell, boolean);
+            var (trueDisplay, falseDisplay) = ValueRenderer.GetBoolDisplayValues();
+            cellDisplayLengths[cell] = boolean ? trueDisplay.Length : falseDisplay.Length;
             return;
         }
 
         if (column.IsNumber)
         {
             ThrowIfHtml();
+            var asDouble = Convert.ToDouble(value);
             if (column.Format != null)
             {
                 style.NumberFormat = column.Format;
+                cellDisplayLengths[cell] = asDouble.ToString(column.Format, ValueRenderer.Culture).Length;
             }
 
-            SetCellValue(cell, Convert.ToDouble(value));
+            SetCellValue(cell, asDouble);
             return;
         }
 

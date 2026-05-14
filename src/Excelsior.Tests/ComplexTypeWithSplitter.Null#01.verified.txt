@@ -17,7 +17,7 @@
           Metadata: {
             property: Address.StreetNumber
           },
-          Width: 17.0,
+          Width: 18.0,
           ContainsRichText: false,
           RequiredHighlight: false,
           Validation: {

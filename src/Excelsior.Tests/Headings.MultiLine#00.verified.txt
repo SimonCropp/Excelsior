@@ -8,7 +8,7 @@
           Metadata: {
             property: Id
           },
-          Width: 15.0,
+          Width: 16.0,
           ContainsRichText: false,
           RequiredHighlight: true,
           Validation: {
@@ -29,7 +29,7 @@ Name,
           Metadata: {
             property: Name
           },
-          Width: 17.0,
+          Width: 18.0,
           ContainsRichText: false,
           RequiredHighlight: true,
           Validation: {
@@ -80,7 +80,7 @@ Salary,
           Metadata: {
             property: Salary
           },
-          Width: 19.0,
+          Width: 20.0,
           ContainsRichText: false,
           RequiredHighlight: false,
           Validation: {

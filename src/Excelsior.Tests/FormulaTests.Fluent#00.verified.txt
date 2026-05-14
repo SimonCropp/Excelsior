@@ -8,7 +8,7 @@
           Metadata: {
             property: Id
           },
-          Width: 15.0,
+          Width: 16.0,
           ContainsRichText: false,
           RequiredHighlight: true,
           Validation: {
@@ -74,7 +74,7 @@
           Metadata: {
             property: Salary
           },
-          Width: 17.0,
+          Width: 18.0,
           ContainsRichText: false,
           NumberFormat: #,##0,
           RequiredHighlight: false

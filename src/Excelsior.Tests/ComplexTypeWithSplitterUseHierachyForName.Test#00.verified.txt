@@ -17,7 +17,7 @@
           Metadata: {
             property: Address.Number
           },
-          Width: 18.0,
+          Width: 19.0,
           ContainsRichText: false,
           RequiredHighlight: false,
           Validation: {
@@ -45,7 +45,7 @@
           Metadata: {
             property: Address.City
           },
-          Width: 16.0,
+          Width: 17.0,
           ContainsRichText: false,
           RequiredHighlight: false
         },
@@ -54,7 +54,7 @@
           Metadata: {
             property: Address.State
           },
-          Width: 17.0,
+          Width: 18.0,
           ContainsRichText: false,
           RequiredHighlight: false,
           Validation: {
@@ -75,7 +75,7 @@
           Metadata: {
             property: Address.PostCode
           },
-          Width: 22.0,
+          Width: 23.0,
           ContainsRichText: false,
           RequiredHighlight: false,
           Validation: {

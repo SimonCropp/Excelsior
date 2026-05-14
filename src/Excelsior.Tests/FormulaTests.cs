@@ -37,7 +37,7 @@ public class FormulaTests
         builder.AddSheet(employees)
             .Formula(_ => _.Salary, context => $"={context.Ref(_ => _.Id)} * 1000");
 
-        var exception = Assert.ThrowsAsync<Exception>(async () => await builder.Build());
+        var exception = Assert.ThrowsAsync<Exception>(() => builder.Build());
         Assert.That(exception!.Message, Does.Contain("formula columns must set Width explicitly"));
     }
 
@@ -56,7 +56,7 @@ public class FormulaTests
                     _.MinWidth = 10;
                 });
 
-        var exception = Assert.ThrowsAsync<Exception>(async () => await builder.Build());
+        var exception = Assert.ThrowsAsync<Exception>(() => builder.Build());
         Assert.That(exception!.Message, Does.Contain("formula columns cannot use MinWidth/MaxWidth"));
     }
 
@@ -75,7 +75,7 @@ public class FormulaTests
                     _.MaxWidth = 30;
                 });
 
-        var exception = Assert.ThrowsAsync<Exception>(async () => await builder.Build());
+        var exception = Assert.ThrowsAsync<Exception>(() => builder.Build());
         Assert.That(exception!.Message, Does.Contain("formula columns cannot use MinWidth/MaxWidth"));
     }
 

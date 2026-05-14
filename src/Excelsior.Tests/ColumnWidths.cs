@@ -196,7 +196,7 @@ public class ColumnWidths
                     _.MaxWidth = 25;
                 });
 
-        var exception = Assert.ThrowsAsync<Exception>(async () => await builder.Build());
+        var exception = Assert.ThrowsAsync<Exception>(() => builder.Build());
         Assert.That(exception!.Message, Does.Contain("Use Width instead"));
     }
 
@@ -215,7 +215,7 @@ public class ColumnWidths
                     _.MaxWidth = 10;
                 });
 
-        var exception = Assert.ThrowsAsync<Exception>(async () => await builder.Build());
+        var exception = Assert.ThrowsAsync<Exception>(() => builder.Build());
         Assert.That(exception!.Message, Does.Contain("MinWidth (30) is greater than MaxWidth (10)"));
     }
 
@@ -234,7 +234,7 @@ public class ColumnWidths
                     _.MinWidth = 10;
                 });
 
-        var exception = Assert.ThrowsAsync<Exception>(async () => await builder.Build());
+        var exception = Assert.ThrowsAsync<Exception>(() => builder.Build());
         Assert.That(exception!.Message, Does.Contain("Width cannot be combined with MinWidth/MaxWidth"));
     }
 
@@ -253,7 +253,7 @@ public class ColumnWidths
                     _.MaxWidth = 50;
                 });
 
-        var exception = Assert.ThrowsAsync<Exception>(async () => await builder.Build());
+        var exception = Assert.ThrowsAsync<Exception>(() => builder.Build());
         Assert.That(exception!.Message, Does.Contain("Width cannot be combined with MinWidth/MaxWidth"));
     }
 
@@ -268,7 +268,7 @@ public class ColumnWidths
                 _ => _.Name,
                 _ => _.Width = 256);
 
-        var exception = Assert.ThrowsAsync<Exception>(async () => await builder.Build());
+        var exception = Assert.ThrowsAsync<Exception>(() => builder.Build());
         Assert.That(exception!.Message, Does.Contain("exceeds the Excel maximum of 255"));
     }
 
@@ -283,7 +283,7 @@ public class ColumnWidths
                 _ => _.Name,
                 _ => _.MinWidth = 256);
 
-        var exception = Assert.ThrowsAsync<Exception>(async () => await builder.Build());
+        var exception = Assert.ThrowsAsync<Exception>(() => builder.Build());
         Assert.That(exception!.Message, Does.Contain("MinWidth (256) exceeds the Excel maximum of 255"));
     }
 
@@ -298,7 +298,7 @@ public class ColumnWidths
                 _ => _.Name,
                 _ => _.MaxWidth = 256);
 
-        var exception = Assert.ThrowsAsync<Exception>(async () => await builder.Build());
+        var exception = Assert.ThrowsAsync<Exception>(() => builder.Build());
         Assert.That(exception!.Message, Does.Contain("MaxWidth (256) exceeds the Excel maximum of 255"));
     }
 

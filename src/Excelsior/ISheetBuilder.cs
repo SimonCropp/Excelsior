@@ -65,6 +65,11 @@ public interface ISheetBuilder<TModel>
     /// Configures the column to emit an Excel formula per row. The callback
     /// receives the current model and a <see cref="FormulaContext{TModel}"/>
     /// that can build cell references to other columns.
+    /// <para>
+    /// Formula columns must also have <see cref="Width{TProperty}"/> set —
+    /// auto-sizing cannot measure values Excel computes at open time. Calling
+    /// only this method without setting a width will throw at build.
+    /// </para>
     /// </summary>
     public void Formula<TProperty>(
         Expression<Func<TModel, TProperty>> property,
@@ -74,6 +79,11 @@ public interface ISheetBuilder<TModel>
     /// Configures the column to emit an Excel formula per row. The callback
     /// receives a <see cref="FormulaContext{TModel}"/> that can build cell
     /// references to other columns.
+    /// <para>
+    /// Formula columns must also have <see cref="Width{TProperty}"/> set —
+    /// auto-sizing cannot measure values Excel computes at open time. Calling
+    /// only this method without setting a width will throw at build.
+    /// </para>
     /// </summary>
     public void Formula<TProperty>(
         Expression<Func<TModel, TProperty>> property,

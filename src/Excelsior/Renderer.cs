@@ -22,6 +22,7 @@ class Renderer<TModel>(
 
     internal async Task AddSheet(SpreadsheetDocument book, Cancel cancel)
     {
+        ValidateFormulaColumnWidths();
         var sheet = BuildSheet(book);
         CreateHeadings(sheet);
         FreezeHeader(sheet);
@@ -511,6 +512,28 @@ class Renderer<TModel>(
         }
 
         return factor;
+    }
+
+    void ValidateFormulaColumnWidths()
+    {
+        foreach (var column in columns)
+        {
+            if (column.Formula == null)
+            {
+                continue;
+            }
+
+            if (column.MinWidth != null ||
+                column.MaxWidth != null)
+            {
+                throw new($"Column '{column.Name}': formula columns cannot use MinWidth/MaxWidth — Excel calculates the value at open time, so auto-sizing has no rendered text to measure. Set Width explicitly.");
+            }
+
+            if (column.Width == null)
+            {
+                throw new($"Column '{column.Name}': formula columns must set Width explicitly — Excel calculates the value at open time, so auto-sizing has no rendered text to measure.");
+            }
+        }
     }
 
     void RecordDateDisplayLength(Cell cell, DateTime value, string format) =>

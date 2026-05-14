@@ -55,7 +55,7 @@
           Metadata: {
             property: Total
           },
-          Width: 9.0,
+          Width: 12.0,
           ContainsRichText: false,
           NumberFormat: $#,##0.00,
           RequiredHighlight: false

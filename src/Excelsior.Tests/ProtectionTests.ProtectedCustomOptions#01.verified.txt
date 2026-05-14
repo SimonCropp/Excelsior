@@ -148,7 +148,7 @@
         Objects: true,
         Scenarios: true,
         FormatCells: false,
-        FormatColumns: true,
+        FormatColumns: false,
         FormatRows: true,
         InsertColumns: true,
         InsertRows: true,

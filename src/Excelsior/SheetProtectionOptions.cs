@@ -28,22 +28,41 @@ public class SheetProtectionOptions
     /// <summary>
     /// Block changing cell formatting (font, fill, number format, etc).
     /// </summary>
-    public bool FormatCells { get; init; } = true;
+    public bool FormatCells { get; init; }
 
     /// <summary>
     /// Block changing column width / hiding columns.
     /// </summary>
-    public bool FormatColumns { get; init; } = true;
+    public bool FormatColumns { get; init; }
 
     /// <summary>
     /// Block changing row height / hiding rows.
     /// </summary>
     public bool FormatRows { get; init; } = true;
 
+    /// <summary>
+    /// Block inserting new columns.
+    /// </summary>
     public bool InsertColumns { get; init; } = true;
+
+    /// <summary>
+    /// Block inserting new rows.
+    /// </summary>
     public bool InsertRows { get; init; } = true;
+
+    /// <summary>
+    /// Block inserting hyperlinks.
+    /// </summary>
     public bool InsertHyperlinks { get; init; } = true;
+
+    /// <summary>
+    /// Block deleting columns.
+    /// </summary>
     public bool DeleteColumns { get; init; } = true;
+
+    /// <summary>
+    /// Block deleting rows.
+    /// </summary>
     public bool DeleteRows { get; init; } = true;
 
     /// <summary>
@@ -66,5 +85,8 @@ public class SheetProtectionOptions
     /// </summary>
     public bool AutoFilter { get; init; }
 
+    /// <summary>
+    /// Block editing pivot tables and pivot charts.
+    /// </summary>
     public bool PivotTables { get; init; } = true;
 }

@@ -46,7 +46,7 @@
           Metadata: {
             property: DateTime
           },
-          Width: 23.0,
+          Width: 24.0,
           ContainsRichText: false,
           RequiredHighlight: true,
           Validation: {
@@ -65,7 +65,7 @@
           Metadata: {
             property: Date
           },
-          Width: 9.0,
+          Width: 14.0,
           ContainsRichText: false,
           RequiredHighlight: true,
           Validation: {

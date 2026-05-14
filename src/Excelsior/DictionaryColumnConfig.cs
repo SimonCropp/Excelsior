@@ -24,6 +24,11 @@ public class DictionaryColumnConfig<TProperty> :
     /// current dictionary and a <see cref="FormulaContext{TModel}"/> for resolving cell
     /// references — use the string-keyed <c>Ref</c>/<c>Column</c> overloads to refer to
     /// other columns by their dictionary key.
+    /// <para>
+    /// Formula columns must set <see cref="Width"/> explicitly and cannot use
+    /// <see cref="MinWidth"/> or <see cref="MaxWidth"/>: Excel computes the value
+    /// at open time, so auto-sizing has no rendered text to measure.
+    /// </para>
     /// </summary>
     public Func<IReadOnlyDictionary<string, object?>, FormulaContext<IReadOnlyDictionary<string, object?>>, string>? Formula { get; set; }
 

@@ -4,110 +4,120 @@
       Name: Sheet1,
       Columns: [
         {
-          Name: Employee ID,
+          Name: Text,
           Metadata: {
-            property: Id
-          },
-          Width: 16.0,
-          ContainsRichText: false,
-          RequiredHighlight: true,
-          Validation: {
-            Type: custom,
-            Min: ISNUMBER(A2),
-            AllowBlank: false,
-            ShowInputMessage: false,
-            ShowErrorMessage: true,
-            ErrorTitle: Invalid value,
-            ErrorMessage: Must be a number.,
-            Range: 2
-          }
-        },
-        {
-          Name: Full Name,
-          Metadata: {
-            property: Name
-          },
-          Width: 5.0,
-          ContainsRichText: false,
-          RequiredHighlight: true,
-          Validation: {
-            Type: custom,
-            Min: LEN(TRIM(B2))>0,
-            AllowBlank: false,
-            ShowInputMessage: false,
-            ShowErrorMessage: true,
-            ErrorTitle: Invalid value,
-            ErrorMessage: This field is required.,
-            Range: 2
-          }
-        },
-        {
-          Name: Email Address,
-          Metadata: {
-            property: Email
+            property: Text
           },
           Width: 21.0,
           ContainsRichText: false,
           RequiredHighlight: true,
           Validation: {
             Type: custom,
-            Min: LEN(TRIM(C2))>0,
+            Min: LEN(TRIM(A2))>0,
             AllowBlank: false,
             ShowInputMessage: false,
             ShowErrorMessage: true,
             ErrorTitle: Invalid value,
             ErrorMessage: This field is required.,
-            Range: 2
+            Range: 2-3
           }
         },
         {
-          Name: Hire Date,
+          Name: Count,
           Metadata: {
-            property: HireDate
+            property: Count
           },
-          Width: 14.0,
+          Width: 10.0,
           ContainsRichText: false,
-          RequiredHighlight: false
-        },
-        {
-          Name: Annual Salary,
-          Metadata: {
-            property: Salary
-          },
-          Width: 18.0,
-          ContainsRichText: false,
-          RequiredHighlight: false,
+          RequiredHighlight: true,
           Validation: {
             Type: custom,
-            Min: ISNUMBER(E2),
-            AllowBlank: true,
+            Min: ISNUMBER(B2),
+            AllowBlank: false,
             ShowInputMessage: false,
             ShowErrorMessage: true,
             ErrorTitle: Invalid value,
             ErrorMessage: Must be a number.,
-            Range: 2
+            Range: 2-3
           }
         },
         {
-          Name: Is Active,
+          Name: Amount,
           Metadata: {
-            property: IsActive
+            property: Amount
           },
-          Width: 13.0,
+          Width: 10.0,
           ContainsRichText: false,
-          RequiredHighlight: false,
+          RequiredHighlight: true,
+          Validation: {
+            Type: custom,
+            Min: ISNUMBER(C2),
+            AllowBlank: false,
+            ShowInputMessage: false,
+            ShowErrorMessage: true,
+            ErrorTitle: Invalid value,
+            ErrorMessage: Must be a number.,
+            Range: 2-3
+          }
+        },
+        {
+          Name: Moment,
+          Metadata: {
+            property: Moment
+          },
+          Width: 39.0,
+          ContainsRichText: false,
+          RequiredHighlight: true,
+          Validation: {
+            Type: custom,
+            Min: LEN(TRIM(D2))>0,
+            AllowBlank: false,
+            ShowInputMessage: false,
+            ShowErrorMessage: true,
+            ErrorTitle: Invalid value,
+            ErrorMessage: This field is required.,
+            Range: 2-3
+          }
+        },
+        {
+          Name: Day,
+          Metadata: {
+            property: Day
+          },
+          Width: 18.0,
+          ContainsRichText: false,
+          RequiredHighlight: true,
+          Validation: {
+            Type: custom,
+            Min: LEN(TRIM(E2))>0,
+            AllowBlank: false,
+            ShowInputMessage: false,
+            ShowErrorMessage: true,
+            ErrorTitle: Invalid value,
+            ErrorMessage: This field is required.,
+            Range: 2-3
+          }
+        },
+        {
+          Name: Active,
+          Metadata: {
+            property: Active
+          },
+          Width: 14.0,
+          ContainsRichText: false,
+          RequiredHighlight: true,
           Validation: {
             Type: list,
             AllowedValues: [
               TRUE,
               FALSE
             ],
-            AllowBlank: true,
+            AllowBlank: false,
             ShowInputMessage: false,
             ShowErrorMessage: true,
             ErrorTitle: Invalid value,
             ErrorMessage: Must be one of: TRUE, FALSE.,
-            Range: 2
+            Range: 2-3
           }
         },
         {
@@ -117,7 +127,7 @@
           },
           Width: 13.0,
           ContainsRichText: false,
-          RequiredHighlight: false,
+          RequiredHighlight: true,
           Validation: {
             Type: list,
             AllowedValues: [
@@ -126,12 +136,12 @@
               Contract,
               Terminated
             ],
-            AllowBlank: true,
+            AllowBlank: false,
             ShowInputMessage: false,
             ShowErrorMessage: true,
             ErrorTitle: Invalid value,
             ErrorMessage: Must be one of: Full Time, Part Time, Contract, Terminated.,
-            Range: 2
+            Range: 2-3
           }
         }
       ]

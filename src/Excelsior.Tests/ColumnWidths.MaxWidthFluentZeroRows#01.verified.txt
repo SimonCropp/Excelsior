@@ -8,7 +8,7 @@
           Metadata: {
             property: Id
           },
-          Width: 15.0,
+          Width: 16.0,
           ContainsRichText: false,
           RequiredHighlight: false
         },
@@ -26,7 +26,7 @@
           Metadata: {
             property: Email
           },
-          Width: 17.0,
+          Width: 18.0,
           ContainsRichText: false,
           RequiredHighlight: false
         },
@@ -44,7 +44,7 @@
           Metadata: {
             property: Salary
           },
-          Width: 17.0,
+          Width: 18.0,
           ContainsRichText: false,
           RequiredHighlight: false
         },

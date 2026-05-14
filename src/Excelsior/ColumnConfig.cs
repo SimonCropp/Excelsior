@@ -92,6 +92,11 @@ public class ColumnConfig<TModel, TProperty> :
     /// for resolving cell references. Returning a string like
     /// <c>"=A2*B2"</c> or <c>"A2*B2"</c> sets the cell formula. When set,
     /// this takes precedence over the normal value rendering.
+    /// <para>
+    /// Formula columns must set <see cref="Width"/> explicitly and cannot use
+    /// <see cref="MinWidth"/> or <see cref="MaxWidth"/>: Excel computes the
+    /// value at open time, so auto-sizing has no rendered text to measure.
+    /// </para>
     /// </summary>
     public Func<TModel, FormulaContext<TModel>, string>? Formula { get; set; }
 

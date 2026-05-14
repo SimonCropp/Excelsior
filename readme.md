@@ -806,9 +806,10 @@ builder.AddSheet(employees)
             _.Formula = (employee, context) =>
                 $"={context.Ref(_ => _.Id)} * 10000";
             _.Format = "#,##0";
+            _.Width = 15;
         });
 ```
-<sup><a href='/src/Excelsior.Tests/FormulaTests.cs#L10-L23' title='Snippet source file'>snippet source</a> | <a href='#snippet-FormulaFluent' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/FormulaTests.cs#L10-L24' title='Snippet source file'>snippet source</a> | <a href='#snippet-FormulaFluent' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 The shorter `Formula()` overload on `ISheetBuilder<TModel>` can be used when
@@ -949,7 +950,7 @@ public class EmployeeWithMinMaxWidth
     public required string Email;
 }
 ```
-<sup><a href='/src/Excelsior.Tests/ColumnWidths.cs#L305-L316' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnMinMaxWidthModel' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/ColumnWidths.cs#L471-L482' title='Snippet source file'>snippet source</a> | <a href='#snippet-ColumnMinMaxWidthModel' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -1659,11 +1660,12 @@ builder.AddDictionarySheet(rows)
         {
             _.Format = "$#,##0.00";
             _.Formula = (_, context) => $"={context.Ref("Quantity")}*{context.Ref("UnitPrice")}";
+            _.Width = 12;
         });
 
 using var book = await builder.Build();
 ```
-<sup><a href='/src/Excelsior.Tests/DictionarySheetTests.cs#L109-L142' title='Snippet source file'>snippet source</a> | <a href='#snippet-DictionarySheetFormula' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/DictionarySheetTests.cs#L109-L143' title='Snippet source file'>snippet source</a> | <a href='#snippet-DictionarySheetFormula' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 #### Round-Trip with `BookReader`
@@ -1708,7 +1710,7 @@ reader.Convert(stream);
 
 var first = sheet.Rows[0];
 ```
-<sup><a href='/src/Excelsior.Tests/DictionarySheetTests.cs#L150-L187' title='Snippet source file'>snippet source</a> | <a href='#snippet-DictionarySheetRoundTrip' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Excelsior.Tests/DictionarySheetTests.cs#L151-L188' title='Snippet source file'>snippet source</a> | <a href='#snippet-DictionarySheetRoundTrip' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 

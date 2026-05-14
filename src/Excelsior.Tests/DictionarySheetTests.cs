@@ -135,6 +135,7 @@ public class DictionarySheetTests
                 {
                     _.Format = "$#,##0.00";
                     _.Formula = (_, context) => $"={context.Ref("Quantity")}*{context.Ref("UnitPrice")}";
+                    _.Width = 12;
                 });
 
         using var book = await builder.Build();

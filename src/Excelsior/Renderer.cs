@@ -16,11 +16,13 @@ class Renderer<TModel>(
 
     StyleManager? styleManager;
     Dictionary<Cell, CellStyle> cellStyles = [];
+    Dictionary<Cell, int> cellDisplayLengths = [];
     Dictionary<int, double> finalColumnWidths = [];
     Dictionary<int, uint> columnLevelStyles = [];
 
     internal async Task AddSheet(SpreadsheetDocument book, Cancel cancel)
     {
+        ValidateFormulaColumnWidths();
         var sheet = BuildSheet(book);
         CreateHeadings(sheet);
         FreezeHeader(sheet);
@@ -465,7 +467,7 @@ class Renderer<TModel>(
                 sheet.SheetData);
     }
 
-    static double AdjustColumnWidth(SheetContext sheet, int columnIndex)
+    double AdjustColumnWidth(SheetContext sheet, int columnIndex)
     {
         double maxWidth = 8;
         var colLetter = SheetContext.GetColumnLetter(columnIndex);
@@ -481,7 +483,7 @@ class Renderer<TModel>(
             }
 
             var length = GetCellContentLength(cell);
-            var estimated = length * 1.1 + 2;
+            var estimated = length * CharWidthFactor(cell) + 2;
             if (estimated > maxWidth)
             {
                 maxWidth = estimated;
@@ -491,8 +493,59 @@ class Renderer<TModel>(
         return maxWidth;
     }
 
-    static int GetCellContentLength(Cell cell)
+    double CharWidthFactor(Cell cell)
     {
+        // Per-char width factor for default Calibri 11 regular. Scaled up for larger fonts
+        // (linear in point size) and bold text (~5% wider). Without this, columns sized for
+        // bold headings or non-default font sizes clip to "########".
+        const double baseFactor = 1.1;
+        if (!cellStyles.TryGetValue(cell, out var style))
+        {
+            return baseFactor;
+        }
+
+        var size = style.Font.Size ?? defaultExcelFontSize;
+        var factor = baseFactor * (size / defaultExcelFontSize);
+        if (style.Font.Bold)
+        {
+            factor *= 1.05;
+        }
+
+        return factor;
+    }
+
+    void ValidateFormulaColumnWidths()
+    {
+        foreach (var column in columns)
+        {
+            if (column.Formula == null)
+            {
+                continue;
+            }
+
+            if (column.MinWidth != null ||
+                column.MaxWidth != null)
+            {
+                throw new($"Column '{column.Name}': formula columns cannot use MinWidth/MaxWidth — Excel calculates the value at open time, so auto-sizing has no rendered text to measure. Set Width explicitly.");
+            }
+
+            if (column.Width == null)
+            {
+                throw new($"Column '{column.Name}': formula columns must set Width explicitly — Excel calculates the value at open time, so auto-sizing has no rendered text to measure.");
+            }
+        }
+    }
+
+    void RecordDateDisplayLength(Cell cell, DateTime value, string format) =>
+        cellDisplayLengths[cell] = value.ToString(format, ValueRenderer.Culture).Length;
+
+    int GetCellContentLength(Cell cell)
+    {
+        if (cellDisplayLengths.TryGetValue(cell, out var displayLength))
+        {
+            return displayLength;
+        }
+
         if (cell.InlineString != null)
         {
             var length = 0;
@@ -986,7 +1039,7 @@ class Renderer<TModel>(
         }
     }
 
-    static void SetCellValue(
+    void SetCellValue(
         Cell cell,
         SheetContext sheet,
         CellStyle style,
@@ -1101,8 +1154,10 @@ class Renderer<TModel>(
         if (value is DateTime dateTime)
         {
             ThrowIfHtml();
-            style.NumberFormat = column.Format ?? ValueRenderer.DefaultDateTimeFormat;
+            var format = column.Format ?? ValueRenderer.DefaultDateTimeFormat;
+            style.NumberFormat = format;
             SetCellValue(cell, dateTime);
+            RecordDateDisplayLength(cell, dateTime, format);
 
             return;
         }
@@ -1121,8 +1176,11 @@ class Renderer<TModel>(
         if (value is Date date)
         {
             ThrowIfHtml();
-            style.NumberFormat = column.Format ?? ValueRenderer.DefaultDateFormat;
-            SetCellValue(cell, date.ToDateTime(new(0, 0)));
+            var format = column.Format ?? ValueRenderer.DefaultDateFormat;
+            style.NumberFormat = format;
+            var asDateTime = date.ToDateTime(new(0, 0));
+            SetCellValue(cell, asDateTime);
+            RecordDateDisplayLength(cell, asDateTime, format);
 
             return;
         }
@@ -1130,8 +1188,11 @@ class Renderer<TModel>(
         if (value is Time time)
         {
             ThrowIfHtml();
-            style.NumberFormat = column.Format ?? ValueRenderer.DefaultTimeFormat;
-            SetCellValue(cell, DateTime.FromOADate(0).Add(time.ToTimeSpan()));
+            var format = column.Format ?? ValueRenderer.DefaultTimeFormat;
+            style.NumberFormat = format;
+            var asDateTime = DateTime.FromOADate(0).Add(time.ToTimeSpan());
+            SetCellValue(cell, asDateTime);
+            RecordDateDisplayLength(cell, asDateTime, format);
 
             return;
         }
@@ -1146,18 +1207,22 @@ class Renderer<TModel>(
             }
 
             SetCellValue(cell, boolean);
+            var (trueDisplay, falseDisplay) = ValueRenderer.GetBoolDisplayValues();
+            cellDisplayLengths[cell] = boolean ? trueDisplay.Length : falseDisplay.Length;
             return;
         }
 
         if (column.IsNumber)
         {
             ThrowIfHtml();
+            var asDouble = Convert.ToDouble(value);
             if (column.Format != null)
             {
                 style.NumberFormat = column.Format;
+                cellDisplayLengths[cell] = asDouble.ToString(column.Format, ValueRenderer.Culture).Length;
             }
 
-            SetCellValue(cell, Convert.ToDouble(value));
+            SetCellValue(cell, asDouble);
             return;
         }
 

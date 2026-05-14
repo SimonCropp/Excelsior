@@ -44,7 +44,7 @@
           Metadata: {
             property: NullableLinks
           },
-          Width: 23.0,
+          Width: 24.0,
           ContainsRichText: false,
           RequiredHighlight: false
         },

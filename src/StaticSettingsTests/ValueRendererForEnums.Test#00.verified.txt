@@ -50,7 +50,7 @@
           Metadata: {
             property: NullableColor
           },
-          Width: 18.0,
+          Width: 19.0,
           ContainsRichText: false,
           RequiredHighlight: false,
           Validation: {
